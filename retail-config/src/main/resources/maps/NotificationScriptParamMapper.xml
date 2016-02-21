@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.gov.nsw.railcorp.cimg.dao.NotificationScriptParamDao">
+    <resultMap id="notificationScriptParamMap" type="NotificationScriptParam" >
+        <id column="NOTIF_SCRIPT_PARAM_ID" property="notificationScriptParamId" />
+        <result column="ITEM_ID" property="itemId" />
+        <result column="PARAM_ORDER" property="paramOrder" />
+        <result column="PARAM_NAME" property="paramName" />
+        <result column="PARAM_VAL" property="paramVal" />
+        <!--association property="category" resultMap="au.gov.nsw.railcorp.cimg.dao.StaffUserDao.staffUserMap"/-->
+        <association property="category" column="CATEGORY_ID" select="au.gov.nsw.railcorp.cimg.dao.CategoryDao.getCategoryById"/>
+
+    </resultMap>
+
+    <!-- result maps -->
+    <insert id="insert" parameterType="NotificationScriptParam" useGeneratedKeys="true">
+        <selectKey keyProperty="notificationScriptParamId" resultType="java.lang.Long" order="BEFORE">
+            SELECT NOTIFICATION_SCRIPT_PARAM_SEQ.nextVal FROM dual
+        </selectKey>
+        INSERT INTO notification_script_param(
+          NOTIF_SCRIPT_PARAM_ID,
+          ITEM_ID,
+          CATEGORY_ID,
+          PARAM_ORDER,
+          PARAM_NAME,
+          PARAM_VAL
+        ) VALUES (
+          #{notificationScriptParamId},
+          #{itemId},
+          #{category.categoryId},
+          #{paramOrder},
+          #{paramName},
+          #{paramVal}
+        )
+    </insert>
+
+    <delete id="delete" >
+      DELETE from
+        notification_script_param
+      where
+        ITEM_ID in ( select
+                        notif_script_item_id
+                     from notification_script_item
+                     where
+                        script_id in (select notif_script_id from notification_script where notification_id=#{value})
+                    )
+    </delete>
+
+    <select id="getParamListOfItem" resultMap="notificationScriptParamMap" >
+        SELECT
+        NOTIF_SCRIPT_PARAM_ID,
+        ITEM_ID,
+        PARAM_ORDER,
+        PARAM_NAME,
+        PARAM_VAL,
+        CATEGORY_ID
+        FROM
+        NOTIFICATION_SCRIPT_PARAM
+        WHERE
+        ITEM_ID = #{value}
+    </select>
+
+</mapper>

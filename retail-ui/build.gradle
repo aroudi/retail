@@ -1,0 +1,10 @@
+
+apply plugin: 'war'
+
+dependencies {
+    //compile project(':rtta-app-store-ejb')
+}
+
+war{
+    archiveName 'cimg-ui.war'
+}

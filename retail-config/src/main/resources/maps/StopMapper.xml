@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.gov.nsw.railcorp.cimg.dao.StopDao">
+    <!-- result maps -->
+    <resultMap id="StopMap" type="Stop" >
+        <id column="ID" property="id" />
+        <result column="NAME" property="name" />
+        <result column="DESCRIPTION" property="description" />
+        <result column="GTFS_STOP_ID" property="gtfsStopId" />
+        <result column="LATITUDE" property="latitude" />
+        <result column="LONGITUDE" property="longitude" />
+    </resultMap>
+
+    <select id="getStationsPerPathName" resultMap="StopMap" >
+        SELECT
+          s.ID,
+          s.NAME,
+          s.DESCRIPTION,
+          s.GTFS_STOP_ID,
+          s.LATITUDE,
+          s.LONGITUDE,
+          ps.sequence
+        FROM
+          STOP s INNER JOIN PATH_STOP ps ON (s.id = ps.stop_id)
+          INNER JOIN LINE_PATH lp ON (ps.line_path_id = lp.id)
+        WHERE
+          lp.name = #{value}
+        ORDER BY
+          sequence
+    </select>
+
+    <select id="getStationsPerPathId" resultMap="StopMap" >
+        SELECT
+        s.ID,
+        s.NAME,
+        s.STATION_STOP,
+        s.DESCRIPTION,
+        s.GTFS_STOP_ID,
+        s.LATITUDE,
+        s.LONGITUDE,
+        ps.sequence
+        FROM
+        STOP s INNER JOIN PATH_STOP ps ON (s.id = ps.stop_id)
+        INNER JOIN LINE_PATH lp ON (ps.line_path_id = lp.id)
+        WHERE
+        lp.id = #{value} AND s.STATION_STOP = 1
+        ORDER BY
+        sequence
+    </select>
+
+    <select id="getStationsPerLineId" resultMap="StopMap" >
+        SELECT DISTINCT
+        s.ID,
+        s.NAME,
+        s.STATION_STOP,
+        s.DESCRIPTION,
+        s.GTFS_STOP_ID,
+        s.LATITUDE,
+        s.LONGITUDE,
+        ps.sequence
+        FROM
+        STOP s INNER JOIN PATH_STOP ps ON (s.id = ps.stop_id)
+        INNER JOIN LINE_PATH lp ON (ps.line_path_id = lp.id)
+        WHERE
+          lp.NETWORK_LINE_ID in
+          <foreach collection="list" item="item" index="index"
+                      open ="(" separator="," close=")">
+              #{item}
+          </foreach>
+        ORDER BY
+        ps.sequence
+    </select>
+
+</mapper>

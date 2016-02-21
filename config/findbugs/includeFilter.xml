@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<!-- This file contains all the bugs that need to reported - also adds flexibility of relevance to the project -->
+<FindBugsFilter>
+     
+     <!-- All bugs in test classes, except for JUnit-specific bugs -->
+     <Match>
+      <Class name="~.*\.*Test" />
+      <Not>
+          <Bug code="IJU" />
+      </Not>
+     </Match>
+
+</FindBugsFilter>

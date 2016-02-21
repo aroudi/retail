@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.gov.nsw.railcorp.cimg.dao.MessagingRuleDao">
+    <!-- result maps -->
+    <resultMap id="ruleMap" type="MessagingRule" >
+        <result column="CATEGORY_ID" property="categoryId" />
+        <result column="CHANNEL" property="channel" />
+        <result column="TITLE_RULE" property="titleRule" />
+        <result column="BODY_RULE" property="bodyRule" />
+        <result column="MESSAGE_DVA" property="messageDva" />
+    </resultMap>
+    <select id="getMessageRules" resultMap="ruleMap" >
+        select
+          cat1.categoryId CATEGORY_ID,
+          cat1.discription CHANNEL,
+          mr.title_rule TITLE_RULE,
+          mr.message_rule BODY_RULE,
+          mr.message_dva message_dva
+        from
+          messaging_rule mr inner join category cat1 on (mr.category_id = cat1.categoryid)
+                            inner join type channel on (cat1.typeid = channel.typeid)
+                            inner join category cat2 on (mr.message_type = cat2.categoryid)
+                            inner join type mt on (cat2.typeid = mt.typeid)
+        where channel.discription = 'messaging_channel' and mt.discription = #{param1} and cat2.discription = #{param2}
+    </select>
+    <select id="getMessageRulesPerTypeAndChannel" resultMap="ruleMap" >
+        select
+        cat1.categoryId CATEGORY_ID,
+        cat1.discription CHANNEL,
+        mr.title_rule TITLE_RULE,
+        mr.message_rule BODY_RULE,
+        mr.message_dva message_dva
+        from
+        messaging_rule mr inner join category cat1 on (mr.category_id = cat1.categoryid)
+        inner join type channel on (cat1.typeid = channel.typeid)
+        inner join category cat2 on (mr.message_type = cat2.categoryid)
+        inner join type mt on (cat2.typeid = mt.typeid)
+        where channel.discription = 'messaging_channel' and mt.discription = #{param1} and cat2.discription = #{param2} and cat1.discription=#{param3}
+    </select>
+</mapper>

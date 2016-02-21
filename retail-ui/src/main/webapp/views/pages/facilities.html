@@ -1,0 +1,119 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel  panel-primary">
+            <div class="panel-heading">
+                Create / Update Accessibility Message
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form role="form">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <div class="radio">
+                                                <label class="col-lg-3">
+                                                    &nbsp;&nbsp;<input  type="radio" name="optionsRadios" id="optionsRadios1" value="Lift" data-ng-model="facility.type" checked> Lifts
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label class="col-lg-3">
+                                                    &nbsp;&nbsp;<input type="radio" name="optionsRadios" id="optionsRadios2" value="Escalator" data-ng-model="facility.type"> Escalators
+                                                </label>
+                                            </div>
+                                        </div >
+                                </div >
+                                <div class="col-lg-6">
+                                    <label>Status</label>
+                                    <div class="form-group">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" data-ng-model="facility.status">Operational
+                                        </label>
+                                    </div>
+                                </div >
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label>Line/s affected:</label>
+                                        <select multiple class="form-control" data-ng-model="facility.linesAfected"
+                                            ng-options="type.description for type in lineSet" >
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label>Station:</label>
+                                        <select class="form-control" data-ng-model="facility.station"
+                                                ng-options="type.name for type in stationSet" >
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label>Number</label>
+                                        <input class="form-control" data-ng-model="facility.number">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input class="form-control" data-ng-model="facility.name">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label>Operator Name</label>
+                                        <input class="form-control" data-ng-model="facility.operatorName">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label>Contact Number</label>
+                                        <input class="form-control" data-ng-model="facility.contactNumber">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Alternative Customer Option</label>
+                                        <textarea rows="3" class="form-control" data-ng-model="facility.alternativeOption"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Customer Communication</label>
+                                        <textarea rows="3" class="form-control" data-ng-model="facility.customerCommunication"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Twitter Content</label>
+                                        <textarea rows="3" class="form-control" data-ng-model="facility.twitterContent"> </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!--button type="button" class="btn btn-outline btn-warning" ng-click="">Cancel</button-->
+                                <!--button type="button" class="btn btn-outline btn-info" ng-click="">Clear</button-->
+                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
+                                <button type="button" class="btn btn-success" ng-click="createFacility()">Submit</button>
+
+                                <!--button type="button" class="btn btn-outline btn-success" ng-click="createIncident()">Submit</button -->
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

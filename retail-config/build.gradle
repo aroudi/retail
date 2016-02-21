@@ -1,0 +1,11 @@
+// rtta-configuration gradle setup:
+dependencies {
+    compile group:'org.springframework', name:'spring-context', version :springVersion
+    testCompile group: 'org.apache.commons', name: 'commons-dbcp2', version: commonsDbcp2Version
+
+}
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'CIMG Configuration', 'Implementation-Version': projectVersion
+    }
+}

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.gov.nsw.railcorp.cimg.dao.NotificationScriptDao">
+    <!-- result maps -->
+
+    <resultMap id="notificationScriptMap" type="NotifScriptFullModel" >
+        <result column="SCRIPT_ID" property="scriptId" />
+        <result column="ITEM_ID" property="itemId" />
+        <result column="PARAM_ID" property="paramId" />
+        <result column="script_name" property="scriptName" />
+        <result column="script_item" property="scriptItem" />
+        <result column="param_name" property="paramName" />
+        <result column="param_val" property="paramVal" />
+        <result column="param_cat_id" property="paramCatId" />
+        <result column="param_cat_name" property="paramCatName" />
+    </resultMap>
+
+    <resultMap id="scriptMap" type="NotificationScript" >
+        <result column="NOTIF_SCRIPT_ID" property="notificationScriptId" />
+        <result column="NOTIFICATION_ID" property="notificationId" />
+        <result column="TYPE_ID" property="typeId" />
+        <result column="NAME" property="name" />
+        <result column="DESCRIPTION" property="description" />
+        <result column="PREPARED_SCRIPT_TEXT" property="preparedScriptText" />
+    </resultMap>
+
+    <insert id="insert" parameterType="NotificationScript" useGeneratedKeys="true">
+        <selectKey keyProperty="notificationScriptId" resultType="java.lang.Long" order="BEFORE">
+            SELECT NOTIFICATION_SCRIPT_SEQ.nextVal FROM dual
+        </selectKey>
+        INSERT INTO notification_script(
+          NOTIF_SCRIPT_ID,
+          NOTIFICATION_ID,
+          TYPE_ID,
+          NAME,
+          DESCRIPTION,
+          PREPARED_SCRIPT_TEXT
+        ) VALUES (
+          #{notificationScriptId},
+          #{notificationId},
+          #{typeId},
+          #{name},
+          #{description},
+          #{preparedScriptText}
+        )
+    </insert>
+
+    <select id="getFullScriptListPerScriptName" resultMap="notificationScriptMap" >
+      SELECT
+        notification_script.notif_script_id SCRIPT_ID,
+        notification_script_item.notif_script_item_id ITEM_ID,
+        scrp_param.notif_script_param_id PARAM_ID,
+        cat.discription script_name,
+        category1.category_order script_item,
+        scrp_param.param_name param_name,
+        scrp_param.param_val param_val,
+        category2.categoryid param_cat_id,
+        category2.discription param_cat_name
+      from
+        NOTIFICATION inner join NOTIFICATION_SCRIPT on (NOTIFICATION.notif_id = NOTIFICATION_SCRIPT.notification_id  )
+        inner join category cat on (NOTIFICATION_SCRIPT.type_id=cat.categoryid)
+        inner join NOTIFICATION_SCRIPT_ITEM on (NOTIFICATION_SCRIPT.notif_script_id=NOTIFICATION_SCRIPT_ITEM.script_id)
+        inner join CATEGORY category1 on (NOTIFICATION_SCRIPT_ITEM.CATEGORY_ID = category1.categoryid)
+        inner join NOTIFICATION_SCRIPT_PARAM scrp_param on (NOTIFICATION_SCRIPT_ITEM.notif_script_item_id = scrp_param.item_id)
+        left outer join CATEGORY category2 on (scrp_param.category_id = category2.categoryid)
+     where NOTIFICATION.notif_id=#{param1}  and cat.discription=#{param2}
+    </select>
+
+    <select id="getScriptListPerScriptName" resultMap="notificationScriptMap" >
+                      select cat.discription script_name,
+                                  category1.categoryid script_item,
+                                  scrp_param.param_name param_name,
+                                  scrp_param.param_val param_val,
+                                  category2.categoryid param_cat_id,
+                                  null param_cat_name,
+                                  0 script_id,
+                                  0 item_id,
+                                  0 param_id
+                     from
+                     NOTIFICATION inner join NOTIFICATION_SCRIPT on (NOTIFICATION.notif_id = NOTIFICATION_SCRIPT.notification_id  )
+                                  inner join category cat on (NOTIFICATION_SCRIPT.type_id=cat.categoryid)
+                                  inner join NOTIFICATION_SCRIPT_ITEM on (NOTIFICATION_SCRIPT.notif_script_id=NOTIFICATION_SCRIPT_ITEM.script_id)
+                                  inner join CATEGORY category1 on (NOTIFICATION_SCRIPT_ITEM.CATEGORY_ID = category1.categoryid)
+                                  left outer join NOTIFICATION_SCRIPT_PARAM scrp_param on (NOTIFICATION_SCRIPT_ITEM.notif_script_item_id = scrp_param.item_id)
+                                  left outer join CATEGORY category2 on (scrp_param.category_id = category2.categoryid)
+                     where
+                               NOTIFICATION.notif_id=#{param1}  and
+                               cat.discription=#{param2}
+    </select>
+
+
+    <select id="getScriptListPerParamName" resultMap="notificationScriptMap" >
+                      select cat.discription script_name,
+                                     category1.categoryid script_item,
+                                     scrp_param.param_name param_name,
+                                     scrp_param.param_val param_val,
+                                     category2.categoryid param_cat_id,
+                                     null param_cat_name,
+                                     0 script_id,
+                                     0 item_id,
+                                     0 param_id
+                              from
+                                    NOTIFICATION inner join NOTIFICATION_SCRIPT on (NOTIFICATION.notif_id = NOTIFICATION_SCRIPT.notification_id  )
+                                                         inner join category cat on (NOTIFICATION_SCRIPT.type_id=cat.categoryid)
+                                                         inner join NOTIFICATION_SCRIPT_ITEM on (NOTIFICATION_SCRIPT.notif_script_id=NOTIFICATION_SCRIPT_ITEM.script_id)
+                                                         inner join CATEGORY category1 on (NOTIFICATION_SCRIPT_ITEM.CATEGORY_ID = category1.categoryid)
+                                                         left outer join NOTIFICATION_SCRIPT_PARAM scrp_param on (NOTIFICATION_SCRIPT_ITEM.notif_script_item_id = scrp_param.item_id)
+                                                         left outer join CATEGORY category2 on (scrp_param.category_id = category2.categoryid)
+                              where
+                                NOTIFICATION.notif_id=#{param1}  and
+                                cat.discription=#{param2} and
+                                scrp_param.param_name =#{param3}
+    </select>
+    <delete id="delete" >
+        DELETE
+        From notification_script
+        WHERE
+        NOTIFICATION_ID = #{value}
+
+    </delete>
+    <select id="getMessageChannelParamSourceData" resultMap="scriptMap" parameterType="string" >
+        ${_parameter}
+    </select>
+
+</mapper>

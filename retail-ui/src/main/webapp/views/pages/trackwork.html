@@ -1,0 +1,239 @@
+<script type = "text/javascript">
+    $(".form_datetime").datetimepicker({
+        format :"dd-mm-yyyy hh:ii",
+        autoclose:true,
+        todayBtn:true,
+        pickerPosition:"botoom-left"
+    });
+</script>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel  panel-primary">
+            <div class="panel-heading">
+                Trackwork and Special Event Messages
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form role="form" name="trackworkForm">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <label>Message Type</label>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="form-group">
+                                                <div class="radio">
+                                                    <label class="col-lg-3">
+                                                        &nbsp;&nbsp;<input  type="radio" name="optionsRadios" id="optionsRadios1" value="Trackwork" data-ng-model="trackwork.messageType" checked ng-disabled="!pageIsNew" ng-change ="buildMessageTitle()"> Trackwork
+                                                    </label>
+                                                </div>
+                                                <div class="radio">
+                                                    <label class="col-lg-3">
+                                                        &nbsp;&nbsp;<input type="radio" name="optionsRadios" id="optionsRadios2" value="Special_Events" data-ng-model="trackwork.messageType" checked ng-disabled="!pageIsNew" ng-change ="buildMessageTitle()"> Special Events
+                                                    </label>
+                                                </div>
+                                            </div >
+
+                                        </div>
+                                    </div>
+                                </div >
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <label>{{trackwork.messageType=='Trackwork'? 'Trackwork' : 'Special Events'}}</label>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-lg-9">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            Message Title
+                                                            <span class="btn btn-warning btn-xs" ng-show="trackworkForm.title.$error.required">
+                                                                Required!
+                                                            </span>
+                                                        </label>
+                                                        <input class="form-control" data-ng-model="trackwork.title" name="title" ng-disabled="true">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            STN Number:
+                                                            <span class="btn btn-warning btn-xs" ng-show="trackworkForm.stnNumber.$error.pattern">
+                                                                Accepts Numeric only!
+                                                            </span>
+                                                        </label>
+                                                        <input class="form-control" name="stnNumber" maxlength="5" data-ng-model="trackwork.stnNumber" ng-pattern="/^\d{0,9}$/">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row"  ng-show="trackwork.messageType=='Trackwork'">
+                                                <div class="col-lg-4">
+                                                    <div class="form-group">
+                                                        <label>Type:</label>
+                                                        <select class="form-control" data-ng-model="trackwork.subType"
+                                                                ng-options="type.description for type in subTypeSet" >
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                    <div class="form-group">
+                                                            <label>Line/s:</label>
+                                                            <select multiple class="form-control" data-ng-model="trackwork.lines" ng-change ="buildMessageTitle()"
+                                                                    ng-options="type.longName for type in lineSet">
+                                                            </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            From:
+                                                            <span class="btn btn-warning btn-xs" ng-show="dateTimeError()">
+                                                                &nbsp &nbsp &nbsp Start time and End time must be filled; End time must be after Start time
+                                                            </span>
+                                                        </label>
+                                                        <div class="input-append date form_datetime">
+                                                            <input size="30" type="text" name="fromDate" data-ng-model="trackwork.fromDate" readonly>
+                                                                <span class="add-on">
+                                                                    <i class="icon-th"></i>
+                                                                </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            To:
+                                                        </label>
+                                                        <div class="input-append date form_datetime">
+                                                            <input size="30" type="text" name="toDate" data-ng-model="trackwork.toDate" readonly >
+                                                                <span class="add-on">
+                                                                    <i class="icon-th"></i>
+                                                                </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" ng-show="trackwork.messageType=='Special_Events'" >
+                                                <div class="form-group">
+                                                    <div class="col-lg-6">
+                                                        <label>Additional Info:</label>
+                                                        <table>
+                                                            <tr ng-repeat="script in trackwork.scriptList | filter:'trackwork_script_additional_info'">
+                                                                <td >
+                                                                    <table>
+                                                                        <tr ng-repeat="scriptItem in script.scriptItemList ">
+                                                                            <td><div  compile="scriptItem.htmlScriptText"> </br> </div></td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                &nbsp;
+                                            </div>
+                                            <div class="row"  ng-show="trackwork.messageType=='Special_Events'" >
+                                                <div class="form-group">
+                                                    <div class="col-lg-12">
+                                                        <label>Additional Message:</label>
+                                                        <table>
+                                                            <tr ng-repeat="script in trackwork.scriptList | filter:'trackwork_script_additional_message'">
+                                                                <td >
+                                                                    <table>
+                                                                        <tr ng-repeat="scriptItem in script.scriptItemList ">
+                                                                            <td><div  compile="scriptItem.htmlScriptText"> </br> </div></td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                                <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
+                                                <button type="button" class="btn btn-success" ng-click="createTrackwork()" ng-disabled="!trackworkForm.$valid || dateTimeError() || durationDateTimeError()">Submit</button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <label>Scheduling for publish</label>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="form-group">
+                                                <cron-selection output="trackwork.frequency" init="trackwork.frequency">
+                                                </cron-selection>
+                                            </div >
+                                            <div class="col-lg-12">
+                                                <div class="panel panel-info">
+                                                    <div class="panel-heading">
+                                                        <label>Duration</label>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <div class="form-group">
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group">
+                                                                        <label>
+                                                                            Start Date:
+                                                                            <span class="btn btn-warning btn-xs" ng-show="durationDateTimeError()">
+                                                                                &nbsp &nbsp &nbsp End date must be after Start date and not in the past
+                                                                            </span>
+                                                                        </label>
+                                                                        <div class="input-append date form_datetime">
+                                                                            <input size="30" type="text" data-ng-model="trackwork.durationFrom" readonly>
+                                                            <span class="add-on">
+                                                                <i class="icon-th"></i>
+                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group">
+                                                                        <label>
+                                                                            Duration To:
+                                                                        </label>
+                                                                        <div class="input-append date form_datetime">
+                                                                            <input size="30" type="text" data-ng-model="trackwork.durationTo" readonly>
+                                                                <span class="add-on">
+                                                                    <i class="icon-th"></i>
+                                                                </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div >
+                                                    </div>
+                                                </div>
+                                            </div >
+                                        </div>
+                                    </div>
+                                </div >
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

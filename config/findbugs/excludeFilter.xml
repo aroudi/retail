@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+  This file contains some false positive bugs detected by findbugs. Their
+  false positive nature has been analyzed individually and they have been
+  put here to instruct findbugs it must ignore them.
+-->
+<FindBugsFilter>
+
+
+<!-- This is an example only - Currently Find Bugs is set to report on everything 
+  <Match>
+    <Class name="org.apache.commons.io.FileUtils" />
+    <Or>
+      <Method name="doCopyDirectory" params="java.io.File,java.io.File,java.io.FileFilter,boolean,java.util.List" returns="void" />
+      <Method name="doCopyFile" params="java.io.File,java.io.File,boolean" returns="void" />
+    </Or>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE" />
+  </Match>
+-->
+
+</FindBugsFilter>

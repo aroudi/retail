@@ -1,0 +1,146 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel  panel-primary">
+            <div class="panel-heading">
+                Incident & Transposition - Preview
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form role="form">
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div class="form-group">
+                                        <label>Incident Name</label>
+                                        <input class="form-control" data-ng-model="messageChannel.name" ng-disabled="true">
+                                    </div>
+                                </div>
+                                <div class="col-lg-1">
+                                        <div class="form-group">
+                                            <label>IIMS Number</label>
+                                            <input class="form-control" data-ng-model="messageChannel.iimsNumber" ng-disabled="true">
+                                        </div>
+                                </div >
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-11">
+                                    <div class="form-group">
+                                        <label>Customer Apps:</label>
+                                        <textarea maxlength="4000" rows="3" class="form-control" data-ng-model="messageChannel.customerAppMsg"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1">
+                                    <div class="form-group">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" data-ng-model="messageChannel.customerAppPublish">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-11">
+                                    <div class="form-group">
+                                        <label>Staff Apps:</label>
+                                        <textarea maxlength="4000" rows="3" class="form-control" data-ng-model="messageChannel.staffAppMsg"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1">
+                                    <div class="form-group">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" data-ng-model="messageChannel.staffAppPublish">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-11">
+                                    <div class="form-group">
+                                        <label>VMS:</label>
+                                        <textarea maxlength="4000" rows="2" class="form-control" data-ng-model="messageChannel.vmsMsg"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1">
+                                    <div class="form-group">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" data-ng-model="messageChannel.vmsPublish">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-11">
+                                    <div class="form-group">
+                                        <label>Web:</label>
+                                        <textarea maxlength="4000" rows="3" class="form-control" data-ng-model="messageChannel.webMsg"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1">
+                                    <div class="form-group">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" data-ng-model="messageChannel.webPublish">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                    <div class="col-lg-11">
+                                        <div class="form-group">
+                                            <label>TLS Notice Board::</label>
+                                            <textarea maxlength="4000" rows="2" class="form-control" data-ng-model="messageChannel.tlsNbMsg"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <div class="form-group">
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" data-ng-model="messageChannel.tlsNbPublish">
+                                            </label>
+                                        </div>
+                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-11">
+                                    <div class="form-group">
+                                        <label>SMS:</label>
+                                        <textarea maxlength="4000" rows="2" class="form-control" data-ng-model="messageChannel.smsMsg"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1">
+                                    <div class="form-group">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" data-ng-model="messageChannel.smsPublish">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-11">
+                                    <div class="form-group">
+                                        <label>On Set:</label>
+                                        <textarea maxlength="4000" rows="2" class="form-control" data-ng-model="messageChannel.onSetMsg"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1">
+                                    <div class="form-group">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" data-ng-model="messageChannel.onSetPublish">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    &nbsp; &nbsp; &nbsp;
+                                    <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
+                                    <button type="button" class="btn btn-success" ng-click="updateMessageBody()" >Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

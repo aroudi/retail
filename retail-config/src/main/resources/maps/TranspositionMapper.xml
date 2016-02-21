@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.gov.nsw.railcorp.cimg.dao.TranspositionDao">
+    <!-- result maps -->
+    <insert id="insert" parameterType="Transposition" useGeneratedKeys="true" >
+        <selectKey keyProperty="transpositionId" resultType="java.lang.Long" order="BEFORE">
+            SELECT TRANSPOSITION_SEQ.nextVal FROM dual
+        </selectKey>
+        INSERT INTO transposition(
+          ID,
+          NOTIF_ID,
+          TRIP_NAME,
+          IMPACT_ID,
+          STATIONS
+        ) VALUES (
+          #{transpositionId},
+          #{notificationId},
+          #{tripName},
+          #{impact.id},
+          #{stations}
+        )
+    </insert>
+
+    <delete id="delete" >
+        DELETE
+        From transposition
+        WHERE
+        NOTIF_ID = #{value}
+    </delete>
+
+</mapper>
