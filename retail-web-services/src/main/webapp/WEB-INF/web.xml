@@ -9,7 +9,7 @@
 
     <listener>
         <listener-class>
-            au.gov.nsw.railcorp.cimg.app.AppServiceContextListener
+            au.com.biztune.retail.app.AppServiceContextListener
         </listener-class>
     </listener>
   <servlet>
@@ -17,7 +17,7 @@
     <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
     <init-param>
       <param-name>com.sun.jersey.config.property.packages</param-name>
-      <param-value>au.gov.nsw.railcorp.cimg.rest</param-value>
+      <param-value>au.com.biztune.retail.rest</param-value>
     </init-param>
       <init-param>
           <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>

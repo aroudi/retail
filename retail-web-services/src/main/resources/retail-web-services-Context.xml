@@ -16,7 +16,7 @@
 
 	<context:spring-configured/>
     <context:annotation-config/>
-    <context:component-scan base-package="au.gov.nsw.railcorp.cimg" />
+    <context:component-scan base-package="au.com.biztune.retail" />
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <import resource="classpath:application-context-dao.xml"/>
     <bean id="transactionManager"

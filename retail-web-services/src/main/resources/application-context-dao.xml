@@ -18,9 +18,14 @@
         <property name="configLocation" value="classpath:mybatis/cimg-config.xml" />
     </bean>
 
-    <bean id="lineDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+    <bean id="customerDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
         <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
-        <property name="mapperInterface" value="au.gov.nsw.railcorp.cimg.dao.LineDao" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.CustomerDao" />
+    </bean>
+
+    <bean id="customerGraderDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.CustomerGradeDao" />
     </bean>
 
 </beans>

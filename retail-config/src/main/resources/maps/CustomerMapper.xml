@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.CustomerDao">
+    <!-- result maps -->
+    <resultMap id="customerMap" type="Customer" >
+        <id column="customer_id" property="customerId" />
+        <result column="First_Name" property="firstName" />
+        <result column="Sur_Name" property="surName" />
+        <result column="Middle_Name" property="middleName" />
+        <result column="Company_Name" property="companyName" />
+        <result column="Address" property="address" />
+        <result column="E_Mail" property="eMail" />
+        <result column="Mobile" property="mobile" />
+        <result column="Phone" property="phone" />
+        <result column="Web_Site" property="webSite" />
+        <result column="Code" property="code" />
+        <result column="Title" property="title" />
+        <result column="Fax" property="fax" />
+        <association resultMap="au.com.biztune.retail.domain.CustomerGradeDao.gradeMap" property="grade" />
+    </resultMap>
+
+    <select id="getAllCustomers" resultMap="customerMap" >
+        SELECT
+        c.CUSTOMER_ID,
+        c.First_Name,
+        c.Middle_Name,
+        c.Company_Name,
+        c.Address,
+        c.OP_CONTACT_NO,
+        c.E_Mail,
+        c.Mobile,
+        c.Phone,
+        c.Web_Site,
+        c.Code,
+        c.Title,
+        c.Fax,
+        g.grade_id,
+        g.GRADE_CODE,
+        g.GRADE_NAME,
+        g.DESCRIPTION,
+        g.RATE
+        FROM
+        CUSTOMER C
+        LEFT OUTER JOIN
+        GRADE g on (c.grade_id = g.grade_id)
+    </select>
+
+    <select id="getCustomerByCode" resultMap="customerMap" >
+        SELECT
+        c.CUSTOMER_ID,
+        c.First_Name,
+        c.Middle_Name,
+        c.Company_Name,
+        c.Address,
+        c.OP_CONTACT_NO,
+        c.E_Mail,
+        c.Mobile,
+        c.Phone,
+        c.Web_Site,
+        c.Code,
+        c.Title,
+        c.Fax,
+        g.grade_id,
+        g.GRADE_CODE,
+        g.GRADE_NAME,
+        g.DESCRIPTION,
+        g.RATE
+        FROM
+        CUSTOMER C
+        LEFT OUTER JOIN
+        GRADE g on (c.grade_id = g.grade_id)
+        WHERE
+        c.code = #{value}
+    </select>
+
+    <insert id="insert" parameterType="Customer">
+        INSERT INTO CUSTOMER(
+        customer_id,
+        First_Name,
+        Sur_Name,
+        Middle_Name,
+        Company_Name,
+        Address,
+        E_Mail,
+        Mobile,
+        Phone,
+        Web_Site,
+        Code,
+        Title,
+        Fax,
+        grade_Id
+        ) VALUES (
+        #{customerId}
+        <if test="fistName != null">
+            ,#{fistName}
+        </if>
+        <if test="fistName == null">
+            ,null
+        </if>
+        <if test="surName != null">
+            ,#{surName}
+        </if>
+        <if test="surName == null">
+            ,null
+        </if>
+        <if test="middleName != null">
+            ,#{middleName}
+        </if>
+        <if test="middleName == null">
+            ,null
+        </if>
+        <if test="companyName != null">
+            ,#{companyName}
+        </if>
+        <if test="companyName == null">
+            ,null
+        </if>
+        <if test="address != null">
+            ,#{address}
+        </if>
+        <if test="address == null">
+            ,null
+        </if>
+        <if test="eMail != null">
+            ,#{eMail}
+        </if>
+        <if test="eMail == null">
+            ,null
+        </if>
+        <if test="mobile != null">
+            ,#{mobile}
+        </if>
+        <if test="mobile == null">
+            ,null
+        </if>
+        <if test="phone != null">
+            ,#{phone}
+        </if>
+        <if test="phone == null">
+            ,null
+        </if>
+        <if test="webSite != null">
+            ,#{webSite}
+        </if>
+        <if test="webSite == null">
+            ,null
+        </if>
+        <if test="code != null">
+            ,#{code}
+        </if>
+        <if test="code == null">
+            ,null
+        </if>
+        <if test="title != null">
+            ,#{title}
+        </if>
+        <if test="title == null">
+            ,null
+        </if>
+        <if test="fax != null">
+            ,#{fax}
+        </if>
+        <if test="fax == null">
+            ,null
+        </if>
+        <if test="grade != null">
+            ,#{grade.id}
+        </if>
+        <if test="grade == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <update id="update" parameterType="Customer" >
+        UPDATE CUSTOMER SET
+            Code = #{code}
+            <if test="fistName != null">
+                ,First_Name = #{fistName}
+            </if>
+            <if test="sureName != null">
+                  ,Sur_Name = #{sureName}
+            </if>
+            <if test="middleName != null">
+                  ,Middle_Name = #{middleName},
+            </if>
+            <if test="companyName != null">
+                ,Company_Name = #{companyName}
+            </if>
+            <if test="address != null">
+                ,Address = #{address}
+            </if>
+            <if test="eMail != null">
+                ,E_Mail = #{eMail}
+            </if>
+            <if test="mobile != null">
+                ,Mobile = #{mobile}
+            </if>
+            <if test="webSite != null">
+                ,Web_Site = #{webSite}
+            </if>
+            <if test="title != null">
+                ,Title = #{title}
+            </if>
+            <if test="fax != null">
+                ,Fax = #{fax}
+            </if>
+            <if test="grade != null">
+                ,grade_Id = #{grade.id}
+            </if>
+    </update>
+</mapper>

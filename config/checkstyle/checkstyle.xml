@@ -157,7 +157,7 @@
         <module name="PackageName">
             <!-- no uppercase letters, 2 or more characters -->
             <property name="format"
-                      value="^au.gov.nsw.(railcorp|transport).(rtta|refdata|cimg|pimg).([a-z][a-z0-9].+)*$"
+                      value="^au.com.biztune.([a-z][a-z0-9].+)*$"
                     />
         </module>
         <module name="ParameterName"/>

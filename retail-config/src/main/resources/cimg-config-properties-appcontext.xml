@@ -12,7 +12,7 @@
         <property name="locations">
             <list>
                 <value>
-                    classpath:${CIMG_CONFIG_DIR}/database.properties
+                    classpath:${RETAIL_CONFIG_DIR}/database.properties
                 </value>
             </list>
         </property>

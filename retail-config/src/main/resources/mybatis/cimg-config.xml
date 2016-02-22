@@ -4,9 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <typeAliases>
-        <typeAlias type="au.gov.nsw.railcorp.cimg.domain.StaffUser" alias="StaffUser" />
+        <typeAlias type="au.com.biztune.retail.domain.CustomerGrade" alias="CustomerGrade" />
+        <typeAlias type="au.com.biztune.retail.domain.Customer" alias="Customer" />
     </typeAliases>
     <mappers>
-        <mapper resource="maps/StaffUser.xml" />
+        <mapper resource="maps/CustomerMapper.xml" />
+        <mapper resource="maps/CustomerGradeMapper.xml" />
     </mappers>
 </configuration>
