@@ -33,4 +33,11 @@ public interface CustomerDao {
      * @return Customer
      */
     Customer getCustomerByCode(String code);
+
+    /**
+     * get the customer by id.
+     * @param id id
+     * @return Customer
+     */
+    Customer getCustomerById(long id);
 }

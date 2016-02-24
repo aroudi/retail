@@ -5,30 +5,34 @@
 <mapper namespace="au.com.biztune.retail.dao.CustomerDao">
     <!-- result maps -->
     <resultMap id="customerMap" type="Customer" >
-        <id column="customer_id" property="customerId" />
+        <id column="customer_id" property="id" />
+        <result column="Customer_Type" property="customerType" />
         <result column="First_Name" property="firstName" />
         <result column="Sur_Name" property="surName" />
         <result column="Middle_Name" property="middleName" />
         <result column="Company_Name" property="companyName" />
+        <result column="Date_Of_Birth" property="dateOfBirth" />
         <result column="Address" property="address" />
-        <result column="E_Mail" property="eMail" />
+        <result column="E_Mail" property="email" />
         <result column="Mobile" property="mobile" />
         <result column="Phone" property="phone" />
         <result column="Web_Site" property="webSite" />
         <result column="Code" property="code" />
         <result column="Title" property="title" />
         <result column="Fax" property="fax" />
-        <association resultMap="au.com.biztune.retail.domain.CustomerGradeDao.gradeMap" property="grade" />
+        <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
     </resultMap>
 
     <select id="getAllCustomers" resultMap="customerMap" >
         SELECT
         c.CUSTOMER_ID,
+        c.Customer_Type,
         c.First_Name,
+        c.Sur_Name,
         c.Middle_Name,
         c.Company_Name,
+        c.Date_Of_Birth,
         c.Address,
-        c.OP_CONTACT_NO,
         c.E_Mail,
         c.Mobile,
         c.Phone,
@@ -44,17 +48,19 @@
         FROM
         CUSTOMER C
         LEFT OUTER JOIN
-        GRADE g on (c.grade_id = g.grade_id)
+        CUSTOMER_GRADE g on (c.grade_id = g.grade_id)
     </select>
 
     <select id="getCustomerByCode" resultMap="customerMap" >
         SELECT
         c.CUSTOMER_ID,
+        c.Customer_Type,
         c.First_Name,
+        c.Sur_Name,
         c.Middle_Name,
         c.Company_Name,
+        c.Date_Of_Birth,
         c.Address,
-        c.OP_CONTACT_NO,
         c.E_Mail,
         c.Mobile,
         c.Phone,
@@ -70,18 +76,54 @@
         FROM
         CUSTOMER C
         LEFT OUTER JOIN
-        GRADE g on (c.grade_id = g.grade_id)
+        CUSTOMER_GRADE g on (c.grade_id = g.grade_id)
         WHERE
         c.code = #{value}
     </select>
 
+    <select id="getCustomerById" resultMap="customerMap" >
+        SELECT
+        c.CUSTOMER_ID,
+        c.Customer_Type,
+        c.First_Name,
+        c.Sur_Name,
+        c.Middle_Name,
+        c.Company_Name,
+        c.Date_Of_Birth,
+        c.Address,
+        c.E_Mail,
+        c.Mobile,
+        c.Phone,
+        c.Web_Site,
+        c.Code,
+        c.Title,
+        c.Fax,
+        g.grade_id,
+        g.GRADE_CODE,
+        g.GRADE_NAME,
+        g.DESCRIPTION,
+        g.RATE
+        FROM
+        CUSTOMER C
+        LEFT OUTER JOIN
+        CUSTOMER_GRADE g on (c.grade_id = g.grade_id)
+        WHERE
+        c.customer_id = #{value}
+    </select>
+
     <insert id="insert" parameterType="Customer">
+        <!--
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+            select SEQUENCE.next_val + 1 from sequence where seq_name='CUSTOMER_SEQ'
+        </selectKey>
+        -->
         INSERT INTO CUSTOMER(
-        customer_id,
+        c.Customer_Type,
         First_Name,
         Sur_Name,
         Middle_Name,
         Company_Name,
+        Date_Of_Birth,
         Address,
         E_Mail,
         Mobile,
@@ -92,11 +134,11 @@
         Fax,
         grade_Id
         ) VALUES (
-        #{customerId}
-        <if test="fistName != null">
-            ,#{fistName}
+        #{customerType}
+        <if test="firstName != null">
+            ,#{firstName}
         </if>
-        <if test="fistName == null">
+        <if test="firstName == null">
             ,null
         </if>
         <if test="surName != null">
@@ -117,16 +159,22 @@
         <if test="companyName == null">
             ,null
         </if>
+        <if test="dateOfBirth != null">
+            ,#{dateOfBirth}
+        </if>
+        <if test="dateOfBirth == null">
+            ,null
+        </if>
         <if test="address != null">
             ,#{address}
         </if>
         <if test="address == null">
             ,null
         </if>
-        <if test="eMail != null">
-            ,#{eMail}
+        <if test="email != null">
+            ,#{email}
         </if>
-        <if test="eMail == null">
+        <if test="email == null">
             ,null
         </if>
         <if test="mobile != null">
@@ -171,29 +219,40 @@
         <if test="grade == null">
             ,null
         </if>
+        <!--
+        GO
+        UPDATE Sequence SET NEXT_VAL = (select SEQUENCE.next_val + 1 from sequence where seq_name='CUSTOMER_SEQ') WHERE SEQ_NAME='CUSTOMER_SEQ'
+        GO
+        -->
         )
     </insert>
 
     <update id="update" parameterType="Customer" >
         UPDATE CUSTOMER SET
             Code = #{code}
-            <if test="fistName != null">
-                ,First_Name = #{fistName}
+            <if test="customerType != null">
+                ,Customer_Type = #{customerType}
             </if>
-            <if test="sureName != null">
-                  ,Sur_Name = #{sureName}
+            <if test="firstName != null">
+                ,First_Name = #{firstName}
+            </if>
+            <if test="surName != null">
+                  ,Sur_Name = #{surName}
             </if>
             <if test="middleName != null">
-                  ,Middle_Name = #{middleName},
+                  ,Middle_Name = #{middleName}
             </if>
             <if test="companyName != null">
                 ,Company_Name = #{companyName}
             </if>
+            <if test="dateOfBirth != null">
+                ,Date_Of_Birth = #{dateOfBirth}
+            </if>
             <if test="address != null">
                 ,Address = #{address}
             </if>
-            <if test="eMail != null">
-                ,E_Mail = #{eMail}
+            <if test="email != null">
+                ,E_Mail = #{email}
             </if>
             <if test="mobile != null">
                 ,Mobile = #{mobile}
@@ -210,5 +269,6 @@
             <if test="grade != null">
                 ,grade_Id = #{grade.id}
             </if>
+        WHERE CUSTOMER_ID = #{id}
     </update>
 </mapper>

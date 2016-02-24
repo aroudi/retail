@@ -6,5 +6,5 @@ dependencies {
 }
 
 war{
-    archiveName 'cimg-ui.war'
+    archiveName 'retail-ui.war'
 }

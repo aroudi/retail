@@ -5,6 +5,7 @@ import au.com.biztune.retail.dao.CustomerGradeDao;
 import au.com.biztune.retail.domain.Customer;
 import au.com.biztune.retail.domain.CustomerGrade;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.util.DateUtil;
 import au.com.biztune.retail.util.IdBConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -55,7 +56,7 @@ public class CustomerServiceImpl implements CustomerService {
                 response.setMessage("customer object is null");
                 return response;
             }
-            final boolean isNew = customer.getCustomerId() > 0 ? false : true;
+            final boolean isNew = customer.getId() > 0 ? false : true;
             if (isNew) {
                 //check if customer code is already in there
                 final Customer customer1 = customerDao.getCustomerByCode(customer.getCode());
@@ -64,6 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
                     response.setMessage("customer with code " + customer.getClass() + " already exists");
                     return response;
                 }
+                customer.setDateOfBirth(DateUtil.stringToDate(customer.getDateOfBirthStr(), "dd-MM-yyyy HH:mm"));
                 customerDao.insert(customer);
             } else {
                 customerDao.update(customer);
@@ -86,6 +88,38 @@ public class CustomerServiceImpl implements CustomerService {
             return customerGradeDao.getAllCustomerGrades();
         } catch (Exception e) {
             logger.error("Error in getting customer grade list: ", e);
+            return null;
+        }
+    }
+
+    /**
+     * get customer by Id.
+     * @param id id
+     * @return CustomerGrade
+     */
+    public Customer getCustomerById(long id) {
+        try {
+            final Customer customer =  customerDao.getCustomerById(id);
+            customer.setDateOfBirthStr(DateUtil.dateToString(customer.getDateOfBirth(), "dd-MM-yyyy HH:mm"));
+            return customer;
+        } catch (Exception e) {
+            logger.error("Error in getting customer with id: " + id, e);
+            return null;
+        }
+    }
+
+    /**
+     * get customer by Code.
+     * @param code code
+     * @return CustomerGrade
+     */
+    public Customer getCustomerByCode(String code) {
+        try {
+            final Customer customer = customerDao.getCustomerByCode(code);
+            customer.setDateOfBirthStr(DateUtil.dateToString(customer.getDateOfBirth(), "dd-MM-yyyy HH:mm"));
+            return customer;
+        } catch (Exception e) {
+            logger.error("Error in getting customer with code: " + code, e);
             return null;
         }
     }

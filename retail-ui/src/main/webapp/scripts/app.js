@@ -34,37 +34,14 @@ var config_data = {
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
-    'WEBAPP' :'cimg-web-services'
+    'WEBAPP' :'retail-web-services'
 }
 var service_uri = {
-    'ALL_LINE_URI' : 'lines/all',
-    'ALL_SCRIPT_URI' : 'scripts/all',
-    'TRACKWORK_SCRIPT_URI' : 'scripts/trackwork/all',
-    'ALL_CATEGORY_OFTYPE_URI' : 'categories/',
-    'CATEGORY_SUBTYPE_URI' : 'categories/trackwork_type',
-    'ALL_NET_LINE_URI' : 'topology/networkLine/all',
-    'LINE_PATH_URI' : 'topology/linePath/',
-    'PATH_STATION_URI' : 'topology/station/',
-    'LINE_STATION_URI' : 'topology/stationsOfLine',
-
-
-    'INCIDENT_ADD_URI' : 'incidents/add',
-    'INCIDENT_ALL_URI' : 'incidents/all',
-    'INCIDENT_GET_URI' : 'incidents/get',
-    'FACILITY_ALL_URI' : 'facilities/all',
-    'FACILITY_ADD_URI' : 'facilities/add',
-    'FACILITY_STATUS_URI' : 'facilities/setStatus',
-    'FACILITY_GET_URI' : 'facilities/get',
-    'STATION_MSG_ADD_URI' : 'stationMessage/add',
-    'STATION_MSG_GET_URI' : 'stationMessage/get/',
-    'TRACKWORK_ADD_URI' : 'incidents/addTrackwork',
-    'TRACKWORK_GET_URI' : 'incidents/getTrackwork/',
-    'LOGIN_URI' : 'login/',
-    'MESSAGEBODY_VIEW_URI' : 'incidents/viewMessageBody/',
-    'MESSAGEBODY_UPDATE_URI' : 'incidents/updateMessageBody',
-    'TLSOTR_GETLINEGROUP_URI' : 'TLS-OTR/getLineGroups',
-    'TLSOTR_GETTRIP_URI' : 'TLS-OTR/getTrips'
-
+    'CUSTOMER_ALL_URI' : 'customer/all',
+    'CUSTOMER_ADD_URI' : 'customer/add',
+    'CUSTOMER_GET_URI' : 'customer/get',
+    'CUSTOMERGRADE_ALL_URI' : 'customer/allGrades'
+    //
 }
 
 var response_status = {

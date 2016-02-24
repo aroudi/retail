@@ -1,16 +1,20 @@
 package au.com.biztune.retail.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import java.sql.Timestamp;
 
 /**
  * Created by arash on 22/02/2016.
  */
 public class Customer {
-    private long customerId;
+    private long id;
+    private String customerType;
     private String firstName;
     private String surName;
     private String middleName;
     private String companyName;
+    @JsonIgnore
     private Timestamp dateOfBirth;
     private String address;
     private String email;
@@ -20,14 +24,15 @@ public class Customer {
     private String code;
     private String title;
     private String fax;
+    private String dateOfBirthStr;
     private CustomerGrade grade;
 
-    public long getCustomerId() {
-        return customerId;
+    public long getId() {
+        return id;
     }
 
-    public void setCustomerId(long customerId) {
-        this.customerId = customerId;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -140,5 +145,21 @@ public class Customer {
 
     public void setGrade(CustomerGrade grade) {
         this.grade = grade;
+    }
+
+    public String getDateOfBirthStr() {
+        return dateOfBirthStr;
+    }
+
+    public void setDateOfBirthStr(String dateOfBirthStr) {
+        this.dateOfBirthStr = dateOfBirthStr;
+    }
+
+    public String getCustomerType() {
+        return customerType;
+    }
+
+    public void setCustomerType(String customerType) {
+        this.customerType = customerType;
     }
 }

@@ -81,56 +81,22 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/form.html',
             url:'/form'
         })
-        .state('dashboard.createIncident',{
-            url:'/createIncident',
-            controller: 'incidentController',
-            templateUrl:'views/pages/incident.html',
+        .state('dashboard.createCustomer',{
+            url:'/createCustomer',
+            controller: 'customerCtrl',
+            templateUrl:'views/pages/customer.html',
             access: "user"
         })
-        .state('dashboard.listIncident',{
-            url:'/listIncident',
-            controller: 'incidentListCtrl',
-            templateUrl:'views/pages/incidentList.html',
-            access: "user"
-        })
-        .state('dashboard.createFacilityMessage',{
-            url:'/createFacilityMessage',
-            controller: 'facilityMessageCtrl',
-            templateUrl:'views/pages/facilities.html',
-            access: "user"
-        })
-        .state('dashboard.listFacility',{
-            url:'/listFacility',
-            controller: 'facilityListCtrl',
-            templateUrl:'views/pages/facilityList.html',
-            access: "reader"
-        })
-        .state('dashboard.createStationMessage',{
-            url:'/createStationMessage',
-            controller: 'stationMessageCtrl',
-            templateUrl:'views/pages/stationMessage.html',
-            access: "user"
-        })
-        .state('dashboard.createTrackwork',{
-            url:'/createTrackwork',
-            controller: 'trackworkController',
-            templateUrl:'views/pages/trackwork.html',
+        .state('dashboard.listCustomer',{
+            url:'/listCustomer',
+            controller: 'customerListCtrl',
+            templateUrl:'views/pages/customerList.html',
             access: "user"
         })
         .state('dashboard.login',{
             url:'/login',
             controller: 'loginController',
             templateUrl:'views/pages/login.html'
-        })
-        .state('dashboard.viewMessageBody',{
-            url:'/viewMessageBody',
-            controller: 'viewMessageBodyCtrl',
-            templateUrl:'views/pages/messageChannelPreview.html'
-        })
-        .state('dashboard.tlsNBPublish',{
-            url:'/tlsNBPublish',
-            controller: 'tlsNBPublishController',
-            templateUrl:'views/pages/tlsNBPublish.html'
         })
         .state('dashboard.blank',{
             templateUrl:'views/pages/blank.html',
@@ -140,69 +106,20 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/login.html',
             url:'/login'
         })
-        .state('dashboard.chart',{
-            templateUrl:'views/chart.html',
-            url:'/chart',
-            controller:'ChartCtrl',
-            resolve: {
-                loadMyFile:function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name:'chart.js',
-                        files:[
-                            'bower_components/angular-chart.js/dist/angular-chart.min.js',
-                            'bower_components/angular-chart.js/dist/angular-chart.css'
-                        ]
-                    }),
-                        $ocLazyLoad.load({
-                            name:'sbAdminApp',
-                            files:['scripts/controllers/chartContoller.js']
-                        })
-                }
-            }
-        })
-        .state('dashboard.table',{
-            templateUrl:'views/table.html',
-            url:'/table'
-        })
-        .state('dashboard.panels-wells',{
-            templateUrl:'views/ui-elements/panels-wells.html',
-            url:'/panels-wells'
-        })
-        .state('dashboard.buttons',{
-            templateUrl:'views/ui-elements/buttons.html',
-            url:'/buttons'
-        })
-        .state('dashboard.notifications',{
-            templateUrl:'views/ui-elements/notifications.html',
-            url:'/notifications'
-        })
-        .state('dashboard.typography',{
-            templateUrl:'views/ui-elements/typography.html',
-            url:'/typography'
-        })
-        .state('dashboard.icons',{
-            templateUrl:'views/ui-elements/icons.html',
-            url:'/icons'
-        })
-        .state('dashboard.grid',{
-            templateUrl:'views/ui-elements/grid.html',
-            url:'/grid'
-        })
-
     /**
-}]).run(function($rootScope, AccessChecker) {
+     }]).run(function($rootScope, AccessChecker) {
     $rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
         $rootScope.previouseState = from.name;
         AccessChecker.checkAcess(to.access);
         alert('3333');
     });
 });
-**/
+     **/
 } ]).run(['$rootScope','AccessChecker',function ($rootScope, AccessChecker, UserService, $http, $location) {
 
     $rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
         $rootScope.previouseState = from.name;
-        AccessChecker.checkAcess(to.access);
+        //AccessChecker.checkAcess(to.access);
     });
 
 }]);

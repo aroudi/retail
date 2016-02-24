@@ -78,4 +78,29 @@ public class CustomerRest {
         return customerService.addCustomer(customer);
     }
 
+    /**
+     * get customer by Id.
+     * @param id id.
+     * @return Customer
+     */
+    @GET
+    @Path("/get/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Customer getCustomerById (@PathParam("id") long id) {
+        return customerService.getCustomerById(id);
+    }
+
+    /**
+     * get customer by code.
+     * @param code code.
+     * @return Customer
+     */
+    /*
+    @GET
+    @Path("/get/{code}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Customer getCustomerByCode (@PathParam("code") String code) {
+        return customerService.getCustomerByCode(code);
+    }
+    */
 }

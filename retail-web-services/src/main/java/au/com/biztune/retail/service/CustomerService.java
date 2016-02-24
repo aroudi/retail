@@ -28,4 +28,18 @@ public interface CustomerService {
      * @return CustomerGrade
      */
     List<CustomerGrade> getAllCustomerGrades();
+
+    /**
+     * get customer by Id.
+     * @param id id
+     * @return CustomerGrade
+     */
+    Customer getCustomerById(long id);
+
+    /**
+     * get customer by Code.
+     * @param code code
+     * @return CustomerGrade
+     */
+    Customer getCustomerByCode(String code);
 }

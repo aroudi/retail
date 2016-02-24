@@ -3,6 +3,7 @@ GO
 
 CREATE TABLE [dbo].[Customer](
 	[CUSTOMER_ID] [bigint] IDENTITY (1,1) NOT NULL,
+	[Customer_Type] [varchar](100) NULL,
 	[First_Name] [varchar](100) NULL,
 	[Sur_Name] [varchar](100) NULL,
 	[Middle_Name] [varchar](100) NULL,
@@ -25,6 +26,11 @@ CREATE TABLE [dbo].[CUSTOMER_GRADE](
 	[GRADE_NAME] [varchar](200) NULL,
 	[DESCRIPTION] [varchar](500) NULL,
 	[RATE] [NUMERIC ] NULL
+) ON [PRIMARY]
+
+CREATE TABLE [dbo].[Sequence](
+	[SEQ_NAME] [varchar](100) ,
+	[NEXT_VAL] [decimal](20,0)
 ) ON [PRIMARY]
 
 

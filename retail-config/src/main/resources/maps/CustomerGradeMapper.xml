@@ -5,7 +5,7 @@
 <mapper namespace="au.com.biztune.retail.dao.CustomerGradeDao">
     <!-- result maps -->
     <resultMap id="gradeMap" type="CustomerGrade" >
-        <id column="GRADE_ID" property="gradeId" />
+        <id column="GRADE_ID" property="id" />
         <result column="GRADE_CODE" property="gradeCode" />
         <result column="GRADE_NAME" property="gradeName" />
         <result column="DESCRIPTION" property="description" />

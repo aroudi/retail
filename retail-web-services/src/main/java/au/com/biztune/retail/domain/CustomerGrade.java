@@ -4,18 +4,18 @@ package au.com.biztune.retail.domain;
  * Created by arash on 22/02/2016.
  */
 public class CustomerGrade {
-    private long gradeId;
+    private long id;
     private String gradeCode;
     private String gradeName;
     private String description;
     private double rate;
 
-    public long getGradeId() {
-        return gradeId;
+    public long getId() {
+        return id;
     }
 
-    public void setGradeId(long gradeId) {
-        this.gradeId = gradeId;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getGradeCode() {
