@@ -14,7 +14,7 @@ CREATE DATABASE [RETAIL] ON  PRIMARY
 ( NAME = N'RETAIL_Log', FILENAME = N'D:\RETAIL_DB\\DATA\RETAIL.ldf' , SIZE = 1024KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
  COLLATE Latin1_General_CI_AS
 GO
-EXEC dbo.sp_dbcmptlevel @dbname=N'RETAIL', @new_cmptlevel=90
+EXEC dbo.sp_dbcmptlevel @dbname=N'RETAIL', @new_cmptlevel=100
 GO
 IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
 begin

@@ -7,6 +7,7 @@ function customerCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAI
     function initPageData() {
         if ( baseDataService.getIsPageNew()) {
             $scope.customer = {};
+            $scope.customer.customerType='Individual';
         } else {
             $scope.customer = angular.copy(baseDataService.getRow());
             baseDataService.setIsPageNew(true);

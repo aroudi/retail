@@ -23,28 +23,35 @@
         <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
     </resultMap>
 
+    <sql id="customerColumns">
+        ${alias}.CUSTOMER_ID,
+        ${alias}.Customer_Type,
+        ${alias}.First_Name,
+        ${alias}.Sur_Name,
+        ${alias}.Middle_Name,
+        ${alias}.Company_Name,
+        ${alias}.Date_Of_Birth,
+        ${alias}.Address,
+        ${alias}.E_Mail,
+        ${alias}.Mobile,
+        ${alias}.Phone,
+        ${alias}.Web_Site,
+        ${alias}.Code,
+        ${alias}.Title,
+        ${alias}.Fax
+    </sql>
+    <sql id="gradeColumns">
+        ${alias}.grade_id,
+        ${alias}.GRADE_CODE,
+        ${alias}.GRADE_NAME,
+        ${alias}.DESCRIPTION,
+        ${alias}.RATE
+    </sql>
+
     <select id="getAllCustomers" resultMap="customerMap" >
         SELECT
-        c.CUSTOMER_ID,
-        c.Customer_Type,
-        c.First_Name,
-        c.Sur_Name,
-        c.Middle_Name,
-        c.Company_Name,
-        c.Date_Of_Birth,
-        c.Address,
-        c.E_Mail,
-        c.Mobile,
-        c.Phone,
-        c.Web_Site,
-        c.Code,
-        c.Title,
-        c.Fax,
-        g.grade_id,
-        g.GRADE_CODE,
-        g.GRADE_NAME,
-        g.DESCRIPTION,
-        g.RATE
+            <include refid="customerColumns"><property name="alias" value="c"/></include>,
+            <include refid="gradeColumns"><property name="alias" value="g"/></include>
         FROM
         CUSTOMER C
         LEFT OUTER JOIN
@@ -53,72 +60,31 @@
 
     <select id="getCustomerByCode" resultMap="customerMap" >
         SELECT
-        c.CUSTOMER_ID,
-        c.Customer_Type,
-        c.First_Name,
-        c.Sur_Name,
-        c.Middle_Name,
-        c.Company_Name,
-        c.Date_Of_Birth,
-        c.Address,
-        c.E_Mail,
-        c.Mobile,
-        c.Phone,
-        c.Web_Site,
-        c.Code,
-        c.Title,
-        c.Fax,
-        g.grade_id,
-        g.GRADE_CODE,
-        g.GRADE_NAME,
-        g.DESCRIPTION,
-        g.RATE
+            <include refid="customerColumns"><property name="alias" value="c"/></include>,
+            <include refid="gradeColumns"><property name="alias" value="g"/></include>
         FROM
-        CUSTOMER C
+            CUSTOMER C
         LEFT OUTER JOIN
-        CUSTOMER_GRADE g on (c.grade_id = g.grade_id)
+          CUSTOMER_GRADE g on (c.grade_id = g.grade_id)
         WHERE
-        c.code = #{value}
+          c.code = #{value}
     </select>
 
     <select id="getCustomerById" resultMap="customerMap" >
         SELECT
-        c.CUSTOMER_ID,
-        c.Customer_Type,
-        c.First_Name,
-        c.Sur_Name,
-        c.Middle_Name,
-        c.Company_Name,
-        c.Date_Of_Birth,
-        c.Address,
-        c.E_Mail,
-        c.Mobile,
-        c.Phone,
-        c.Web_Site,
-        c.Code,
-        c.Title,
-        c.Fax,
-        g.grade_id,
-        g.GRADE_CODE,
-        g.GRADE_NAME,
-        g.DESCRIPTION,
-        g.RATE
+            <include refid="customerColumns"><property name="alias" value="c"/></include>,
+            <include refid="gradeColumns"><property name="alias" value="g"/></include>
         FROM
-        CUSTOMER C
+          CUSTOMER C
         LEFT OUTER JOIN
-        CUSTOMER_GRADE g on (c.grade_id = g.grade_id)
+          CUSTOMER_GRADE g on (c.grade_id = g.grade_id)
         WHERE
-        c.customer_id = #{value}
+          c.customer_id = #{value}
     </select>
 
     <insert id="insert" parameterType="Customer">
-        <!--
-        <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
-            select SEQUENCE.next_val + 1 from sequence where seq_name='CUSTOMER_SEQ'
-        </selectKey>
-        -->
         INSERT INTO CUSTOMER(
-        c.Customer_Type,
+        Customer_Type,
         First_Name,
         Sur_Name,
         Middle_Name,

@@ -1,5 +1,5 @@
 // Maven Repo - Local File System
-project.ext["depsDir"] = 'file://V:/repository'
+project.ext["depsDir"] = 'file://D:\\mavenrepo\\repository'
 
 subprojects {
     apply plugin: 'checkstyle'
@@ -7,7 +7,7 @@ subprojects {
 	apply plugin: 'findbugs'
 	apply plugin: 'jdepend'
 	
-	
+
 	sourceCompatibility = JavaVersion.VERSION_1_7
 	ext {
 	

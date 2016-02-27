@@ -6,12 +6,13 @@ function customerListCtrl($scope, $state, $timeout,baseDataService, SUCCESS, FAI
         enableFiltering: true,
         columnDefs: [
             {field:'customerId', visible:false, enableCellEdit:false},
-            {field:'code', enableCellEdit:false, width:'10%'},
+            {field:'customerType', displayName:'Type',enableCellEdit:false, width:'8%'},
+            {field:'code', enableCellEdit:false, width:'7%'},
             {field:'firstName', displayName:'First Name',enableCellEdit:false, width:'10%'},
             {field:'surName', displayName:'Sur Name',enableCellEdit:false, width:'10%'},
-            {field:'company', displayName:'Company Name',enableCellEdit:false, width:'10%'},
+            {field:'companyName', displayName:'Company Name',enableCellEdit:false, width:'10%'},
             {field:'mobile', enableCellEdit:false, width:'10%'},
-            {field:'address', enableCellEdit:false , width:'40%'},
+            {field:'address', enableCellEdit:false , width:'30%'},
             {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editCustomer(row)"></i></a>', width:'10%' }
         ]
     }
