@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.gov.nsw.railcorp.cimg.dao.ConfigCategoryDao">
+    <!-- result maps -->
+    <resultMap id="configCategoryMap" type="ConfigCategory" >
+        <id column="CATEGORY_ID" property="id" />
+        <result column="CONFIG_TYPE_ID" property="configTypeId" />
+        <result column="CATEGORY_CODE" property="categoryCode" />
+        <result column="DISPLAY_NAME" property="displayName" />
+        <result column="DESCRIPTION" property="description" />
+        <result column="CATEGORY_ORDER" property="categoryOrder" />
+    </resultMap>
+
+    <sql id="configCategoryColumns">
+        ${alias}.CATEGORY_ID,
+        ${alias}.CONFIG_TYPE_ID,
+        ${alias}.CATEGORY_CODE,
+        ${alias}.DISPLAY_NAME,
+        ${alias}.DESCRIPTION
+    </sql>
+
+
+    <select id="getCategoriesOfType" resultMap="configCategoryMap" >
+        SELECT
+          <include refid="configCategoryColumns"><property name="alias" value="cat"/></include>
+        FROM
+          CONFIG_CATEGORY cat inner join CONFIG_TYPE type on (cat.CONFIG_TYPE_ID=type.CONFIG_TYPE_ID)
+          WHERE
+            type.CONFIG_CODE=#{value}
+        ORDER BY
+          cat.CATEGORY_ORDER
+    </select>
+    <select id="getCategoriesOfTypeAndCode" resultMap="configCategoryMap" >
+        SELECT
+          <include refid="configCategoryColumns"><property name="alias" value="cat"/></include>
+        FROM
+          CONFIG_CATEGORY cat inner join CONFIG_TYPE type on (cat.CONFIG_TYPE_ID=type.CONFIG_TYPE_ID)
+        WHERE
+            type.CONFIG_CODE=#{param1}
+        AND  cat.CATEGORY_CODE=#{param2}
+        ORDER BY
+          cat.CATEGORY_ORDER
+    </select>
+    <select id="getCategoryById" resultMap="configCategoryMap" >
+        SELECT
+          <include refid="configCategoryColumns"><property name="alias" value="cat"/></include>
+        FROM
+          CONFIG_CATEGORY cat
+        WHERE
+          cat.CATEGORY_ID=#{value}
+    </select>
+
+</mapper>

@@ -28,4 +28,13 @@
         <property name="mapperInterface" value="au.com.biztune.retail.dao.CustomerGradeDao" />
     </bean>
 
+    <bean id="contactDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.ContactDao" />
+    </bean>
+    <bean id="supplierDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.SupplierDao" />
+    </bean>
+
 </beans>

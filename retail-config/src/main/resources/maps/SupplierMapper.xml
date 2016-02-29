@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.SupplierDao">
+    <!-- result maps -->
+    <resultMap id="supplierMap" type="Supplier" >
+        <id column="SUPPLIER_ID" property="id" />
+        <result column="SUPPLIER_CODE" property="supplierCode" />
+        <result column="SUPPLIER_NAME" property="supplierName" />
+        <result column="LEAD_TIME" property="leadTime" />
+        <result column="STOCK_COVER" property="stockCover" />
+        <result column="MIN_ORDER_VALUE" property="minOrderValue" />
+        <result column="CREDIT_LIMIT" property="creditLimit" />
+        <result column="MAX_ADV_ORDER" property="maxAdvOrder" />
+        <result column="CREATE_DATE" property="createDate" />
+        <result column="LAST_MODIFIED_DATE" property="lastModifiedDate" />
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" />
+        <result column="CONTACT_FIRST_NAME" property="contactFirstName" />
+        <result column="CONTACT_SUR_NAME" property="contactSurName" />
+        <result column="CONTACT_TITLE" property="contactTitle" />
+        <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
+        <association property="supplierType" column="SUPPLIER_TYPE_ID" select="au.com.biztune.retail.dao.ConfigCategoryDao.ConfigCategoryMapper.getCategoryById" />
+        <association property="supplierStatus" column="SUPPLIER_STATUS_ID" select="au.com.biztune.retail.dao.ConfigCategoryDao.ConfigCategoryMapper.getCategoryById" />
+        <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.ContactMapper.getContactById" />
+    </resultMap>
+
+    <sql id="supplierColumns">
+        ${alias}.SUPPLIER_ID,
+        ${alias}.SUPPLIER_CODE,
+        ${alias}.SUPPLIER_NAME,
+        ${alias}.LEAD_TIME,
+        ${alias}.STOCK_COVER,
+        ${alias}.MIN_ORDER_VALUE,
+        ${alias}.CREDIT_LIMIT,
+        ${alias}.MAX_ADV_ORDER,
+        ${alias}.CREATE_DATE,
+        ${alias}.LAST_MODIFIED_BY,
+        ${alias}.CONTACT_FIRST_NAME,
+        ${alias}.CONTACT_SUR_NAME,
+        ${alias}.CONTACT_TITLE,
+        ${alias}.CONTACT_KNOWN_AS
+    </sql>
+
+    <select id="getAllSuppliers" resultMap="supplierMap" >
+        SELECT
+            <include refid="supplierColumns"><property name="alias" value="supp"/></include>
+        FROM
+        SUPPLIER supp
+    </select>
+
+    <select id="getSupplierByCode" resultMap="supplierMap" >
+        SELECT
+          <include refid="supplierColumns"><property name="alias" value="supp"/></include>
+        FROM
+          SUPPLIER supp
+        WHERE
+          supp.SUPPLIER_CODE = #{value}
+    </select>
+
+    <select id="getSupplierById" resultMap="supplierMap" >
+        SELECT
+          <include refid="supplierColumns"><property name="alias" value="supp"/></include>
+        FROM
+          SUPPLIER supp
+        WHERE
+        supp.SUPPLIER_ID = #{value}
+    </select>
+
+    <insert id="insert" parameterType="Supplier">
+        INSERT INTO SUPPLIER(
+        SUPPLIER_CODE,
+        SUPPLIER_NAME,
+        SUPPLIER_TYPE_ID,
+        SUPPLIER_STATUS_ID,
+        CONTACT_ID,
+        LEAD_TIME,
+        STOCK_COVER,
+        MIN_ORDER_VALUE,
+        CREDIT_LIMIT,
+        MAX_ADV_ORDER,
+        CREATE_DATE,
+        LAST_MODIFIED_DATE,
+        LAST_MODIFIED_BY,
+        CONTACT_FIRST_NAME,
+        CONTACT_SUR_NAME,
+        CONTACT_TITLE,
+        CONTACT_KNOWN_AS
+        ) VALUES (
+        #{supplierCode},
+        #{supplierName}
+        <if test="supplierType != null">
+            ,#{supplierType.id}
+        </if>
+        <if test="supplierType == null">
+            ,null
+        </if>
+        <if test="supplierStatus != null">
+            ,#{supplierStatus.id}
+        </if>
+        <if test="supplierStatus == null">
+            ,null
+        </if>
+        <if test="contact != null">
+            ,#{contact.id}
+        </if>
+        <if test="contact == null">
+            ,null
+        </if>
+        <if test="leadTime != null">
+            ,#{leadTime}
+        </if>
+        <if test="leadTime == null">
+            ,null
+        </if>
+        <if test="stockCover != null">
+            ,#{stockCover}
+        </if>
+        <if test="stockCover == null">
+            ,null
+        </if>
+        <if test="minOrderValue != null">
+            ,#{minOrderValue}
+        </if>
+        <if test="minOrderValue == null">
+            ,null
+        </if>
+        <if test="creditLimit != null">
+            ,#{creditLimit}
+        </if>
+        <if test="creditLimit == null">
+            ,null
+        </if>
+        <if test="maxAdvOrder != null">
+            ,#{maxAdvOrder}
+        </if>
+        <if test="maxAdvOrder == null">
+            ,null
+        </if>
+        <if test="createDate != null">
+            ,#{createDate}
+        </if>
+        <if test="createDate == null">
+            ,null
+        </if>
+        <if test="lastModifiedDate != null">
+            ,#{lastModifiedDate}
+        </if>
+        <if test="lastModifiedDate == null">
+            ,null
+        </if>
+        <if test="lastModifiedBy != null">
+            ,#{lastModifiedBy}
+        </if>
+        <if test="lastModifiedBy == null">
+            ,null
+        </if>
+        <if test="contactFirstName != null">
+            ,#{contactFirstName}
+        </if>
+        <if test="contactFirstName == null">
+            ,null
+        </if>
+        <if test="contactSurName != null">
+            ,#{contactSurName}
+        </if>
+        <if test="contactSurName == null">
+            ,null
+        </if>
+        <if test="contactTitle != null">
+            ,#{contactTitle}
+        </if>
+        <if test="contactTitle == null">
+            ,null
+        </if>
+        <if test="contactKnownAs != null">
+            ,#{contactKnownAs}
+        </if>
+        <if test="contactKnownAs == null">
+            ,null
+        </if>
+        <!--
+        GO
+        UPDATE Sequence SET NEXT_VAL = (select SEQUENCE.next_val + 1 from sequence where seq_name='CUSTOMER_SEQ') WHERE SEQ_NAME='CUSTOMER_SEQ'
+        GO
+        -->
+        )
+    </insert>
+
+    <update id="update" parameterType="Supplier" >
+        UPDATE Supplier SET
+            SUPPLIER_CODE = #{supplierCode},
+            SUPPLIER_NAME = #{supplierName}
+        <if test="supplierType != null">
+            ,SUPPLIER_TYPE_ID = #{supplierType.id}
+        </if>
+        <if test="supplierStatus != null">
+            ,SUPPLIER_STATUS_ID = #{supplierStatus.id}
+        </if>
+        <if test="contact != null">
+            ,CONTACT_ID = #{contact.id}
+        </if>
+        <if test="leadTime != null">
+            ,LEAD_TIME = #{leadTime}
+        </if>
+        <if test="stockCover != null">
+            ,STOCK_COVER = #{stockCover}
+        </if>
+        <if test="minOrderValue != null">
+            ,MIN_ORDER_VALUE = #{minOrderValue}
+        </if>
+        <if test="creditLimit != null">
+            ,CREDIT_LIMIT = #{creditLimit}
+        </if>
+        <if test="maxAdvOrder != null">
+            ,MAX_ADV_ORDER = #{maxAdvOrder}
+        </if>
+        <if test="createDate != null">
+            ,CREATE_DATE = #{createDate}
+        </if>
+        <if test="lastModifiedDate != null">
+            ,LAST_MODIFIED_DATE = #{lastModifiedDate}
+        </if>
+        <if test="lastModifiedBy != null">
+            ,LAST_MODIFIED_BY = #{lastModifiedBy}
+        </if>
+        <if test="contactFirstName != null">
+            ,CONTACT_FIRST_NAME = #{contactFirstName}
+        </if>
+        <if test="contactSurName != null">
+            ,CONTACT_SUR_NAME = #{contactSurName}
+        </if>
+        <if test="contactTitle != null">
+            ,CONTACT_TITLE = #{contactTitle}
+        </if>
+        <if test="contactKnownAs != null">
+            ,CONTACT_KNOWN_AS =#{contactKnownAs}
+        </if>
+          WHERE SUPPLIER_ID = #{id}
+    </update>
+</mapper>

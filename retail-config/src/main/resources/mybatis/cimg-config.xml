@@ -6,9 +6,15 @@
     <typeAliases>
         <typeAlias type="au.com.biztune.retail.domain.CustomerGrade" alias="CustomerGrade" />
         <typeAlias type="au.com.biztune.retail.domain.Customer" alias="Customer" />
+        <typeAlias type="au.com.biztune.retail.domain.ConfigCategory" alias="ConfigCategory" />
+        <typeAlias type="au.com.biztune.retail.domain.Contact" alias="Contact" />
+        <typeAlias type="au.com.biztune.retail.domain.Supplier" alias="Supplier" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/CustomerMapper.xml" />
         <mapper resource="maps/CustomerGradeMapper.xml" />
+        <mapper resource="maps/ConfigCategoryMapper.xml" />
+        <mapper resource="maps/ContactMapper.xml" />
+        <mapper resource="maps/SupplierMapper.xml" />
     </mappers>
 </configuration>

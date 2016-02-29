@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.gov.nsw.railcorp.cimg.dao.ContactDao">
+    <!-- result maps -->
+    <resultMap id="contactMap" type="Contact" >
+        <id column="CONTACT_ID" property="id" />
+        <result column="COUNTRY" property="country" />
+        <result column="STATE" property="state" />
+        <result column="POST_CODE" property="postCode" />
+        <result column="ADDRESS1" property="address1" />
+        <result column="ADDRESS2" property="address2" />
+        <result column="E_MAIL" property="email" />
+        <result column="MOBILE" property="mobile" />
+        <result column="PHONE" property="phone" />
+        <result column="FAX" property="fax" />
+        <result column="WEB_SITE" property="webSite" />
+    </resultMap>
+
+    <sql id="contactColumns">
+        ${alias}.CONTACT_ID,
+        ${alias}.COUNTRY,
+        ${alias}.STATE,
+        ${alias}.POST_CODE,
+        ${alias}.ADDRESS1,
+        ${alias}.ADDRESS2,
+        ${alias}.E_MAIL,
+        ${alias}.MOBILE,
+        ${alias}.PHONE,
+        ${alias}.FAX,
+        ${alias}.WEB_SITE
+    </sql>
+
+
+    <insert id="insert" parameterType="Contact">
+        INSERT INTO CUSTOMER(
+        POST_CODE,
+        ADDRESS1,
+        COUNTRY,
+        STATE,
+        ADDRESS2,
+        E_MAIL,
+        MOBILE,
+        PHONE,
+        FAX,
+        WEB_SITE
+        ) VALUES (
+        #{postCode}
+        <if test="address1 != null">
+            ,#{address1}
+        </if>
+        <if test="address1 == null">
+            ,null
+        </if>
+        <if test="country != null">
+            ,#{country}
+        </if>
+        <if test="country == null">
+            ,null
+        </if>
+        <if test="state != null">
+            ,#{state}
+        </if>
+        <if test="state == null">
+            ,null
+        </if>
+        <if test="address2 != null">
+            ,#{address2}
+        </if>
+        <if test="address2 == null">
+            ,null
+        </if>
+        <if test="email != null">
+            ,#{email}
+        </if>
+        <if test="email == null">
+            ,null
+        </if>
+        <if test="mobile != null">
+            ,#{mobile}
+        </if>
+        <if test="mobile == null">
+            ,null
+        </if>
+        <if test="phone != null">
+            ,#{phone}
+        </if>
+        <if test="phone == null">
+            ,null
+        </if>
+        <if test="fax != null">
+            ,#{fax}
+        </if>
+        <if test="fax == null">
+            ,null
+        </if>
+        <if test="webSite != null">
+            ,#{webSite}
+        </if>
+        <if test="webSite == null">
+            ,null
+        </if>
+        )
+    </insert>
+    <select id="getContactById" resultMap="contactMap" >
+        SELECT
+        <include refid="contactColumns"><property name="alias" value="contact"/></include>
+        FROM
+              CONTACT contact
+        WHERE
+        contact.CONTACT_ID=#{value}
+    </select>
+
+</mapper>
