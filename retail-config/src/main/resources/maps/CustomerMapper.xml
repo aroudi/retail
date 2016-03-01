@@ -82,7 +82,7 @@
           c.customer_id = #{value}
     </select>
 
-    <insert id="insert" parameterType="Customer">
+    <insert id="insert" parameterType="Customer" useGeneratedKeys="true" keyProperty="id" keyColumn="CUSTOMER_ID">
         INSERT INTO CUSTOMER(
         Customer_Type,
         First_Name,

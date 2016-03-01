@@ -95,4 +95,12 @@ public class Contact {
     public void setWebSite(String webSite) {
         this.webSite = webSite;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

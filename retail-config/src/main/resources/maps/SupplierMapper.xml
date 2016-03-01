@@ -67,7 +67,7 @@
         supp.SUPPLIER_ID = #{value}
     </select>
 
-    <insert id="insert" parameterType="Supplier">
+    <insert id="insert" parameterType="Supplier" useGeneratedKeys="true" keyProperty="id" keyColumn="SUPPLIER_ID">
         INSERT INTO SUPPLIER(
         SUPPLIER_CODE,
         SUPPLIER_NAME,

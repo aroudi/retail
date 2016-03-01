@@ -12,11 +12,11 @@
             </li>
             -->
             <li ng-class="{active: collapseVar==1}">{{dropDown}}
-                <a href="" ng-click="check(1)"><i class="fa fa-comments fa-fw"></i> Incident Messages<span
+                <a href="" ng-click="check(1)"><i class="fa fa-comments fa-fw"></i> Customer<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=1">
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.createCustomer">Create Incident</a>
+                        <a ui-sref="dashboard.createCustomer">Define New Customer</a>
                     </li>
                     <!--
                     <li ui-sref-active="active">
@@ -24,11 +24,32 @@
                     </li>
                     -->
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.listCustomer">View Message Status Board</a>
+                        <a ui-sref="dashboard.listCustomer">Customer List</a>
                     </li>
                 </ul>
                 <!-- /.nav-second-level -->
             </li>
+
+            <li ng-class="{active: collapseVar==1}">{{dropDown}}
+                <a href="" ng-click="check(1)"><i class="fa fa-comments fa-fw"></i> Supplier<span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=1">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.createSupplier">Define New Supplier</a>
+                    </li>
+                    <!--
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.buttons">Review And Publish</a>
+                    </li>
+                    -->
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.listSupplier">Supplier List</a>
+                    </li>
+                </ul>
+                <!-- /.nav-second-level -->
+            </li>
+
+
         </ul>
     </div>
     <!-- /.sidebar-collapse -->

@@ -36,5 +36,9 @@
         <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
         <property name="mapperInterface" value="au.com.biztune.retail.dao.SupplierDao" />
     </bean>
+    <bean id="configCategoryDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.ConfigCategoryDao" />
+    </bean>
 
 </beans>

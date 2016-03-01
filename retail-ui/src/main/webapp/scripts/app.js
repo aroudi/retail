@@ -40,7 +40,11 @@ var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
     'CUSTOMER_GET_URI' : 'customer/get',
-    'CUSTOMERGRADE_ALL_URI' : 'customer/allGrades'
+    'CUSTOMERGRADE_ALL_URI' : 'customer/allGrades',
+    'ALL_CATEGORY_OFTYPE_URI' : 'categories/',
+    'SUPPLIER_ALL_URI' : 'supplier/all',
+    'SUPPLIER_ADD_URI' : 'supplier/add',
+    'SUPPLIER_GET_URI' : 'supplier/get'
     //
 }
 
@@ -50,11 +54,8 @@ var response_status = {
 }
 
 var type_constant = {
-    'SERVICE_STATUS_URI' : 'categories/service_status',
-    'NOTIFICATION_REASON_URI' : 'categories/notification_reason',
-    'DIRECTION_URI' : 'categories/Direction',
-    'GTFS_ALERTTYPES_URI' : 'categories/gtfs_alerttypes',
-    'STATION_NAME_URI' : 'categories/Station_name'
+    'SUPPLIER_TYPE_URI' : 'categories/SUPPLIER_TYPE',
+    'SUPPLIER_STATUS_URI' : 'categories/SUPPLIER_STATUS'
 }
 
 angular.forEach(config_data, function(key, value) {

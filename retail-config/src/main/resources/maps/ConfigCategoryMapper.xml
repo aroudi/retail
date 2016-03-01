@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="au.gov.nsw.railcorp.cimg.dao.ConfigCategoryDao">
+<mapper namespace="au.com.biztune.retail.dao.ConfigCategoryDao">
     <!-- result maps -->
     <resultMap id="configCategoryMap" type="ConfigCategory" >
         <id column="CATEGORY_ID" property="id" />

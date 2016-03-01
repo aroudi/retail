@@ -17,4 +17,17 @@ public interface ContactDao {
      * @param contact contact
      */
     void insert(Contact contact);
+
+    /**
+     * update contact per id.
+     * @param contact contact
+     */
+    void update(Contact contact);
+
+    /**
+     * remove contact.
+     * @param contactId contactId
+     */
+    void delete(long contactId);
+
 }

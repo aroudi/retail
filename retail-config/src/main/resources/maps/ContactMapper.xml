@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="au.gov.nsw.railcorp.cimg.dao.ContactDao">
+<mapper namespace="au.com.biztune.retail.dao.ContactDao">
     <!-- result maps -->
     <resultMap id="contactMap" type="Contact" >
         <id column="CONTACT_ID" property="id" />
@@ -33,8 +33,8 @@
     </sql>
 
 
-    <insert id="insert" parameterType="Contact">
-        INSERT INTO CUSTOMER(
+    <insert id="insert" parameterType="Contact" useGeneratedKeys="true" keyProperty="id" keyColumn="CONTACT_ID">
+        INSERT INTO CONTACT(
         POST_CODE,
         ADDRESS1,
         COUNTRY,
@@ -111,5 +111,46 @@
         WHERE
         contact.CONTACT_ID=#{value}
     </select>
+
+    <delete id="delete" >
+        DELETE
+        From CONTACT
+        WHERE
+        CONTACT_ID = #{value}
+    </delete>
+
+    <update id="update" parameterType="Supplier" >
+      UPDATE CONTACT SET
+        POST_CODE = #{postCode}
+        <if test="address1 != null">
+            ,ADDRESS1 = #{address1}
+        </if>
+        <if test="country != null">
+            ,COUNTRY = #{country}
+        </if>
+        <if test="state != null">
+            ,STATE = #{state}
+        </if>
+        <if test="address2 != null">
+            ,ADDRESS2 = #{address2}
+        </if>
+        <if test="email != null">
+            ,E_MAIL = #{email}
+        </if>
+        <if test="mobile != null">
+            ,MOBILE = #{mobile}
+        </if>
+        <if test="phone != null">
+            ,PHONE = #{phone}
+        </if>
+        <if test="fax != null">
+            ,FAX = #{fax}
+        </if>
+        <if test="webSite != null">
+            ,WEB_SITE = #{webSite}
+        </if>
+       WHERE
+          CONTACT_ID = #{id}
+    </update>
 
 </mapper>
