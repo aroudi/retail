@@ -20,9 +20,9 @@
         <result column="CONTACT_SUR_NAME" property="contactSurName" />
         <result column="CONTACT_TITLE" property="contactTitle" />
         <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
-        <association property="supplierType" column="SUPPLIER_TYPE_ID" select="au.com.biztune.retail.dao.ConfigCategoryDao.ConfigCategoryMapper.getCategoryById" />
-        <association property="supplierStatus" column="SUPPLIER_STATUS_ID" select="au.com.biztune.retail.dao.ConfigCategoryDao.ConfigCategoryMapper.getCategoryById" />
-        <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.ContactMapper.getContactById" />
+        <association property="supplierType" column="SUPPLIER_TYPE_ID" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="supplierStatus" column="SUPPLIER_STATUS_ID" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
     </resultMap>
 
     <sql id="supplierColumns">
@@ -39,7 +39,10 @@
         ${alias}.CONTACT_FIRST_NAME,
         ${alias}.CONTACT_SUR_NAME,
         ${alias}.CONTACT_TITLE,
-        ${alias}.CONTACT_KNOWN_AS
+        ${alias}.CONTACT_KNOWN_AS,
+        ${alias}.SUPPLIER_TYPE_ID,
+        ${alias}.SUPPLIER_STATUS_ID,
+        ${alias}.CONTACT_ID
     </sql>
 
     <select id="getAllSuppliers" resultMap="supplierMap" >
