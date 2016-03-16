@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.UnitOfMeasureDao">
+    <!-- result maps -->
+    <resultMap id="unomMap" type="UnitOfMeasure" >
+        <id column="UNOM_ID" property="id" />
+        <result column="UNOM_CODE" property="unomCode" />
+        <result column="UNOM_DESC" property="unomDesc" />
+        <result column="UNOM_FACTOR" property="unomFactor" />
+        <result column="UNOM_CREATED" property="unomCreated" />
+        <result column="UNOM_MODIFIED" property="unomModified" />
+    </resultMap>
+
+    <sql id="unomColumns">
+        ${alias}.UNOM_ID,
+        ${alias}.UNOM_CODE,
+        ${alias}.UNOM_DESC,
+        ${alias}.UNOM_FACTOR,
+        ${alias}.UNOM_CREATED,
+        ${alias}.UNOM_MODIFIED
+    </sql>
+
+    <select id="getUnomByCode" resultMap="unomMap" >
+        SELECT
+          <include refid="unomColumns"><property name="alias" value="unom"/></include>
+        FROM UNIT_OF_MEASURE unom
+        WHERE UNOM_CODE = #{val}
+    </select>
+</mapper>

@@ -9,6 +9,8 @@
         <typeAlias type="au.com.biztune.retail.domain.ConfigCategory" alias="ConfigCategory" />
         <typeAlias type="au.com.biztune.retail.domain.Contact" alias="Contact" />
         <typeAlias type="au.com.biztune.retail.domain.Supplier" alias="Supplier" />
+        <typeAlias type="au.com.biztune.retail.domain.OrgUnit" alias="OrgUnit" />
+        <typeAlias type="au.com.biztune.retail.domain.UnitOfMeasure" alias="UnitOfMeasure" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/CustomerMapper.xml" />
@@ -16,5 +18,7 @@
         <mapper resource="maps/ConfigCategoryMapper.xml" />
         <mapper resource="maps/ContactMapper.xml" />
         <mapper resource="maps/SupplierMapper.xml" />
+        <mapper resource="maps/OrgUnitMapper.xml" />
+        <mapper resource="maps/UnitOfMeasureMapper.xml" />
     </mappers>
 </configuration>
