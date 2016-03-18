@@ -11,6 +11,7 @@ public class Product {
     private long orguIdOwning;
     private String prodName;
     private String prodDesc;
+    private String reference;
     private boolean prodOwnBrand;
     private String prodUrl;
     private Timestamp prodCreated;
@@ -22,6 +23,8 @@ public class Product {
     private String prodUrlThumb;
     private String prodClass;
     private String prodWarrantyText;
+    private ConfigCategory prodType;
+    private ProdOrguLink prodOrguLink;
 
     public long getId() {
         return id;
@@ -149,5 +152,29 @@ public class Product {
 
     public void setProdWarrantyText(String prodWarrantyText) {
         this.prodWarrantyText = prodWarrantyText;
+    }
+
+    public ConfigCategory getProdType() {
+        return prodType;
+    }
+
+    public void setProdType(ConfigCategory prodType) {
+        this.prodType = prodType;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
+
+    public ProdOrguLink getProdOrguLink() {
+        return prodOrguLink;
+    }
+
+    public void setProdOrguLink(ProdOrguLink prodOrguLink) {
+        this.prodOrguLink = prodOrguLink;
     }
 }

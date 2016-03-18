@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.PriceDao">
+    <!-- result maps -->
+    <resultMap id="priceMap" type="Price" >
+        <id column="PRCE_ID" property="id" />
+        <result column="PROD_ID" property="prodId" />
+        <result column="MARGIN" property="margin" />
+        <result column="PRCE_PRICE" property="prcePrice" />
+        <result column="PRCE_CREATED" property="prceCreated" />
+        <result column="PRCE_MODIFIED" property="prceModified" />
+        <result column="PRCE_TAX_INCLUDED" property="prceTaxIncluded" />
+        <result column="UNOM_QTY" property="unomQty" />
+        <result column="PRCE_REDUCED" property="prceReduced" />
+        <association property="priceBand" column="PRIB_ID" select="au.com.biztune.retail.dao.PriceBandDao.getPriceBandPerId" />
+        <association resultMap="priceCodeMap" property="priceCode" />
+    </resultMap>
+
+
+
+    <resultMap id="priceCodeMap" type="PriceCode" >
+        <id column="PRCC_ID" property="id" />
+        <result column="PRCC_NAME" property="prccName" />
+        <result column="PRCC_CODE" property="prccCode" />
+        <result column="PRCC_CREATED" property="prccCreated" />
+    </resultMap>
+
+    <sql id="priceColumns">
+        ${alias}.PRCE_ID,
+        ${alias}.PROD_ID,
+        ${alias}.MARGIN,
+        ${alias}.PRCE_PRICE,
+        ${alias}.PRCE_CREATED,
+        ${alias}.PRCE_MODIFIED,
+        ${alias}.PRCE_TAX_INCLUDED,
+        ${alias}.PRCE_REDUCED,
+        ${alias}.UNOM_QTY,
+        ${alias}.PRIB_ID,
+        ${alias}.PRCC_ID,
+        ${alias}.UNOM_ID
+</sql>
+
+    <sql id="priceCodeColumns">
+        ${alias}.PRCC_ID,
+        ${alias}.PRCC_NAME,
+        ${alias}.PRCC_CODE,
+        ${alias}.PRCC_CREATED
+    </sql>
+
+    <select id="getAllProductPrice" resultMap="priceMap" >
+        SELECT
+        <include refid="priceColumns"><property name="alias" value="prce"/></include>,
+        <include refid="priceCodeColumns"><property name="alias" value="prcc"/></include>
+        FROM
+          PRICE prce
+        INNER JOIN
+          PRICE_CODE prcc on (prce.PRCC_ID = prcc.PRCC_ID)
+        WHERE
+          prce.PROD_ID = #{value}
+    </select>
+
+    <select id="getProductPricePerCode" resultMap="priceMap" >
+        SELECT
+        <include refid="priceColumns"><property name="alias" value="prce"/></include>,
+        <include refid="priceCodeColumns"><property name="alias" value="prcc"/></include>
+        FROM
+        PRICE prce
+        INNER JOIN
+        PRICE_CODE prcc on (prce.PRCC_ID = prcc.PRCC_ID)
+        WHERE
+        prce.PROD_ID = #{value1}
+        AND prcc.prcc_code = #{value2}
+    </select>
+
+    <select id="getProductPricePerPriceId" resultMap="priceMap" >
+        SELECT
+        <include refid="priceColumns"><property name="alias" value="prce"/></include>,
+        <include refid="priceCodeColumns"><property name="alias" value="prcc"/></include>
+        FROM
+        PRICE prce
+        INNER JOIN
+        PRICE_CODE prcc on (prce.PRCC_ID = prcc.PRCC_ID)
+        WHERE
+        prce.PRCE_ID = #{value}
+    </select>
+
+    <insert id="insert" parameterType="Price" useGeneratedKeys="true" keyProperty="id" keyColumn="PRCE_ID">
+        INSERT INTO PRICE(
+            PROD_ID,
+            MARGIN,
+            PRCE_PRICE,
+            PRCE_CREATED,
+            PRCE_MODIFIED,
+            PRCE_TAX_INCLUDED,
+            PRCE_REDUCED,
+            UNOM_QTY,
+            PRIB_ID,
+            PRCC_ID,
+            UNOM_ID
+        ) VALUES (
+        #{prodId}
+        <if test="margin != null">
+            ,#{margin}
+        </if>
+        <if test="margin == null">
+            ,null
+        </if>
+        <if test="prcePrice != null">
+            ,#{prcePrice}
+        </if>
+        <if test="prcePrice == null">
+            ,null
+        </if>
+
+        <if test="prceCreated != null">
+            ,#{prceCreated}
+        </if>
+        <if test="prceCreated == null">
+            ,null
+        </if>
+
+        <if test="prceModified != null">
+            ,#{prceModified}
+        </if>
+        <if test="prceModified == null">
+            ,null
+        </if>
+
+
+        <if test="prceTaxIncluded != null">
+            ,#{prceTaxIncluded}
+        </if>
+        <if test="prceTaxIncluded == null">
+            ,null
+        </if>
+
+        <if test="prceReduced != null">
+            ,#{prceReduced}
+        </if>
+        <if test="prceReduced == null">
+            ,null
+        </if>
+
+        <if test="unomQty != null">
+            ,#{unomQty}
+        </if>
+        <if test="unomQty == null">
+            ,null
+        </if>
+        ,#{pribId}
+        ,#{prccId}
+        ,#{unomId}
+        )
+    </insert>
+
+</mapper>

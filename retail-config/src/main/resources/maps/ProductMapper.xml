@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.ProductDao">
+    <!-- result maps -->
+    <resultMap id="productDetailMap" type="Product" >
+        <id column="PROD_ID" property="id" />
+        <result column="PROD_SKU" property="prodSku" />
+        <result column="REFERENCE" property="reference" />
+        <result column="ORGU_ID_OWNING" property="orguIdOwning" />
+        <result column="PROD_NAME" property="prodName" />
+        <result column="PROD_DESC" property="prodDesc" />
+        <result column="PROD_OWN_BRAND" property="prodOwnBrand" />
+        <result column="PROD_URL" property="prodUrl" />
+        <result column="PROD_CREATED" property="prodCreated" />
+        <result column="PROD_MODIFIED" property="prodModified" />
+        <result column="PROD_RECEIPT_DESC" property="prodReceiptDesc" />
+        <result column="PROD_WARRANTY_TERM" property="prodWarrantyTerm" />
+        <result column="PROD_BRAND" property="prodBrand" />
+        <result column="PROD_IMAGE_DESC" property="prodImageDesc" />
+        <result column="PROD_URL_THUMB" property="prodUrlThumb" />
+        <result column="PROD_CLASS" property="prodClass" />
+        <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
+        <association property="prodType" column="CAT_ID_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association resultMap="prodOrguLinkDetailMap" property="prodOrguLink" />
+    </resultMap>
+
+    <resultMap id="prodOrguLinkDetailMap" type="ProdOrguLink" >
+        <id column="PROU_ID" property="id" />
+        <result column="PROD_ID" property="prodId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="PROU_REFUNDABLE" property="prouRefundable" />
+        <result column="PROU_DISCOUNTABLE" property="prouDiscountable" />
+        <result column="PROU_CAN_QTY_SALE" property="canQtySale" />
+        <result column="PROU_FORCE_QTY" property="prouForceQty" />
+        <result column="PROU_REFUND_DAYS" property="prouRefundDays" />
+        <!--association property="status" column="CAT_ID_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" /-->
+        <association resultMap="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryMap" property="status" />
+        <collection property="taxRules" javaType="ArrayList" column="PROU_ID" ofType="TaxRule" select="au.com.biztune.retail.dao.TaxRuleDao.getTaxRulesOfProduct"/>
+    </resultMap>
+
+
+    <resultMap id="productListMap" type="Product" >
+        <id column="PROD_ID" property="id" />
+        <result column="PROD_SKU" property="prodSku" />
+        <result column="REFERENCE" property="reference" />
+        <result column="ORGU_ID_OWNING" property="orguIdOwning" />
+        <result column="PROD_NAME" property="prodName" />
+        <result column="PROD_DESC" property="prodDesc" />
+        <result column="PROD_OWN_BRAND" property="prodOwnBrand" />
+        <result column="PROD_URL" property="prodUrl" />
+        <result column="PROD_CREATED" property="prodCreated" />
+        <result column="PROD_MODIFIED" property="prodModified" />
+        <result column="PROD_RECEIPT_DESC" property="prodReceiptDesc" />
+        <result column="PROD_WARRANTY_TERM" property="prodWarrantyTerm" />
+        <result column="PROD_BRAND" property="prodBrand" />
+        <result column="PROD_IMAGE_DESC" property="prodImageDesc" />
+        <result column="PROD_URL_THUMB" property="prodUrlThumb" />
+        <result column="PROD_CLASS" property="prodClass" />
+        <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
+        <association resultMap="prodOrguLinkListMap" property="prodOrguLink" />
+    </resultMap>
+
+    <resultMap id="prodOrguLinkListMap" type="ProdOrguLink" >
+        <id column="PROU_ID" property="id" />
+        <result column="PROD_ID" property="prodId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="PROU_REFUNDABLE" property="prouRefundable" />
+        <result column="PROU_DISCOUNTABLE" property="prouDiscountable" />
+        <result column="PROU_CAN_QTY_SALE" property="canQtySale" />
+        <result column="PROU_FORCE_QTY" property="prouForceQty" />
+        <result column="PROU_REFUND_DAYS" property="prouRefundDays" />
+        <!--association property="status" column="CAT_ID_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" /-->
+        <association resultMap="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryMap" property="status" />
+    </resultMap>
+    <sql id="productColumns">
+        ${alias}.PROD_ID,
+        ${alias}.PROD_SKU,
+        ${alias}.REFERENCE,
+        ${alias}.ORGU_ID_OWNING,
+        ${alias}.PROD_NAME,
+        ${alias}.PROD_DESC,
+        ${alias}.PROD_OWN_BRAND,
+        ${alias}.PROD_URL,
+        ${alias}.PROD_CREATED,
+        ${alias}.PROD_MODIFIED,
+        ${alias}.PROD_RECEIPT_DESC,
+        ${alias}.PROD_WARRANTY_TERM,
+        ${alias}.PROD_BRAND,
+        ${alias}.PROD_IMAGE_DESC,
+        ${alias}.PROD_URL_THUMB,
+        ${alias}.PROD_CLASS,
+        ${alias}.PROD_WARRANTY_TEXT
+    </sql>
+
+
+    <sql id="prodOrguLinkColumns">
+        ${alias}.PROU_ID,
+        ${alias}.PROD_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.PROU_REFUNDABLE,
+        ${alias}.PROU_DISCOUNTABLE,
+        ${alias}.PROU_CAN_QTY_SALE,
+        ${alias}.PROU_FORCE_QTY,
+        ${alias}.PROU_REFUND_DAYS
+    </sql>
+
+
+    <select id="getAllProductsPerOrgUnitId" resultMap="productListMap" >
+        SELECT
+            <include refid="productColumns"><property name="alias" value="prod"/></include>,
+            <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>,
+            <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="prodStatus"/></include>
+        FROM
+          PRODUCT prod
+        INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
+        LEFT OUTER JOIN
+          CONFIG_CATEGORY prodStatus on (prou.CAT_ID_STATUS = prodStatus.CATEGORY_ID)
+        WHERE prou.orgu_id = #{value}
+    </select>
+
+    <select id="getProductPerOrgUnitIdAndProdId" resultMap="productDetailMap" >
+        SELECT
+        <include refid="productColumns"><property name="alias" value="prod"/></include>,
+        <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>,
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="prodStatus"/></include>
+        FROM
+        PRODUCT prod
+        INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
+        LEFT OUTER JOIN
+        CONFIG_CATEGORY prodStatus on (prou.CAT_ID_STATUS = prodStatus.CATEGORY_ID)
+        WHERE prou.orgu_id = #{param1} and prou.PROD_ID = #{param2}
+    </select>
+
+
+    <insert id="insertProduct" parameterType="Product" useGeneratedKeys="true" keyProperty="id" keyColumn="PROD_ID">
+        INSERT INTO PRODUCT(
+            ORGU_ID_OWNING,
+            PROD_SKU,
+            REFERENCE,
+            PROD_NAME,
+            PROD_DESC,
+            PROD_OWN_BRAND,
+            PROD_CREATED,
+            PROD_MODIFIED,
+            PROD_BRAND
+        ) VALUES (
+            #{orguIdOwning}
+            <if test="prodSku != null">
+                ,#{prodSku}
+            </if>
+            <if test="prodSku == null">
+                ,null
+            </if>
+            <if test="reference != null">
+                ,#{reference}
+            </if>
+            <if test="reference == null">
+                ,null
+            </if>
+            <if test="prodName != null">
+                ,#{prodName}
+            </if>
+            <if test="prodName == null">
+                ,null
+            </if>
+            <if test="prodDesc != null">
+                ,#{prodDesc}
+            </if>
+            <if test="prodDesc == null">
+                ,null
+            </if>
+            <if test="prodOwnBrand != null">
+                ,#{prodOwnBrand}
+            </if>
+            <if test="prodOwnBrand == null">
+                ,null
+            </if>
+            <if test="prodCreated != null">
+                ,#{prodCreated}
+            </if>
+            <if test="prodCreated == null">
+                ,null
+            </if>
+            <if test="prodModified != null">
+                ,#{prodModified}
+            </if>
+            <if test="prodModified == null">
+                ,null
+            </if>
+            <if test="prodBrand != null">
+                ,#{prodBrand}
+            </if>
+            <if test="prodBrand == null">
+                ,null
+            </if>
+        )
+    </insert>
+
+
+    <insert id="insertProdOrguLink" parameterType="ProdOrguLink" useGeneratedKeys="true" keyProperty="id" keyColumn="PROU_ID">
+        INSERT INTO PROD_ORGU_LINK(
+            PROD_ID,
+            ORGU_ID,
+            PROU_REFUNDABLE,
+            PROU_DISCOUNTABLE,
+            PROU_CAN_QTY_SALE,
+            PROU_FORCE_QTY,
+            PROU_REFUND_DAYS
+        ) VALUES (
+            #{prodId},
+            #{orguId},
+            #{prouRefundable},
+            #{prouDiscountable},
+            #{prouCanQtySale},
+            #{prouForceQty}
+            <if test="prouRefundDays != null">
+                ,#{prouRefundDays}
+            </if>
+            <if test="prouRefundDays == null">
+                ,null
+            </if>
+        )
+    </insert>
+
+    <insert id="insertProdTaxLink" parameterType="ProuTxrlLink">
+        INSERT INTO PROU_TXRL_LINK(
+          PROU_ID,
+          TXRL_ID
+        ) VALUES (
+            #{prouId},
+            #{txrlId}
+        )
+    </insert>
+
+</mapper>

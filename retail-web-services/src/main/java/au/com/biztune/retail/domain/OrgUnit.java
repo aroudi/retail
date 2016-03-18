@@ -8,7 +8,7 @@ public class OrgUnit {
     private String orguName;
     private String orguDesc;
     private String orguCode;
-    private long pribId;
+    private PriceBand priceBand;
 
     public long getId() {
         return id;
@@ -42,11 +42,11 @@ public class OrgUnit {
         this.orguCode = orguCode;
     }
 
-    public long getPribId() {
-        return pribId;
+    public PriceBand getPriceBand() {
+        return priceBand;
     }
 
-    public void setPribId(long pribId) {
-        this.pribId = pribId;
+    public void setPriceBand(PriceBand priceBand) {
+        this.priceBand = priceBand;
     }
 }

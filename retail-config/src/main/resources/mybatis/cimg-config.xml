@@ -11,6 +11,15 @@
         <typeAlias type="au.com.biztune.retail.domain.Supplier" alias="Supplier" />
         <typeAlias type="au.com.biztune.retail.domain.OrgUnit" alias="OrgUnit" />
         <typeAlias type="au.com.biztune.retail.domain.UnitOfMeasure" alias="UnitOfMeasure" />
+        <typeAlias type="au.com.biztune.retail.domain.TaxRule" alias="TaxRule" />
+        <typeAlias type="au.com.biztune.retail.domain.TaxRuleName" alias="TaxRuleName" />
+        <typeAlias type="au.com.biztune.retail.domain.TaxLegVariance" alias="TaxLegVariance" />
+        <typeAlias type="au.com.biztune.retail.domain.ProuTxrlLink" alias="ProuTxrlLink" />
+        <typeAlias type="au.com.biztune.retail.domain.PriceBand" alias="PriceBand" />
+        <typeAlias type="au.com.biztune.retail.domain.Price" alias="Price" />
+        <typeAlias type="au.com.biztune.retail.domain.PriceCode" alias="PriceCode" />
+        <typeAlias type="au.com.biztune.retail.domain.LegalTender" alias="LegalTender" />
+        <typeAlias type="au.com.biztune.retail.domain.Product" alias="Product" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/CustomerMapper.xml" />
@@ -20,5 +29,10 @@
         <mapper resource="maps/SupplierMapper.xml" />
         <mapper resource="maps/OrgUnitMapper.xml" />
         <mapper resource="maps/UnitOfMeasureMapper.xml" />
+        <mapper resource="maps/TaxRuleMapper.xml" />
+        <mapper resource="maps/PriceBandMapper.xml" />
+        <mapper resource="maps/PriceMapper.xml" />
+        <mapper resource="maps/ProductMapper.xml" />
+        <mapper resource="maps/TaxRuleMapper.xml" />
     </mappers>
 </configuration>

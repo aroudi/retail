@@ -9,7 +9,7 @@
         <result column="ORGU_CODE" property="orguCode" />
         <result column="ORGU_NAME" property="orguName" />
         <result column="ORGU_DESC" property="orguDesc" />
-        <result column="PRIB_ID" property="pribId" />
+        <association property="priceBand" column="ORGU_ID" select="au.com.biztune.retail.dao.PriceBandDao.getActivePriceBandPerOrgUnitId" />
     </resultMap>
 
     <sql id="orguColumns">
@@ -18,17 +18,12 @@
         ${alias}.ORGU_NAME,
         ${alias}.ORGU_DESC
     </sql>
-    <sql id="pribColumns">
-        ${alias}.PRIB_ID
-    </sql>
 
     <select id="getOrgUnitByTypeAndCode" resultMap="orgUnitMap" >
         SELECT
-          <include refid="orguColumns"><property name="alias" value="orgu"/></include>,
-          <include refid="pribColumns"><property name="alias" value="prib"/></include>
+          <include refid="orguColumns"><property name="alias" value="orgu"/></include>
         FROM org_unit orgu
         INNER JOIN org_type orgt on (orgt.orgt_type_id = orgu.orgt_type_id)
-        INNER JOIN price_band prib on (orgu.orgu_id = prib.orgu_id)
         WHERE orgt.orgt_type_type = #{param1} and orgu.orgu_code = #{param2}
     </select>
 </mapper>

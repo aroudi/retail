@@ -18,6 +18,12 @@
         <property name="configLocation" value="classpath:mybatis/cimg-config.xml" />
     </bean>
 
+
+    <bean id="configCategoryDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.ConfigCategoryDao" />
+    </bean>
+
     <bean id="customerDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
         <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
         <property name="mapperInterface" value="au.com.biztune.retail.dao.CustomerDao" />
@@ -36,9 +42,32 @@
         <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
         <property name="mapperInterface" value="au.com.biztune.retail.dao.SupplierDao" />
     </bean>
-    <bean id="configCategoryDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+    <bean id="orgUnitDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
         <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
-        <property name="mapperInterface" value="au.com.biztune.retail.dao.ConfigCategoryDao" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.OrgUnitDao" />
+    </bean>
+    <bean id="unitOfMeasureDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.UnitOfMeasureDao" />
+    </bean>
+    <bean id="taxRuleDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.TaxRuleDao" />
+    </bean>
+
+    <bean id="productDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.ProductDao" />
+    </bean>
+
+    <bean id="priceBandDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.PriceBandDao" />
+    </bean>
+
+    <bean id="priceDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.PriceDao" />
     </bean>
 
 </beans>

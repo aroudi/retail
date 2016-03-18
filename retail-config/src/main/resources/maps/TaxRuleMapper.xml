@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.TaxRuleDao">
+    <!-- result maps -->
+    <resultMap id="taxRuleMap" type="TaxRule" >
+        <id column="TXRL_ID" property="id" />
+        <result column="TXRL_DATE_FROM" property="txrlDateFrom" />
+        <result column="TXRL_DATE_TO" property="txrlDateTo" />
+        <result column="TXRL_APPLY_SEQ" property="txrlApplySeq" />
+        <result column="TXRL_CUM_TAX" property="txrlCumTax" />
+        <result column="TXRL_UPPER_VAL" property="txrlUpperVal" />
+        <result column="TXRL_CODE" property="txrlCode" />
+        <result column="TXRL_DESC" property="txrlDesc" />
+        <result column="TXRL_CALC_MTHD" property="txrlCalcMthd" />
+        <result column="TXRL_ROUNDING_MTHD" property="txrlRoundingMthd" />
+        <result column="TXRL_STEPPED" property="txrlStepped" />
+        <result column="TXRL_ACC_CODE" property="txrlAccCode" />
+        <association resultMap="taxRuleNameMap" property="taxRuleName" />
+        <association resultMap="taxLegVarianceMap" property="taxLegVariance" />
+    </resultMap>
+
+
+    <resultMap id="taxRuleNameMap" type="TaxRuleName" >
+        <id column="TXRN_ID" property="id" />
+        <result column="TXRN_NAME" property="txrnName" />
+        <result column="TXRN_CODE" property="txrnCode" />
+    </resultMap>
+
+    <resultMap id="taxLegVarianceMap" type="TaxLegVariance" >
+        <id column="TXLV_ID" property="id" />
+        <result column="TXLV_RATE" property="txlvRate" />
+        <result column="TXLV_DATETIME_FROM" property="txlvDatetimeFrom" />
+        <result column="TXLV_DATETIME_TO" property="txlvDatetimeTo" />
+        <result column="TXLV_CODE" property="txlvCode" />
+        <result column="TXLV_DESC" property="txlvDesc" />
+        <result column="TXLV_AMOUNT" property="txlvAmount" />
+        <result column="TXLV_IS_ACTIVE" property="txlvIsActive" />
+    </resultMap>
+
+    <sql id="taxRuleColumns">
+        ${alias}.TXRL_ID,
+        ${alias}.TXRL_DATE_FROM,
+        ${alias}.TXRL_DATE_TO,
+        ${alias}.TXRL_APPLY_SEQ,
+        ${alias}.TXRL_CUM_TAX,
+        ${alias}.TXRL_UPPER_VAL,
+        ${alias}.TXRL_CODE,
+        ${alias}.TXRL_DESC,
+        ${alias}.TXRL_CALC_MTHD,
+        ${alias}.TXRL_ROUNDING_MTHD,
+        ${alias}.TXRL_STEPPED,
+        ${alias}.TXRL_ACC_CODE
+    </sql>
+
+    <sql id="taxRuleNameColumns">
+        ${alias}.TXRN_ID,
+        ${alias}.TXRN_NAME,
+        ${alias}.TXRN_CODE
+    </sql>
+
+    <sql id="taxLegVarianceColumns">
+        ${alias}.TXLV_ID,
+        ${alias}.TXLV_RATE,
+        ${alias}.TXLV_DATETIME_FROM,
+        ${alias}.TXLV_DATETIME_TO,
+        ${alias}.TXLV_CODE,
+        ${alias}.TXLV_DESC,
+        ${alias}.TXLV_AMOUNT,
+        ${alias}.TXLV_IS_ACTIVE
+    </sql>
+
+    <select id="getAllTaxRules" resultMap="taxRuleMap" >
+        SELECT
+        <include refid="taxRuleColumns"><property name="alias" value="txrl"/></include>,
+        <include refid="taxRuleNameColumns"><property name="alias" value="txrn"/></include>,
+        <include refid="taxLegVarianceColumns"><property name="alias" value="txlv"/></include>
+        FROM
+          TAX_RULE txrl
+        INNER JOIN
+          TAX_RULE_NAME txrn on (txrl.TXRN_ID = txrn.TXRN_ID)
+        INNER JOIN
+          TAX_LEG_VARIANCE txlv on (txrl.TXRL_ID = txlv.TXRL_ID)
+        WHERE
+          txlv.TXLV_IS_ACTIVE = 1
+    </select>
+
+    <select id="getTaxRuleByCode" resultMap="taxRuleMap" >
+        SELECT
+        <include refid="taxRuleColumns"><property name="alias" value="txrl"/></include>,
+        <include refid="taxRuleNameColumns"><property name="alias" value="txrn"/></include>,
+        <include refid="taxLegVarianceColumns"><property name="alias" value="txlv"/></include>
+        FROM
+        TAX_RULE txrl
+        INNER JOIN
+        TAX_RULE_NAME txrn on (txrl.TXRN_ID = txrn.TXRN_ID)
+        INNER JOIN
+        TAX_LEG_VARIANCE txlv on (txrl.TXRL_ID = txlv.TXRL_ID)
+        WHERE
+        txlv.TXLV_IS_ACTIVE = 1
+        AND txrn.TXRN_CODE = #{value}
+    </select>
+
+    <select id="getTaxRulesOfProduct" resultMap="taxRuleMap" >
+        SELECT
+        <include refid="taxRuleColumns"><property name="alias" value="txrl"/></include>,
+        <include refid="taxRuleNameColumns"><property name="alias" value="txrn"/></include>,
+        <include refid="taxLegVarianceColumns"><property name="alias" value="txlv"/></include>
+        FROM
+        TAX_RULE txrl
+        INNER JOIN PROU_TXRL_LINK ptl ON (txrl.txrl_id = ptl.txrl_id)
+        INNER JOIN
+        TAX_RULE_NAME txrn on (txrl.TXRN_ID = txrn.TXRN_ID)
+        INNER JOIN
+        TAX_LEG_VARIANCE txlv on (txrl.TXRL_ID = txlv.TXRL_ID)
+        WHERE
+        ptl.prou_id = #{value}
+        AND txlv.TXLV_IS_ACTIVE = 1
+    </select>
+
+
+</mapper>
