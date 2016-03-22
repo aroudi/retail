@@ -24,6 +24,7 @@ public class Supplier {
     private String contactSurName;
     private String contactTitle;
     private String contactKnownAs;
+    private SuppOrguLink suppOrguLink;
 
     public long getId() {
         return id;
@@ -167,5 +168,13 @@ public class Supplier {
 
     public void setContactKnownAs(String contactKnownAs) {
         this.contactKnownAs = contactKnownAs;
+    }
+
+    public SuppOrguLink getSuppOrguLink() {
+        return suppOrguLink;
+    }
+
+    public void setSuppOrguLink(SuppOrguLink suppOrguLink) {
+        this.suppOrguLink = suppOrguLink;
     }
 }

@@ -21,8 +21,23 @@
         <result column="CONTACT_TITLE" property="contactTitle" />
         <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
         <association property="supplierType" column="SUPPLIER_TYPE_ID" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
-        <association property="supplierStatus" column="SUPPLIER_STATUS_ID" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
+        <association resultMap="suppOrguLinkMap" property="SuppOrguLink" />
+    </resultMap>
+
+
+    <resultMap id="suppOrguLinkMap" type="SuppOrguLink" >
+        <id column="SOL_ID" property="id" />
+        <result column="SUPP_ID" property="suppId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="SOL_CRED_LIMIT" property="solCredLimit" />
+        <result column="SOL_MIN_ORD_VAL" property="solMinOrdVal" />
+        <result column="SOL_LEAD_TIME" property="solLeadTime" />
+        <result column="SOL_ORDERING_CODE" property="solOrderingCode" />
+        <result column="SOL_MIN_PO_QTY" property="solMinPoQty" />
+        <result column="SOL_PAYMENT_DAYS" property="solPaymentDays" />
+        <result column="SOL_ACC_CODE" property="solAccCode" />
+        <association resultMap="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryMap" property="status" />
     </resultMap>
 
     <sql id="supplierColumns">
@@ -45,32 +60,81 @@
         ${alias}.CONTACT_ID
     </sql>
 
-    <select id="getAllSuppliers" resultMap="supplierMap" >
+    <sql id="suppOrguLinkColumns">
+        ${alias}.SOL_ID,
+        ${alias}.SUPP_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.SOL_CRED_LIMIT,
+        ${alias}.SOL_MIN_ORD_VAL,
+        ${alias}.SOL_LEAD_TIME,
+        ${alias}.SOL_ORDERING_CODE,
+        ${alias}.SOL_MIN_PO_QTY,
+        ${alias}.SOL_PAYMENT_DAYS,
+        ${alias}.SOL_ACC_CODE,
+        ${alias}.CAT_ID_STATUS
+    </sql>
+
+    <select id="getAllSuppliersByOrgUnitId" resultMap="supplierMap" >
         SELECT
-            <include refid="supplierColumns"><property name="alias" value="supp"/></include>
+        <include refid="supplierColumns"><property name="alias" value="supp"/></include>,
+        <include refid="suppOrguLinkColumns"><property name="alias" value="suporgl"/></include>,
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="suppStatus"/></include>
+
         FROM
         SUPPLIER supp
+        INNER JOIN SUPP_ORGU_LINK suporgl ON (supp.supplier_id = suporgl.supp_id)
+        LEFT OUTER JOIN
+        CONFIG_CATEGORY suppStatus on (suporgl.CAT_ID_STATUS = suppStatus.CATEGORY_ID)
+        WHERE suporgl.orgu_id = #{value}
     </select>
 
-    <select id="getSupplierByCode" resultMap="supplierMap" >
+    <select id="getSupplierByOrgUnitIdAndSuppCode" resultMap="supplierMap" >
         SELECT
-          <include refid="supplierColumns"><property name="alias" value="supp"/></include>
+        <include refid="supplierColumns"><property name="alias" value="supp"/></include>,
+        <include refid="suppOrguLinkColumns"><property name="alias" value="suporgl"/></include>,
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="suppStatus"/></include>
+
         FROM
-          SUPPLIER supp
-        WHERE
-          supp.SUPPLIER_CODE = #{value}
+        SUPPLIER supp
+        INNER JOIN SUPP_ORGU_LINK suporgl ON (supp.supplier_id = suporgl.supp_id)
+        LEFT OUTER JOIN
+        CONFIG_CATEGORY suppStatus on (suporgl.CAT_ID_STATUS = suppStatus.CATEGORY_ID)
+        WHERE suporgl.orgu_id = #{param1}
+        AND supp.SUPPLIER_CODE = #{param2}
     </select>
 
-    <select id="getSupplierById" resultMap="supplierMap" >
+
+    <select id="getSupplierByOrgUnitIdAndSuppId" resultMap="supplierMap" >
         SELECT
-          <include refid="supplierColumns"><property name="alias" value="supp"/></include>
+        <include refid="supplierColumns"><property name="alias" value="supp"/></include>,
+        <include refid="suppOrguLinkColumns"><property name="alias" value="suporgl"/></include>,
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="suppStatus"/></include>
+
         FROM
-          SUPPLIER supp
-        WHERE
-        supp.SUPPLIER_ID = #{value}
+        SUPPLIER supp
+        INNER JOIN SUPP_ORGU_LINK suporgl ON (supp.supplier_id = suporgl.supp_id)
+        LEFT OUTER JOIN
+        CONFIG_CATEGORY suppStatus on (suporgl.CAT_ID_STATUS = suppStatus.CATEGORY_ID)
+        WHERE suporgl.orgu_id = #{param1}
+        AND supp.SUPPLIER_ID = #{param2}
     </select>
 
-    <insert id="insert" parameterType="Supplier" useGeneratedKeys="true" keyProperty="id" keyColumn="SUPPLIER_ID">
+    <select id="getSupplierBySolId" resultMap="supplierMap" >
+        SELECT
+        <include refid="supplierColumns"><property name="alias" value="supp"/></include>,
+        <include refid="suppOrguLinkColumns"><property name="alias" value="suporgl"/></include>,
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="suppStatus"/></include>
+
+        FROM
+        SUPPLIER supp
+        INNER JOIN SUPP_ORGU_LINK suporgl ON (supp.supplier_id = suporgl.supp_id)
+        LEFT OUTER JOIN
+        CONFIG_CATEGORY suppStatus on (suporgl.CAT_ID_STATUS = suppStatus.CATEGORY_ID)
+        WHERE suporgl.SOL_ID = #{value}
+    </select>
+
+
+    <insert id="insertSupplier" parameterType="Supplier" useGeneratedKeys="true" keyProperty="id" keyColumn="SUPPLIER_ID">
         INSERT INTO SUPPLIER(
         SUPPLIER_CODE,
         SUPPLIER_NAME,
@@ -190,7 +254,83 @@
         )
     </insert>
 
-    <update id="update" parameterType="Supplier" >
+
+    <insert id="insertSuppOrguLink" parameterType="SuppOrguLink" useGeneratedKeys="true" keyProperty="id" keyColumn="SOL_ID">
+        INSERT INTO SUPP_ORGU_LINK(
+            SUPP_ID,
+            ORGU_ID,
+            SOL_CRED_LIMIT,
+            SOL_MIN_ORD_VAL,
+            SOL_LEAD_TIME,
+            SOL_ORDERING_CODE,
+            SOL_MIN_PO_QTY,
+            SOL_PAYMENT_DAYS,
+            SOL_ACC_CODE,
+            CAT_ID_STATUS
+        ) VALUES (
+        #{suppId},
+        #{orguId}
+        <if test="solCredLimit != null">
+            ,#{solCredLimit}
+        </if>
+        <if test="solCredLimit == null">
+            ,null
+        </if>
+
+        <if test="solMinOrdVal != null">
+            ,#{solMinOrdVal}
+        </if>
+        <if test="solMinOrdVal == null">
+            ,null
+        </if>
+
+        <if test="solLeadTime != null">
+            ,#{solLeadTime}
+        </if>
+        <if test="solLeadTime == null">
+            ,null
+        </if>
+
+        <if test="solOrderingCode != null">
+            ,#{solOrderingCode}
+        </if>
+        <if test="solOrderingCode == null">
+            ,null
+        </if>
+
+        <if test="solMinPoQty != null">
+            ,#{solMinPoQty}
+        </if>
+        <if test="solMinPoQty == null">
+            ,null
+        </if>
+
+        <if test="solPaymentDays != null">
+            ,#{solPaymentDays}
+        </if>
+        <if test="solPaymentDays == null">
+            ,null
+        </if>
+
+
+        <if test="solAccCode != null">
+            ,#{solAccCode}
+        </if>
+        <if test="solAccCode == null">
+            ,null
+        </if>
+
+        <if test="status != null">
+            ,#{status.id}
+        </if>
+        <if test="status == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+
+    <update id="updateSupplier" parameterType="Supplier" >
         UPDATE Supplier SET
             SUPPLIER_CODE = #{supplierCode},
             SUPPLIER_NAME = #{supplierName}
@@ -240,5 +380,39 @@
             ,CONTACT_KNOWN_AS =#{contactKnownAs}
         </if>
           WHERE SUPPLIER_ID = #{id}
+    </update>
+
+    <update id="updateSuppOrguLink" parameterType="SuppOrguLink" >
+        UPDATE SUPP_ORGU_LINK SET
+        CAT_ID_STATUS = #{status.id}
+        <if test="solCredLimit != null">
+            ,SOL_CRED_LIMIT = #{solCredLimit}
+        </if>
+
+        <if test="solMinOrdVal != null">
+            ,SOL_MIN_ORD_VAL = #{solMinOrdVal}
+        </if>
+
+        <if test="solLeadTime != null">
+            ,SOL_LEAD_TIME = #{solLeadTime}
+        </if>
+
+        <if test="solOrderingCode != null">
+            ,SOL_ORDERING_CODE = #{solOrderingCode}
+        </if>
+
+        <if test="solMinPoQty != null">
+            ,SOL_MIN_PO_QTY = #{solMinPoQty}
+        </if>
+
+        <if test="solPaymentDays != null">
+            ,SOL_PAYMENT_DAYS = #{solPaymentDays}
+        </if>
+
+
+        <if test="solAccCode != null">
+            ,SOL_ACC_CODE = #{solAccCode}
+        </if>
+        WHERE SOL_ID = #{id}
     </update>
 </mapper>

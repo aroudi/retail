@@ -1,5 +1,6 @@
 package au.com.biztune.retail.dao;
 
+import au.com.biztune.retail.domain.SuppOrguLink;
 import au.com.biztune.retail.domain.Supplier;
 
 import java.util.List;
@@ -12,32 +13,56 @@ public interface SupplierDao {
      * Add new supplier.
      * @param supplier supplier
      */
-    void insert(Supplier supplier);
+    void insertSupplier(Supplier supplier);
+
+    /**
+     * Add new supplierOrguLink.
+     * @param suppOrguLink suppOrguLink
+     */
+    void insertSuppOrguLink(SuppOrguLink suppOrguLink);
 
     /**
      * update existing supplier per id.
      * @param supplier supplier
      */
-    void update(Supplier supplier);
+    void updateSupplier(Supplier supplier);
 
     /**
-     * get list of all suppliers.
-     * @return list of suppliers.
+     * update existing supplier ORGU LINK per id.
+     * @param suppOrguLink suppOrguLink
      */
-    List<Supplier> getAllSuppliers();
+    void updateSuppOrguLink(SuppOrguLink suppOrguLink);
+
 
     /**
-     * get the supplier by code.
-     * @param code code
-     * @return Supplier
+     * get list of all suppliers per orgunit id.
+     * @param orgUnitId orgUnitId
+     * @return Supplier.
      */
-    Supplier getSupplierByCode(String code);
+    List<Supplier> getAllSuppliersByOrgUnitId(long orgUnitId);
 
     /**
-     * get the supplier by id.
-     * @param id id
-     * @return Supplier
+     * get list of all suppliers per orgunit id and code.
+     * @param orgUnitId orgUnitId
+     * @param suppCode suppCode
+     * @return Supplier.
      */
-    Supplier getSupplierById(long id);
+    Supplier getSupplierByOrgUnitIdAndSuppCode(long orgUnitId, String suppCode);
+
+
+    /**
+     * get list of all suppliers per orgunit id and suppid.
+     * @param orgUnitId orgUnitId
+     * @param suppId suppId
+     * @return Supplier.
+     */
+    Supplier getSupplierByOrgUnitIdAndSuppId(long orgUnitId, long suppId);
+
+    /**
+     * get supplier by solId.
+     * @param solId solId
+     * @return Supplier.
+     */
+    Supplier getSupplierBySolId(long solId);
 
 }

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.SuppProdPriceDao">
+    <!-- result maps -->
+    <resultMap id="suppProdPriceeMap" type="SuppProdPrice" >
+        <id column="SPRC_ID" property="id" />
+        <result column="SOL_ID" property="solId" />
+        <result column="PROD_ID" property="prodId" />
+        <result column="CATALOGUE_NO" property="catalogueNo" />
+        <result column="PART_NO" property="partNo" />
+        <result column="UNOM_QTY" property="unomQty" />
+        <result column="PRICE" property="price" />
+        <result column="BULK_PRICE" property="bulkPrice" />
+        <result column="BULK_QTY" property="bulkQty" />
+        <result column="SPRC_MIN_ORD_QTY" property="sprcMinOrdQty" />
+        <result column="SPRC_LEAD_TIME" property="sprcLeadTime" />
+        <result column="SPRC_CREATED" property="sprcCreated" />
+        <result column="SPRC_MODIFIED" property="sprcModified" />
+        <result column="SPRC_PREFER_BUY" property="sprcPrefferBuy" />
+        <result column="SPRC_MIN_ORD_VAL" property="sprcMinOrdVal" />
+        <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+        <association property="legalTender" column="LEGT_ID" select="au.com.biztune.retail.dao.LegalTenderDao.getLegalTenderById" />
+        <association property="supplier" column="SOL_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySolId" />
+    </resultMap>
+
+
+    <sql id="suppProdPriceColumns">
+        ${alias}.SPRC_ID,
+        ${alias}.SOL_ID,
+        ${alias}.PROD_ID,
+        ${alias}.CATALOGUE_NO,
+        ${alias}.PART_NO,
+        ${alias}.UNOM_QTY,
+        ${alias}.PRICE,
+        ${alias}.BULK_PRICE,
+        ${alias}.BULK_QTY,
+        ${alias}.SPRC_MIN_ORD_QTY,
+        ${alias}.SPRC_LEAD_TIME,
+        ${alias}.SPRC_CREATED,
+        ${alias}.SPRC_MODIFIED,
+        ${alias}.SPRC_PREFER_BUY,
+        ${alias}.SPRC_MIN_ORD_VAL,
+        ${alias}.UNOM_ID,
+        ${alias}.LEGT_ID
+</sql>
+
+    <select id="getSuppProdPriceByOrguIdAndProdIdAndSuppId" resultMap="suppProdPriceeMap" >
+        SELECT
+        <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>
+        FROM
+          SUPP_ORGU_LINK sol
+        INNER JOIN
+          SUPP_PROD_PRICE spp on (sol.SOL_ID = spp.SOL_ID)
+        WHERE
+          sol.ORGU_ID = #{param1}
+          AND spp.PROD_ID= #{param2}
+          AND sol.SUPP_ID = #{param3}
+    </select>
+
+    <select id="getAllSuppProdPricesByOrguIdAndProdId" resultMap="suppProdPriceeMap" >
+        SELECT
+        <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>
+        FROM
+        SUPP_ORGU_LINK sol
+        INNER JOIN
+        SUPP_PROD_PRICE spp on (sol.SOL_ID = spp.SOL_ID)
+        WHERE
+        sol.ORGU_ID = #{param1}
+        AND spp.PROD_ID= #{param2}
+    </select>
+
+    <select id="getAllSuppProdPricesByProdId" resultMap="suppProdPriceeMap" >
+        SELECT
+        <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>
+        FROM
+        SUPP_PROD_PRICE spp
+        WHERE
+          spp.PROD_ID= #{value}
+    </select>
+
+    <insert id="insert" parameterType="SuppProdPrice" useGeneratedKeys="true" keyProperty="id" keyColumn="SPRC_ID">
+        INSERT INTO SUPP_PROD_PRICE(
+            SOL_ID,
+            PROD_ID,
+            CATALOGUE_NO,
+            PART_NO,
+            UNOM_QTY,
+            PRICE,
+            BULK_PRICE,
+            SPRC_MIN_ORD_QTY,
+            SPRC_LEAD_TIME,
+            SPRC_CREATED,
+            SPRC_MODIFIED,
+            SPRC_PREFER_BUY,
+            SPRC_MIN_ORD_VAL,
+            UNOM_ID,
+            LEGT_ID
+        ) VALUES (
+        #{solId},
+        #{prodId}
+        <if test="catalogueNo != null">
+            ,#{catalogueNo}
+        </if>
+        <if test="catalogueNo == null">
+            ,null
+        </if>
+        <if test="partNo != null">
+            ,#{partNo}
+        </if>
+        <if test="partNo == null">
+            ,null
+        </if>
+
+        <if test="unomQty != null">
+            ,#{unomQty}
+        </if>
+        <if test="unomQty == null">
+            ,null
+        </if>
+
+        <if test="price != null">
+            ,#{price}
+        </if>
+        <if test="price == null">
+            ,null
+        </if>
+        <if test="bulkPrice != null">
+            ,#{bulkPrice}
+        </if>
+        <if test="bulkPrice == null">
+            ,null
+        </if>
+        <if test="bulkQty != null">
+            ,#{bulkQty}
+        </if>
+        <if test="bulkQty == null">
+            ,null
+        </if>
+
+        <if test="sprcMinOrdQty != null">
+            ,#{sprcMinOrdQty}
+        </if>
+        <if test="sprcMinOrdQty == null">
+            ,null
+        </if>
+
+        <if test="sprcLeadTime != null">
+            ,#{sprcLeadTime}
+        </if>
+        <if test="sprcLeadTime == null">
+            ,null
+        </if>
+
+        <if test="sprcCreated != null">
+            ,#{sprcCreated}
+        </if>
+        <if test="sprcCreated == null">
+            ,null
+        </if>
+        <if test="sprcModified != null">
+            ,#{sprcModified}
+        </if>
+        <if test="sprcModified == null">
+            ,null
+        </if>
+        <if test="sprcPrefferBuy != null">
+            ,#{sprcPrefferBuy}
+        </if>
+        <if test="sprcPrefferBuy == null">
+            ,null
+        </if>
+        <if test="sprcMinOrdVal != null">
+            ,#{sprcMinOrdVal}
+        </if>
+        <if test="sprcMinOrdVal == null">
+            ,null
+        </if>
+        <if test="unitOfMeasure != null">
+            ,#{unitOfMeasure.id}
+        </if>
+        <if test="unitOfMeasure == null">
+            ,null
+        </if>
+        <if test="legalTender != null">
+            ,#{legalTender.id}
+        </if>
+        <if test="legalTender == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+</mapper>

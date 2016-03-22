@@ -9,6 +9,7 @@
         <typeAlias type="au.com.biztune.retail.domain.ConfigCategory" alias="ConfigCategory" />
         <typeAlias type="au.com.biztune.retail.domain.Contact" alias="Contact" />
         <typeAlias type="au.com.biztune.retail.domain.Supplier" alias="Supplier" />
+        <typeAlias type="au.com.biztune.retail.domain.SuppOrguLink" alias="SuppOrguLink" />
         <typeAlias type="au.com.biztune.retail.domain.OrgUnit" alias="OrgUnit" />
         <typeAlias type="au.com.biztune.retail.domain.UnitOfMeasure" alias="UnitOfMeasure" />
         <typeAlias type="au.com.biztune.retail.domain.TaxRule" alias="TaxRule" />

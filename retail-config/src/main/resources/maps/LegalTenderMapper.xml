@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.LegalTenderDao">
+    <!-- result maps -->
+    <resultMap id="legalTenderMap" type="LegalTender" >
+        <id column="LEGT_ID" property="id" />
+        <result column="LEGT_CODE" property="legtCode" />
+        <result column="LEGT_NAME" property="legtName" />
+        <result column="LEGT_SYMBOL" property="legtSymbol" />
+    </resultMap>
+
+    <sql id="legalTenderColumns">
+        ${alias}.LEGT_ID,
+        ${alias}.LEGT_CODE,
+        ${alias}.LEGT_NAME,
+        ${alias}.LEGT_SYMBOL
+    </sql>
+
+    <select id="getLegalTenderByCode" resultMap="legalTenderMap" >
+        SELECT
+          <include refid="legalTenderColumns"><property name="alias" value="lt"/></include>
+        FROM LEGAL_TENDER lt
+        WHERE LEGT_CODE = #{value}
+    </select>
+
+    <select id="getLegalTenderById" resultMap="legalTenderMap" >
+        SELECT
+        <include refid="legalTenderColumns"><property name="alias" value="lt"/></include>
+        FROM LEGAL_TENDER lt
+        WHERE LEGT_ID = #{value}
+    </select>
+
+    <select id="getAllLegalTenders" resultMap="legalTenderMap" >
+        SELECT
+        <include refid="legalTenderColumns"><property name="alias" value="lt"/></include>
+        FROM LEGAL_TENDER lt
+    </select>
+
+</mapper>

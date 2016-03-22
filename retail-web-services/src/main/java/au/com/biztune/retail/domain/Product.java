@@ -1,6 +1,7 @@
 package au.com.biztune.retail.domain;
 
 import java.security.Timestamp;
+import java.util.List;
 
 /**
  * Created by akhoshraft on 12/03/2016.
@@ -25,6 +26,8 @@ public class Product {
     private String prodWarrantyText;
     private ConfigCategory prodType;
     private ProdOrguLink prodOrguLink;
+    private List<Price> priceList;
+    private List<SuppProdPrice> suppProdPriceList;
 
     public long getId() {
         return id;
@@ -176,5 +179,21 @@ public class Product {
 
     public void setProdOrguLink(ProdOrguLink prodOrguLink) {
         this.prodOrguLink = prodOrguLink;
+    }
+
+    public List<Price> getPriceList() {
+        return priceList;
+    }
+
+    public void setPriceList(List<Price> priceList) {
+        this.priceList = priceList;
+    }
+
+    public List<SuppProdPrice> getSuppProdPriceList() {
+        return suppProdPriceList;
+    }
+
+    public void setSuppProdPriceList(List<SuppProdPrice> suppProdPriceList) {
+        this.suppProdPriceList = suppProdPriceList;
     }
 }

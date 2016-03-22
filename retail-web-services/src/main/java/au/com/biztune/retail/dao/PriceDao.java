@@ -9,10 +9,11 @@ import java.util.List;
  */
 public interface PriceDao {
     /**
-     * get All product prices.
+     * get All product prices for specific product.
+     * @param prodId prodId
      * @return List of Price
      */
-    List<Price> getAllProductPrice();
+    List<Price> getAllProductPrice(long prodId);
 
     /**
      * get Product Price per code.

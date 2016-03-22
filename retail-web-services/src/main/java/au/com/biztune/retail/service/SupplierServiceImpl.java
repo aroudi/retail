@@ -2,8 +2,10 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.ContactDao;
 import au.com.biztune.retail.dao.SupplierDao;
+import au.com.biztune.retail.domain.SuppOrguLink;
 import au.com.biztune.retail.domain.Supplier;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.IdBConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,9 @@ public class SupplierServiceImpl implements SupplierService {
     private final Logger logger = LoggerFactory.getLogger(SupplierServiceImpl.class);
 
     @Autowired
+    private SessionState sessionState;
+
+    @Autowired
     private SupplierDao supplierDao;
 
     @Autowired
@@ -35,7 +40,7 @@ public class SupplierServiceImpl implements SupplierService {
      */
     public List<Supplier> getAllSuppliers() {
         try {
-            return supplierDao.getAllSuppliers();
+            return supplierDao.getAllSuppliersByOrgUnitId(sessionState.getOrgUnit().getId());
         } catch (Exception e) {
             logger.error("Error in getting supplier list: ", e);
             return null;
@@ -62,7 +67,7 @@ public class SupplierServiceImpl implements SupplierService {
             supplier.setLastModifiedDate(timestamp);
             if (isNew) {
                 //check if customer code is already in there
-                final Supplier supplier1 = supplierDao.getSupplierByCode(supplier.getSupplierCode());
+                final Supplier supplier1 = supplierDao.getSupplierByOrgUnitIdAndSuppCode(sessionState.getOrgUnit().getId(), supplier.getSupplierCode());
                 if (supplier1 != null) {
                     response.setStatus(IdBConstant.RESULT_FAILURE);
                     response.setMessage("supplier with code " + supplier.getSupplierCode() + " already exists");
@@ -72,12 +77,29 @@ public class SupplierServiceImpl implements SupplierService {
                 if (supplier.getClass() != null) {
                     contactDao.insert(supplier.getContact());
                 }
-                supplierDao.insert(supplier);
+                supplierDao.insertSupplier(supplier);
+                //insert suppOrgUnit
+                SuppOrguLink suppOrguLink = supplier.getSuppOrguLink();
+                if (suppOrguLink == null) {
+                    suppOrguLink = new SuppOrguLink();
+                }
+                suppOrguLink.setOrguId(sessionState.getOrgUnit().getId());
+                suppOrguLink.setSuppId(supplier.getId());
+                suppOrguLink.setStatus(supplier.getSupplierStatus());
+                supplierDao.insertSuppOrguLink(suppOrguLink);
             } else {
                 if (supplier.getContact() != null) {
                     contactDao.update(supplier.getContact());
                 }
-                supplierDao.update(supplier);
+                supplierDao.updateSupplier(supplier);
+                SuppOrguLink suppOrguLink = supplier.getSuppOrguLink();
+                if (suppOrguLink == null) {
+                    suppOrguLink = new SuppOrguLink();
+                }
+                suppOrguLink.setOrguId(sessionState.getOrgUnit().getId());
+                suppOrguLink.setSuppId(supplier.getId());
+                suppOrguLink.setStatus(supplier.getSupplierStatus());
+                supplierDao.updateSuppOrguLink(suppOrguLink);
             }
             return response;
         } catch (Exception e) {
@@ -95,7 +117,8 @@ public class SupplierServiceImpl implements SupplierService {
      */
     public Supplier getSupplierById(long id) {
         try {
-            final Supplier supplier =  supplierDao.getSupplierById(id);
+            final Supplier supplier =  supplierDao.getSupplierByOrgUnitIdAndSuppId(sessionState.getOrgUnit().getId(), id);
+            supplier.setSupplierStatus(supplier.getSuppOrguLink().getStatus());
             return supplier;
         } catch (Exception e) {
             logger.error("Error in getting supplier with id: " + id, e);
@@ -110,7 +133,8 @@ public class SupplierServiceImpl implements SupplierService {
      */
     public Supplier getSupplierByCode(String code) {
         try {
-            final Supplier supplier = supplierDao.getSupplierByCode(code);
+            final Supplier supplier = supplierDao.getSupplierByOrgUnitIdAndSuppCode(sessionState.getOrgUnit().getId(), code);
+            supplier.setSupplierStatus(supplier.getSuppOrguLink().getStatus());
             return supplier;
         } catch (Exception e) {
             logger.error("Error in getting supplier with code: " + code, e);

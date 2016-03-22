@@ -26,6 +26,14 @@
         SELECT
           <include refid="unomColumns"><property name="alias" value="unom"/></include>
         FROM UNIT_OF_MEASURE unom
-        WHERE UNOM_CODE = #{val}
+        WHERE UNOM_CODE = #{value}
     </select>
+
+    <select id="getUnomById" resultMap="unomMap" >
+        SELECT
+        <include refid="unomColumns"><property name="alias" value="unom"/></include>
+        FROM UNIT_OF_MEASURE unom
+        WHERE UNOM_ID = #{value}
+    </select>
+
 </mapper>
