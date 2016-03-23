@@ -19,4 +19,12 @@ public interface PriceBandDao {
      * @return PriceBand
      */
     PriceBand getPriceBandPerId (long pribId);
+
+
+    /**
+     * get PriceBand per Code.
+     * @param code code
+     * @return PriceBand
+     */
+    PriceBand getPriceBandPerCode (String code);
 }

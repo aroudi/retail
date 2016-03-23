@@ -16,6 +16,14 @@ public class AppServiceContextListener implements ServletContextListener {
 
     private static final Logger log = LoggerFactory.getLogger(AppServiceContextListener.class);
 
+    /*
+    @Autowired
+    private SessionState sessionState;
+
+    @Autowired
+    private OrgUnitDao orgUnitDao;
+    */
+
     /**
      * {@inheritDoc}
      * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
@@ -32,6 +40,10 @@ public class AppServiceContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
         log.info("contextInitialized");
+        //TODO : READ ORGUNIT_TYPE AND CODE FROM CONFIG FILE
+        //final OrgUnit orgUnit = orgUnitDao.getOrgUnitByTypeAndCode("COMPANY", "JOMON");
+        //sessionState.setOrgUnit(orgUnit);
+
     }
 
 }

@@ -21,7 +21,7 @@ public interface ConfigCategoryDao {
      * @param categoryCode categoryCode
      * @return category
      */
-    ConfigCategory getCategoriesOfTypeAndCode(String typeConstant, String categoryCode);
+    ConfigCategory getCategoryOfTypeAndCode(String typeConstant, String categoryCode);
 
     /**
      * get specific category by id.

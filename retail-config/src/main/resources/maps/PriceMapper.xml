@@ -155,5 +155,13 @@
         ,#{unomId}
         )
     </insert>
+    <select id="getProductPriceCodePerCode" resultMap="priceCodeMap" >
+        SELECT
+        <include refid="priceCodeColumns"><property name="alias" value="prcc"/></include>
+        FROM
+        PRICE_CODE prcc
+        WHERE
+        prce.PRCE_CODE = #{value}
+    </select>
 
 </mapper>

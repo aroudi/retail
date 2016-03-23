@@ -21,19 +21,22 @@
         <typeAlias type="au.com.biztune.retail.domain.PriceCode" alias="PriceCode" />
         <typeAlias type="au.com.biztune.retail.domain.LegalTender" alias="LegalTender" />
         <typeAlias type="au.com.biztune.retail.domain.Product" alias="Product" />
+        <typeAlias type="au.com.biztune.retail.domain.SuppProdPrice" alias="SuppProdPrice" />
+        <typeAlias type="au.com.biztune.retail.domain.ProdOrguLink" alias="ProdOrguLink" />
     </typeAliases>
     <mappers>
+        <mapper resource="maps/UnitOfMeasureMapper.xml" />
         <mapper resource="maps/CustomerMapper.xml" />
         <mapper resource="maps/CustomerGradeMapper.xml" />
         <mapper resource="maps/ConfigCategoryMapper.xml" />
         <mapper resource="maps/ContactMapper.xml" />
         <mapper resource="maps/SupplierMapper.xml" />
         <mapper resource="maps/OrgUnitMapper.xml" />
-        <mapper resource="maps/UnitOfMeasureMapper.xml" />
         <mapper resource="maps/TaxRuleMapper.xml" />
         <mapper resource="maps/PriceBandMapper.xml" />
         <mapper resource="maps/PriceMapper.xml" />
         <mapper resource="maps/ProductMapper.xml" />
         <mapper resource="maps/TaxRuleMapper.xml" />
+        <mapper resource="maps/SuppProdPriceMapper.xml" />
     </mappers>
 </configuration>

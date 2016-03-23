@@ -22,7 +22,7 @@
         <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
         <association property="supplierType" column="SUPPLIER_TYPE_ID" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
-        <association resultMap="suppOrguLinkMap" property="SuppOrguLink" />
+        <association resultMap="suppOrguLinkMap" property="suppOrguLink" />
     </resultMap>
 
 

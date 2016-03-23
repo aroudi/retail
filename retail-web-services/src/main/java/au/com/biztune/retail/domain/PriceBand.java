@@ -67,4 +67,5 @@ public class PriceBand {
     public void setOrguId(long orguId) {
         this.orguId = orguId;
     }
+
 }

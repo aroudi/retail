@@ -9,7 +9,6 @@
         <result column="PRIB_ACTIVE" property="pribActive" />
         <result column="PRIB_CODE" property="pribCode" />
         <result column="PRIB_NAME" property="pribName" />
-        <result column="ORGU_ID" property="txrlCumTax" />
         <result column="PRIB_TAX_INCLUDED" property="pribTaxIncluded" />
         <association resultMap="legalTenderMap" property="legalTender" />
     </resultMap>
@@ -63,5 +62,16 @@
         prib.PRIB_ID = #{value}
     </select>
 
+    <select id="getPriceBandPerCode" resultMap="priceBandMap" >
+        SELECT
+        <include refid="priceBandColumns"><property name="alias" value="prib"/></include>,
+        <include refid="legalTenderColumns"><property name="alias" value="tender"/></include>
+        FROM
+        PRICE_BAND prib
+        INNER JOIN
+        LEGAL_TENDER tender on (prib.LEGT_ID = tender.LEGT_ID)
+        WHERE
+        prib.PRIB_CODE = #{value}
+    </select>
 
 </mapper>

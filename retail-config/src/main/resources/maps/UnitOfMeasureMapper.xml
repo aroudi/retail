@@ -12,7 +12,6 @@
         <result column="UNOM_CREATED" property="unomCreated" />
         <result column="UNOM_MODIFIED" property="unomModified" />
     </resultMap>
-
     <sql id="unomColumns">
         ${alias}.UNOM_ID,
         ${alias}.UNOM_CODE,
@@ -21,19 +20,16 @@
         ${alias}.UNOM_CREATED,
         ${alias}.UNOM_MODIFIED
     </sql>
-
     <select id="getUnomByCode" resultMap="unomMap" >
         SELECT
           <include refid="unomColumns"><property name="alias" value="unom"/></include>
         FROM UNIT_OF_MEASURE unom
         WHERE UNOM_CODE = #{value}
     </select>
-
     <select id="getUnomById" resultMap="unomMap" >
         SELECT
         <include refid="unomColumns"><property name="alias" value="unom"/></include>
         FROM UNIT_OF_MEASURE unom
         WHERE UNOM_ID = #{value}
     </select>
-
 </mapper>

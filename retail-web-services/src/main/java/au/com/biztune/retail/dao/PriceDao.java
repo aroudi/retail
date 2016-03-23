@@ -1,6 +1,7 @@
 package au.com.biztune.retail.dao;
 
 import au.com.biztune.retail.domain.Price;
+import au.com.biztune.retail.domain.PriceCode;
 
 import java.util.List;
 
@@ -35,4 +36,11 @@ public interface PriceDao {
      * @param price price
      */
     void insert (Price price);
+
+    /**
+     * get product price code per code.
+     * @param code code
+     * @return PriceCode
+     */
+    PriceCode getProductPriceCodePerCode(String code);
 }

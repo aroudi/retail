@@ -1,6 +1,6 @@
 package au.com.biztune.retail.domain;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 /**
  * Created by akhoshraft on 16/03/2016.
