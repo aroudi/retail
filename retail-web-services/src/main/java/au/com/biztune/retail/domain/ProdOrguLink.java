@@ -9,7 +9,7 @@ public class ProdOrguLink {
     private long orguId;
     private boolean prouRefundable;
     private boolean prouDiscountable;
-    private boolean canQtySale;
+    private boolean prouCanQtySale;
     private boolean prouForceQty;
     private ConfigCategory status;
     private int prouRefundDays;
@@ -54,12 +54,12 @@ public class ProdOrguLink {
         this.prouDiscountable = prouDiscountable;
     }
 
-    public boolean isCanQtySale() {
-        return canQtySale;
+    public boolean isProuCanQtySale() {
+        return prouCanQtySale;
     }
 
-    public void setCanQtySale(boolean canQtySale) {
-        this.canQtySale = canQtySale;
+    public void setProuCanQtySale(boolean prouCanQtySale) {
+        this.prouCanQtySale = prouCanQtySale;
     }
 
     public boolean isProuForceQty() {

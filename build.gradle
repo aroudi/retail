@@ -1,5 +1,5 @@
 // Maven Repo - Local File System
-project.ext["depsDir"] = 'file://V:/repository'
+project.ext["depsDir"] = 'file://D:/mavenrepo/repository'
 
 subprojects {
     apply plugin: 'checkstyle'
@@ -59,7 +59,7 @@ subprojects {
 
 
     repositories {
-        //mavenCentral()
+        mavenCentral()
         maven {
             // For now look in a fixed place Maven Repository - File Share
             url project["depsDir"]

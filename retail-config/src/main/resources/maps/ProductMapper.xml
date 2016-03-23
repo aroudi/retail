@@ -142,6 +142,7 @@
             PROD_SKU,
             REFERENCE,
             PROD_NAME,
+            CAT_ID_TYPE,
             PROD_DESC,
             PROD_OWN_BRAND,
             PROD_CREATED,
@@ -165,6 +166,12 @@
                 ,#{prodName}
             </if>
             <if test="prodName == null">
+                ,null
+            </if>
+            <if test="prodType != null">
+                ,#{prodType.id}
+            </if>
+            <if test="prodType == null">
                 ,null
             </if>
             <if test="prodDesc != null">
@@ -209,14 +216,17 @@
             PROU_DISCOUNTABLE,
             PROU_CAN_QTY_SALE,
             PROU_FORCE_QTY,
-            PROU_REFUND_DAYS
+            PROU_REFUND_DAYS,
+            CAT_ID_STATUS
         ) VALUES (
             #{prodId},
             #{orguId},
             #{prouRefundable},
             #{prouDiscountable},
             #{prouCanQtySale},
-            #{prouForceQty}
+            #{prouForceQty},
+            #{status.id}
+
             <if test="prouRefundDays != null">
                 ,#{prouRefundDays}
             </if>

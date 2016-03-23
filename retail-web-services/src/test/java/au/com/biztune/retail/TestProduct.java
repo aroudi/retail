@@ -74,7 +74,12 @@ public class TestProduct {
             //get product type
             ConfigCategory productType = configCategoryDao.getCategoryOfTypeAndCode("PRODUCT_TYPE", prodTypeCode);
             System.out.println("product type fetched");
+
+            OrgUnit orgUnit = orgUnitDao.getOrgUnitByTypeAndCode("COMPANY", "JOMON");
+            System.out.println("orgunit fetched");
+
             Product product = new Product();
+            product.setOrguIdOwning(orgUnit.getId());
             product.setProdSku(prodSku);
             product.setReference(reference);
             product.setProdName(prodName);
@@ -88,8 +93,6 @@ public class TestProduct {
             System.out.println("product inserted");
 
             //get orgunit from dao
-            OrgUnit orgUnit = orgUnitDao.getOrgUnitByTypeAndCode("COMPANY", "JOMON");
-            System.out.println("orgunit fetched");
             ProdOrguLink prodOrguLink = new ProdOrguLink();
             prodOrguLink.setId(product.getId());
             prodOrguLink.setOrguId(orgUnit.getId());
