@@ -108,6 +108,7 @@
         <if test="margin == null">
             ,null
         </if>
+
         <if test="prcePrice != null">
             ,#{prcePrice}
         </if>
@@ -150,9 +151,10 @@
         <if test="unomQty == null">
             ,null
         </if>
-        ,#{pribId}
-        ,#{prccId}
-        ,#{unomId}
+
+        ,#{priceBand.id}
+        ,#{priceCode.id}
+        ,#{unitOfMeasure.id}
         )
     </insert>
     <select id="getProductPriceCodePerCode" resultMap="priceCodeMap" >
@@ -161,7 +163,7 @@
         FROM
         PRICE_CODE prcc
         WHERE
-        prce.PRCE_CODE = #{value}
+        prcc.PRCC_CODE = #{value}
     </select>
 
 </mapper>

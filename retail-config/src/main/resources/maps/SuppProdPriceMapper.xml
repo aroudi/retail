@@ -89,6 +89,7 @@
             UNOM_QTY,
             PRICE,
             BULK_PRICE,
+            BULK_QTY,
             SPRC_MIN_ORD_QTY,
             SPRC_LEAD_TIME,
             SPRC_CREATED,
@@ -106,6 +107,7 @@
         <if test="catalogueNo == null">
             ,null
         </if>
+
         <if test="partNo != null">
             ,#{partNo}
         </if>
@@ -126,12 +128,14 @@
         <if test="price == null">
             ,null
         </if>
+
         <if test="bulkPrice != null">
             ,#{bulkPrice}
         </if>
         <if test="bulkPrice == null">
             ,null
         </if>
+
         <if test="bulkQty != null">
             ,#{bulkQty}
         </if>
@@ -159,30 +163,35 @@
         <if test="sprcCreated == null">
             ,null
         </if>
+
         <if test="sprcModified != null">
             ,#{sprcModified}
         </if>
         <if test="sprcModified == null">
             ,null
         </if>
+
         <if test="sprcPrefferBuy != null">
             ,#{sprcPrefferBuy}
         </if>
         <if test="sprcPrefferBuy == null">
             ,null
         </if>
+
         <if test="sprcMinOrdVal != null">
             ,#{sprcMinOrdVal}
         </if>
         <if test="sprcMinOrdVal == null">
             ,null
         </if>
+
         <if test="unitOfMeasure != null">
             ,#{unitOfMeasure.id}
         </if>
         <if test="unitOfMeasure == null">
             ,null
         </if>
+
         <if test="legalTender != null">
             ,#{legalTender.id}
         </if>

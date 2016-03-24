@@ -38,5 +38,6 @@
         <mapper resource="maps/ProductMapper.xml" />
         <mapper resource="maps/TaxRuleMapper.xml" />
         <mapper resource="maps/SuppProdPriceMapper.xml" />
+        <mapper resource="maps/LegalTenderMapper.xml" />
     </mappers>
 </configuration>

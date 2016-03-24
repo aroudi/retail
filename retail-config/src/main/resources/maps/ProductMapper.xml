@@ -210,29 +210,28 @@
 
     <insert id="insertProdOrguLink" parameterType="ProdOrguLink" useGeneratedKeys="true" keyProperty="id" keyColumn="PROU_ID">
         INSERT INTO PROD_ORGU_LINK(
-            PROD_ID,
-            ORGU_ID,
-            PROU_REFUNDABLE,
-            PROU_DISCOUNTABLE,
-            PROU_CAN_QTY_SALE,
-            PROU_FORCE_QTY,
-            PROU_REFUND_DAYS,
-            CAT_ID_STATUS
+        PROD_ID,
+        ORGU_ID,
+        PROU_REFUNDABLE,
+        PROU_DISCOUNTABLE,
+        PROU_CAN_QTY_SALE,
+        PROU_FORCE_QTY,
+        PROU_REFUND_DAYS,
+        CAT_ID_STATUS
         ) VALUES (
-            #{prodId},
-            #{orguId},
-            #{prouRefundable},
-            #{prouDiscountable},
-            #{prouCanQtySale},
-            #{prouForceQty},
-            #{status.id}
-
+        #{prodId},
+        #{orguId},
+        #{prouRefundable},
+        #{prouDiscountable},
+        #{prouCanQtySale},
+        #{prouForceQty}
             <if test="prouRefundDays != null">
                 ,#{prouRefundDays}
             </if>
             <if test="prouRefundDays == null">
                 ,null
             </if>
+        ,#{status.id}
         )
     </insert>
 

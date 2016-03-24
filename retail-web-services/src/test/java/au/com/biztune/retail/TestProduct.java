@@ -38,7 +38,8 @@ public class TestProduct {
         priceBandDao = context.getBean(PriceBandDao.class);
         priceDao = context.getBean(PriceDao.class);
 
-        insertProduct("sku001","refrence001","prodName-lock","Lock","prodDesc-Lock description",false,"JOMON-BRAND", "prodClass", "LIVE","GST", "supp01","CatalogueNo009","parNo001","each",1,"AUD",100.00, 10.00, 1000,"AU","SELL_PRICE",0.30,130.00,false,"each",1);
+        //insertProduct("sku001","refrence001","prodName-lock","Lock","prodDesc-Lock description",false,"JOMON-BRAND", "prodClass", "LIVE","GST", "supp01","CatalogueNo009","parNo001","each",1,"AUD",100.00, 10.00, 1000,"A","SELL_PRICE",0.30,130.00,false,"each",1);
+        fetchProductAndRelatedObjects();
 
     }
 
@@ -98,7 +99,10 @@ public class TestProduct {
             prodOrguLink.setOrguId(orgUnit.getId());
             //get product status
             ConfigCategory productStatus = configCategoryDao.getCategoryOfTypeAndCode("PRODUCT_STATUS", prodStatusCode);
+
+            System.out.println("prodStatus.id =" + productStatus.getId());
             prodOrguLink.setStatus(productStatus);
+            prodOrguLink.setProdId(product.getId());
             productDao.insertProdOrguLink(prodOrguLink);
             System.out.println("product orgulink inserted");
 
@@ -108,6 +112,7 @@ public class TestProduct {
             ProuTxrlLink prouTxrlLink = new ProuTxrlLink();
             prouTxrlLink.setProuId(prodOrguLink.getId());
             prouTxrlLink.setTxrlId(taxRule.getId());
+
             productDao.insertProdTaxLink(prouTxrlLink);
             System.out.println("tax rule link inserted");
 
@@ -132,12 +137,15 @@ public class TestProduct {
             suppProdPrice.setPrice(suppPrice);
             suppProdPrice.setBulkQty(suppBulkQty);
             suppProdPrice.setBulkPrice(suppBulkPrice);
+            suppProdPrice.setSprcCreated(new Timestamp(new Date().getTime()));
+            suppProdPrice.setSprcModified(new Timestamp(new Date().getTime()));
+            suppProdPrice.setProdId(product.getId());
             suppProdPriceDao.insert(suppProdPrice);
             System.out.println("supplier price inserted");
 
             //get price band
             PriceBand priceBand = priceBandDao.getPriceBandPerCode(pribCode);
-            System.out.println("price band feteched");
+            System.out.println("price band feteched id = " +priceBand.getId());
 
             //
             Price prodPrice = new Price();
@@ -158,6 +166,10 @@ public class TestProduct {
             price1.setProdId(product.getId());
             price1.setUnitOfMeasure(unitOfMeasure);
             price1.setPrceCreated(new Timestamp(new Date().getTime()));
+            price1.setPrceModified(new Timestamp(new Date().getTime()));
+            price1.setPrceFromDate(new Timestamp(new Date().getTime()));
+            price1.setPrceToDate(new Timestamp(new Date().getTime()));
+            price1.setPrceSetCentral(false);
             priceDao.insert(price1);
             System.out.println("price inserted");
 
@@ -165,6 +177,17 @@ public class TestProduct {
             e.printStackTrace();
         }
 
+    }
+    public static void fetchProductAndRelatedObjects(){
+        try{
+            //fetch
+            OrgUnit orgUnit = orgUnitDao.getOrgUnitByTypeAndCode("COMPANY", "JOMON");
+            productDao.getAllProductsPerOrgUnitId(orgUnit.getId());
+            //priceDao.getAllProductPrice()
+
+        } catch (Exception e) {
+            e.printStackTrace();
+    }
     }
 
 }

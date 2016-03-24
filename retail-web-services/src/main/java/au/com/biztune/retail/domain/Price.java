@@ -13,6 +13,9 @@ public class Price {
     private double margin;
     private double prcePrice;
     private Timestamp prceCreated;
+    private Timestamp prceFromDate;
+    private Timestamp prceToDate;
+    private boolean prceSetCentral;
     private Timestamp prceModified;
     private boolean prceTaxIncluded;
     private UnitOfMeasure unitOfMeasure;
@@ -113,5 +116,29 @@ public class Price {
 
     public void setPrceReduced(boolean prceReduced) {
         this.prceReduced = prceReduced;
+    }
+
+    public Timestamp getPrceFromDate() {
+        return prceFromDate;
+    }
+
+    public void setPrceFromDate(Timestamp prceFromDate) {
+        this.prceFromDate = prceFromDate;
+    }
+
+    public Timestamp getPrceToDate() {
+        return prceToDate;
+    }
+
+    public void setPrceToDate(Timestamp prceToDate) {
+        this.prceToDate = prceToDate;
+    }
+
+    public boolean isPrceSetCentral() {
+        return prceSetCentral;
+    }
+
+    public void setPrceSetCentral(boolean prceSetCentral) {
+        this.prceSetCentral = prceSetCentral;
     }
 }
