@@ -9,6 +9,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by arash on 23/03/2016.
@@ -182,8 +183,13 @@ public class TestProduct {
         try{
             //fetch
             OrgUnit orgUnit = orgUnitDao.getOrgUnitByTypeAndCode("COMPANY", "JOMON");
-            productDao.getAllProductsPerOrgUnitId(orgUnit.getId());
+            List<Product> products = productDao.getAllProductsPerOrgUnitId(orgUnit.getId());
+            System.out.println("Product : " + products.get(0).getProdName() + " orguId =" + products.get(0).getProdOrguLink().getOrguId());
+            Product product = productDao.getProductPerOrgUnitIdAndProdId(orgUnit.getId(), products.get(0).getId());
             //priceDao.getAllProductPrice()
+            System.out.println("taxrule: " + product.getProdOrguLink().getTaxRules().get(0).getTaxLegVariance().getTxlvCode());
+            System.out.println("price code: " + product.getPriceList().get(0).getPriceCode().getPrccCode());
+            System.out.println("supplier price : " + product.getSuppProdPriceList().get(0).getPartNo());
 
         } catch (Exception e) {
             e.printStackTrace();

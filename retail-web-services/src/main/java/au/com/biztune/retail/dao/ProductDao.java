@@ -42,5 +42,5 @@ public interface ProductDao {
      * @param prodId prodId
      * @return List of Product
      */
-    List<Product> getProductPerOrgUnitIdAndProdId(long orguId, long prodId);
+    Product getProductPerOrgUnitIdAndProdId(long orguId, long prodId);
 }

@@ -34,7 +34,7 @@
         <result column="ORGU_ID" property="orguId" />
         <result column="PROU_REFUNDABLE" property="prouRefundable" />
         <result column="PROU_DISCOUNTABLE" property="prouDiscountable" />
-        <result column="PROU_CAN_QTY_SALE" property="canQtySale" />
+        <result column="PROU_CAN_QTY_SALE" property="prouCanQtySale" />
         <result column="PROU_FORCE_QTY" property="prouForceQty" />
         <result column="PROU_REFUND_DAYS" property="prouRefundDays" />
         <!--association property="status" column="CAT_ID_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" /-->
@@ -70,7 +70,7 @@
         <result column="ORGU_ID" property="orguId" />
         <result column="PROU_REFUNDABLE" property="prouRefundable" />
         <result column="PROU_DISCOUNTABLE" property="prouDiscountable" />
-        <result column="PROU_CAN_QTY_SALE" property="canQtySale" />
+        <result column="PROU_CAN_QTY_SALE" property="prouCanQtySale" />
         <result column="PROU_FORCE_QTY" property="prouForceQty" />
         <result column="PROU_REFUND_DAYS" property="prouRefundDays" />
         <!--association property="status" column="CAT_ID_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" /-->

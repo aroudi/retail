@@ -1,5 +1,7 @@
 package au.com.biztune.retail.domain;
 
+import java.util.List;
+
 /**
  * Created by akhoshraft on 12/03/2016.
  */
@@ -13,6 +15,8 @@ public class ProdOrguLink {
     private boolean prouForceQty;
     private ConfigCategory status;
     private int prouRefundDays;
+    private List<TaxRule> taxRules;
+
 
     public long getId() {
         return id;
@@ -85,4 +89,12 @@ public class ProdOrguLink {
     public void setProuRefundDays(int prouRefundDays) {
         this.prouRefundDays = prouRefundDays;
     }
+    public List<TaxRule> getTaxRules() {
+        return taxRules;
+    }
+
+    public void setTaxRules(List<TaxRule> taxRules) {
+        this.taxRules = taxRules;
+    }
+
 }
