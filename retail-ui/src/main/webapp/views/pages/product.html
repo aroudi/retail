@@ -1,0 +1,260 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel  panel-primary">
+            <div class="panel-heading">
+                Product Maintenance
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form role="form">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            Product Info
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label>SKU</label>
+                                                            <input class="form-control" data-ng-model="productForm.product.prodSku">
+                                                        </div >
+                                                    </div >
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label>Reference</label>
+                                                            <input class="form-control" data-ng-model="productForm.product.reference">
+                                                        </div >
+                                                    </div >
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label>Product Name</label>
+                                                            <input class="form-control" data-ng-model="productForm.product.prodName">
+                                                        </div >
+                                                    </div >
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label>Product Status</label>
+                                                            <select class="form-control" data-ng-model="productForm.product.status"
+                                                                    ng-options="type.displayName for type in productStatusSet" >
+                                                            </select>
+                                                        </div >
+                                                    </div >
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label>Description</label>
+                                                            <input class="form-control" data-ng-model="productForm.product.prodDesc">
+                                                        </div >
+                                                    </div >
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label>Product Brand</label>
+                                                            <input class="form-control" data-ng-model="productForm.product.prodBrand">
+                                                        </div >
+                                                    </div >
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label>Product Class</label>
+                                                            <input class="form-control" data-ng-model="productForm.product.prodClass">
+                                                        </div >
+                                                    </div >
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label>Product Type</label>
+                                                            <select class="form-control" data-ng-model="productForm.product.prodType"
+                                                                    ng-options="type.displayName for type in productTypeSet" >
+                                                            </select>
+                                                        </div >
+                                                    </div >
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label>Tax Rules Applied:</label>
+                                                            <select multiple class="form-control" data-ng-model="productForm.product.taxRules"
+                                                                    ng-options="type.txrlDesc for type in taxRuleSet" >
+                                                            </select>
+                                                        </div >
+                                                    </div >
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            Buying
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-5">
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <div class="col-lg-8">
+                                                                    <div class="form-group">
+                                                                        <label>Supplier</label>
+                                                                            <select class="form-control" data-ng-model="productForm.suppProdPrice.supplier"
+                                                                                    ng-options="type.supplierName for type in supplierSet" >
+                                                                            </select>
+                                                                    </div >
+                                                                </div>
+                                                                <div class="col-lg-2">
+                                                                    <div class="form-group">
+                                                                        <label>catalogue Number</label>
+                                                                        <input class="form-control" data-ng-model="productForm.suppProdPrice.catalogueNo">
+                                                                    </div >
+                                                                </div>
+                                                                <div class="col-lg-2">
+                                                                    <div class="form-group">
+                                                                        <label>Supplier</label>
+                                                                        <input class="form-control" data-ng-model="productForm.suppProdPrice.partNo">
+                                                                    </div >
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <div class="col-lg-4">
+                                                                    <div class="form-group">
+                                                                        <label>Unit Of Measure</label>
+                                                                        <select class="form-control" data-ng-model="productForm.suppProdPrice.unitOfMeasure"
+                                                                                ng-options="type.unomDesc for type in unitOfMeasureSet" >
+                                                                        </select>
+                                                                    </div >
+                                                                </div>
+                                                                <div class="col-lg-4">
+                                                                    <div class="form-group">
+                                                                        <label>Quantity</label>
+                                                                        <input class="form-control" data-ng-model="productForm.suppProdPrice.unomQty">
+                                                                    </div >
+                                                                </div>
+                                                                <div class="col-lg-4">
+                                                                    <div class="form-group">
+                                                                        <label>Price</label>
+                                                                        <input class="form-control" data-ng-model="productForm.suppProdPrice.price">
+                                                                    </div >
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group">
+                                                                        <label>Bulk Price</label>
+                                                                        <input class="form-control" data-ng-model="productForm.suppProdPrice.bulkPrice">
+                                                                    </div >
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group">
+                                                                        <label>Bulk Quantity</label>
+                                                                        <input class="form-control" data-ng-model="productForm.suppProdPrice.bulkQty">
+                                                                    </div >
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div >
+                                                    <div class="col-lg-1">
+                                                        <table>
+                                                            <tr>
+                                                            </tr>
+                                                            <tr>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <!--<button type="button" class="btn btn-outline btn-primary" ng-click="addTransposition()">Add</button> -->
+                                                                    <a href=""><i tooltip="Add to the list" tooltip-placement="bottom" class="fa fa-long-arrow-right fa-2x" ng-click="addSupplierPrice()" ></i> </a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <!--<button type="button" class="btn btn-outline btn-primary" ng-click="removeTransposition()">Remove</button> -->
+                                                                    <a href=""><i tooltip="Remove from list" tooltip-placement="bottom" class="fa fa-long-arrow-left fa-2x" ng-click="removeSupplierPrice()"></i> </a>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-lg-5">
+                                                        <div id="supplierPriceGrid" ui-grid ="gridOptions" class="grid" ui-grid-selection style="height:150px;" ></div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            Selling
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label>Unit Of Measure</label>
+                                                            <select class="form-control" data-ng-model="productForm.price.unitOfMeasure"
+                                                                    ng-options="type.unomDesc for type in unitOfMeasureSet" >
+                                                            </select>
+                                                        </div >
+                                                    </div >
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label>Quantity</label>
+                                                            <input class="form-control" data-ng-model="productForm.price.unomQty">
+                                                        </div >
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label>Price</label>
+                                                            <input class="form-control" data-ng-model="productForm.price.price">
+                                                        </div >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label>Margin</label>
+                                                            <input class="form-control" data-ng-model="productForm.price.margin">
+                                                        </div >
+                                                    </div >
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label>Tax Included</label>
+                                                            <input class="form-control" data-ng-model="productForm.price.taxIncluded">
+                                                        </div >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
+                                <button type="button" class="btn btn-success" ng-click="createSupplier()">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
