@@ -20,25 +20,25 @@
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label>SKU</label>
-                                                            <input class="form-control" data-ng-model="productForm.product.prodSku">
+                                                            <input class="form-control" data-ng-model="productForm.prodSku">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Reference</label>
-                                                            <input class="form-control" data-ng-model="productForm.product.reference">
+                                                            <input class="form-control" data-ng-model="productForm.reference">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label>Product Name</label>
-                                                            <input class="form-control" data-ng-model="productForm.product.prodName">
+                                                            <input class="form-control" data-ng-model="productForm.prodName">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Product Status</label>
-                                                            <select class="form-control" data-ng-model="productForm.product.status"
+                                                            <select class="form-control" data-ng-model="productForm.status"
                                                                     ng-options="type.displayName for type in productStatusSet" >
                                                             </select>
                                                         </div >
@@ -50,25 +50,25 @@
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label>Description</label>
-                                                            <input class="form-control" data-ng-model="productForm.product.prodDesc">
+                                                            <input class="form-control" data-ng-model="productForm.prodDesc">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Product Brand</label>
-                                                            <input class="form-control" data-ng-model="productForm.product.prodBrand">
+                                                            <input class="form-control" data-ng-model="productForm.prodBrand">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Product Class</label>
-                                                            <input class="form-control" data-ng-model="productForm.product.prodClass">
+                                                            <input class="form-control" data-ng-model="productForm.prodClass">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Product Type</label>
-                                                            <select class="form-control" data-ng-model="productForm.product.prodType"
+                                                            <select class="form-control" data-ng-model="productForm.prodType"
                                                                     ng-options="type.displayName for type in productTypeSet" >
                                                             </select>
                                                         </div >
@@ -76,7 +76,7 @@
                                                     <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Tax Rules Applied:</label>
-                                                            <select multiple class="form-control" data-ng-model="productForm.product.taxRules"
+                                                            <select multiple class="form-control" data-ng-model="productForm.taxRules"
                                                                     ng-options="type.txrlDesc for type in taxRuleSet" >
                                                             </select>
                                                         </div >
@@ -103,7 +103,7 @@
                                                                 <div class="col-lg-8">
                                                                     <div class="form-group">
                                                                         <label>Supplier</label>
-                                                                            <select class="form-control" data-ng-model="productForm.suppProdPrice.supplier"
+                                                                            <select class="form-control" data-ng-model="supplier"
                                                                                     ng-options="type.supplierName for type in supplierSet" >
                                                                             </select>
                                                                     </div >
@@ -111,13 +111,13 @@
                                                                 <div class="col-lg-2">
                                                                     <div class="form-group">
                                                                         <label>catalogue Number</label>
-                                                                        <input class="form-control" data-ng-model="productForm.suppProdPrice.catalogueNo">
+                                                                        <input class="form-control" data-ng-model="suppCatalogueNo">
                                                                     </div >
                                                                 </div>
                                                                 <div class="col-lg-2">
                                                                     <div class="form-group">
                                                                         <label>Supplier</label>
-                                                                        <input class="form-control" data-ng-model="productForm.suppProdPrice.partNo">
+                                                                        <input class="form-control" data-ng-model="suppPartNo">
                                                                     </div >
                                                                 </div>
                                                             </div>
@@ -127,7 +127,7 @@
                                                                 <div class="col-lg-4">
                                                                     <div class="form-group">
                                                                         <label>Unit Of Measure</label>
-                                                                        <select class="form-control" data-ng-model="productForm.suppProdPrice.unitOfMeasure"
+                                                                        <select class="form-control" data-ng-model="suppUnitOfMeasure"
                                                                                 ng-options="type.unomDesc for type in unitOfMeasureSet" >
                                                                         </select>
                                                                     </div >
@@ -135,13 +135,13 @@
                                                                 <div class="col-lg-4">
                                                                     <div class="form-group">
                                                                         <label>Quantity</label>
-                                                                        <input class="form-control" data-ng-model="productForm.suppProdPrice.unomQty">
+                                                                        <input class="form-control" data-ng-model="suppUnomQty">
                                                                     </div >
                                                                 </div>
                                                                 <div class="col-lg-4">
                                                                     <div class="form-group">
                                                                         <label>Price</label>
-                                                                        <input class="form-control" data-ng-model="productForm.suppProdPrice.price">
+                                                                        <input class="form-control" data-ng-model="suppPrice">
                                                                     </div >
                                                                 </div>
                                                             </div>
@@ -151,13 +151,13 @@
                                                                 <div class="col-lg-6">
                                                                     <div class="form-group">
                                                                         <label>Bulk Price</label>
-                                                                        <input class="form-control" data-ng-model="productForm.suppProdPrice.bulkPrice">
+                                                                        <input class="form-control" data-ng-model="suppBulkPrice">
                                                                     </div >
                                                                 </div>
                                                                 <div class="col-lg-6">
                                                                     <div class="form-group">
                                                                         <label>Bulk Quantity</label>
-                                                                        <input class="form-control" data-ng-model="productForm.suppProdPrice.bulkQty">
+                                                                        <input class="form-control" data-ng-model="suppBulkQty">
                                                                     </div >
                                                                 </div>
                                                             </div>
@@ -206,7 +206,7 @@
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label>Unit Of Measure</label>
-                                                            <select class="form-control" data-ng-model="productForm.price.unitOfMeasure"
+                                                            <select class="form-control" data-ng-model="productForm.prceUnitOfMeasure"
                                                                     ng-options="type.unomDesc for type in unitOfMeasureSet" >
                                                             </select>
                                                         </div >
@@ -214,13 +214,13 @@
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label>Quantity</label>
-                                                            <input class="form-control" data-ng-model="productForm.price.unomQty">
+                                                            <input class="form-control" data-ng-model="productForm.prceUnomQty">
                                                         </div >
                                                     </div>
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label>Price</label>
-                                                            <input class="form-control" data-ng-model="productForm.price.price">
+                                                            <input class="form-control" data-ng-model="productForm.prcePrice">
                                                         </div >
                                                     </div>
                                                 </div>
@@ -230,13 +230,13 @@
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label>Margin</label>
-                                                            <input class="form-control" data-ng-model="productForm.price.margin">
+                                                            <input class="form-control" data-ng-model="productForm.prceMargin">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label>Tax Included</label>
-                                                            <input class="form-control" data-ng-model="productForm.price.taxIncluded">
+                                                            <input class="form-control" data-ng-model="productForm.prceTaxIncluded">
                                                         </div >
                                                     </div>
                                                 </div>

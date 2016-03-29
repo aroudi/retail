@@ -1,5 +1,7 @@
 package au.com.biztune.retail.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import java.sql.Timestamp;
 
 /**
@@ -16,12 +18,19 @@ public class SuppProdPrice {
     private double price;
     private double bulkPrice;
     private double bulkQty;
+    @JsonIgnore
     private LegalTender legalTender;
+    @JsonIgnore
     private double sprcMinOrdQty;
+    @JsonIgnore
     private long sprcLeadTime;
+    @JsonIgnore
     private Timestamp sprcCreated;
+    @JsonIgnore
     private Timestamp sprcModified;
+    @JsonIgnore
     private boolean sprcPrefferBuy;
+    @JsonIgnore
     private double sprcMinOrdVal;
     private Supplier supplier;
 
