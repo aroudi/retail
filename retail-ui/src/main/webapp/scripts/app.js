@@ -44,7 +44,13 @@ var service_uri = {
     'ALL_CATEGORY_OFTYPE_URI' : 'categories/',
     'SUPPLIER_ALL_URI' : 'supplier/all',
     'SUPPLIER_ADD_URI' : 'supplier/add',
-    'SUPPLIER_GET_URI' : 'supplier/get'
+    'SUPPLIER_GET_URI' : 'supplier/get',
+    'UNOM_ALL_URI' : 'unitOfMeasure/all',
+    'TAXRULE_ALL_URI' : 'taxRule/all',
+    'PRODUCT_ALL_URI' : 'product/all',
+    'PRODUCT_ADD_URI' : 'product/add',
+    'PRODUCT_GET_URI' : 'product/get'
+
     //
 }
 
@@ -55,7 +61,9 @@ var response_status = {
 
 var type_constant = {
     'SUPPLIER_TYPE_URI' : 'categories/SUPPLIER_TYPE',
-    'SUPPLIER_STATUS_URI' : 'categories/SUPPLIER_STATUS'
+    'SUPPLIER_STATUS_URI' : 'categories/SUPPLIER_STATUS',
+    'PRODUCT_STATUS_URI' : 'categories/PRODUCT_STATUS',
+    'PRODUCT_TYPE_URI' : 'categories/PRODUCT_TYPE'
 }
 
 angular.forEach(config_data, function(key, value) {
