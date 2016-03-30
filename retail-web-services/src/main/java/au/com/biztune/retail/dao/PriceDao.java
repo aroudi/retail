@@ -43,4 +43,16 @@ public interface PriceDao {
      * @return PriceCode
      */
     PriceCode getProductPriceCodePerCode(String code);
+
+    /**
+     * dlete product price per id.
+     * @param id id
+     */
+    void deleteProdPrice(long id);
+
+    /**
+     * dlete product price per prodId.
+     * @param prodId prodId
+     */
+    void deleteProdPricePerProdId(long prodId);
 }

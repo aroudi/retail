@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Created by akhoshraft on 16/03/2016.
  */
@@ -31,4 +33,18 @@ public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
             return null;
         }
     }
+
+    /**
+     * get all unit of measure.
+     * @return LIst of UnitOfMeasure
+     */
+    public List<UnitOfMeasure> getAllUnom() {
+        try {
+            return unitOfMeasureDao.getAllUnom();
+        } catch (Exception e) {
+            logger.error("Error in getting list of unit of measure: ", e);
+            return null;
+        }
+    }
+
 }

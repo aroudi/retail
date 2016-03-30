@@ -14,7 +14,16 @@ public interface IdBConstant {
     int RESULT_FAILURE = -1;
 
     /**
-     * RESULT_FAILURE.
+     * LEGAL TENDER AU.
      */
+    String LEGAL_TENDER_AU = "AUD";
 
+    /**
+     * SELL_PRICE CODE.
+     */
+    String SELL_PRICE_CODE = "SELL_PRICE";
+    /**
+     * SELL_PRICE CODE.
+     */
+    String PRICE_BAND_CODE = "A";
 }

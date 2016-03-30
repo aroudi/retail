@@ -37,4 +37,17 @@ public interface SuppProdPriceDao {
      * @param suppProdPrice suppProdPrice
      */
     void insert(SuppProdPrice suppProdPrice);
+
+    /**
+     * delete supplier product price per id.
+     * @param id id
+     */
+    void deleteSuppProdPricePerId(long id);
+
+    /**
+     * delete supplier prod price per solid and prod id.
+     * @param solId solId
+     * @param prodId prodId
+     */
+    void deleteSuppProdPricePerSolIdAndProdId(long solId, long prodId);
 }

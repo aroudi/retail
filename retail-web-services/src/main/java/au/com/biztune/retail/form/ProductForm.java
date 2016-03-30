@@ -8,6 +8,8 @@ import java.util.List;
  * Created by arash on 29/03/2016.
  */
 public class ProductForm {
+    private long prodId;
+    private long prouId;
     private String prodSku;
     private String reference;
     private String prodName;
@@ -23,6 +25,22 @@ public class ProductForm {
     private double prcePrice;
     private double prceMargin;
     private boolean prceTaxIncluded;
+
+    public long getProdId() {
+        return prodId;
+    }
+
+    public void setProdId(long prodId) {
+        this.prodId = prodId;
+    }
+
+    public long getProuId() {
+        return prouId;
+    }
+
+    public void setProuId(long prouId) {
+        this.prouId = prouId;
+    }
 
     public String getProdSku() {
         return prodSku;

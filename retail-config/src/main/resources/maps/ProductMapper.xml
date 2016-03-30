@@ -245,4 +245,56 @@
         )
     </insert>
 
+    <update id="updateProduct" parameterType="Product" >
+        UPDATE PRODUCT SET
+        PROD_ID = #{id}
+        <if test="prodSku != null">
+            ,PROD_SKU = #{prodSku}
+        </if>
+        <if test="reference != null">
+            ,REFERENCE = #{reference}
+        </if>
+        <if test="prodName != null">
+            ,PROD_NAME = #{prodName}
+        </if>
+        <if test="prodType != null">
+            ,CAT_ID_TYPE = #{prodType.id}
+        </if>
+        <if test="prodDesc != null">
+            ,PROD_DESC = #{prodDesc}
+        </if>
+        <if test="prodOwnBrand != null">
+            ,PROD_OWN_BRAND = #{prodOwnBrand}
+        </if>
+        <if test="prodModified != null">
+            ,PROD_MODIFIED = #{prodModified}
+        </if>
+        <if test="prodBrand != null">
+            ,PROD_BRAND = #{prodBrand}
+        </if>
+        WHERE PROD_ID = #{id}
+    </update>
+
+    <delete id="deleteProdOrguLink" >
+        DELETE
+        From PROD_ORGU_LINK
+        WHERE
+        PROU_ID = #{value}
+    </delete>
+
+    <delete id="deleteProdTaxLink" >
+        DELETE
+        From PROU_TXRL_LINK
+        WHERE
+        PROU_ID = #{value}
+    </delete>
+
+    <delete id="deleteProduct" >
+        DELETE
+        From PRODUCT
+        WHERE
+        PROD_ID = #{value}
+    </delete>
+
+
 </mapper>

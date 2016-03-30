@@ -32,4 +32,12 @@
         FROM UNIT_OF_MEASURE unom
         WHERE UNOM_ID = #{value}
     </select>
+
+    <select id="getAllUnom" resultMap="unomMap" >
+        SELECT
+        <include refid="unomColumns"><property name="alias" value="unom"/></include>
+        FROM UNIT_OF_MEASURE unom
+    </select>
+
+
 </mapper>

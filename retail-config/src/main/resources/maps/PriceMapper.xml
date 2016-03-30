@@ -166,4 +166,18 @@
         prcc.PRCC_CODE = #{value}
     </select>
 
+    <delete id="deleteProdPrice" >
+        DELETE
+        From PRICE
+        WHERE
+        PRCE_ID = #{value}
+    </delete>
+
+    <delete id="deleteProdPricePerProdId" >
+        DELETE
+        From PRICE
+        WHERE
+        PROD_ID = #{value}
+    </delete>
+
 </mapper>

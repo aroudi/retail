@@ -17,6 +17,13 @@ public interface ProductDao {
     void insertProduct(Product product);
 
     /**
+     * UPDATE Product.
+     * @param product product
+     */
+    void updateProduct(Product product);
+
+
+    /**
      * insert prouduct tax link.
      * @param prouTxrlLink prouTxrlLink
      */
@@ -43,4 +50,22 @@ public interface ProductDao {
      * @return List of Product
      */
     Product getProductPerOrgUnitIdAndProdId(long orguId, long prodId);
+
+    /**
+     * delete product orgu link.
+     * @param prouId prouId
+     */
+    void deleteProdOrguLink (long prouId);
+
+    /**
+     * delete product orgu link.
+     * @param prouId prouId
+     */
+    void deleteProdTaxLink (long prouId);
+
+    /**
+     * delete product by id.
+     * @param prodId prodId
+     */
+    void deleteProduct(long prodId);
 }

@@ -201,4 +201,18 @@
         )
     </insert>
 
+    <delete id="deleteSuppProdPricePerId" >
+        DELETE
+        From SUPP_PROD_PRICE
+        WHERE
+        SPRC_ID = #{value}
+    </delete>
+
+    <delete id="deleteSuppProdPricePerSolIdAndProdId" >
+        DELETE
+        From SUPP_PROD_PRICE
+        WHERE
+        SOL_ID = #{param1} AND PROD_ID=#{param2}
+    </delete>
+
 </mapper>
