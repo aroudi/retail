@@ -5,12 +5,10 @@
                 Product Maintenance
             </div>
             <div class="panel-body">
-                <div class="row">
-                    <div class="col-lg-12">
+                    <div class="row">
                         <form role="form">
-                            <div class="row">
                                 <div class="col-lg-12">
-                                    <div class="panel panel-default">
+                                    <div class="panel panel-info">
                                         <div class="panel-heading">
                                             Product Info
                                         </div>
@@ -86,117 +84,105 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="row">
                                 <div class="col-lg-12">
-                                    <div class="panel panel-default">
+                                    <div class="panel panel-info">
                                         <div class="panel-heading">
                                             Buying
                                         </div>
                                         <div class="panel-body">
-                                            <div class="row">
                                                 <div class="col-lg-12">
-                                                    <div class="col-lg-5">
+                                                    <div class="col-lg-4">
                                                         <div class="row">
-                                                            <div class="col-lg-12">
-                                                                <div class="col-lg-8">
-                                                                    <div class="form-group">
-                                                                        <label>Supplier</label>
-                                                                            <select class="form-control" data-ng-model="supplier"
-                                                                                    ng-options="type.supplierName for type in supplierSet" >
-                                                                            </select>
-                                                                    </div >
-                                                                </div>
-                                                                <div class="col-lg-2">
-                                                                    <div class="form-group">
-                                                                        <label>catalogue Number</label>
-                                                                        <input class="form-control" data-ng-model="suppCatalogueNo">
-                                                                    </div >
-                                                                </div>
-                                                                <div class="col-lg-2">
-                                                                    <div class="form-group">
-                                                                        <label>Supplier</label>
-                                                                        <input class="form-control" data-ng-model="suppPartNo">
-                                                                    </div >
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-lg-12">
-                                                                <div class="col-lg-4">
-                                                                    <div class="form-group">
-                                                                        <label>Unit Of Measure</label>
-                                                                        <select class="form-control" data-ng-model="suppUnitOfMeasure"
-                                                                                ng-options="type.unomDesc for type in unitOfMeasureSet" >
+                                                            <div class="col-lg-4">
+                                                                <div class="form-group">
+                                                                    <label>Supplier</label>
+                                                                        <select class="form-control" data-ng-model="supplier"
+                                                                                ng-options="type.supplierName for type in supplierSet" >
                                                                         </select>
-                                                                    </div >
-                                                                </div>
-                                                                <div class="col-lg-4">
-                                                                    <div class="form-group">
-                                                                        <label>Quantity</label>
-                                                                        <input class="form-control" data-ng-model="suppUnomQty">
-                                                                    </div >
-                                                                </div>
-                                                                <div class="col-lg-4">
-                                                                    <div class="form-group">
-                                                                        <label>Price</label>
-                                                                        <input class="form-control" data-ng-model="suppPrice">
-                                                                    </div >
-                                                                </div>
+                                                                </div >
+                                                            </div>
+                                                            <div class="col-lg-4">
+                                                                <div class="form-group">
+                                                                    <label>Catalogue No</label>
+                                                                    <input class="form-control" data-ng-model="suppCatalogueNo">
+                                                                </div >
+                                                            </div>
+                                                            <div class="col-lg-4">
+                                                                <div class="form-group">
+                                                                    <label>Part No</label>
+                                                                    <input class="form-control" data-ng-model="suppPartNo">
+                                                                </div >
                                                             </div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-lg-12">
-                                                                <div class="col-lg-6">
-                                                                    <div class="form-group">
-                                                                        <label>Bulk Price</label>
-                                                                        <input class="form-control" data-ng-model="suppBulkPrice">
-                                                                    </div >
-                                                                </div>
-                                                                <div class="col-lg-6">
-                                                                    <div class="form-group">
-                                                                        <label>Bulk Quantity</label>
-                                                                        <input class="form-control" data-ng-model="suppBulkQty">
-                                                                    </div >
-                                                                </div>
+                                                            <div class="col-lg-4">
+                                                                <div class="form-group">
+                                                                    <label>Unit Of Measure</label>
+                                                                    <select class="form-control" data-ng-model="suppUnitOfMeasure"
+                                                                            ng-options="type.unomDesc for type in unitOfMeasureSet" >
+                                                                    </select>
+                                                                </div >
+                                                            </div>
+                                                            <div class="col-lg-4">
+                                                                <div class="form-group">
+                                                                    <label>Quantity</label>
+                                                                    <input class="form-control" data-ng-model="suppUnomQty">
+                                                                </div >
+                                                            </div>
+                                                            <div class="col-lg-4">
+                                                                <div class="form-group">
+                                                                    <label>Price</label>
+                                                                    <input class="form-control" data-ng-model="suppPrice">
+                                                                </div >
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label>Bulk Price</label>
+                                                                    <input class="form-control" data-ng-model="suppBulkPrice">
+                                                                </div >
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label>Bulk Quantity</label>
+                                                                    <input class="form-control" data-ng-model="suppBulkQty">
+                                                                </div >
                                                             </div>
                                                         </div>
                                                     </div >
                                                     <div class="col-lg-1">
-                                                        <table>
-                                                            <tr>
-                                                            </tr>
-                                                            <tr>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <!--<button type="button" class="btn btn-outline btn-primary" ng-click="addTransposition()">Add</button> -->
-                                                                    <a href=""><i tooltip="Add to the list" tooltip-placement="bottom" class="fa fa-long-arrow-right fa-2x" ng-click="addSupplierPrice()" ></i> </a>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <!--<button type="button" class="btn btn-outline btn-primary" ng-click="removeTransposition()">Remove</button> -->
-                                                                    <a href=""><i tooltip="Remove from list" tooltip-placement="bottom" class="fa fa-long-arrow-left fa-2x" ng-click="removeSupplierPrice()"></i> </a>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
+                                                        <div class="col-lg-2">
+                                                        </div>
+                                                        <div class="col-lg-12">
+                                                        </div>
+                                                        <div class="col-lg-12">
+                                                            <table>
+                                                                <tr></tr><tr></tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <!--<button type="button" class="btn btn-outline btn-primary" ng-click="addTransposition()">Add</button> -->
+                                                                        <a href=""><i tooltip="Add to the list" tooltip-placement="bottom" class="fa fa-long-arrow-right fa-2x" ng-click="addSuppProdPrice()" ></i> </a>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <!--<button type="button" class="btn btn-outline btn-primary" ng-click="removeTransposition()">Remove</button> -->
+                                                                        <a href=""><i tooltip="Remove from list" tooltip-placement="bottom" class="fa fa-long-arrow-left fa-2x" ng-click="removeSuppProdPrice()"></i> </a>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-lg-5">
-                                                        <div id="supplierPriceGrid" ui-grid ="gridOptions" class="grid" ui-grid-selection style="height:150px;" ></div>
+                                                    <div class="col-lg-7">
+                                                        <div id="supplierPriceGrid" ui-grid ="gridOptions" class="grid" ui-grid-selection style="height:200px;" ></div>
                                                     </div>
-
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="row">
                                 <div class="col-lg-12">
-                                    <div class="panel panel-default">
+                                    <div class="panel panel-info">
                                         <div class="panel-heading">
                                             Selling
                                         </div>
@@ -234,9 +220,14 @@
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-4">
+                                                        <label>Tax Included</label>
                                                         <div class="form-group">
-                                                            <label>Tax Included</label>
-                                                            <input class="form-control" data-ng-model="productForm.prceTaxIncluded">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox" data-ng-model="productForm.prceTaxIncluded">
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="form-group">
                                                         </div >
                                                     </div>
                                                 </div>
@@ -244,16 +235,21 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
                             <div class="row">
-                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                                <button type="button" class="btn btn-success" ng-click="createSupplier()">Submit</button>
+                                <div class="col-lg-12">
+                                    <div class="col-lg-11">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
+                                            <button type="button" class="btn btn-success" ng-click="createProduct()">Submit</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-1">
+
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
-                </div>
             </div>
         </div>
     </div>

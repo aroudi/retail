@@ -147,7 +147,8 @@
             PROD_OWN_BRAND,
             PROD_CREATED,
             PROD_MODIFIED,
-            PROD_BRAND
+            PROD_BRAND,
+            PROD_CLASS
         ) VALUES (
             #{orguIdOwning}
             <if test="prodSku != null">
@@ -204,6 +205,12 @@
             <if test="prodBrand == null">
                 ,null
             </if>
+            <if test="prodClass != null">
+                ,#{prodClass}
+            </if>
+            <if test="prodClass == null">
+                ,null
+            </if>
         )
     </insert>
 
@@ -247,7 +254,7 @@
 
     <update id="updateProduct" parameterType="Product" >
         UPDATE PRODUCT SET
-        PROD_ID = #{id}
+        PROD_MODIFIED = #{prodModified}
         <if test="prodSku != null">
             ,PROD_SKU = #{prodSku}
         </if>
@@ -266,11 +273,11 @@
         <if test="prodOwnBrand != null">
             ,PROD_OWN_BRAND = #{prodOwnBrand}
         </if>
-        <if test="prodModified != null">
-            ,PROD_MODIFIED = #{prodModified}
-        </if>
         <if test="prodBrand != null">
             ,PROD_BRAND = #{prodBrand}
+        </if>
+        <if test="prodClass != null">
+            ,PROD_CLASS = #{prodClass}
         </if>
         WHERE PROD_ID = #{id}
     </update>

@@ -50,4 +50,11 @@ public interface SuppProdPriceDao {
      * @param prodId prodId
      */
     void deleteSuppProdPricePerSolIdAndProdId(long solId, long prodId);
+
+    /**
+     * delete supplier prod price per solid and prod id.
+     * @param prodId prodId
+     * @param orguId orguId
+     */
+    void deleteSuppProdPricePerProdIdAndOrguId(long prodId, long orguId);
 }

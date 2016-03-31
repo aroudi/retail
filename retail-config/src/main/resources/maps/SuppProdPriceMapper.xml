@@ -214,5 +214,13 @@
         WHERE
         SOL_ID = #{param1} AND PROD_ID=#{param2}
     </delete>
+    <delete id="deleteSuppProdPricePerProdIdAndOrguId" >
+        DELETE
+        From SUPP_PROD_PRICE
+        WHERE
+        PROD_ID=#{param1}
+        AND SOL_ID in (select sol_id from supp_orgu_link where orgu_id = #{param2})
+
+    </delete>
 
 </mapper>

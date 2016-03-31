@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-function productCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRUL_ALL_URI, SUPPLIER_ALL_URI) {
+function productCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI) {
     //set default data on the page
     initPageData();
     function initPageData() {
@@ -11,9 +11,10 @@ function productCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAIL
             $scope.productForm.prouId = -1;
         } else {
             $scope.productForm = angular.copy(baseDataService.getRow());
-            baseDataService.setIsPageNew(true);
             baseDataService.setRow({});
         }
+        initSupplierPriceGrid();
+        baseDataService.setIsPageNew(true);
         baseDataService.getBaseData(PRODUCT_STATUS_URI).then(function(response){
             $scope.productStatusSet = response.data;
             $scope.productForm.status = baseDataService.populateSelectList($scope.productForm.status,$scope.productStatusSet);
@@ -22,13 +23,14 @@ function productCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAIL
             $scope.productTypeSet = response.data;
             $scope.productForm.prodType = baseDataService.populateSelectList($scope.productForm.prodType,$scope.productTypeSet);
         });
-        baseDataService.getBaseData(TAXRUL_ALL_URI).then(function(response){
+        baseDataService.getBaseData(TAXRULE_ALL_URI).then(function(response){
             $scope.taxRuleSet = response.data;
             $scope.productForm.taxRules = baseDataService.populateMultiSelectList($scope.productForm.taxRules,$scope.taxRuleSet);
         });
         baseDataService.getBaseData(UNOM_ALL_URI).then(function(response){
             $scope.unitOfMeasureSet = response.data;
             $scope.suppUnitOfMeasure = baseDataService.populateSelectList($scope.suppUnitOfMeasure,$scope.unitOfMeasureSet);
+            $scope.productForm.prceUnitOfMeasure = baseDataService.populateSelectList($scope.productForm.prceUnitOfMeasure,$scope.unitOfMeasureSet);
         });
         baseDataService.getBaseData(SUPPLIER_ALL_URI).then(function(response){
             $scope.supplierSet = response.data;
@@ -42,10 +44,11 @@ function productCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAIL
                 {field:'id', visible:false, enableCellEdit:false},
                 {field:'solId', visible:false, enableCellEdit:false},
                 {field:'prodId', visible:false, enableCellEdit:false},
-                {field:'catalogueNo',enableCellEdit:false},
+                {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false},
+                {field:'catalogueNo', displayName:'CatNo',enableCellEdit:false},
                 {field:'partNo', enableCellEdit:false},
-                {field:'unitOfMeasure', enableCellEdit:false},
-                {field:'unomQty', enableCellEdit:false},
+                {field:'unitOfMeasure.unomCode', displayName:'UNOM',enableCellEdit:false},
+                {field:'unomQty',displayName:'Qty', enableCellEdit:false},
                 {field:'price', enableCellEdit:false},
                 {field:'bulkQty', enableCellEdit:false},
                 {field:'bulkPrice', enableCellEdit:false}
@@ -65,7 +68,7 @@ function productCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAIL
             });
         };
 
-        if ($scope.pageIsNew == false) {
+        if (!baseDataService.getIsPageNew()) {
             $scope.gridOptions.data = $scope.productForm.suppProdPrices;
         }
     }
@@ -75,17 +78,18 @@ function productCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAIL
             "id" : -1,
             "solId" : -1,
             "prodId" : -1,
+            "supplier":$scope.supplier,
             "catalogueNo" : $scope.suppCatalogueNo,
-            "partNo" : $scope.incident.transpositionImpact,
-            "unitOfMeasure" : extractedStations,
-            "unomQty" : $scope.incident.transpositionImpact,
-            "price" : $scope.incident.transpositionImpact,
-            "bulkQty" : $scope.incident.transpositionImpact,
-            "bulkPrice" : $scope.incident.transpositionImpact,
+            "partNo" : $scope.suppPartNo,
+            "unitOfMeasure" : $scope.suppUnitOfMeasure,
+            "unomQty" : $scope.suppUnomQty,
+            "price" : $scope.suppPrice,
+            "bulkQty" : $scope.suppBulkQty,
+            "bulkPrice" : $scope.suppBulkPrice
         }
-        $scope.gridOptions.data.push(tranaposition);
+        $scope.gridOptions.data.push(suppProdPrice);
     };
-    $scope.removeTransposition= function () {
+    $scope.removeSuppProdPrice= function () {
         var selectedRow = baseDataService.getRow();
         rowIndex = getArrIndexOf($scope.gridOptions.data, selectedRow);
         if (rowIndex>-1) {
@@ -99,7 +103,7 @@ function productCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAIL
         if (arr == undefined || item== undefined)
             return -1;
         for (var j = 0; j < arr.length; j++) {
-            if (arr[j].tripName == item.tripName && arr[j].impactName == item.impactName && arr[j].stations == item.stations) {
+            if (arr[j].catalogueNo == item.catalogueNo) {
                 return j;
             }
         }
@@ -118,6 +122,7 @@ function productCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAIL
         */
 
         //$scope.facility.lastModifiedBy = userId;
+        $scope.productForm.suppProdPrices = $scope.gridOptions.data;
         var rowObject = $scope.productForm;
         baseDataService.addRow(rowObject, PRODUCT_ADD_URI).then(function(response) {
             addResponse = response.data;

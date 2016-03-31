@@ -30,10 +30,10 @@
                 <!-- /.nav-second-level -->
             </li>
 
-            <li ng-class="{active: collapseVar==1}">{{dropDown}}
-                <a href="" ng-click="check(1)"><i class="fa fa-comments fa-fw"></i> Supplier<span
+            <li ng-class="{active: collapseVar==2}">{{dropDown}}
+                <a href="" ng-click="check(2)"><i class="fa fa-comments fa-fw"></i> Supplier<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=1">
+                <ul class="nav nav-second-level" collapse="collapseVar!=2">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.createSupplier">Define New Supplier</a>
                     </li>
@@ -49,6 +49,24 @@
                 <!-- /.nav-second-level -->
             </li>
 
+            <li ng-class="{active: collapseVar==3}">{{dropDown}}
+                <a href="" ng-click="check(3)"><i class="fa fa-comments fa-fw"></i> Product<span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=3">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.createProduct">Define New Product</a>
+                    </li>
+                    <!--
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.buttons">Review And Publish</a>
+                    </li>
+                    -->
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.listProduct">Product List</a>
+                    </li>
+                </ul>
+                <!-- /.nav-second-level -->
+            </li>
 
         </ul>
     </div>

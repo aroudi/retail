@@ -255,14 +255,8 @@ public class ProductServiceImpl implements ProductService {
 
     private void deleteProductRelatedObjects(ProductForm productForm) {
         priceDao.deleteProdPricePerProdId(productForm.getProdId());
-
-        if (productForm.getSuppProdPrices() != null && productForm.getSuppProdPrices().size() > 0) {
-            for (SuppProdPrice suppProdPrice : productForm.getSuppProdPrices()) {
-                    suppProdPriceDao.deleteSuppProdPricePerId(suppProdPrice.getId());
-            }
-        }
+        suppProdPriceDao.deleteSuppProdPricePerProdIdAndOrguId(productForm.getProdId(), sessionState.getOrgUnit().getId());
         productDao.deleteProdTaxLink(productForm.getProuId());
-
         productDao.deleteProdOrguLink(productForm.getProuId());
     }
 
