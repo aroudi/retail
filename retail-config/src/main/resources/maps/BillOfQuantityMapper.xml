@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.BillOfQuantityDao">
+    <!-- result maps -->
+    <resultMap id="BillOfQuantityMap" type="BillOfQuantity" >
+        <id column="BOQ_ID" property="id" />
+        <result column="REFERENCE_CODE" property="referenceCode" />
+        <result column="BOQ_NAME" property="boqName" />
+        <result column="ORDER_NO" property="orderNo" />
+        <result column="NOTE" property="note" />
+        <result column="DATE_CREATED" property="dateCreated" />
+        <association resultMap="au.com.biztune.retail.dao.ProjectDao.projectMap" property="project" />
+    </resultMap>
+
+
+    <sql id="boqColumns">
+     ${alias}.BOQ_ID,
+     ${alias}.PROJECT_ID,
+     ${alias}.REFERENCE_CODE,
+     ${alias}.BOQ_NAME,
+     ${alias}.ORDER_NO,
+     ${alias}.NOTE,
+     ${alias}.DATE_CREATED
+    </sql>
+
+    <sql id="getBillOfQuantity">
+        SELECT
+        <include refid="boqColumns"><property name="alias" value="boq"/></include>,
+        <include refid="au.com.biztune.retail.dao.ProjectDao.projectColumns"><property name="alias" value="project"/></include>
+        FROM
+        BILL_OF_QUANTITY boq
+        LEFT OUTER JOIN
+        PROJECT project on (boq.PROJECT_ID = PROJECT.PROJECT_ID)
+    </sql>
+
+    <select id="getBillOfQuantityByName" resultMap="BillOfQuantityMap" >
+        <include refid="getBillOfQuantity">
+        </include>
+        WHERE
+          boq.BOQ_NAME = #{value}
+    </select>
+
+    <select id="getBillOfQuantityById" resultMap="BillOfQuantityMap" >
+        <include refid="getBillOfQuantity">
+        </include>
+        WHERE
+        boq.BOQ_ID = #{value}
+    </select>
+
+    <insert id="insert" parameterType="BillOfQuantity" useGeneratedKeys="true" keyProperty="id" keyColumn="BOQ_ID">
+        INSERT INTO BILL_OF_QUANTITY(
+         BOQ_NAME,
+         REFERENCE_CODE,
+         ORDER_NO,
+         NOTE,
+         DATE_CREATED
+        ) VALUES (
+        #{boqName}
+        <if test="referenceCode != null">
+            ,#{referenceCode}
+        </if>
+        <if test="referenceCode == null">
+            ,null
+        </if>
+        <if test="orderNo != null">
+            ,#{orderNo}
+        </if>
+        <if test="orderNo == null">
+            ,null
+        </if>
+        <if test="note != null">
+            ,#{note}
+        </if>
+        <if test="note == null">
+            ,null
+        </if>
+        <if test="dateCreated != null">
+            ,#{dateCreated}
+        </if>
+        <if test="dateCreated == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <sql id="updateStatement">
+        UPDATE BILL_OF_QUANTITY SET
+        LCOUNT= 0
+        <if test="project != null">
+            ,PROJECT_ID = #{project.id}
+        </if>
+        <if test="referenceCode != null">
+            ,REFERENCE_CODE = #{referenceCode}
+        </if>
+        <if test="boqName != null">
+            ,BOQ_NAME = #{boqName}
+        </if>
+        <if test="orderNo != null">
+            ,ORDER_NO = #{orderNo}
+        </if>
+        <if test="note != null">
+            ,NOTE = #{note}
+        </if>
+        <if test="dateCreated != null">
+            ,DATE_CREATED = #{dateCreated}
+        </if>
+    </sql>
+    <update id="updatePerId" parameterType="BillOfQuantity" >
+          <include refid="updateStatement">
+          </include>
+          WHERE BOQ_ID = #{id}
+    </update>
+    <update id="updatePerName" parameterType="BillOfQuantity" >
+        <include refid="updateStatement">
+        </include>
+        WHERE BOQ_NAME = #{boqName}
+    </update>
+</mapper>

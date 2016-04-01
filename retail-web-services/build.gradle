@@ -2,6 +2,7 @@ apply plugin: 'war'
 
 dependencies {
     compile project(':retail-config')
+    compile project(':retail-import')
 
     //Spring
     compile group:'org.springframework', name:'spring-web', version :springVersion

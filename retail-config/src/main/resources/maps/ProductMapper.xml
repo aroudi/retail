@@ -135,6 +135,18 @@
         WHERE prou.orgu_id = #{param1} and prou.PROD_ID = #{param2}
     </select>
 
+    <select id="getProductPerProdId" resultMap="productDetailMap" >
+        SELECT
+        <include refid="productColumns"><property name="alias" value="prod"/></include>,
+        <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>,
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="prodStatus"/></include>
+        FROM
+        PRODUCT prod
+        INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
+        LEFT OUTER JOIN
+        CONFIG_CATEGORY prodStatus on (prou.CAT_ID_STATUS = prodStatus.CATEGORY_ID)
+        WHERE prod.PROD_ID = #{value}
+    </select>
 
     <insert id="insertProduct" parameterType="Product" useGeneratedKeys="true" keyProperty="id" keyColumn="PROD_ID">
         INSERT INTO PRODUCT(

@@ -1,0 +1,8 @@
+dependencies {
+    compile project(':retail-config')
+}
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'RETAIL IMPORT', 'Implementation-Version': projectVersion
+    }
+}

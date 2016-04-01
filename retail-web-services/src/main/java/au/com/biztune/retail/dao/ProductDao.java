@@ -52,6 +52,13 @@ public interface ProductDao {
     Product getProductPerOrgUnitIdAndProdId(long orguId, long prodId);
 
     /**
+     * get all product per orguId and prodId.
+     * @param prodId prodId
+     * @return List of Product
+     */
+    Product getProductPerProdId(long prodId);
+
+    /**
      * delete product orgu link.
      * @param prouId prouId
      */

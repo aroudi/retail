@@ -1,0 +1,64 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="xml" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="BillOfQuantity" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="Header">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Name" type="xs:string" minOccurs="0" />
+                            <xs:element name="OrderNumber" type="xs:string" minOccurs="0" />
+                            <xs:element name="Note" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Project">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ProjectNo" type="xs:string" minOccurs="0" />
+                            <xs:element name="ProjectName" type="xs:string" minOccurs="0" />
+                            <xs:element name="ProjectAddress" type="xs:string" minOccurs="0" />
+                            <xs:element name="QuoteNo" type="xs:string" minOccurs="0" />
+                            <xs:element name="ReferenceNo" type="xs:string" minOccurs="0" />
+                            <xs:element name="DateRequired" type="xs:string" minOccurs="0" />
+                            <xs:element name="TotalCost" type="xs:double" minOccurs="0" />
+                            <xs:element name="TotalPrice" type="xs:double" minOccurs="0" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Client">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ClientCode" type="xs:string" minOccurs="0" />
+                            <xs:element name="ClientName" type="xs:string" minOccurs="0" />
+                            <xs:element name="ContactName" type="xs:string" minOccurs="0" />
+                            <xs:element name="Add1" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="BillOfQuantities">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Product" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="CatalogueNo" type="xs:string" minOccurs="0" />
+                                        <xs:element name="Reference" type="xs:string" minOccurs="0" />
+                                        <xs:element name="Description" type="xs:string" minOccurs="0" />
+                                        <xs:element name="SupplierCode" type="xs:string" minOccurs="0" />
+                                        <xs:element name="Supplier" type="xs:string" minOccurs="0" />
+                                        <xs:element name="Unit" type="xs:string" minOccurs="0" />
+                                        <xs:element name="TaxName" type="xs:string" minOccurs="0" />
+                                        <xs:element name="Cost" type="xs:double" minOccurs="0" />
+                                        <xs:element name="SellPrice" type="xs:double" minOccurs="0" />
+                                        <xs:element name="Qty" type="xs:double" minOccurs="0" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

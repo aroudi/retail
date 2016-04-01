@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.BoqDetailDao">
+    <!-- result maps -->
+    <resultMap id="BoqDetailMap" type="BoqDetail" >
+        <id column="BOQ_DETAIL_ID" property="id" />
+        <result column="PROD_IS_NEW" property="prodIsNew" />
+        <result column="QUANTITY" property="quantity" />
+        <result column="COST" property="cost" />
+        <result column="MARGIN" property="margin" />
+        <result column="SELL_PRICE" property="sellPrice" />
+        <association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" />
+        <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.getUnomById" />
+        <association property="product" column="PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
+    </resultMap>
+
+
+    <sql id="boqDetailColumns">
+     ${alias}.BOQ_DETAIL_ID,
+     ${alias}.BOQ_ID,
+     ${alias}.UNOM_ID,
+     ${alias}.PROD_ID,
+     ${alias}.PROD_IS_NEW,
+     ${alias}.QUANTITY,
+     ${alias}.COST,
+     ${alias}.MARGIN,
+     ${alias}.SELL_PRICE
+    </sql>
+
+    <sql id="getBoqDetail">
+        SELECT
+        <include refid="boqDetailColumns"><property name="alias" value="boqd"/></include>
+        FROM
+        BILL_OF_QUANTITY boqd
+    </sql>
+
+    <select id="getBoqDetailById" resultMap="BoqDetailMap" >
+        <include refid="getBoqDetail">
+        </include>
+        WHERE
+        boqd.BOQ_DETAIL_ID = #{value}
+    </select>
+
+    <insert id="insert" parameterType="BoqDetail" useGeneratedKeys="true" keyProperty="id" keyColumn="BOQ_DETAIL_ID">
+        INSERT INTO BOQ_DETAIL(
+            BOQ_ID,
+            UNOM_ID,
+            PROD_ID,
+            PROD_IS_NEW,
+            QUANTITY,
+            COST,
+            MARGIN,
+            SELL_PRICE
+        ) VALUES (
+        #{billOfQuantity.id}
+        <if test="unitOfMeasure != null">
+            ,#{unitOfMeasure.id}
+        </if>
+        <if test="unitOfMeasure == null">
+            ,null
+        </if>
+        <if test="product != null">
+            ,#{product.id}
+        </if>
+        <if test="product == null">
+            ,null
+        </if>
+        <if test="prodIsNew != null">
+            ,#{prodIsNew}
+        </if>
+        <if test="prodIsNew == null">
+            ,null
+        </if>
+        <if test="quantity != null">
+            ,#{quantity}
+        </if>
+        <if test="quantity == null">
+            ,null
+        </if>
+        <if test="cost != null">
+            ,#{cost}
+        </if>
+        <if test="cost == null">
+            ,null
+        </if>
+        <if test="margin != null">
+            ,#{margin}
+        </if>
+        <if test="margin == null">
+            ,null
+        </if>
+        <if test="sellPrice != null">
+            ,#{sellPrice}
+        </if>
+        <if test="sellPrice == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <sql id="updateStatement">
+        UPDATE BOQ_DETAIL SET
+        LCOUNT= 0
+        <if test="billOfQuantity != null">
+            ,BOQ_ID = #{billOfQuantity.id}
+        </if>
+        <if test="unitOfMeasure != null">
+            ,UNOM_ID = #{unitOfMeasure.id}
+        </if>
+        <if test="product != null">
+            ,PROD_ID = #{product.id}
+        </if>
+        <if test="prodIsNew != null">
+            ,PROD_IS_NEW = #{prodIsNew}
+        </if>
+        <if test="quantity != null">
+            ,QUANTITY = #{quantity}
+        </if>
+        <if test="cost != null">
+            ,COST = #{cost}
+        </if>
+        <if test="margin != null">
+            ,MARGIN = #{margin}
+        </if>
+        <if test="sellPrice != null">
+            ,SELL_PRICE = #{sellPrice}
+        </if>
+    </sql>
+    <update id="updatePerId" parameterType="BoqDetail" >
+          <include refid="updateStatement">
+          </include>
+          WHERE BOQ_DETAIL_ID = #{id}
+    </update>
+</mapper>

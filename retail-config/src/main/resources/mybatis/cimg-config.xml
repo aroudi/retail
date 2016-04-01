@@ -23,6 +23,9 @@
         <typeAlias type="au.com.biztune.retail.domain.Product" alias="Product" />
         <typeAlias type="au.com.biztune.retail.domain.SuppProdPrice" alias="SuppProdPrice" />
         <typeAlias type="au.com.biztune.retail.domain.ProdOrguLink" alias="ProdOrguLink" />
+        <typeAlias type="au.com.biztune.retail.domain.Project" alias="Project" />
+        <typeAlias type="au.com.biztune.retail.domain.BillOfQuantity" alias="BillOfQuantity" />
+        <typeAlias type="au.com.biztune.retail.domain.BoqDetail" alias="BoqDetail" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />
@@ -39,5 +42,6 @@
         <mapper resource="maps/TaxRuleMapper.xml" />
         <mapper resource="maps/SuppProdPriceMapper.xml" />
         <mapper resource="maps/LegalTenderMapper.xml" />
+        <mapper resource="maps/ProjectMapper.xml" />
     </mappers>
 </configuration>

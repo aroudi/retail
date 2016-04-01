@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.ProjectDao">
+    <!-- result maps -->
+    <resultMap id="ProjectMap" type="Project" >
+        <id column="PROJECT_ID" property="id" />
+        <result column="PROJECT_NAME" property="projectName" />
+        <result column="PROJECT_CODE" property="projectCode" />
+        <result column="PROJECT_DESCRIPTION" property="projectDescription" />
+        <result column="PROJECT_ADDRESS" property="projectAddress" />
+        <result column="QUOTE_NO" property="quoteNo" />
+        <result column="REFERENCE_NO" property="referenceNo" />
+        <result column="DATE_REQUIRED" property="dateRequired" />
+        <result column="TOTAL_COST" property="totalCost" />
+        <result column="TOTAL_PRICE" property="totalPrice" />
+        <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.customerMap" property="customer" />
+    </resultMap>
+
+
+    <sql id="projectColumns">
+        ${alias}.PROJECT_ID,
+        ${alias}.PROJECT_NAME,
+        ${alias}.PROJECT_CODE,
+        ${alias}.PROJECT_DESCRIPTION,
+        ${alias}.PROJECT_ADDRESS,
+        ${alias}.QUOTE_NO,
+        ${alias}.REFERENCE_NO,
+        ${alias}.DATE_REQUIRED,
+        ${alias}.TOTAL_COST,
+        ${alias}.TOTAL_PRICE,
+        ${alias}.CLIENT_ID
+    </sql>
+
+    <sql id="getProject">
+        SELECT
+        <include refid="projectColumns"><property name="alias" value="project"/></include>,
+        <include refid="au.com.biztune.retail.dao.CustomerGradeDao.customerColumns"><property name="alias" value="client"/></include>
+        FROM
+        PROJECT project
+        LEFT OUTER JOIN
+        CUSTOMER client on (project.CLIENT_ID = client.CUSTOMER_ID)
+    </sql>
+
+    <select id="getProjectByCode" resultMap="ProjectMap" >
+        <include refid="getProject">
+        </include>
+        WHERE
+          project.PROJECT_CODE = #{value}
+    </select>
+
+    <select id="getProjectByName" resultMap="ProjectMap" >
+        <include refid="getProject">
+        </include>
+        WHERE
+        project.PROJECT_NAME = #{value}
+    </select>
+
+    <select id="getProjectById" resultMap="ProjectMap" >
+        <include refid="getProject">
+        </include>
+        WHERE
+        project.PROJECT_ID = #{value}
+    </select>
+
+    <insert id="insert" parameterType="Project" useGeneratedKeys="true" keyProperty="id" keyColumn="PROJECT_ID">
+        INSERT INTO PROJECT(
+            PROJECT_CODE,
+            PROJECT_NAME,
+            PROJECT_DESCRIPTION,
+            PROJECT_ADDRESS,
+            QUOTE_NO,
+            REFERENCE_NO,
+            DATE_REQUIRED,
+            TOTAL_COST,
+            TOTAL_PRICE,
+            CLIENT_ID
+        ) VALUES (
+        #{projectCode}
+        <if test="projectName != null">
+            ,#{projectName}
+        </if>
+        <if test="projectName == null">
+            ,null
+        </if>
+        <if test="projectDescription != null">
+            ,#{projectDescription}
+        </if>
+        <if test="projectDescription == null">
+            ,null
+        </if>
+        <if test="projectAddress != null">
+            ,#{projectAddress}
+        </if>
+        <if test="projectAddress == null">
+            ,null
+        </if>
+        <if test="quoteNo != null">
+            ,#{quoteNo}
+        </if>
+        <if test="quoteNo == null">
+            ,null
+        </if>
+        <if test="referenceNo != null">
+            ,#{referenceNo}
+        </if>
+        <if test="referenceNo == null">
+            ,null
+        </if>
+        <if test="dateRequired != null">
+            ,#{dateRequired}
+        </if>
+        <if test="dateRequired == null">
+            ,null
+        </if>
+        <if test="totalCost != null">
+            ,#{totalCost}
+        </if>
+        <if test="totalCost == null">
+            ,null
+        </if>
+        <if test="totalPrice != null">
+            ,#{totalPrice}
+        </if>
+        <if test="totalPrice == null">
+            ,null
+        </if>
+        <if test="customer != null">
+            ,#{customer.id}
+        </if>
+        <if test="customer == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <sql id="updateStatement">
+        UPDATE PROJECT SET
+        PROJECT_NAME= #{projectName}
+        <if test="projectDescription != null">
+            ,PROJECT_DESCRIPTION = #{projectDescription}
+        </if>
+        <if test="projectAddress != null">
+            ,PROJECT_ADDRESS = #{projectAddress}
+        </if>
+        <if test="quoteNo != null">
+            ,QUOTE_NO = #{quoteNo}
+        </if>
+        <if test="referenceNo != null">
+            ,REFERENCE_NO = #{referenceNo}
+        </if>
+        <if test="dateRequired != null">
+            ,DATE_REQUIRED = #{dateRequired}
+        </if>
+        <if test="totalCost != null">
+            ,TOTAL_COST = #{totalCost}
+        </if>
+        <if test="totalPrice != null">
+            ,TOTAL_PRICE = #{totalPrice}
+        </if>
+        <if test="customer != null">
+            ,CLIENT_ID = #{customer.id}
+        </if>
+    </sql>
+    <update id="updatePerId" parameterType="Project" >
+          <include refid="updateStatement">
+          </include>
+          WHERE PROJECT_ID = #{id}
+    </update>
+    <update id="updatePerCode" parameterType="Project" >
+        <include refid="updateStatement">
+        </include>
+        WHERE PROJECT_CODE = #{projectCode}
+    </update>
+</mapper>

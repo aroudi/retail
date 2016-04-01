@@ -79,4 +79,17 @@
         <property name="mapperInterface" value="au.com.biztune.retail.dao.LegalTenderDao" />
     </bean>
 
+    <bean id="projectDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.ProjectDao" />
+    </bean>
+    <bean id="billOfQuantityDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.BillOfQuantityDao" />
+    </bean>
+    <bean id="boqDetailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.BoqDetailDao" />
+    </bean>
+
 </beans>
