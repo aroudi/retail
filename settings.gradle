@@ -1,4 +1,3 @@
-include 'retail-import'
 include 'retail-ui'
 include 'retail-config'
 include 'retail-web-services'

@@ -26,4 +26,25 @@ public interface IdBConstant {
      * SELL_PRICE CODE.
      */
     String PRICE_BAND_CODE = "A";
+
+    /**
+     * Customer Type.
+     */
+    String CUSTOMER_TYPE_COMPANY = "Company";
+    /**
+     * SUPPLIER STATUS CONFIG.
+     */
+    String CONFIG_SUPLIER_STATUS = "SUPLIER_STATUS";
+    /**
+     * PRODUCT STATUS CONFIG.
+     */
+    String CONFIG_PRODUCT_STATUS = "PRODUCT_STATUS";
+    /**
+     * SUPPLIER STATUS IMPORTED.
+     */
+    String PRODUCT_STATUS_IMPORTED = "IMPORTED";
+    /**
+     * SUPPLIER STATUS IMPORTED.
+     */
+    String SUPPLIER_STATUS_IMPORTED = "IMPORTED";
 }

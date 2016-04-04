@@ -59,6 +59,13 @@ public interface ProductDao {
     Product getProductPerProdId(long prodId);
 
     /**
+     * get all product per orguId and reference.
+     * @param reference reference
+     * @return List of Product
+     */
+    Product getProductPerReference(String reference);
+
+    /**
      * delete product orgu link.
      * @param prouId prouId
      */

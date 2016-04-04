@@ -133,4 +133,12 @@
           </include>
           WHERE BOQ_DETAIL_ID = #{id}
     </update>
+
+    <delete id="deleteBoqDetailPerBoqId" >
+        DELETE
+        From BOQ_DETAIL
+        WHERE
+        BOQ_ID = #{value}
+    </delete>
+
 </mapper>

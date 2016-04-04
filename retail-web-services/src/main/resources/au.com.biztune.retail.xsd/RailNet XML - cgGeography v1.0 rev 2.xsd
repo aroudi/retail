@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.contecint.com.au" elementFormDefault="qualified">
+ <xs:element name="cgGeography">
+  <xs:complexType>
+   <xs:sequence minOccurs="0" maxOccurs="unbounded">
+    <xs:element name="Geov10RC"  minOccurs="0" maxOccurs="unbounded">
+     <xs:complexType>
+      <xs:sequence>
+       <xs:element name="Nodes" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+         <xs:sequence>
+          <xs:element name="Node"  minOccurs="0" maxOccurs="unbounded">
+           <xs:complexType>
+            <xs:sequence>
+             <xs:element name="NodeMasterTimingPoint"  minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+               <xs:attribute name="NodeName" type="xs:string" use="required">
+                <xs:annotation>
+                 <xs:documentation xml:lang="en">The master timing point name of the node</xs:documentation>
+                </xs:annotation>
+               </xs:attribute>
+              </xs:complexType>
+             </xs:element>
+             <xs:element name="NodeMasterJunction"  minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+               <xs:attribute name="NodeName" type="xs:string" use="required">
+                <xs:annotation>
+                 <xs:documentation xml:lang="en">The master junction of the node</xs:documentation>
+                </xs:annotation>
+               </xs:attribute>
+              </xs:complexType>
+             </xs:element>
+             <xs:element name="NodeTurnPenaltyBans" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+               <xs:sequence>
+                <xs:element name="NodeTurnPenaltyBan"  minOccurs="0" maxOccurs="unbounded">
+                 <xs:complexType>
+                  <xs:attribute name="FromNodeName" type="xs:string" use="required">
+                   <xs:annotation>
+                    <xs:documentation xml:lang="en">The node this movement starts</xs:documentation>
+                   </xs:annotation>
+                  </xs:attribute>
+                  <xs:attribute name="ToNodeName" type="xs:string" use="required">
+                   <xs:annotation>
+                    <xs:documentation xml:lang="en">The node this movement ends</xs:documentation>
+                   </xs:annotation>
+                  </xs:attribute>
+                  <xs:attribute name="Penalty" type="xs:duration" use="required"/>
+                 </xs:complexType>
+                </xs:element>
+               </xs:sequence>
+              </xs:complexType>
+             </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Name" type="xs:string" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">The unique name of this node &quot;ABC1&quot;</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="LongName" type="xs:string" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">The long name of this node &quot;ABC North Platform 1&quot;</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="PlatformName" type="xs:string" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">The platform name of this node &quot;#1&quot;</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsDummy" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this a dummy node?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsJunction" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this a junction node?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsWorkingTimingPoint" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this a working timing point node?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsPublicTimingPoint" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this a public timing point node?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsEndOfLine" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this an end-of-line node?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="DwellDuration" type="xs:duration" use="required"/>
+            <xs:attribute name="UpRecoveryDuration" type="xs:duration" use="required"/>
+            <xs:attribute name="DownRecoveryDuration" type="xs:duration" use="required"/>
+            <xs:attribute name="Length" type="xs:unsignedInt" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">The length of this node, in meters</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+           </xs:complexType>
+          </xs:element>
+         </xs:sequence>
+        </xs:complexType>
+       </xs:element>
+       <xs:element name="SpeedBands" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+         <xs:sequence>
+          <xs:element name="SpeedBand"  minOccurs="0" maxOccurs="unbounded">
+           <xs:complexType>
+            <xs:attribute name="Id" type="xs:string" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">A unique (to this geography) identifier of the speed band</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="Name" type="xs:string" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">The speed band name</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+           </xs:complexType>
+          </xs:element>
+         </xs:sequence>
+        </xs:complexType>
+       </xs:element>
+       <xs:element name="TrackSections" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+         <xs:sequence>
+          <xs:element name="TrackSection"  minOccurs="0" maxOccurs="unbounded">
+           <xs:complexType>
+            <xs:attribute name="Id" type="xs:string" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">A unique (to this geography) identifier of the track section</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="Name" type="xs:string" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">The name of this track section (may be blank)</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsUp" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this track section in the &quot;Up&quot; direction? Else it is &quot;Down&quot;</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsPermissive" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is the non-default track section permissive?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+           </xs:complexType>
+          </xs:element>
+         </xs:sequence>
+        </xs:complexType>
+       </xs:element>
+       <xs:element name="Links" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+         <xs:sequence>
+          <xs:element name="Link"  minOccurs="0" maxOccurs="unbounded">
+           <xs:complexType>
+            <xs:sequence>
+             <xs:element name="RunningTimes" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+               <xs:sequence>
+                <xs:element name="RunningTime"  minOccurs="0" maxOccurs="unbounded">
+                 <xs:complexType>
+                  <xs:attribute name="SBId" type="xs:string" use="required">
+                   <xs:annotation>
+                    <xs:documentation xml:lang="en">Speed Band Identifier</xs:documentation>
+                   </xs:annotation>
+                  </xs:attribute>
+                  <xs:attribute name="PP" type="xs:duration" use="required"/>
+                  <xs:attribute name="SS" type="xs:duration" use="required"/>
+                 </xs:complexType>
+                </xs:element>
+               </xs:sequence>
+              </xs:complexType>
+             </xs:element>
+            </xs:sequence>
+            <xs:attribute name="FromNodeName" type="xs:string" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">The node this link starts at</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="ToNodeName" type="xs:string" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">The node this link ends at</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="Length" type="xs:unsignedInt" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">The length of this link (in meters)</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsBusEnergy" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this link for a BUS tracktion type?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsACEnergy" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this link for an AC Energy traction type?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsDCEnergy" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this link for a DC Energy traction type?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsDieselEnergy" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this link for a Diesel traction type?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsBusGauge" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this link a Bus gauge type?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsNarrowGauge" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this link a Narrow Gauge link?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsStandardGauge" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this link a Standard Gauge link?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsBroadGauge" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this link a Broad Gauge link?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsSiding" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this link a siding link?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsCrossOver" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this link a cross over link?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="IsRunningLine" type="xs:boolean" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">Is this link a running line link?</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="TrackSectionId" type="xs:string" use="required">
+             <xs:annotation>
+              <xs:documentation xml:lang="en">The track section owning this link</xs:documentation>
+             </xs:annotation>
+            </xs:attribute>
+           </xs:complexType>
+          </xs:element>
+         </xs:sequence>
+        </xs:complexType>
+       </xs:element>
+      </xs:sequence>
+      <xs:attribute name="Description" type="xs:string" use="required">
+       <xs:annotation>
+        <xs:documentation xml:lang="en">The description of this geography &quot;RailCorp Network 2010-12-11-RC01&quot;</xs:documentation>
+       </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="Owner" type="xs:string" use="required">
+       <xs:annotation>
+        <xs:documentation xml:lang="en">The owner code of this geography &quot;RC01&quot;</xs:documentation>
+       </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="Date" type="xs:date" use="required"/>
+     </xs:complexType>
+    </xs:element>
+   </xs:sequence>
+  </xs:complexType>
+ </xs:element>
+</xs:schema>

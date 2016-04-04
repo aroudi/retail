@@ -98,7 +98,8 @@
     <suppress checks="RedundantThrowsCheck" files="[/\\]TopologyService.java"/>
     <suppress checks="RedundantThrowsCheck" files="[/\\]StopService.java"/>
     <suppress checks="RedundantThrowsCheck" files="[/\\]NodeService.java"/>
-    <suppress checks="RedundantThrowsCheck" files="[/\\]NodalGeographyService.java"/>
+    <suppress checks="RedundantThrowsCheck" files="[/\\]BillOfQuantityService.java"/>
+    <suppress checks="RedundantThrowsCheck" files="[/\\]BillOfQuantityService.java"/>
     <suppress checks="RedundantThrowsCheck" files="[/\\]LocationService.java"/>
     <!-- End of suppressions for specfic files -->
 </suppressions>

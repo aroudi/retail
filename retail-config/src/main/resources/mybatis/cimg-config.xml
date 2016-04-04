@@ -43,5 +43,7 @@
         <mapper resource="maps/SuppProdPriceMapper.xml" />
         <mapper resource="maps/LegalTenderMapper.xml" />
         <mapper resource="maps/ProjectMapper.xml" />
+        <mapper resource="maps/BillOfQuantityMapper.xml" />
+        <mapper resource="maps/BoqDetailMapper.xml" />
     </mappers>
 </configuration>

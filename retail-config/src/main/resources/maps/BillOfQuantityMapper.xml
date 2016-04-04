@@ -51,12 +51,14 @@
 
     <insert id="insert" parameterType="BillOfQuantity" useGeneratedKeys="true" keyProperty="id" keyColumn="BOQ_ID">
         INSERT INTO BILL_OF_QUANTITY(
+         PROJECT_ID,
          BOQ_NAME,
          REFERENCE_CODE,
          ORDER_NO,
          NOTE,
          DATE_CREATED
         ) VALUES (
+        #{project.id},
         #{boqName}
         <if test="referenceCode != null">
             ,#{referenceCode}

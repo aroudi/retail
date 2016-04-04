@@ -103,6 +103,20 @@
         AND supp.SUPPLIER_CODE = #{param2}
     </select>
 
+    <select id="getSupplierByOrgUnitIdAndSuppName" resultMap="supplierMap" >
+        SELECT
+        <include refid="supplierColumns"><property name="alias" value="supp"/></include>,
+        <include refid="suppOrguLinkColumns"><property name="alias" value="suporgl"/></include>,
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="suppStatus"/></include>
+
+        FROM
+        SUPPLIER supp
+        INNER JOIN SUPP_ORGU_LINK suporgl ON (supp.supplier_id = suporgl.supp_id)
+        LEFT OUTER JOIN
+        CONFIG_CATEGORY suppStatus on (suporgl.CAT_ID_STATUS = suppStatus.CATEGORY_ID)
+        WHERE suporgl.orgu_id = #{param1}
+        AND supp.SUPPLIER_NAME = #{param2}
+    </select>
 
     <select id="getSupplierByOrgUnitIdAndSuppId" resultMap="supplierMap" >
         SELECT

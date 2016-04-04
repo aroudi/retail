@@ -24,4 +24,10 @@ public interface BoqDetailDao {
      * @param boqDetail boqDetail
      */
     void updatePerId(BoqDetail boqDetail);
+
+    /**
+     * delete BOQDetail per boqId.
+     * @param boqId boqId
+     */
+    void deleteBoqDetailPerBoqId(long boqId);
 }

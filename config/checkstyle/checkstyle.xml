@@ -338,7 +338,7 @@
         </module>
 
         <!-- Do not allow types to be fully qualified. -->
-        <module name="DescendantToken">
+        <!--module name="DescendantToken">
             <property name="id" value="fullQualifiedType"/>
             <property name="tokens"
                       value="TYPE, EXTENDS_CLAUSE, IMPLEMENTS_CLAUSE"
@@ -348,7 +348,7 @@
             <property name="maximumMessage" value="Do not use fully qualified types."/>
         </module>
 
-        <!-- Annotations checks -->
+        <! Annotations checks -->
         <module name="AnnotationUseStyle"/>
         <module name="MissingDeprecated"/>
         <module name="MissingOverride"/>

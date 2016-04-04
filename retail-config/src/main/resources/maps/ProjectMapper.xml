@@ -15,7 +15,7 @@
         <result column="DATE_REQUIRED" property="dateRequired" />
         <result column="TOTAL_COST" property="totalCost" />
         <result column="TOTAL_PRICE" property="totalPrice" />
-        <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.customerMap" property="customer" />
+        <association resultMap="au.com.biztune.retail.dao.CustomerDao.customerMap" property="customer" />
     </resultMap>
 
 
@@ -36,7 +36,7 @@
     <sql id="getProject">
         SELECT
         <include refid="projectColumns"><property name="alias" value="project"/></include>,
-        <include refid="au.com.biztune.retail.dao.CustomerGradeDao.customerColumns"><property name="alias" value="client"/></include>
+        <include refid="au.com.biztune.retail.dao.CustomerDao.customerColumns"><property name="alias" value="client"/></include>
         FROM
         PROJECT project
         LEFT OUTER JOIN
