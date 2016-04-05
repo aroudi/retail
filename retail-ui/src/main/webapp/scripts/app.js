@@ -21,7 +21,9 @@ var cimgApp = angular
     'ui.grid.pagination',
     'ui.grid.selection',
     'ui.grid.pinning',
-    'treeControl'
+    'treeControl',
+    'angularFileUpload',
+    'loadDisplay'
   ]);
 
 /*
@@ -49,14 +51,16 @@ var service_uri = {
     'TAXRULE_ALL_URI' : 'taxRule/all',
     'PRODUCT_ALL_URI' : 'product/all',
     'PRODUCT_ADD_URI' : 'product/add',
-    'PRODUCT_GET_URI' : 'product/get'
+    'PRODUCT_GET_URI' : 'product/get',
+    'UPLOAD_BOQ_URI'  : 'billOfQuantity/upload',
+    'BOQDETAIL_GET_PER_BOQID_URI' : 'billOfQuantity/getPerBoqId/'
 
     //
 }
 
 var response_status = {
     'SUCCESS' : 1,
-    'FAILURE' : 0
+    'FAILURE' : -1
 }
 
 var type_constant = {
@@ -97,6 +101,7 @@ cimgApp.service('configService', function (SERVER,PORT,WEBAPP) {
 cimgApp.service('baseDataService', function ($location, $http, $window, configService) {
 
     var row;
+    var rowId;
     var isPageNew = true;
     var rowSelected = false;
 
@@ -107,6 +112,12 @@ cimgApp.service('baseDataService', function ($location, $http, $window, configSe
         },
         getRow: function () {
             return row;
+        },
+        setRowId: function (myRowId) {
+            rowId = myRowId;
+        },
+        getRowId: function () {
+            return rowId;
         },
         setRowSelected: function (selected) {
             rowSelected = selected;
@@ -423,6 +434,71 @@ cimgApp.service('AccessChecker', function ($state, $window, UserService, UserInf
             }
         }
     };
+});
+
+cimgApp.service('singleFileUploadService', function ($http, $q, configService, loadDisplay) {
+    return {
+        uploadSimpleFileToUrl : function (file1, uploadUrl) {
+            var serviceUrl = configService.getAddress() + uploadUrl;
+            var fd = new FormData();
+            fd.append('file', file1);
+            var div = $q.defer();
+            loadDisplay.addDisplay(div.promise, "Uploading file ...");
+            var promise = $http.post(serviceUrl,fd,{
+                trnsformRequest:angular.identity,
+                headers: {'Content-Type': multipart/form-data}
+            }).success(function (data) {
+                div.resolve();
+                return data;
+            }).error(function (data) {
+                div.resolve();
+            });
+            return promise;
+        }
+    }
+});
+
+cimgApp.service('fileUploadService', function ($upload, $http, $q, configService, loadDisplay) {
+    return {
+        uploadFileToUrl : function (files, uploadUrl) {
+            var serviceUrl = configService.getAddress() + uploadUrl;
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var div = $q.defer();
+                loadDisplay.addDisplay(div.promise, "Uploading file ...");
+                var promise =
+                $upload.upload({
+                    url: serviceUrl, // upload.php script, node.js route, or servlet url
+                    method: 'POST',
+                    //headers: {'Authorization': 'xxx'}, // only for html5
+                    //withCredentials: true,
+                    //data: {myObj: $scope.myModelObj},
+                    file: file // single file or a list of files. list is only for html5
+                    //fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)
+                    //fileFormDataName: myFile, // file formData name ('Content-Disposition'), server side request form name
+                    // could be a list of names for multiple files (html5). Default is 'file'
+                    //formDataAppender: function(formData, key, val){}  // customize how data is added to the formData.
+                    // See #40#issuecomment-28612000 for sample code
+
+                }).progress(function(evt) {
+                    console.log('progress: ' + parseInt(100.0 * evt.loaded / evt.total) + '% file :'+ evt.config.file.name);
+                }).success(function(data, status, headers, config) {
+                    // file is uploaded successfully
+                    console.log('file ' + config.file.name + 'is uploaded successfully. Response: ' + data);
+                    div.resolve();
+                    return data;
+                })
+                    //.error(...)
+                    //.then(success, error, progress); // returns a promise that does NOT have progress/abort/xhr functions
+                    //.xhr(function(xhr){xhr.upload.addEventListener(...)}) // access or attach event listeners to
+                    //the underlying XMLHttpRequest
+                    .error(function (data) {
+                        div.resolve();
+                    });
+                return promise;
+            }
+        }
+    }
 });
 
 cimgApp.directive('compile', ['$compile', function ($compile) {

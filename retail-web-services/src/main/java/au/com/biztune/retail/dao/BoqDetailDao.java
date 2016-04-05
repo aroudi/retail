@@ -2,6 +2,8 @@ package au.com.biztune.retail.dao;
 
 import au.com.biztune.retail.domain.BoqDetail;
 
+import java.util.List;
+
 /**
  * Created by arash on 1/04/2016.
  */
@@ -30,4 +32,11 @@ public interface BoqDetailDao {
      * @param boqId boqId
      */
     void deleteBoqDetailPerBoqId(long boqId);
+
+    /**
+     * get list of BoqDetail by BoqId.
+     * @param id id
+     * @return List of BoqDetail
+     */
+    List<BoqDetail> getBoqDetailByBoqId(long id);
 }

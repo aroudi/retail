@@ -1,0 +1,15 @@
+<!--
+<input type="file" ng-file-select ng-model="myFiles" ng-file-change="onFileSelect($files)"
+ng-multiple="false" accept="*.xml" resetOnClick="true">
+-->
+
+<FORM name="myForm" xmlns="http://www.w3.org/1999/html">
+
+    <select data-ng-model="fileName"
+            ng-options="f for f in fileSet">
+    </select> &nbsp &nbsp
+
+<input type=file name=file data-ng-model="myFile" required ng-file-change="generateThumb(myFile[0], $files)" ng-multiple="false" accept="*.xml;*.csv" ng-file-select>
+<I ng-show="myForm.file.$error.required">*Required</I> &nbsp &nbsp
+<button ng-click="onFileSelect(myFile)" ng-disabled ="!myForm.$valid">Upload</button>
+</FORM>

@@ -118,6 +118,18 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/productList.html',
             access: "user"
         })
+        .state('dashboard.uploadFile',{
+            url:'/uploadFile',
+            controller: 'UploadController',
+            templateUrl:'views/pages/FileUpload.html',
+            access: "user"
+        })
+        .state('dashboard.boqDetailPerBoqId',{
+            url:'/boqDetailPerBoqId',
+            controller: 'boqDetailListCtrl',
+            templateUrl:'views/pages/boqDetailList.html',
+            access: "user"
+        })
         .state('dashboard.login',{
             url:'/login',
             controller: 'loginController',

@@ -12,6 +12,10 @@ public class CommonResponse {
      * message.
      */
     protected String message;
+    /**
+     * extra information.
+     */
+    protected String info;
 
     public int getStatus() {
         return status;
@@ -27,6 +31,14 @@ public class CommonResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 }
 

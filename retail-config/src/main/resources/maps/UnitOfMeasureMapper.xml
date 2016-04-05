@@ -39,5 +39,40 @@
         FROM UNIT_OF_MEASURE unom
     </select>
 
+    <insert id="insert" parameterType="UnitOfMeasure" useGeneratedKeys="true" keyProperty="id" keyColumn="UNOM_ID">
+        INSERT INTO UNIT_OF_MEASURE(
+        UNOM_CODE,
+        UNOM_DESC,
+        UNOM_FACTOR,
+        UNOM_CREATED,
+        UNOM_MODIFIED
+        ) VALUES (
+        #{unomCode}
+        <if test="unomDesc != null">
+            ,#{unomDesc}
+        </if>
+        <if test="unomDesc == null">
+            ,null
+        </if>
+        <if test="unomFactor != null">
+            ,#{unomFactor}
+        </if>
+        <if test="unomFactor == null">
+            ,null
+        </if>
+        <if test="unomCreated != null">
+            ,#{unomCreated}
+        </if>
+        <if test="unomCreated == null">
+            ,null
+        </if>
+        <if test="unomModified != null">
+            ,#{unomModified}
+        </if>
+        <if test="unomModified == null">
+            ,null
+        </if>
+        )
+    </insert>
 
 </mapper>

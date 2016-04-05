@@ -2,8 +2,7 @@ package au.com.biztune.retail;
 
 import au.com.biztune.retail.dao.*;
 import au.com.biztune.retail.domain.*;
-import au.com.biztune.retail.generated.*;
-import au.com.biztune.retail.service.BillOfQuantityService;
+import au.com.biztune.retail.service.BillOfQuantityServiceImpl;
 import au.com.biztune.retail.upload.BillOfQuantityUploader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -28,7 +27,7 @@ public class TestProduct {
     private static PriceBandDao priceBandDao = null;
     private static PriceDao priceDao = null;
     private static BillOfQuantityUploader billOfQuantityUploader = null;
-    private static BillOfQuantityService billOfQuantityService = null;
+    private static BillOfQuantityServiceImpl billOfQuantityServiceImpl = null;
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("retail-web-services-Context.xml");
         productDao = context.getBean(ProductDao.class);
@@ -42,13 +41,13 @@ public class TestProduct {
         priceBandDao = context.getBean(PriceBandDao.class);
         priceDao = context.getBean(PriceDao.class);
         billOfQuantityUploader = context.getBean(BillOfQuantityUploader.class);
-        billOfQuantityService = context.getBean(BillOfQuantityService.class);
+        billOfQuantityServiceImpl = context.getBean(BillOfQuantityServiceImpl.class);
 
 
         //insertProduct("sku001","refrence001","prodName-lock","Lock","prodDesc-Lock description",false,"JOMON-BRAND", "prodClass", "LIVE","GST", "supp01","CatalogueNo009","parNo001","each",1,"AUD",100.00, 10.00, 1000,"A","SELL_PRICE",0.30,130.00,false,"each",1);
         //fetchProductAndRelatedObjects();
         au.com.biztune.retail.generated.BillOfQuantity billOfQuantity = billOfQuantityUploader.uploadBillOfQuantityFromFile("BOQ_14711.xml");
-        billOfQuantityService.importBillOfQuantity(billOfQuantity);
+        billOfQuantityServiceImpl.importBillOfQuantity(billOfQuantity);
 
     }
 

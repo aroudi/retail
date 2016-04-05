@@ -15,7 +15,9 @@
         <result column="DATE_REQUIRED" property="dateRequired" />
         <result column="TOTAL_COST" property="totalCost" />
         <result column="TOTAL_PRICE" property="totalPrice" />
-        <association resultMap="au.com.biztune.retail.dao.CustomerDao.customerMap" property="customer" />
+        <!--association resultMap="au.com.biztune.retail.dao.CustomerDao.customerMap" property="customer" /-->
+        <association property="customer" column="CLIENT_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
+
     </resultMap>
 
 
@@ -35,12 +37,9 @@
 
     <sql id="getProject">
         SELECT
-        <include refid="projectColumns"><property name="alias" value="project"/></include>,
-        <include refid="au.com.biztune.retail.dao.CustomerDao.customerColumns"><property name="alias" value="client"/></include>
+        <include refid="projectColumns"><property name="alias" value="project"/></include>
         FROM
         PROJECT project
-        LEFT OUTER JOIN
-        CUSTOMER client on (project.CLIENT_ID = client.CUSTOMER_ID)
     </sql>
 
     <select id="getProjectByCode" resultMap="ProjectMap" >

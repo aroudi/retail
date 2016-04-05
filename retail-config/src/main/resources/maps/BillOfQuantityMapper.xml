@@ -11,7 +11,8 @@
         <result column="ORDER_NO" property="orderNo" />
         <result column="NOTE" property="note" />
         <result column="DATE_CREATED" property="dateCreated" />
-        <association resultMap="au.com.biztune.retail.dao.ProjectDao.projectMap" property="project" />
+        <!--association resultMap="au.com.biztune.retail.dao.ProjectDao.projectMap" property="project" /-->
+        <association property="project" column="PROJECT_ID" select="au.com.biztune.retail.dao.ProjectDao.getProjectById" />
     </resultMap>
 
 
@@ -27,12 +28,9 @@
 
     <sql id="getBillOfQuantity">
         SELECT
-        <include refid="boqColumns"><property name="alias" value="boq"/></include>,
-        <include refid="au.com.biztune.retail.dao.ProjectDao.projectColumns"><property name="alias" value="project"/></include>
+        <include refid="boqColumns"><property name="alias" value="boq"/></include>
         FROM
         BILL_OF_QUANTITY boq
-        LEFT OUTER JOIN
-        PROJECT project on (boq.PROJECT_ID = PROJECT.PROJECT_ID)
     </sql>
 
     <select id="getBillOfQuantityByName" resultMap="BillOfQuantityMap" >

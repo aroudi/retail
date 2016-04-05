@@ -67,6 +67,15 @@
                 </ul>
                 <!-- /.nav-second-level -->
             </li>
+            <li ng-class="{active: collapseVar==4}">{{dropDown}}
+                <a href="" ng-click="check(4)"><i class="fa fa-comments fa-fw"></i> Import<span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=4">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.uploadFile">Import BOQ</a>
+                    </li>
+                </ul>
+            </li>
 
         </ul>
     </div>

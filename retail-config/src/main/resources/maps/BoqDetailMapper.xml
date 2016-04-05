@@ -12,7 +12,7 @@
         <result column="MARGIN" property="margin" />
         <result column="SELL_PRICE" property="sellPrice" />
         <association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" />
-        <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.getUnomById" />
+        <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="product" column="PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
     </resultMap>
 
@@ -33,7 +33,7 @@
         SELECT
         <include refid="boqDetailColumns"><property name="alias" value="boqd"/></include>
         FROM
-        BILL_OF_QUANTITY boqd
+        BOQ_DETAIL boqd
     </sql>
 
     <select id="getBoqDetailById" resultMap="BoqDetailMap" >
@@ -41,6 +41,13 @@
         </include>
         WHERE
         boqd.BOQ_DETAIL_ID = #{value}
+    </select>
+
+    <select id="getBoqDetailByBoqId" resultMap="BoqDetailMap" >
+        <include refid="getBoqDetail">
+        </include>
+        WHERE
+        boqd.BOQ_ID = #{value}
     </select>
 
     <insert id="insert" parameterType="BoqDetail" useGeneratedKeys="true" keyProperty="id" keyColumn="BOQ_DETAIL_ID">

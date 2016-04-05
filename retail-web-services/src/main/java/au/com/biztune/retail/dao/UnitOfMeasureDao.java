@@ -28,4 +28,10 @@ public interface UnitOfMeasureDao {
      * @return List of UnitOfMeasure
      */
     List<UnitOfMeasure> getAllUnom();
+
+    /**
+     * insert unit of measure object.
+     * @param unitOfMeasure unitOfMeasure
+     */
+    void insert(UnitOfMeasure unitOfMeasure);
 }
