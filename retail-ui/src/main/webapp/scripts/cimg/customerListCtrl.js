@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-function customerListCtrl($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, CUSTOMER_ALL_URI, CUSTOMER_GET_URI) {
+cimgApp.controller('customerListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, CUSTOMER_ALL_URI, CUSTOMER_GET_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
@@ -48,4 +48,4 @@ function customerListCtrl($scope, $state, $timeout,baseDataService, SUCCESS, FAI
             $state.go('dashboard.createCustomer');
         });
     }
-}
+});

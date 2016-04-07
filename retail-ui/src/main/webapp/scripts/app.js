@@ -23,7 +23,8 @@ var cimgApp = angular
     'ui.grid.pinning',
     'treeControl',
     'angularFileUpload',
-    'loadDisplay'
+    'loadDisplay',
+    'ngDialog'
   ]);
 
 /*

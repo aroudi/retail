@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-function incidentController($scope, $state, UserService, baseDataService, incidentService , SUCCESS, ALL_CATEGORY_OFTYPE_URI, ALL_SCRIPT_URI,
+cimgApp.controller('incidentController', function($scope, $state, UserService, baseDataService, incidentService , SUCCESS, ALL_CATEGORY_OFTYPE_URI, ALL_SCRIPT_URI,
                             NOTIFICATION_REASON_URI, GTFS_ALERTTYPES_URI, INCIDENT_ADD_URI, ALL_NET_LINE_URI, LINE_STATION_URI) {
     //set default data on the page
     $scope.pageIsNew = true;
@@ -218,4 +218,4 @@ function incidentController($scope, $state, UserService, baseDataService, incide
         else
             return false;
     };
-}
+})

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-function incidentListCtrl($scope, $state, baseDataService, incidentService , SUCCESS, FAILURE, INCIDENT_ALL_URI, INCIDENT_GET_URI, STATION_MSG_GET_URI, TRACKWORK_GET_URI, MESSAGEBODY_VIEW_URI, MESSAGEBODY_UPDATE_URI) {
+cimgApp.controller('incidentListCtrl', function($scope, $state, baseDataService, incidentService , SUCCESS, FAILURE, INCIDENT_ALL_URI, INCIDENT_GET_URI, STATION_MSG_GET_URI, TRACKWORK_GET_URI, MESSAGEBODY_VIEW_URI, MESSAGEBODY_UPDATE_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
         expandableRowTemplate: 'views/pages/incidentChannelsTemplate.html',
@@ -158,4 +158,4 @@ function incidentListCtrl($scope, $state, baseDataService, incidentService , SUC
         }
     }
 
-}
+})

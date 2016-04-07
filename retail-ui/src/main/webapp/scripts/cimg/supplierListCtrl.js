@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-function supplierListCtrl($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, SUPPLIER_ALL_URI, SUPPLIER_GET_URI) {
+cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, SUPPLIER_ALL_URI, SUPPLIER_GET_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
@@ -45,4 +45,4 @@ function supplierListCtrl($scope, $state, $timeout,baseDataService, SUCCESS, FAI
             $state.go('dashboard.createSupplier');
         });
     }
-}
+});

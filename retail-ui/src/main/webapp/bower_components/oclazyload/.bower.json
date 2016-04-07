@@ -40,7 +40,7 @@
     "tag": "0.5.2",
     "commit": "e3bf1d25408badde748d25b2e7c114b5ed0ff96a"
   },
-  "_source": "git://github.com/ocombe/ocLazyLoad.git",
+  "_source": "https://github.com/ocombe/ocLazyLoad.git",
   "_target": "~0.5.2",
   "_originalSource": "oclazyload"
 }

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-function boqDetailListCtrl($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, BOQDETAIL_GET_PER_BOQID_URI, PRODUCT_GET_URI) {
+cimgApp.controller('boqDetailListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, BOQDETAIL_GET_PER_BOQID_URI, PRODUCT_GET_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
@@ -52,4 +52,4 @@ function boqDetailListCtrl($scope, $state, $timeout,baseDataService, SUCCESS, FA
             $state.go('dashboard.createProduct');
         });
     }
-}
+});

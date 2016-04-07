@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-function productListCtrl($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI) {
+cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
@@ -48,4 +48,4 @@ function productListCtrl($scope, $state, $timeout,baseDataService, SUCCESS, FAIL
             $state.go('dashboard.createProduct');
         });
     }
-}
+});

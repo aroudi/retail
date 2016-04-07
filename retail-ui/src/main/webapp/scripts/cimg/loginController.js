@@ -2,7 +2,7 @@
  * Created by arash on 13/11/2015.
  */
 
-function loginController($scope, UserService, UserInfo, $location, $window, $state, LOGIN_URI, baseDataService) {
+cimgApp.controller('loginController', function($scope, UserService, UserInfo, $location, $window, $state, LOGIN_URI, baseDataService) {
     $scope.message = "";
     /*
     if ($window.sessionStorage.userInfo !=undefined ){
@@ -69,5 +69,5 @@ function loginController($scope, UserService, UserInfo, $location, $window, $sta
             }
         });
     };
-}
+});
 

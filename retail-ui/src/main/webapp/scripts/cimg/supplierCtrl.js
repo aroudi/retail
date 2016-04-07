@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-function supplierCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAILURE, SUPPLIER_ADD_URI, SUPPLIER_STATUS_URI, SUPPLIER_TYPE_URI) {
+cimgApp.controller('supplierCtrl', function($scope, $state, UserService, baseDataService, SUCCESS, FAILURE, SUPPLIER_ADD_URI, SUPPLIER_STATUS_URI, SUPPLIER_TYPE_URI) {
     //set default data on the page
     initPageData();
     function initPageData() {
@@ -51,4 +51,4 @@ function supplierCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAI
         //$state.go('dashboard.listFacility');
         $state.go($scope.previouseState);
     }
-}
+});

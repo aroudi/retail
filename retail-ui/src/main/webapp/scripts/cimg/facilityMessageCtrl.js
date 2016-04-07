@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-function facilityMessageCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAILURE, FACILITY_ADD_URI, ALL_LINE_URI, STATION_NAME_URI) {
+cimgApp.controller('facilityMessageCtrl', function($scope, $state, UserService, baseDataService, SUCCESS, FAILURE, FACILITY_ADD_URI, ALL_LINE_URI, STATION_NAME_URI) {
     //set default data on the page
     initPageData();
     function initPageData() {
@@ -48,4 +48,4 @@ function facilityMessageCtrl($scope, $state, UserService, baseDataService, SUCCE
         $state.go($scope.previouseState);
     }
 
-}
+})

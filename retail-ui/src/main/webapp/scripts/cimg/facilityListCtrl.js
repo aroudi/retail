@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-function facilityListCtrl($scope, $state, baseDataService, SUCCESS, FAILURE, FACILITY_ALL_URI, FACILITY_STATUS_URI, FACILITY_GET_URI) {
+cimgApp.controller('facilityListCtrl', function($scope, $state, baseDataService, SUCCESS, FAILURE, FACILITY_ALL_URI, FACILITY_STATUS_URI, FACILITY_GET_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
@@ -92,4 +92,4 @@ function facilityListCtrl($scope, $state, baseDataService, SUCCESS, FAILURE, FAC
             }
         });
     }
-}
+});

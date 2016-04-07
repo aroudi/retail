@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-function customerCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI) {
+cimgApp.controller('customerCtrl', function($scope, $state, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI) {
     //set default data on the page
     initPageData();
     function initPageData() {
@@ -47,4 +47,4 @@ function customerCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAI
         $state.go($scope.previouseState);
     }
 
-}
+});

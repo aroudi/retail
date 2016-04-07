@@ -1,7 +1,7 @@
 /**
  * Created by arash on 16/12/2014.
  */
-function UploadController($scope, $state, fileUploadService,singleFileUploadService,baseDataService, SUCCESS, FAILURE, UPLOAD_BOQ_URI) {
+cimgApp.controller('UploadController', function($scope, $state, fileUploadService,singleFileUploadService,baseDataService, SUCCESS, FAILURE, UPLOAD_BOQ_URI) {
 
     $scope.fileName ='Bill Of Quantity'
     $scope.fileSet = [
@@ -53,4 +53,4 @@ function UploadController($scope, $state, fileUploadService,singleFileUploadServ
         });
     };
     */
-}
+});

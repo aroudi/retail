@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-function productCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI) {
+cimgApp.controller('productCtrl', function($scope, $state, UserService, baseDataService, ngDialog, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI) {
     //set default data on the page
     initPageData();
     function initPageData() {
@@ -138,4 +138,17 @@ function productCtrl($scope, $state, UserService, baseDataService, SUCCESS, FAIL
         //$state.go('dashboard.listFacility');
         $state.go($scope.previouseState);
     }
-}
+
+    $scope.searchSupplier = function () {
+        ngDialog.openConfirm({
+            template:'views/pages/supplierSearch.html',
+            controller:'supplierSearchCtrl',
+            className: 'ngdialog-theme-default'
+        }).then (function (value){
+            alert('returned value = ' + value);
+        }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    };
+});
