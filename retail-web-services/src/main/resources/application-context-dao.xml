@@ -91,5 +91,13 @@
         <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
         <property name="mapperInterface" value="au.com.biztune.retail.dao.BoqDetailDao" />
     </bean>
+    <bean id="txnDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.TxnDao" />
+    </bean>
+    <bean id="paymentMediaDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.PaymentMediaDao" />
+    </bean>
 
 </beans>

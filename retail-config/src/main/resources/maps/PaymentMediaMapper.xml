@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.PaymentMediaDao">
+    <!-- result maps -->
+    <resultMap id="mediaTypeMap" type="MediaType" >
+        <id column="MEDT_ID" property="id" />
+        <result column="MEDT_NAME" property="medtName" />
+        <result column="MEDT_DESC" property="medtDesc" />
+        <result column="MEDT_CODE" property="medtCode" />
+        <result column="MEDT_REFUNDABLE" property="medtRefundable" />
+    </resultMap>
+
+    <resultMap id="paymentMediaMap" type="PaymentMedia" >
+        <id column="PAYM_ID" property="id" />
+        <result column="PAYM_NAME" property="paymName" />
+        <result column="PAYM_CODE" property="paymCode" />
+        <result column="PAYM_DISPLAY_TEXT" property="paymDisplayText" />
+        <!--association property="legalTender" column="LEGT_ID" select="au.com.biztune.retail.dao.LegalTenderDao.getLegalTenderById" /-->
+        <association property="mediaType" resultMap="mediaTypeMap" />
+    </resultMap>
+
+    <sql id="mediaTypeColumns">
+        ${alias}.MEDT_ID,
+        ${alias}.MEDT_NAME,
+        ${alias}.MEDT_DESC,
+        ${alias}.MEDT_CODE,
+        ${alias}.MEDT_REFUNDABLE
+    </sql>
+
+    <sql id="paymentMediaColumns">
+        ${alias}.PAYM_ID,
+        ${alias}.PAYM_NAME,
+        ${alias}.PAYM_CODE,
+        ${alias}.PAYM_DISPLAY_TEXT,
+        ${alias}.MEDT_REFUNDABLE,
+        ${alias}.LEGT_ID
+    </sql>
+
+    <select id="getAllMediaTypes" resultMap="mediaTypeMap" >
+        SELECT
+          <include refid="mediaTypeColumns"><property name="alias" value="mt"/></include>
+        FROM
+          MEDIA_TYPE mt
+    </select>
+
+    <select id="getAllPaymentMediaOfTypePerId" resultMap="paymentMediaMap" >
+        SELECT
+          <include refid="paymentMediaColumns"><property name="alias" value="pm"/></include>,
+          <include refid="mediaTypeColumns"><property name="alias" value="mt"/></include>
+        FROM
+        PAYMENT_MEDIA pm inner join MEDIA_TYPE mt on (pm.MEDT_ID=mt.MEDT_ID)
+        WHERE
+            mt.MEDT_ID=#{value}
+    </select>
+
+    <select id="getPaymentMediaPerId" resultMap="paymentMediaMap" >
+        SELECT
+        <include refid="paymentMediaColumns"><property name="alias" value="pm"/></include>,
+        <include refid="mediaTypeColumns"><property name="alias" value="mt"/></include>
+        FROM
+        PAYMENT_MEDIA pm inner join MEDIA_TYPE mt on (pm.MEDT_ID=mt.MEDT_ID)
+        WHERE
+        pm.PAYM_ID=#{value}
+    </select>
+
+</mapper>

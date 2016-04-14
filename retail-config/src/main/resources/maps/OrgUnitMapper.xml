@@ -12,11 +12,29 @@
         <association property="priceBand" column="ORGU_ID" select="au.com.biztune.retail.dao.PriceBandDao.getActivePriceBandPerOrgUnitId" />
     </resultMap>
 
+    <resultMap id="storeMap" type="Store" >
+        <id column="STORE_ID" property="id" />
+        <result column="COMPANY_CODE" property="companyCode" />
+        <result column="STORE_CODE" property="storeCode" />
+        <result column="STORE_NAME" property="storeName" />
+        <result column="STORE_STATUS" property="storeStatus" />
+        <association property="orgUnit" column="ORGU_ID" select="getOrgUnitById" />
+    </resultMap>
+
     <sql id="orguColumns">
         ${alias}.ORGU_ID,
         ${alias}.ORGU_CODE,
         ${alias}.ORGU_NAME,
         ${alias}.ORGU_DESC
+    </sql>
+
+    <sql id="storeColumns">
+        ${alias}.STORE_ID,
+        ${alias}.COMPANY_CODE,
+        ${alias}.STORE_CODE,
+        ${alias}.STORE_NAME,
+        ${alias}.STORE_STATUS,
+        ${alias}.ORGU_ID
     </sql>
 
     <select id="getOrgUnitByTypeAndCode" resultMap="orgUnitMap" >
@@ -26,4 +44,23 @@
         INNER JOIN org_type orgt on (orgt.orgt_type_id = orgu.orgt_type_id)
         WHERE orgt.orgt_type_code = #{param1} and orgu.orgu_code = #{param2}
     </select>
+    <select id="getOrgUnitById" resultMap="orgUnitMap" >
+        SELECT
+        <include refid="orguColumns"><property name="alias" value="orgu"/></include>
+        FROM org_unit orgu
+        WHERE orgu.ORGU_ID=#{value}
+    </select>
+    <select id="getStoreByCode" resultMap="storeMap" >
+        SELECT
+        <include refid="storeColumns"><property name="alias" value="store"/></include>
+        FROM STORE store
+        WHERE store.STORE_CODE=#{value}
+    </select>
+    <select id="getStoreById" resultMap="storeMap" >
+        SELECT
+        <include refid="storeColumns"><property name="alias" value="store"/></include>
+        FROM STORE store
+        WHERE store.STORE_ID=#{value}
+    </select>
+
 </mapper>

@@ -26,6 +26,12 @@
         <typeAlias type="au.com.biztune.retail.domain.Project" alias="Project" />
         <typeAlias type="au.com.biztune.retail.domain.BillOfQuantity" alias="BillOfQuantity" />
         <typeAlias type="au.com.biztune.retail.domain.BoqDetail" alias="BoqDetail" />
+        <typeAlias type="au.com.biztune.retail.domain.MediaType" alias="MediaType" />
+        <typeAlias type="au.com.biztune.retail.domain.PaymentMedia" alias="PaymentMedia" />
+        <typeAlias type="au.com.biztune.retail.domain.Store" alias="Store" />
+        <typeAlias type="au.com.biztune.retail.domain.TxnDetail" alias="TxnDetail" />
+        <typeAlias type="au.com.biztune.retail.domain.TxnHeader" alias="TxnHeader" />
+        <typeAlias type="au.com.biztune.retail.domain.TxnMedia" alias="TxnMedia" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />
@@ -45,5 +51,7 @@
         <mapper resource="maps/ProjectMapper.xml" />
         <mapper resource="maps/BillOfQuantityMapper.xml" />
         <mapper resource="maps/BoqDetailMapper.xml" />
+        <mapper resource="maps/PaymentMediaMapper.xml" />
+        <mapper resource="maps/TxnMapper.xml" />
     </mappers>
 </configuration>

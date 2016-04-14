@@ -32,10 +32,12 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
             $scope.suppUnitOfMeasure = baseDataService.populateSelectList($scope.suppUnitOfMeasure,$scope.unitOfMeasureSet);
             $scope.productForm.prceUnitOfMeasure = baseDataService.populateSelectList($scope.productForm.prceUnitOfMeasure,$scope.unitOfMeasureSet);
         });
+        /*
         baseDataService.getBaseData(SUPPLIER_ALL_URI).then(function(response){
             $scope.supplierSet = response.data;
             $scope.supplier = baseDataService.populateSelectList($scope.supplier,$scope.supplierSet);
         });
+        */
     }
 
     function initSupplierPriceGrid() {
@@ -145,7 +147,8 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
             controller:'supplierSearchCtrl',
             className: 'ngdialog-theme-default'
         }).then (function (value){
-            alert('returned value = ' + value);
+            //alert('returned value = ' + value);
+            $scope.supplier = value;
         }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }

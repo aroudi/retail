@@ -20,8 +20,8 @@ import java.util.List;
  */
 @Component
 @Path("supplier")
-public class SupplirRest {
-    private final Logger logger = LoggerFactory.getLogger(SupplirRest.class);
+public class SupplierRest {
+    private final Logger logger = LoggerFactory.getLogger(SupplierRest.class);
     @Context
     private UriInfo uriInfo;
     @Context

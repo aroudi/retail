@@ -96,9 +96,10 @@
                                                             <div class="col-lg-4">
                                                                 <div class="form-group">
                                                                     <label>Supplier</label>
-                                                                        <select class="form-control" data-ng-model="supplier"
+                                                                        <input class="form-control" data-ng-model="supplier.supplierName" ng-disabled="true">
+                                                                        <!--select class="form-control" data-ng-model="supplier"
                                                                                 ng-options="type.supplierName for type in supplierSet" >
-                                                                        </select>
+                                                                        </select-->
                                                                         <button type="button" class="btn btn-success" ng-click="searchSupplier()">Supplier</button>
                                                                 </div >
                                                             </div>

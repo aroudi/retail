@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.TxnDao">
+    <!-- result maps -->
+    <resultMap id="txnHeaderLightMap" type="TxnHeader" >
+        <id column="TXHD_ID" property="id" />
+        <result column="TXHD_TXN_NR" property="txhdTxnNr" />
+        <result column="TXHD_ORIG_TXN_NR" property="txhdOrigTxnNr" />
+        <result column="TXHD_TRADING_DATE" property="txhdTradingDate" />
+        <result column="TXHD_OPERATOR" property="txhdOperator" />
+        <result column="TXHD_VOIDED" property="txhdVoided" />
+        <result column="TXHD_VALUE_GROSS" property="txhdValueGross" />
+        <result column="TXHD_VALUE_NETT" property="txhdValueNett" />
+        <result column="TXHD_VALUE_DUE" property="txhdValueDue" />
+        <result column="TXHD_VALUE_CHANGE" property="txhdValueChange" />
+        <result column="TXHD_VAL_ROUNDING" property="txhdValRounding" />
+        <result column="TXHD_VALUE_TAXABLE" property="txhdValueTaxable" />
+        <result column="TXHD_VALUE_TAX" property="txhdValueTax" />
+        <result column="TXHD_RECEIPT_ID" property="txhdReceiptId" />
+        <result column="TXHD_VOID_TXN_NR" property="txhdVoidTxnNr" />
+        <result column="TXHD_TAX_EXEMPT" property="medtRefundable" />
+        <result column="TXHD_REFUND_EXPIRY" property="txhdRefundExpiry" />
+        <result column="TXHD_COLLECT_DATE" property="txhdCollectDate" />
+        <association property="txhdState" column="TXHD_STATE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="txhdTxnType" column="TXHD_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+    </resultMap>
+
+    <resultMap id="txnHeaderMap" type="TxnHeader" >
+        <id column="TXHD_ID" property="id" />
+        <result column="TXHD_TXN_NR" property="txhdTxnNr" />
+        <result column="TXHD_ORIG_TXN_NR" property="txhdOrigTxnNr" />
+        <result column="TXHD_TRADING_DATE" property="txhdTradingDate" />
+        <result column="TXHD_OPERATOR" property="txhdOperator" />
+        <result column="TXHD_VOIDED" property="txhdVoided" />
+        <result column="TXHD_VALUE_GROSS" property="txhdValueGross" />
+        <result column="TXHD_VALUE_NETT" property="txhdValueNett" />
+        <result column="TXHD_VALUE_DUE" property="txhdValueDue" />
+        <result column="TXHD_VALUE_CHANGE" property="txhdValueChange" />
+        <result column="TXHD_VAL_ROUNDING" property="txhdValRounding" />
+        <result column="TXHD_VALUE_TAXABLE" property="txhdValueTaxable" />
+        <result column="TXHD_VALUE_TAX" property="txhdValueTax" />
+        <result column="TXHD_RECEIPT_ID" property="txhdReceiptId" />
+        <result column="TXHD_VOID_TXN_NR" property="txhdVoidTxnNr" />
+        <result column="TXHD_TAX_EXEMPT" property="medtRefundable" />
+        <result column="TXHD_REFUND_EXPIRY" property="txhdRefundExpiry" />
+        <result column="TXHD_COLLECT_DATE" property="txhdCollectDate" />
+        <association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" />
+        <association property="txhdState" column="TXHD_STATE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="txhdTxnType" column="TXHD_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
+        <collection property="txnDetails" javaType="ArrayList" column="TXHD_ID" ofType="TxnDetail" select="getTxnDetailPerTxhdId"/>
+        <collection property="txnMedias" javaType="ArrayList" column="TXHD_ID" ofType="TxnMedia" select="getTxnMediaPerTxhdId"/>
+
+    </resultMap>
+
+
+    <resultMap id="txnDetailMap" type="TxnDetail" >
+        <id column="TXDE_ID" property="id" />
+        <result column="TXDE_PRICE_OVRIDEN" property="txdePriceOveriden" />
+        <result column="TXDE_VALUE_LINE" property="txdeValueLine" />
+        <result column="TXDE_PROFIT_MARGIN" property="txdeProfitMargin" />
+        <result column="TXDE_VALUE_PROFIT" property="txdeValueProfit" />
+        <result column="TXDE_VALUE_GROSS" property="txdeValueGross" />
+        <result column="TXDE_TAX" property="txdeTax" />
+        <result column="TXDE_VALUE_NET" property="txdeValueNet" />
+        <result column="TXDE_QUANTITY_SOLD" property="txdeQuantitySold" />
+        <result column="TXDE_PRICE_SOLD" property="txdePriceSold" />
+        <result column="TXDE_LINE_REFUND" property="txdeLineRefund" />
+        <result column="TXDE_ITEM_VOID" property="txdeItemVoid" />
+        <result column="TXDE_SERIAL_NUMBER" property="txdeSerialNumber" />
+        <result column="TXDE_WAS_SPLIT_PCK" property="txdeWasSplitPck" />
+        <result column="TXDE_DETAIL_LEVEL" property="txdeDetailLevel" />
+        <result column="TXDE_PARENT_DETAIL" property="txdeParentDetail" />
+        <result column="TXDE_DISC_PRICE" property="txdeDiscPrice" />
+        <association property="product" column="TXDE_PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
+        <association property="unitOfMeasure" column="TXDE_UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+        <association property="txdeDetailType" column="TXDE_DETAIL_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+    </resultMap>
+
+    <resultMap id="txnMediaMap" type="TxnMedia" >
+        <id column="TXMD_ID" property="id" />
+        <result column="TXMD_AMOUNT_LOCAL" property="txmdAmountLocal" />
+        <result column="TXMD_AMNT_FOREIGN" property="txmdAmntForeign" />
+        <result column="TXMD_PAN" property="txmdPan" />
+        <result column="TXMD_VOIDED" property="txmdVoided" />
+        <association property="paymentMedia" column="PAYM_ID" select="au.com.biztune.retail.dao.PaymentMediaDao.getPaymentMediaPerId" />
+        <association property="txmdType" column="TXMD_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+    </resultMap>
+
+    <sql id="txnHeaderColumns">
+        ${alias}.TXHD_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.TXHD_TXN_NR,
+        ${alias}.ORGU_ID_ORIGINAL,
+        ${alias}.TXHD_ORIG_TXN_NR,
+        ${alias}.TXHD_TRADING_DATE,
+        ${alias}.TXHD_TXN_TYPE,
+        ${alias}.TXHD_OPERATOR,
+        ${alias}.TXHD_VALUE_GROSS,
+        ${alias}.TXHD_VALUE_NETT,
+        ${alias}.TXHD_VALUE_DUE,
+        ${alias}.TXHD_VALUE_CHANGE,
+        ${alias}.TXHD_VAL_ROUNDING,
+        ${alias}.TXHD_VALUE_TAXABLE,
+        ${alias}.TXHD_VALUE_TAX,
+        ${alias}.TXHD_RECEIPT_ID,
+        ${alias}.TXHD_VOID_TXN_NR,
+        ${alias}.TXHD_TAX_EXEMPT,
+        ${alias}.TXHD_REFUND_EXPIRY,
+        ${alias}.TXHD_COLLECT_DATE
+    </sql>
+
+    <sql id="txnDetailColumns">
+        ${alias}.TXDE_ID,
+        ${alias}.TXDE_PRICE_OVRIDEN,
+        ${alias}.TXDE_PROD_ID,
+        ${alias}.TXDE_UNOM_ID,
+        ${alias}.TXDE_VALUE_LINE,
+        ${alias}.TXDE_PROFIT_MARGIN,
+        ${alias}.TXDE_VALUE_PROFIT,
+        ${alias}.TXDE_VALUE_GROSS,
+        ${alias}.TXDE_TAX,
+        ${alias}.TXDE_VALUE_NET,
+        ${alias}.TXDE_QUANTITY_SOLD,
+        ${alias}.TXDE_PRICE_SOLD,
+        ${alias}.TXDE_LINE_REFUND,
+        ${alias}.TXDE_ITEM_VOID,
+        ${alias}.TXDE_SERIAL_NUMBER,
+        ${alias}.TXDE_WAS_SPLIT_PCK,
+        ${alias}.TXDE_DETAIL_LEVEL,
+        ${alias}.TXDE_PARENT_DETAIL,
+        ${alias}.TXDE_DETAIL_TYPE,
+        ${alias}.TXDE_DISC_PRICE,
+        ${alias}.TXDE_RETURN_ORGU_ID,
+        ${alias}.TXDE_RETURN_STORE_ID
+    </sql>
+
+    <sql id="txnMediaColumns">
+        ${alias}.TXMD_ID,
+        ${alias}.MEDT_ID,
+        ${alias}.PAYM_ID,
+        ${alias}.TXMD_TYPE,
+        ${alias}.TXMD_AMOUNT_LOCAL,
+        ${alias}.TXMD_AMNT_FOREIGN,
+        ${alias}.TXMD_PAN,
+        ${alias}.TXMD_VOIDED
+    </sql>
+
+
+    <insert id="insertTxnHeader" parameterType="TxnHeader" useGeneratedKeys="true" keyProperty="id" keyColumn="TXHD_ID">
+        INSERT INTO TXN_HEADER(
+        ORGU_ID,
+        STORE_ID,
+        TXHD_TXN_NR,
+        TXHD_STATE,
+        ORGU_ID_ORIGINAL,
+        TXHD_ORIG_TXN_NR,
+        TXHD_TRADING_DATE,
+        TXHD_TXN_TYPE,
+        TXHD_OPERATOR,
+        TXHD_VOIDED,
+        TXHD_VALUE_GROSS,
+        TXHD_VALUE_NETT,
+        TXHD_VALUE_DUE,
+        TXHD_VALUE_CHANGE,
+        TXHD_VAL_ROUNDING,
+        TXHD_VALUE_TAXABLE,
+        TXHD_VALUE_TAX,
+        TXHD_RECEIPT_ID,
+        CUSTOMER_ID,
+        TXHD_VOID_TXN_NR,
+        TXHD_TAX_EXEMPT,
+        TXHD_REFUND_EXPIRY,
+        TXHD_COLLECT_DATE
+        ) VALUES (
+        #{orgUnit.id},
+        #{store.id},
+        #{txhdTxnNr}
+        <if test="txhdState != null">
+            ,#{txhdState.id}
+        </if>
+        <if test="txhdState == null">
+            ,null
+        </if>
+        <if test="orgUnitOriginal != null">
+            ,#{orgUnitOriginal.id}
+        </if>
+        <if test="orgUnitOriginal == null">
+            ,null
+        </if>
+        <if test="txhdOrigTxnNr != null">
+            ,#{txhdOrigTxnNr}
+        </if>
+        <if test="txhdOrigTxnNr == null">
+            ,null
+        </if>
+        <if test="txhdTradingDate != null">
+            ,#{txhdTradingDate}
+        </if>
+        <if test="txhdTradingDate == null">
+            ,null
+        </if>
+        <if test="txhdTxnType != null">
+            ,#{txhdTxnType.id}
+        </if>
+        <if test="txhdTxnType == null">
+            ,null
+        </if>
+        <if test="txhdOperator != null">
+            ,#{txhdOperator}
+        </if>
+        <if test="txhdOperator == null">
+            ,null
+        </if>
+        <if test="txhdVoided != null">
+            ,#{txhdVoided}
+        </if>
+        <if test="txhdVoided == null">
+            ,null
+        </if>
+        <if test="txhdValueGross != null">
+            ,#{txhdValueGross}
+        </if>
+        <if test="txhdValueGross == null">
+            ,null
+        </if>
+        <if test="txhdValueNett != null">
+            ,#{txhdValueNett}
+        </if>
+        <if test="txhdValueNett == null">
+            ,null
+        </if>
+        <if test="txhdValueDue != null">
+            ,#{txhdValueDue}
+        </if>
+        <if test="txhdValueDue == null">
+            ,null
+        </if>
+
+        <if test="txhdValueChange != null">
+            ,#{txhdValueChange}
+        </if>
+        <if test="txhdValueChange == null">
+            ,null
+        </if>
+        <if test="txhdValRounding != null">
+            ,#{txhdValRounding}
+        </if>
+        <if test="txhdValRounding == null">
+            ,null
+        </if>
+        <if test="txhdValueTaxable != null">
+            ,#{txhdValueTaxable}
+        </if>
+        <if test="txhdValueTaxable == null">
+            ,null
+        </if>
+        <if test="txhdValueTax != null">
+            ,#{txhdValueTax}
+        </if>
+        <if test="txhdValueTax == null">
+            ,null
+        </if>
+        <if test="txhdReceiptId != null">
+            ,#{txhdReceiptId}
+        </if>
+        <if test="txhdReceiptId == null">
+            ,null
+        </if>
+        <if test="customer != null">
+            ,#{customer.id}
+        </if>
+        <if test="customer == null">
+            ,null
+        </if>
+        <if test="txhdVoidTxnNr != null">
+            ,#{txhdVoidTxnNr}
+        </if>
+        <if test="txhdVoidTxnNr == null">
+            ,null
+        </if>
+        <if test="txhdTaxExempt != null">
+            ,#{txhdTaxExempt}
+        </if>
+        <if test="txhdTaxExempt == null">
+            ,null
+        </if>
+        <if test="txhdRefundExpiry != null">
+            ,#{txhdRefundExpiry}
+        </if>
+        <if test="txhdRefundExpiry == null">
+            ,null
+        </if>
+        <if test="txhdCollectDate != null">
+            ,#{txhdCollectDate}
+        </if>
+        <if test="txhdCollectDate == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+
+    <insert id="insertTxnDetail" parameterType="TxnDetail" useGeneratedKeys="true" keyProperty="id" keyColumn="TXDE_ID">
+        INSERT INTO TXN_DETAIL(
+        ORGU_ID,
+        STORE_ID,
+        TXHD_ID,
+        TXDE_PRICE_OVRIDEN,
+        TXDE_PROD_ID,
+        TXDE_UNOM_ID,
+        TXDE_VALUE_LINE,
+        TXDE_PROFIT_MARGIN,
+        TXDE_VALUE_PROFIT,
+        TXDE_VALUE_GROSS,
+        TXDE_TAX,
+        TXDE_VALUE_NET,
+        TXDE_QUANTITY_SOLD
+        TXDE_PRICE_SOLD,
+        TXDE_LINE_REFUND,
+        TXDE_ITEM_VOID,
+        TXDE_SERIAL_NUMBER,
+        TXDE_WAS_SPLIT_PCK,
+        TXDE_DETAIL_LEVEL,
+        TXDE_PARENT_DETAIL,
+        TXDE_DETAIL_TYPE,
+        TXDE_DISC_PRICE,
+        TXDE_RETURN_ORGU_ID,
+        TXDE_RETURN_STORE_ID
+        ) VALUES (
+        #{orgUnit.id},
+        #{store.id},
+        #{txhdId}
+        <if test="txdePriceOveriden != null">
+            ,#{txdePriceOveriden}
+        </if>
+        <if test="txdePriceOveriden == null">
+            ,null
+        </if>
+        <if test="product != null">
+            ,#{product.id}
+        </if>
+        <if test="product == null">
+            ,null
+        </if>
+        <if test="unitOfMeasure != null">
+            ,#{unitOfMeasure.id}
+        </if>
+        <if test="unitOfMeasure == null">
+            ,null
+        </if>
+        <if test="txdeValueLine != null">
+            ,#{txdeValueLine}
+        </if>
+        <if test="txdeValueLine == null">
+            ,null
+        </if>
+        <if test="txdeProfitMargin != null">
+            ,#{txdeProfitMargin}
+        </if>
+        <if test="txdeProfitMargin == null">
+            ,null
+        </if>
+        <if test="txdeValueProfit != null">
+            ,#{txdeValueProfit}
+        </if>
+        <if test="txdeValueProfit == null">
+            ,null
+        </if>
+        <if test="txdeValueGross != null">
+            ,#{txdeValueGross}
+        </if>
+        <if test="txdeValueGross == null">
+            ,null
+        </if>
+
+        <if test="txdeTax != null">
+            ,#{txdeTax}
+        </if>
+        <if test="txdeTax == null">
+            ,null
+        </if>
+
+        <if test="txdeValueNet != null">
+            ,#{txdeValueNet}
+        </if>
+        <if test="txdeValueNet == null">
+            ,null
+        </if>
+
+        <if test="txhdValueDue != null">
+            ,#{txhdValueDue}
+        </if>
+        <if test="txhdValueDue == null">
+            ,null
+        </if>
+
+        <if test="txdeQuantitySold != null">
+            ,#{txdeQuantitySold}
+        </if>
+        <if test="txdeQuantitySold == null">
+            ,null
+        </if>
+
+        <if test="txdePriceSold != null">
+            ,#{txdePriceSold}
+        </if>
+        <if test="txdePriceSold == null">
+            ,null
+        </if>
+
+        <if test="txdeLineRefund != null">
+            ,#{txdeLineRefund}
+        </if>
+        <if test="txdeLineRefund == null">
+            ,null
+        </if>
+
+        <if test="txdeItemVoid != null">
+            ,#{txdeItemVoid}
+        </if>
+        <if test="txdeItemVoid == null">
+            ,null
+        </if>
+        <if test="txhdReceiptId != null">
+            ,#{txhdReceiptId}
+        </if>
+        <if test="txhdReceiptId == null">
+            ,null
+        </if>
+
+        <if test="txdeSerialNumber != null">
+            ,#{txdeSerialNumber}
+        </if>
+        <if test="txdeSerialNumber == null">
+            ,null
+        </if>
+
+        <if test="txdeWasSplitPck != null">
+            ,#{txdeWasSplitPck}
+        </if>
+        <if test="txdeWasSplitPck == null">
+            ,null
+        </if>
+
+        <if test="txdeDetailLevel != null">
+            ,#{txdeDetailLevel}
+        </if>
+        <if test="txdeDetailLevel == null">
+            ,null
+        </if>
+
+        <if test="txdeParentDetail != null">
+            ,#{txdeParentDetail}
+        </if>
+        <if test="txdeParentDetail == null">
+            ,null
+        </if>
+
+        <if test="txdeDetailType != null">
+            ,#{txdeDetailType.id}
+        </if>
+        <if test="txdeDetailType == null">
+            ,null
+        </if>
+
+        <if test="txdeDiscPrice != null">
+            ,#{txdeDiscPrice}
+        </if>
+        <if test="txdeDiscPrice == null">
+            ,null
+        </if>
+
+        <if test="txdeReturnOrguId != null">
+            ,#{txdeReturnOrguId}
+        </if>
+        <if test="txdeReturnOrguId == null">
+            ,null
+        </if>
+        <if test="txdeReturnStoreId != null">
+            ,#{txdeReturnStoreId}
+        </if>
+        <if test="txdeReturnStoreId == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+
+    <insert id="insertTxnMedia" parameterType="TxnMedia" useGeneratedKeys="true" keyProperty="id" keyColumn="TXMD_ID">
+        INSERT INTO TXN_MEDIA(
+        ORGU_ID,
+        STORE_ID,
+        TXHD_ID,
+        MEDT_ID,
+        PAYM_ID,
+        TXMD_TYPE,
+        TXMD_AMOUNT_LOCAL,
+        TXMD_AMNT_FOREIGN,
+        TXMD_PAN,
+        TXMD_VOIDED
+        ) VALUES (
+        #{orgUnit.id},
+        #{store.id},
+        #{txhdId}
+        <if test="medtId != null">
+            ,#{medtId}
+        </if>
+        <if test="medtId == null">
+            ,null
+        </if>
+
+        <if test="paymentMedia != null">
+            ,#{paymentMedia.id}
+        </if>
+        <if test="paymentMedia == null">
+            ,null
+        </if>
+
+        <if test="txmdType != null">
+            ,#{txmdType.ID}
+        </if>
+        <if test="txmdType == null">
+            ,null
+        </if>
+
+        <if test="txmdAmountLocal != null">
+            ,#{txmdAmountLocal}
+        </if>
+        <if test="txmdAmountLocal == null">
+            ,null
+        </if>
+
+        <if test="txmdAmntForeign != null">
+            ,#{txmdAmntForeign}
+        </if>
+        <if test="txmdAmntForeign == null">
+            ,null
+        </if>
+
+        <if test="txmdPan != null">
+            ,#{txmdPan}
+        </if>
+        <if test="txmdPan == null">
+            ,null
+        </if>
+
+        <if test="txmdStartDate != null">
+            ,#{txmdStartDate}
+        </if>
+        <if test="txmdStartDate == null">
+            ,null
+        </if>
+
+        <if test="txmdExpiryDate != null">
+            ,#{txmdExpiryDate}
+        </if>
+        <if test="txmdExpiryDate == null">
+            ,null
+        </if>
+
+        <if test="txmdVoided != null">
+            ,#{txmdVoided}
+        </if>
+        <if test="txmdVoided == null">
+            ,null
+        </if>
+
+        )
+    </insert>
+
+
+    <select id="getTxnDetailPerTxhdId" resultMap="txnDetailMap" >
+        SELECT
+          <include refid="txnDetailColumns"><property name="alias" value="txde"/></include>
+        FROM
+          TXN_DETAIL txde
+        WHERE txde.txhd_id=#{value}
+    </select>
+
+    <select id="getTxnMediaPerTxhdId" resultMap="txnMediaMap" >
+        SELECT
+        <include refid="txnMediaColumns"><property name="alias" value="txmd"/></include>
+        FROM
+        TXN_MEDIA txmd
+        WHERE txmd.txhd_id=#{value}
+    </select>
+
+    <select id="getTxnHeaderPerStoreIdAndCustomerId" resultMap="txnHeaderLightMap" >
+        SELECT
+        <include refid="txnHeaderColumns"><property name="alias" value="txhd"/></include>
+        FROM
+        TXN_HEADER txhd
+        WHERE txhd.STORE_ID=#{param1} AND txhd.CUSTOMER_ID =#{param2}
+    </select>
+
+    <select id="getTxnHeaderPerStoreId" resultMap="txnHeaderLightMap" >
+        SELECT
+        <include refid="txnHeaderColumns"><property name="alias" value="txhd"/></include>
+        FROM
+        TXN_HEADER txhd
+        WHERE txhd.STORE_ID=#{value}
+    </select>
+
+    <select id="getTxnHeaderPerStoreIdAndCustomerIdAndTypeId" resultMap="txnHeaderLightMap" >
+        SELECT
+        <include refid="txnHeaderColumns"><property name="alias" value="txhd"/></include>
+        FROM
+        TXN_HEADER txhd
+        WHERE txhd.STORE_ID=#{param1} AND txhd.CUSTOMER_ID =#{param2} AND txhd.TXHD_TXN_TYPE=#{param3}
+    </select>
+    <select id="getTxnHeaderPerTxhdId" resultMap="txnHeaderMap" >
+        SELECT
+        <include refid="txnHeaderColumns"><property name="alias" value="txhd"/></include>
+        FROM
+        TXN_HEADER txhd
+        WHERE txhd.TXHD_ID = #{value}
+    </select>
+
+</mapper>
