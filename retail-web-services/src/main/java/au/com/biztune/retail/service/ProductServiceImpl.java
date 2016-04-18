@@ -260,4 +260,18 @@ public class ProductServiceImpl implements ProductService {
         productDao.deleteProdOrguLink(productForm.getProuId());
     }
 
+    /**
+     * get product object per sku.
+     * @param skuCode skuCode
+     * @return Product
+     */
+    public Product getProductPerSku(String skuCode) {
+        try {
+            return productDao.getProductPerSku(skuCode);
+
+        } catch (Exception e) {
+            logger.error("Error in getting product per sku:", e);
+            return null;
+        }
+    }
 }

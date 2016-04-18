@@ -95,12 +95,11 @@ public class CustomerRest {
      * @param code code.
      * @return Customer
      */
-    /*
     @GET
-    @Path("/get/{code}")
+    @Path("/getByCode/{code}")
     @Produces(MediaType.APPLICATION_JSON)
     public Customer getCustomerByCode (@PathParam("code") String code) {
         return customerService.getCustomerByCode(code);
     }
-    */
+
 }

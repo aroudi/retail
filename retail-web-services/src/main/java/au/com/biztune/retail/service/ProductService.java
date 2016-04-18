@@ -30,5 +30,10 @@ public interface ProductService {
      * @return ProductForm
      */
     ProductForm getProductDetail(long prodId);
-
+    /**
+     * get product object per sku.
+     * @param skuCode skuCode
+     * @return Product
+     */
+    Product getProductPerSku(String skuCode);
 }

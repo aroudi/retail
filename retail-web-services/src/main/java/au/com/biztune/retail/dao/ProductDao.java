@@ -65,6 +65,14 @@ public interface ProductDao {
      */
     Product getProductPerReference(String reference);
 
+
+    /**
+     * get all product per orguId and reference.
+     * @param skuCode skuCode
+     * @return List of Product
+     */
+    Product getProductPerSku(String skuCode);
+
     /**
      * delete product orgu link.
      * @param prouId prouId

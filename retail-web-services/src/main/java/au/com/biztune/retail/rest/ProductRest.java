@@ -2,6 +2,7 @@
 
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.domain.Product;
 import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.service.ProductService;
@@ -60,7 +61,7 @@ public class ProductRest {
     /**
      * get supplier by Id.
      * @param id id.
-     * @return Supplier
+     * @return CommonResponse
      */
     @GET
     @Path("/get/{id}")
@@ -68,5 +69,18 @@ public class ProductRest {
     public ProductForm getProductById (@PathParam("id") long id) {
         return productService.getProductDetail(id);
     }
+
+    /**
+     * get supplier by Id.
+     * @param skuCode skuCode.
+     * @return Product
+     */
+    @GET
+    @Path("/getBySku/{skuCode}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Product getProductBySkuCode (@PathParam("skuCode") String skuCode) {
+        return productService.getProductPerSku(skuCode);
+    }
+
 
 }

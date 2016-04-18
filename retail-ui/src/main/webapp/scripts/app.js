@@ -24,7 +24,10 @@ var cimgApp = angular
     'treeControl',
     'angularFileUpload',
     'loadDisplay',
-    'ngDialog'
+    'ngDialog',
+    'ui.grid.edit',
+    'ui.grid.rowEdit',
+    'ui.grid.cellNav'
   ]);
 
 /*
@@ -54,7 +57,8 @@ var service_uri = {
     'PRODUCT_ADD_URI' : 'product/add',
     'PRODUCT_GET_URI' : 'product/get',
     'UPLOAD_BOQ_URI'  : 'billOfQuantity/upload',
-    'BOQDETAIL_GET_PER_BOQID_URI' : 'billOfQuantity/getPerBoqId/'
+    'MEDIA_TYPE_ALL_URI' : 'paymentMedia/getAllMediaTypes',
+    'PAYMENT_MEDIA_OF_TYPE_URI' : 'paymentMedia/getOfMediatype/'
 
     //
 }
