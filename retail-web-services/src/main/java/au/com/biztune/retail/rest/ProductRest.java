@@ -82,5 +82,15 @@ public class ProductRest {
         return productService.getProductPerSku(skuCode);
     }
 
+    /**
+     * Get All Product Item Sales.
+     * @return List ProductSaleItem
+     */
+    @GET
+    @Path("/allProductSaleItem")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List getAllProductSaleItems() {
+        return productService.getAllProductsAsSaleItem();
+    }
 
 }

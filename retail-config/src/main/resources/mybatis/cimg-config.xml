@@ -32,6 +32,7 @@
         <typeAlias type="au.com.biztune.retail.domain.TxnDetail" alias="TxnDetail" />
         <typeAlias type="au.com.biztune.retail.domain.TxnHeader" alias="TxnHeader" />
         <typeAlias type="au.com.biztune.retail.domain.TxnMedia" alias="TxnMedia" />
+        <typeAlias type="au.com.biztune.retail.domain.ProductSaleItem" alias="ProductSaleItem" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />

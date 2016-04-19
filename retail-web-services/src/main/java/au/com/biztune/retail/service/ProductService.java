@@ -1,6 +1,7 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.Product;
+import au.com.biztune.retail.domain.ProductSaleItem;
 import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.response.CommonResponse;
 
@@ -36,4 +37,22 @@ public interface ProductService {
      * @return Product
      */
     Product getProductPerSku(String skuCode);
+
+    /**
+     * get all products as Sale Items.
+     * @return List of ProductSaleItem
+     */
+    List<ProductSaleItem> getAllProductsAsSaleItem();
+    /**
+     * get product object per sku.
+     * @param skuCode skuCode
+     * @return Product
+     */
+    ProductSaleItem getProductSaleItemPerSku(String skuCode);
+    /**
+     * get product object per sku.
+     * @param reference reference
+     * @return Product
+     */
+    ProductSaleItem getProductSaleItemPerReference(String reference);
 }

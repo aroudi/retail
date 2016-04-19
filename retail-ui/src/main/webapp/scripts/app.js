@@ -58,7 +58,8 @@ var service_uri = {
     'PRODUCT_GET_URI' : 'product/get',
     'UPLOAD_BOQ_URI'  : 'billOfQuantity/upload',
     'MEDIA_TYPE_ALL_URI' : 'paymentMedia/getAllMediaTypes',
-    'PAYMENT_MEDIA_OF_TYPE_URI' : 'paymentMedia/getOfMediatype/'
+    'PAYMENT_MEDIA_OF_TYPE_URI' : 'paymentMedia/getOfMediatype/',
+    'PRODUCT_SALE_ITEM_ALL_URI' : 'product/allProductSaleItem'
 
     //
 }

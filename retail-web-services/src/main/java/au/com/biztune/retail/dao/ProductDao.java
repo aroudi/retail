@@ -2,6 +2,7 @@ package au.com.biztune.retail.dao;
 
 import au.com.biztune.retail.domain.ProdOrguLink;
 import au.com.biztune.retail.domain.Product;
+import au.com.biztune.retail.domain.ProductSaleItem;
 import au.com.biztune.retail.domain.ProuTxrlLink;
 
 import java.util.List;
@@ -90,4 +91,33 @@ public interface ProductDao {
      * @param prodId prodId
      */
     void deleteProduct(long prodId);
+
+    /**
+     * get all product Sale Items per orgunitid. this is used for Transaction Sale.
+     * @param orguId orguId
+     * @return List of Product
+     */
+    List<ProductSaleItem> getAllProductSaleItemsPerOrgUnitId(long orguId);
+
+    /**
+     * get Product Sale Item per reference.
+     * @param reference reference
+     * @return List of Product
+     */
+    ProductSaleItem getProductSaleItemPerReference(String reference);
+
+    /**
+     * get Product Sale Item per sku.
+     * @param sku sku
+     * @return List of Product
+     */
+    ProductSaleItem getProductSaleItemPerSku(String sku);
+
+
+    /**
+     * get Product Sale Item per id.
+     * @param prodId prodId
+     * @return List of ProductSaleItem
+     */
+    ProductSaleItem getProductSaleItemPerProdId(long prodId);
 }

@@ -1,10 +1,9 @@
 package au.com.biztune.retail.form;
 
 import au.com.biztune.retail.domain.ConfigCategory;
-import au.com.biztune.retail.domain.Product;
+import au.com.biztune.retail.domain.ProductSaleItem;
 import au.com.biztune.retail.domain.UnitOfMeasure;
 
-import java.util.List;
 
 /**
  * Created by arash on 15/04/2016.
@@ -12,7 +11,7 @@ import java.util.List;
 public class TxnDetailForm {
     private long id;
     private boolean txdePriceOveriden;
-    private Product product;
+    private ProductSaleItem product;
     private UnitOfMeasure unitOfMeasure;
     private double txdeValueLine;
     private double txdeProfitMargin;
@@ -25,7 +24,6 @@ public class TxnDetailForm {
     private boolean txdeLineRefund;
     private boolean txdeItemVoid;
     private ConfigCategory txdeDetailType;
-    private List<TxnDetailForm> txnDetailFormList;
 
     public long getId() {
         return id;
@@ -43,11 +41,11 @@ public class TxnDetailForm {
         this.txdePriceOveriden = txdePriceOveriden;
     }
 
-    public Product getProduct() {
+    public ProductSaleItem getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(ProductSaleItem product) {
         this.product = product;
     }
 
@@ -147,11 +145,4 @@ public class TxnDetailForm {
         this.txdeDetailType = txdeDetailType;
     }
 
-    public List<TxnDetailForm> getTxnDetailFormList() {
-        return txnDetailFormList;
-    }
-
-    public void setTxnDetailFormList(List<TxnDetailForm> txnDetailFormList) {
-        this.txnDetailFormList = txnDetailFormList;
-    }
 }

@@ -18,10 +18,18 @@ public interface PriceDao {
 
     /**
      * get Product Price per code.
+     * @param prodId prodId
      * @param priceCode priceCode
      * @return Price
      */
-    Price getProductPricePerCode(String priceCode);
+    Price getProductPricePerProdIdAndCode(long prodId, String priceCode);
+
+    /**
+     * get Product Selling Price per Product Id.
+     * @param  prodId prodId
+     * @return Price.
+     */
+    Price getProductSellPricePerProdId(long prodId);
 
     /**
      * get Product Price Per Id.

@@ -34,7 +34,6 @@
         ${alias}.PAYM_NAME,
         ${alias}.PAYM_CODE,
         ${alias}.PAYM_DISPLAY_TEXT,
-        ${alias}.MEDT_REFUNDABLE,
         ${alias}.LEGT_ID
     </sql>
 

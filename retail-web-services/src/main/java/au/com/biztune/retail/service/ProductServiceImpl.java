@@ -274,4 +274,47 @@ public class ProductServiceImpl implements ProductService {
             return null;
         }
     }
+    /**
+     * get all products as Sale Items.
+     * @return List of ProductSaleItem
+     */
+    public List<ProductSaleItem> getAllProductsAsSaleItem() {
+        try {
+            return productDao.getAllProductSaleItemsPerOrgUnitId(sessionState.getOrgUnit().getId());
+
+        } catch (Exception e) {
+            logger.error("Error in retrieving sale item list");
+            return null;
+        }
+    }
+
+    /**
+     * get product object per sku.
+     * @param skuCode skuCode
+     * @return Product
+     */
+    public ProductSaleItem getProductSaleItemPerSku(String skuCode) {
+        try {
+            return productDao.getProductSaleItemPerSku(skuCode);
+
+        } catch (Exception e) {
+            logger.error("Error in getting product sale item per sku:", e);
+            return null;
+        }
+    }
+
+    /**
+     * get product object per sku.
+     * @param reference reference
+     * @return Product
+     */
+    public ProductSaleItem getProductSaleItemPerReference(String reference) {
+        try {
+            return productDao.getProductSaleItemPerReference(reference);
+
+        } catch (Exception e) {
+            logger.error("Error in getting product sale item per sku:", e);
+            return null;
+        }
+    }
 }

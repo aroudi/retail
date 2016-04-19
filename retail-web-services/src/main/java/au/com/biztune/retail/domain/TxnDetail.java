@@ -9,7 +9,7 @@ public class TxnDetail {
     private long storeId;
     private long txhdId;
     private boolean txdePriceOveriden;
-    private Product product;
+    private ProductSaleItem product;
     private UnitOfMeasure unitOfMeasure;
     private double txdeValueLine;
     private double txdeProfitMargin;
@@ -70,11 +70,11 @@ public class TxnDetail {
         this.txdePriceOveriden = txdePriceOveriden;
     }
 
-    public Product getProduct() {
+    public ProductSaleItem getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(ProductSaleItem product) {
         this.product = product;
     }
 

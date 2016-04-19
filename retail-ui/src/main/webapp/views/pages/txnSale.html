@@ -38,6 +38,9 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <button type="button" class="btn btn-success" ng-click="searchProduct()">Add Product</button>
+                            </div>
+                            <div class="row">
                                 <div class="col-lg-12">
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
@@ -45,7 +48,7 @@
                                         </div>
                                         <div class="panel-body">
                                             <div class="row">
-                                                <div ui-grid="gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav class="grid"></div>
+                                                <div ui-grid="txnDetailList" ui-grid-edit ui-grid-row-edit ui-grid-cellNav class="grid"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -83,28 +86,51 @@
                                                                     </div>
                                                                 </div >
                                                             </div>
-                                                            <div class="col-lg-4">
-                                                                <div class="row">
-                                                                    <label>Subtotal</label>
-                                                                    <input class="form-control">
+                                                            <div class="col-lg-1">
+                                                                <div class="col-lg-2">
                                                                 </div>
-                                                                <div class="row">
-                                                                    <label>Discount</label>
-                                                                    <input class="form-control">
+                                                                <div class="col-lg-12">
                                                                 </div>
-                                                                <div class="row">
-                                                                    <label>Rounding</label>
-                                                                    <input class="form-control">
+                                                                <div class="col-lg-12">
+                                                                    <table>
+                                                                        <tr></tr><tr></tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <!--<button type="button" class="btn btn-outline btn-primary" ng-click="addTransposition()">Add</button> -->
+                                                                                <a href=""><i tooltip="Add to the list" tooltip-placement="bottom" class="fa fa-long-arrow-right fa-2x" ng-click="addTxnMedia()" ></i> </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <!--<button type="button" class="btn btn-outline btn-primary" ng-click="removeTransposition()">Remove</button> -->
+                                                                                <a href=""><i tooltip="Remove from list" tooltip-placement="bottom" class="fa fa-long-arrow-left fa-2x" ng-click="removeTxnMedia()"></i> </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
                                                                 </div>
-                                                                <div class="row">
-                                                                    <label>Total</label>
-                                                                    <input class="form-control">
-                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-7">
+                                                                <div id="txnMediaGrid" ui-grid ="txnMediaList" class="grid" ui-grid-selection style="height:200px;" ></div>
                                                             </div>
                                                         </div>
                                                     </div >
-                                                    <div class="col-lg-12">
-
+                                                    <div class="col-lg-4">
+                                                        <div class="row">
+                                                            <label>Due</label>
+                                                            <input class="form-control" data-ng-model = txnHeaderForm.txhdValueDue>
+                                                        </div>
+                                                        <div class="row">
+                                                            <label>Discount</label>
+                                                            <input class="form-control">
+                                                        </div>
+                                                        <div class="row">
+                                                            <label>Rounding</label>
+                                                            <input class="form-control" data-ng-model = txnHeaderForm.txhdValRounding>
+                                                        </div>
+                                                        <div class="row">
+                                                            <label>Total</label>
+                                                            <input class="form-control" data-ng-model = txnHeaderForm.txhdValueNett>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -115,13 +141,9 @@
 
 
                             <div class="row">
-                                <!--button type="button" class="btn btn-outline btn-warning" ng-click="">Cancel</button-->
-                                <!--button type="button" class="btn btn-outline btn-info" ng-click="">Clear</button-->
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                 <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                                <button type="button" class="btn btn-success" ng-click="createCustomer()">Submit</button>
-
-                                <!--button type="button" class="btn btn-outline btn-success" ng-click="createIncident()">Submit</button -->
+                                <button type="button" class="btn btn-success" ng-click="createTransactionSale()">Submit</button>
                             </div>
                         </form>
                     </div>
