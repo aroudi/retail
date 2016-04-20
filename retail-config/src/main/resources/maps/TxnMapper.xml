@@ -20,9 +20,10 @@
         <result column="TXHD_VALUE_TAX" property="txhdValueTax" />
         <result column="TXHD_RECEIPT_ID" property="txhdReceiptId" />
         <result column="TXHD_VOID_TXN_NR" property="txhdVoidTxnNr" />
-        <result column="TXHD_TAX_EXEMPT" property="medtRefundable" />
+        <result column="TXHD_TAX_EXEMPT" property="txhdTaxExempt" />
         <result column="TXHD_REFUND_EXPIRY" property="txhdRefundExpiry" />
         <result column="TXHD_COLLECT_DATE" property="txhdCollectDate" />
+        <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="txhdState" column="TXHD_STATE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="txhdTxnType" column="TXHD_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
@@ -43,7 +44,7 @@
         <result column="TXHD_VALUE_TAX" property="txhdValueTax" />
         <result column="TXHD_RECEIPT_ID" property="txhdReceiptId" />
         <result column="TXHD_VOID_TXN_NR" property="txhdVoidTxnNr" />
-        <result column="TXHD_TAX_EXEMPT" property="medtRefundable" />
+        <result column="TXHD_TAX_EXEMPT" property="txhdTaxExempt" />
         <result column="TXHD_REFUND_EXPIRY" property="txhdRefundExpiry" />
         <result column="TXHD_COLLECT_DATE" property="txhdCollectDate" />
         <association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" />
@@ -110,7 +111,10 @@
         ${alias}.TXHD_VOID_TXN_NR,
         ${alias}.TXHD_TAX_EXEMPT,
         ${alias}.TXHD_REFUND_EXPIRY,
-        ${alias}.TXHD_COLLECT_DATE
+        ${alias}.TXHD_COLLECT_DATE,
+        ${alias}.CUSTOMER_ID,
+        ${alias}.TXHD_STATE
+
     </sql>
 
     <sql id="txnDetailColumns">
@@ -318,7 +322,7 @@
         TXDE_VALUE_GROSS,
         TXDE_TAX,
         TXDE_VALUE_NET,
-        TXDE_QUANTITY_SOLD
+        TXDE_QUANTITY_SOLD,
         TXDE_PRICE_SOLD,
         TXDE_LINE_REFUND,
         TXDE_ITEM_VOID,
@@ -331,8 +335,8 @@
         TXDE_RETURN_ORGU_ID,
         TXDE_RETURN_STORE_ID
         ) VALUES (
-        #{orgUnit.id},
-        #{store.id},
+        #{orguId},
+        #{storeId},
         #{txhdId}
         <if test="txdePriceOveriden != null">
             ,#{txdePriceOveriden}
@@ -391,13 +395,6 @@
             ,null
         </if>
 
-        <if test="txhdValueDue != null">
-            ,#{txhdValueDue}
-        </if>
-        <if test="txhdValueDue == null">
-            ,null
-        </if>
-
         <if test="txdeQuantitySold != null">
             ,#{txdeQuantitySold}
         </if>
@@ -423,12 +420,6 @@
             ,#{txdeItemVoid}
         </if>
         <if test="txdeItemVoid == null">
-            ,null
-        </if>
-        <if test="txhdReceiptId != null">
-            ,#{txhdReceiptId}
-        </if>
-        <if test="txhdReceiptId == null">
             ,null
         </if>
 
@@ -503,8 +494,8 @@
         TXMD_PAN,
         TXMD_VOIDED
         ) VALUES (
-        #{orgUnit.id},
-        #{store.id},
+        #{orguId},
+        #{storeId},
         #{txhdId}
         <if test="medtId != null">
             ,#{medtId}
@@ -521,7 +512,7 @@
         </if>
 
         <if test="txmdType != null">
-            ,#{txmdType.ID}
+            ,#{txmdType.id}
         </if>
         <if test="txmdType == null">
             ,null
@@ -548,27 +539,12 @@
             ,null
         </if>
 
-        <if test="txmdStartDate != null">
-            ,#{txmdStartDate}
-        </if>
-        <if test="txmdStartDate == null">
-            ,null
-        </if>
-
-        <if test="txmdExpiryDate != null">
-            ,#{txmdExpiryDate}
-        </if>
-        <if test="txmdExpiryDate == null">
-            ,null
-        </if>
-
         <if test="txmdVoided != null">
             ,#{txmdVoided}
         </if>
         <if test="txmdVoided == null">
             ,null
         </if>
-
         )
     </insert>
 

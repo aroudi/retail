@@ -14,6 +14,9 @@ public class TxnHeaderForm {
     private double txhdValueGross;
     private double txhdValueNett;
     private double txhdValueDue;
+    private double txhdValueChange;
+    private double txhdValRounding;
+    private double txhdValueTax;
     private Customer customer;
     private List<TxnDetailForm> txnDetailFormList;
     private List<TxnMediaForm> txnMediaFormList;
@@ -87,5 +90,29 @@ public class TxnHeaderForm {
 
     public void setTxnMediaFormList(List<TxnMediaForm> txnMediaFormList) {
         this.txnMediaFormList = txnMediaFormList;
+    }
+
+    public double getTxhdValueChange() {
+        return txhdValueChange;
+    }
+
+    public void setTxhdValueChange(double txhdValueChange) {
+        this.txhdValueChange = txhdValueChange;
+    }
+
+    public double getTxhdValRounding() {
+        return txhdValRounding;
+    }
+
+    public void setTxhdValRounding(double txhdValRounding) {
+        this.txhdValRounding = txhdValRounding;
+    }
+
+    public double getTxhdValueTax() {
+        return txhdValueTax;
+    }
+
+    public void setTxhdValueTax(double txhdValueTax) {
+        this.txhdValueTax = txhdValueTax;
     }
 }

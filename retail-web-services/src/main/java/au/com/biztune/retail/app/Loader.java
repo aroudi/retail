@@ -2,6 +2,7 @@ package au.com.biztune.retail.app;
 
 import au.com.biztune.retail.dao.OrgUnitDao;
 import au.com.biztune.retail.domain.OrgUnit;
+import au.com.biztune.retail.domain.Store;
 import au.com.biztune.retail.session.SessionState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,8 @@ public class Loader implements ApplicationListener<ContextRefreshedEvent> {
     public void onApplicationEvent(ContextRefreshedEvent event) {
         //TODO : READ ORGUNIT_TYPE AND CODE FROM CONFIG FILE
         final OrgUnit orgUnit = orgUnitDao.getOrgUnitByTypeAndCode("COMPANY", "JOMON");
+        final Store store = orgUnitDao.getStoreByCode("JOMON_SYD");
         sessionState.setOrgUnit(orgUnit);
+        sessionState.setStore(store);
     }
 }

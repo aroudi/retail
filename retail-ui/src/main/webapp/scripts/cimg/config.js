@@ -136,6 +136,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/txnSale.html',
             access: "user"
         })
+        .state('dashboard.listSaleTransaction',{
+            url:'/listSaleTransaction',
+            controller: 'txnSaleListCtrl',
+            templateUrl:'views/pages/generalList.html',
+            access: "user"
+        })
         .state('dashboard.login',{
             url:'/login',
             controller: 'loginController',

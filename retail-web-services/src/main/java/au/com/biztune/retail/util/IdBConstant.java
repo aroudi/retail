@@ -47,4 +47,74 @@ public interface IdBConstant {
      * SUPPLIER STATUS IMPORTED.
      */
     String SUPPLIER_STATUS_IMPORTED = "IMPORTED";
+
+
+    /**
+     * TRANSACTION STATE.
+     */
+    String TYPE_TXN_STATE = "TXN_STATE";
+    /**
+     * TRANSACTION STATE - DRAFT.
+     */
+    String TXN_STATE_DRAFT = "TXN_STATE_DRAFT";
+    /**
+     * TRANSACTION STATE VOID.
+     */
+    String TXN_STATE_VOID = "TXN_STATE_VOID";
+
+    /**
+     * TRANSACTION STATE SUSPEND.
+     */
+    String TXN_STATE_SUSPEND = "TXN_STATE_SUSPEND";
+
+    /**
+     * TRANSACTION STATE SUSPEND.
+     */
+    String TXN_STATE_FINAL = "TXN_STATE_FINAL";
+
+    /**
+     * TRANSACTION TYPE.
+     */
+    String TYPE_TXN_TYPE = "TXN_TYPE";
+    /**
+     * TRANSACTION TYPE - SALE.
+     */
+    String TXN_TYPE_SALE = "TXN_TYPE_SALE";
+    /**
+     * TRANSACTION TYPE REFUND.
+     */
+    String TXN_TYPE_REFUND = "TXN_TYPE_REFUND";
+
+    /**
+     * TRANSACTION TYPE QUOTE.
+     */
+    String TXN_TYPE_QUOTE = "TXN_TYPE_QUOTE";
+
+    /**
+     * TRANSACTION LINE TYPE.
+     */
+    String TYPE_TXN_LINE_TYPE = "TXN_LINE_TYPE";
+    /**
+     * TRANSACTION LINE TYPE - SALE.
+     */
+    String TXN_LINE_TYPE_SALE = "TXN_LINE_SALE";
+    /**
+     * TRANSACTION LINE TYPE REFUND.
+     */
+    String TXN_LINE_TYPE_REFUND = "TXN_LINE_REFUND";
+
+
+    /**
+     * TRANSACTION MEDIA TYPE.
+     */
+    String TYPE_TXN_MEDIA_TYPE = "TXN_MEDIA_TYPE";
+    /**
+     * TRANSACTION MEDIA TYPE - SALE.
+     */
+    String TXN_MEDIA_TYPE_SALE = "TXN_MEDIA_SALE";
+    /**
+     * TRANSACTION MEDIA TYPE REFUND.
+     */
+    String TXN_MEDIA_TYPE_REFUND = "TXN_MEDIA_REFUND";
+
 }
