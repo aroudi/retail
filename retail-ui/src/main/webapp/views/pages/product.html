@@ -6,7 +6,7 @@
             </div>
             <div class="panel-body">
                     <div class="row">
-                        <form role="form">
+                        <form role="form" name="mainForm">
                                 <div class="col-lg-12">
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
@@ -18,19 +18,19 @@
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label>SKU</label>
-                                                            <input class="form-control" data-ng-model="productForm.prodSku">
+                                                            <input class="form-control" data-ng-model="productForm.prodSku" maxlength="60">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Reference</label>
-                                                            <input class="form-control" data-ng-model="productForm.reference">
+                                                            <input class="form-control" data-ng-model="productForm.reference" maxlength="60">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label>Product Name</label>
-                                                            <input class="form-control" data-ng-model="productForm.prodName">
+                                                            <input class="form-control" data-ng-model="productForm.prodName" maxlength="60">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-2">
@@ -48,19 +48,19 @@
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label>Description</label>
-                                                            <input class="form-control" data-ng-model="productForm.prodDesc">
+                                                            <input class="form-control" data-ng-model="productForm.prodDesc" maxlength="500">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Product Brand</label>
-                                                            <input class="form-control" data-ng-model="productForm.prodBrand">
+                                                            <input class="form-control" data-ng-model="productForm.prodBrand" maxlength="60">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Product Class</label>
-                                                            <input class="form-control" data-ng-model="productForm.prodClass">
+                                                            <input class="form-control" data-ng-model="productForm.prodClass" maxlength="30">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-2">
@@ -106,13 +106,13 @@
                                                             <div class="col-lg-4">
                                                                 <div class="form-group">
                                                                     <label>Catalogue No</label>
-                                                                    <input class="form-control" data-ng-model="suppCatalogueNo">
+                                                                    <input class="form-control" data-ng-model="suppCatalogueNo" maxlength="60">
                                                                 </div >
                                                             </div>
                                                             <div class="col-lg-4">
                                                                 <div class="form-group">
                                                                     <label>Part No</label>
-                                                                    <input class="form-control" data-ng-model="suppPartNo">
+                                                                    <input class="form-control" data-ng-model="suppPartNo" maxlength="60">
                                                                 </div >
                                                             </div>
                                                         </div>
@@ -127,28 +127,44 @@
                                                             </div>
                                                             <div class="col-lg-4">
                                                                 <div class="form-group">
-                                                                    <label>Quantity</label>
-                                                                    <input class="form-control" data-ng-model="suppUnomQty">
+                                                                    <label>Quantity:
+                                                                       <span class="btn btn-warning btn-xs" ng-show="mainForm.suppUnomQty.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                                                                    </label>
+                                                                    <input class="form-control" name="suppUnomQty" data-ng-model="suppUnomQty" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
                                                                 </div >
                                                             </div>
                                                             <div class="col-lg-4">
                                                                 <div class="form-group">
-                                                                    <label>Price</label>
-                                                                    <input class="form-control" data-ng-model="suppPrice">
+                                                                    <label>Price:
+                                                                       <span class="btn btn-warning btn-xs" ng-show="mainForm.suppPrice.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                                                                    </label>
+                                                                    <input class="form-control" data-ng-model="suppPrice" name="suppPrice" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" />
                                                                 </div >
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="form-group">
-                                                                    <label>Bulk Price</label>
-                                                                    <input class="form-control" data-ng-model="suppBulkPrice">
+                                                                    <label>Bulk Price:
+                                                                       <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkPrice.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                                                                    </label>
+                                                                    <input class="form-control" data-ng-model="suppBulkPrice" name="suppBulkPrice" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
                                                                 </div >
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="form-group">
-                                                                    <label>Bulk Quantity</label>
-                                                                    <input class="form-control" data-ng-model="suppBulkQty">
+                                                                    <label>Bulk Quantity:
+                                                                       <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkQty.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                                                                    </label>
+                                                                    <input class="form-control" name="suppBulkQty" data-ng-model="suppBulkQty" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
                                                                 </div >
                                                             </div>
                                                         </div>
@@ -201,14 +217,18 @@
                                                     </div >
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
-                                                            <label>Quantity</label>
-                                                            <input class="form-control" data-ng-model="productForm.prceUnomQty">
+                                                            <label>Quantity:
+                                                                       <span class="btn btn-warning btn-xs" ng-show="mainForm.prceUnomQty.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                                                            </label>
+                                                            <input class="form-control" name="prceUnomQty" data-ng-model="productForm.prceUnomQty" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
                                                         </div >
                                                     </div>
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label>Price</label>
-                                                            <input class="form-control" data-ng-model="productForm.prcePrice">
+                                                            <input class="form-control" data-ng-model="productForm.prcePrice" type="text" data-blur-currency maxlength="15">
                                                         </div >
                                                     </div>
                                                 </div>
@@ -217,8 +237,12 @@
                                                 <div class="col-lg-12">
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
-                                                            <label>Margin</label>
-                                                            <input class="form-control" data-ng-model="productForm.prceMargin">
+                                                            <label>Margin:
+                                                                       <span class="btn btn-warning btn-xs" ng-show="mainForm.prceMargin.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                                                            </label>
+                                                            <input class="form-control" name="prceMargin" data-ng-model="productForm.prceMargin" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-4">

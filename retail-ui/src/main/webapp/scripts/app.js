@@ -27,7 +27,8 @@ var cimgApp = angular
     'ngDialog',
     'ui.grid.edit',
     'ui.grid.rowEdit',
-    'ui.grid.cellNav'
+    'ui.grid.cellNav',
+    'ngMessages'
   ]);
 
 /*
@@ -534,6 +535,55 @@ cimgApp.directive('compile', ['$compile', function ($compile) {
                 ensureCompileRunsOnce();
             }
         );
+    };
+}]);
+
+cimgApp.directive('format', ['$filter', function ($filter) {
+    return {
+        require: '?ngModel',
+        link: function (scope, elem, attrs, ctrl) {
+            if (!ctrl) return;
+
+            ctrl.$formatters.unshift(function (a) {
+                return $filter(attrs.format)(ctrl.$modelValue)
+            });
+
+            elem.bind('blur', function(event) {
+                var plainNumber = elem.val().replace(/[^\d|\-+|\.+]/g, '');
+                //var plainNumber = elem.val().replace(/[^0-9._-]/g, '');
+                elem.val($filter(attrs.format)(plainNumber));
+            });
+        }
+    };
+}]);
+
+cimgApp.directive('blurCurrency', ['$filter', function ($filter) {
+    return {
+        require: '^ngModel',
+        scope: true,
+        link: function link(scope, el, attrs, ngModelCtrl) {
+
+            function formatter(value) {
+                value = value ? parseFloat(value.toString().replace(/[^0-9._-]/g, '')) || 0 : 0;
+                var formattedValue = $filter('currency')(value);
+                el.val(formattedValue);
+
+                ngModelCtrl.$setViewValue(value);
+                scope.$apply();
+
+                return formattedValue;
+            }
+
+            ngModelCtrl.$formatters.push(formatter);
+
+            el.bind('focus', function () {
+                //el.val('');
+            });
+
+            el.bind('blur', function () {
+                formatter(el.val());
+            });
+        }
     };
 }]);
 

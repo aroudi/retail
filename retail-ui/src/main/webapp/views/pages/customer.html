@@ -16,7 +16,7 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <form role="form">
+                        <form role="form" name="mainForm">
                             <div class="row">
                                 <div class="col-lg-12">
                                         <div class="form-group">
@@ -43,8 +43,12 @@
                                 <div class="col-lg-12">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>Code</label>
-                                            <input class="form-control" data-ng-model="customer.code">
+                                            <label>Code:
+                                               <span class="btn btn-warning btn-xs" ng-show="mainForm.code.$error.required">
+                                                    Required!
+                                               </span>
+                                            </label>
+                                            <input maxlength="99" name="code" type="text" class="form-control" data-ng-model="customer.code" required />
                                         </div >
                                     </div>
                                     <div class="col-lg-6">
@@ -70,19 +74,19 @@
                                                     <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Title</label>
-                                                            <input class="form-control" data-ng-model="customer.title">
+                                                            <input class="form-control" data-ng-model="customer.title" maxlength="10">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-3">
                                                         <div class="form-group">
                                                             <label>First Name</label>
-                                                            <input class="form-control" data-ng-model="customer.firstName">
+                                                            <input class="form-control" data-ng-model="customer.firstName" maxlength="100">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-3">
                                                         <div class="form-group">
                                                             <label>Middle Name</label>
-                                                            <input class="form-control" data-ng-model="customer.middleName">
+                                                            <input class="form-control" data-ng-model="customer.middleName" maxlength="100">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-4">
@@ -126,7 +130,7 @@
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label>Address:</label>
-                                        <input class="form-control" data-ng-model="customer.address">
+                                        <input type="text" class="form-control" data-ng-model="customer.address" maxlength="200" />
                                     </div>
                                 </div>
                             </div>
@@ -142,14 +146,18 @@
                                                 <div class="col-lg-12">
                                                     <div class="col-lg-6">
                                                         <div class="form-group">
-                                                            <label>EMail</label>
-                                                            <input class="form-control" data-ng-model="customer.email">
+                                                            <label>EMail
+                                                               <span class="btn btn-warning btn-xs" ng-show="mainForm.email.$error.email">
+                                                                    Invalid Email!
+                                                               </span>
+                                                            </label>
+                                                            <input type="email" name="email" class="form-control" data-ng-model="customer.email" maxlength="50">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-6">
                                                         <div class="form-group">
                                                             <label>Web:</label>
-                                                            <input class="form-control" data-ng-model="customer.webSite">
+                                                            <input class="form-control" data-ng-model="customer.webSite" maxlength="100">
                                                         </div >
                                                     </div >
                                                 </div>
@@ -157,20 +165,24 @@
                                             <div class="row">
                                                 <div class="col-lg-4">
                                                     <div class="form-group">
-                                                        <label>Mobile:</label>
-                                                        <input class="form-control" data-ng-model="customer.mobile">
+                                                        <label>Mobile:
+                                                               <span class="btn btn-warning btn-xs" ng-show="mainForm.mobile.$error.pattern">
+                                                                    Invalid Number!
+                                                               </span>
+                                                        </label>
+                                                        <input class="form-control" name="mobile" ng-pattern="/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/" data-ng-model="customer.mobile" maxlength="20">
                                                     </div >
                                                 </div >
                                                 <div class="col-lg-4">
                                                     <div class="form-group">
                                                         <label>Phone:</label>
-                                                        <input class="form-control" data-ng-model="customer.phone">
+                                                        <input class="form-control" data-ng-model="customer.phone" maxlength="20">
                                                     </div >
                                                 </div >
                                                 <div class="col-lg-4">
                                                     <div class="form-group">
                                                         <label>Fax:</label>
-                                                        <input class="form-control" data-ng-model="customer.fax">
+                                                        <input class="form-control" data-ng-model="customer.fax" maxlength="20">
                                                     </div >
                                                 </div >
                                             </div>
@@ -184,7 +196,7 @@
                                 <!--button type="button" class="btn btn-outline btn-info" ng-click="">Clear</button-->
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                 <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                                <button type="button" class="btn btn-success" ng-click="createCustomer()">Submit</button>
+                                <button type="button" class="btn btn-success" ng-click="createCustomer()" ng-disabled="!mainForm.$valid">Submit</button>
 
                                 <!--button type="button" class="btn btn-outline btn-success" ng-click="createIncident()">Submit</button -->
                             </div>

@@ -42,6 +42,7 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
 
     function initSupplierPriceGrid() {
         $scope.gridOptions = {
+            enableFiltering: true,
             columnDefs: [
                 {field:'id', visible:false, enableCellEdit:false},
                 {field:'solId', visible:false, enableCellEdit:false},
@@ -50,10 +51,10 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
                 {field:'catalogueNo', displayName:'CatNo',enableCellEdit:false},
                 {field:'partNo', enableCellEdit:false},
                 {field:'unitOfMeasure.unomCode', displayName:'UNOM',enableCellEdit:false},
-                {field:'unomQty',displayName:'Qty', enableCellEdit:false},
-                {field:'price', enableCellEdit:false},
-                {field:'bulkQty', enableCellEdit:false},
-                {field:'bulkPrice', enableCellEdit:false}
+                {field:'unomQty',displayName:'Qty', enableCellEdit:false, type: 'number'},
+                {field:'price', enableCellEdit:false, cellFilter: 'currency'},
+                {field:'bulkQty', enableCellEdit:false, type: 'number'},
+                {field:'bulkPrice', enableCellEdit:false, cellFilter: 'currency'}
             ]
         }
         $scope.gridOptions.enableRowSelection = false;
@@ -76,6 +77,13 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
     }
 
     $scope.addSuppProdPrice= function() {
+        if ($scope.supplier == undefined || $scope.supplier == null) {
+            alert('undefined');
+            return
+        }
+        if (checkIfSuppProdExists($scope.gridOptions.data,$scope.supplier,$scope.suppCatalogueNo) > -1) {
+            return;
+        }
         suppProdPrice = {
             "id" : -1,
             "solId" : -1,
@@ -111,6 +119,18 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
         }
         return -1;
     };
+
+    function checkIfSuppProdExists(arr,supplier, catalogNo) {
+        if (arr == undefined || supplier== undefined || catalogNo==undefined)
+            return -1;
+        for (var j = 0; j < arr.length; j++) {
+            if ( (arr[j].supplier.supplierCode === supplier.supplierCode)&&(arr[j].catalogueNo === catalogNo)) {
+                return j;
+            }
+        }
+        return -1;
+    };
+
 
     //create new product
     $scope.createProduct = function () {
