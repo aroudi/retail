@@ -12,6 +12,7 @@ public class TxnMediaForm {
     private ConfigCategory txmdType;
     private double txmdAmountLocal;
     private boolean txmdVoided;
+    private long orguId;
 
     public long getId() {
         return id;
@@ -51,5 +52,13 @@ public class TxnMediaForm {
 
     public void setTxmdVoided(boolean txmdVoided) {
         this.txmdVoided = txmdVoided;
+    }
+
+    public long getOrguId() {
+        return orguId;
+    }
+
+    public void setOrguId(long orguId) {
+        this.orguId = orguId;
     }
 }

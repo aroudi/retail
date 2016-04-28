@@ -20,6 +20,8 @@ public class TxnHeaderForm {
     private Customer customer;
     private List<TxnDetailForm> txnDetailFormList;
     private List<TxnMediaForm> txnMediaFormList;
+    private boolean txhdVoided;
+    private Store store;
     public long getId() {
         return id;
     }
@@ -114,5 +116,21 @@ public class TxnHeaderForm {
 
     public void setTxhdValueTax(double txhdValueTax) {
         this.txhdValueTax = txhdValueTax;
+    }
+
+    public boolean isTxhdVoided() {
+        return txhdVoided;
+    }
+
+    public void setTxhdVoided(boolean txhdVoided) {
+        this.txhdVoided = txhdVoided;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
     }
 }

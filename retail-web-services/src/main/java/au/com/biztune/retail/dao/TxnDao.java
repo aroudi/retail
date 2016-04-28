@@ -18,10 +18,22 @@ public interface TxnDao {
     void insertTxnHeader(TxnHeader txnHeader);
 
     /**
+     *  yupdate TxnHeader.
+     * @param txnHeader txnHeader
+     */
+    void updateTxnHeader(TxnHeader txnHeader);
+
+    /**
      * insert txn detail.
      * @param txnDetail txnDetail
      */
     void insertTxnDetail(TxnDetail txnDetail);
+
+    /**
+     * update txn detail.
+     * @param txnDetail txnDetail
+     */
+    void updateTxnDetail(TxnDetail txnDetail);
 
     /**
      * insert txnMedia.
@@ -35,6 +47,13 @@ public interface TxnDao {
      * @return List of TxnDetail
      */
     List<TxnDetail> getTxnDetailPerTxhdId(long txhdId);
+
+    /**
+     * void txnMedia.
+     * @param txnMedia txnMedia
+     */
+    void voidTxnMedia (TxnMedia txnMedia);
+
     /**
      * get TxnMedia Per TxhdId.
      * @param txhdId txhdId

@@ -36,22 +36,27 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
     }
 
     function initTxnDetail() {
+        var rowtpl='<div ng-class="{\'blue\':row.entity.txdeItemVoid==false, \'red\':row.entity.txdeItemVoid==true }"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
         $scope.txnDetailList = {
             enableFiltering: true,
             showGridFooter: true,
             showColumnFooter: true,
+            gridFooterTemplate:"<div id=\"currency-default\"> Total:{{grid.appScope.txnHeaderForm.txhdValueNett | currency}}</div>",
+            rowTemplate : rowtpl,
             columnDefs: [
                 {field: 'id', visible: false, enableCellEdit: false},
                 {field: 'product.prodSku', displayName: 'SKU', enableCellEdit: false, width: '5%'},
                 {field: 'product.prodName', displayName: 'Name', enableCellEdit: false, width: '30%'},
                 {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false, width: '5%'},
-                {field: 'txdeValueLine', displayName: 'Cost', enableCellEdit: false, cellFilter: 'currency', width: '10%'},
-                {field: 'txdeValueProfit', displayName: 'Profit', enableCellEdit: false, cellFilter: 'currency', width: '10%'},
-                {field: 'txdeValueGross', displayName: 'Gross Value', enableCellEdit: false, cellFilter: 'currency', width: '10%'},
+                {field: 'txdeValueLine', displayName: 'Cost', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
+                {field: 'txdeValueProfit', displayName: 'Profit', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
+                {field: 'txdeValueGross', displayName: 'Gross Value', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 {field: 'txdeTax', displayName: 'Tax', enableCellEdit: false, width: '5%'},
-                {field: 'txdeValueNet', displayName: 'Nett Value', enableCellEdit: false, cellFilter: 'currency', width: '10%'},
+                {field: 'txdeValueNet', displayName: 'Nett Value', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', width: '5%'},
-                {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum, enableCellEdit: false, width: '10%'}
+                {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'},
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="row.entity.id > 0" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
+
             ]
         }
         $scope.txnDetailList.enableRowSelection = true;
@@ -71,7 +76,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
             txnDetail.txdePriceSold = txnDetail.txdeQuantitySold * txnDetail.txdeValueNet;
         })
         if (!$scope.isPageNew ) {
-            $scope.txnDetailList.data = $scope.txnHeaderForm.txnDetailFormList;
+            $scope.txnDetailList.data = angular.copy($scope.txnHeaderForm.txnDetailFormList);
         }
     }
 
@@ -81,10 +86,13 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
             enableFiltering: true,
             showGridFooter: true,
             showColumnFooter:true,
+            gridFooterTemplate:"<div id=\"currency-default\"> Total:{{grid.appScope.calculateAmountPaid() | currency}}</div>",
             columnDefs: [
                 {field:'id', visible:false, enableCellEdit:false},
-                {field:'paymentMedia.paymName',displayName:'Payment Media', visible:true, enableCellEdit:false},
-                {field:'txmdAmountLocal', displayName:'Amount', visible:true, cellFilter:'currency', footerCellFilter:'currency', aggregationType: uiGridConstants.aggregationTypes.sum,  enableCellEdit:false}
+                {field:'paymentMedia.paymName',displayName:'Payment Media', visible:true, enableCellEdit:false, width: '50%'},
+                {field:'txmdAmountLocal', displayName:'Amount', visible:true, cellFilter:'currency', footerCellFilter:'currency', /*aggregationType: uiGridConstants.aggregationTypes.sum, */ enableCellEdit:false, width: '40%'},
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="row.entity.id > 0" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>', width: '10%'}
+
             ]
         }
         $scope.txnMediaList.enableRowSelection = false;
@@ -140,7 +148,14 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
     
     
     function createTxnDetail () {
+        var rowId;
+        if ($scope.txnDetailList.data == undefined && $scope.txnDetailList.data ==null) {
+            rowId = -2000;
+        } else {
+            rowId = $scope.txnDetailList.data.length - 2000;  //in case of having record, don't mixed up with existing recoreds.
+        }
         var txnDetailObject = {
+            'id':rowId,
             'product' : {},
             'txdePriceOveriden' : false,
             'unitOfMeasure' : {},
@@ -183,9 +198,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
     $scope.addTxnMedia= function() {
         var rowId;
         if ($scope.txnMediaList.data == undefined && $scope.txnMediaList.data ==null) {
-            rowId = 0;
+            rowId = -2000;
+        } else {
+            rowId = $scope.txnMediaList.data.length - 2000;  //in case of having record, don't mixed up with existing recoreds.
         }
-        var rowId = $scope.txnMediaList.data.length + 1000;  //in case of having record, don't mixed up with existing recoreds.
         txnMedia = {
             "id" : rowId,
             "paymentMedia":$scope.paymentMedia,
@@ -248,25 +264,68 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
         var valueNett = 0.00;
         var valueTax = 0.00;
         for (var i = 0; i < txnDetailList.length; i++) {
-            valueNett = valueNett + txnDetailList[i].txdeValueNet*txnDetailList[i].txdeQuantitySold ;
-            valueGross = valueGross + txnDetailList[i].txdeValueGross*txnDetailList[i].txdeQuantitySold;
-            valueTax = valueTax + txnDetailList[i].txdeTax*txnDetailList[i].txdeValueLine*txnDetailList[i].txdeQuantitySold;
+            if (!txnDetailList[i].txdeItemVoid) {
+                valueNett = valueNett + txnDetailList[i].txdeValueNet*txnDetailList[i].txdeQuantitySold ;
+                valueGross = valueGross + txnDetailList[i].txdeValueGross*txnDetailList[i].txdeQuantitySold;
+                valueTax = valueTax + txnDetailList[i].txdeTax*txnDetailList[i].txdeValueLine*txnDetailList[i].txdeQuantitySold;
+            }
         }
         $scope.txnHeaderForm.txhdValueNett = valueNett;
         $scope.txnHeaderForm.txhdValueGross = valueGross;
         $scope.txnHeaderForm.txhdValueTax = valueTax;
-        $scope.txnHeaderForm.txhdValueDue = valueNett - calculateAmountPaid();
+        $scope.txnHeaderForm.txhdValueDue = valueNett - $scope.calculateAmountPaid();
     }
-    function calculateAmountPaid() {
+    $scope.calculateAmountPaid = function() {
         if ($scope.txnMediaList == undefined || $scope.txnMediaList.data == undefined) {
             return 0.00;
         }
         var txnMediaList =  $scope.txnMediaList.data;
         var total = 0.00;
         for (var i = 0; i < txnMediaList.length; i++) {
-            total = total + txnMediaList[i].txmdAmountLocal*1;
+            if (!txnMediaList[i].txmdVoided) {
+                total = total + txnMediaList[i].txmdAmountLocal*1;
+            }
         }
         return total;
     }
 
+    $scope.voidItem = function(row) {
+        if (!confirm('Are you sure you want to void this item?')) {
+            return;
+        }
+        if (row == undefined || row.entity == undefined) {
+            alert('item is undefined');
+            return;
+        }
+        row.entity.txdeItemVoid = true;
+        totalTransaction();
+    };
+
+    $scope.voidTender = function(row) {
+        if (!confirm('Are you sure you want to void this tender?')) {
+            return;
+        }
+        if (row == undefined || row.entity == undefined) {
+            alert('tender is undefined');
+            return;
+        }
+        row.entity.txmdVoided = true;
+        totalTransaction();
+    };
+
+    /** delete Txn Detail **/
+    $scope.removeItem = function(row) {
+        if (!confirm('Are you sure you want to delete this item?')) {
+            return;
+        }
+        if (row == undefined || row.entity == undefined) {
+            alert('item is undefined');
+            return;
+        }
+        var rowIndex = getArrIndexOf($scope.txnDetailList.data, row.entity);
+        if (rowIndex>-1) {
+            $scope.txnDetailList.data.splice(rowIndex,1);
+        }
+        totalTransaction();
+    }
 });

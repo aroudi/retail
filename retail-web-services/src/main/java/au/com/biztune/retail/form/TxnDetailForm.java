@@ -24,6 +24,7 @@ public class TxnDetailForm {
     private boolean txdeLineRefund;
     private boolean txdeItemVoid;
     private ConfigCategory txdeDetailType;
+    private long orguId;
 
     public long getId() {
         return id;
@@ -145,4 +146,11 @@ public class TxnDetailForm {
         this.txdeDetailType = txdeDetailType;
     }
 
+    public long getOrguId() {
+        return orguId;
+    }
+
+    public void setOrguId(long orguId) {
+        this.orguId = orguId;
+    }
 }

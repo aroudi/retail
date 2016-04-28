@@ -116,20 +116,21 @@
                                                     </div >
                                                     <div class="col-lg-4">
                                                         <div class="row">
-                                                            <label>Due</label>
-                                                            <input class="form-control" data-ng-model = txnHeaderForm.txhdValueDue>
+                                                            <label>Total</label>
+                                                            <span>{{txnHeaderForm.txhdValueNett |currency}}</span>
                                                         </div>
+
                                                         <div class="row">
+                                                            <label>Due</label>
+                                                            <span>{{txnHeaderForm.txhdValueDue | currency}}</span>
+                                                        </div>
+                                                        <div class="row" ng-show="false">
                                                             <label>Discount</label>
                                                             <input class="form-control">
                                                         </div>
-                                                        <div class="row">
+                                                        <div class="row" ng-show="false">
                                                             <label>Rounding</label>
                                                             <input class="form-control" data-ng-model = txnHeaderForm.txhdValRounding>
-                                                        </div>
-                                                        <div class="row">
-                                                            <label>Total</label>
-                                                            <input class="form-control" data-ng-model = txnHeaderForm.txhdValueNett>
                                                         </div>
                                                     </div>
                                                 </div>

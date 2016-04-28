@@ -27,4 +27,11 @@ public interface TransactionService {
      * @return TxnHeaderForm
      */
     TxnHeaderForm getTxnHeaderPerId(long txhdId);
+
+    /**
+     * update Transaction.
+     * @param txnHeaderForm txnHeaderForm
+     * @return Response.
+     */
+    CommonResponse updateTransaction(TxnHeaderForm txnHeaderForm);
 }

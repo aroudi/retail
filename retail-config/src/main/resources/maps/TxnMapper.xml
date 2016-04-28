@@ -306,6 +306,56 @@
         </if>
         )
     </insert>
+    <update id="updateTxnHeader" parameterType="TxnHeader" >
+        UPDATE TXN_HEADER SET
+        ORGU_ID = #{orgUnit.id}
+        <if test="txhdState != null">
+            ,TXHD_STATE = #{txhdState.id}
+        </if>
+        <if test="txhdTxnType != null">
+            ,TXHD_TXN_TYPE = #{txhdTxnType.id}
+        </if>
+        <if test="txhdVoided != null">
+            ,TXHD_VOIDED = #{txhdVoided}
+        </if>
+        <if test="txhdValueGross != null">
+            ,TXHD_VALUE_GROSS = #{txhdValueGross}
+        </if>
+        <if test="txhdValueNett != null">
+            ,TXHD_VALUE_NETT = #{txhdValueNett}
+        </if>
+        <if test="txhdValueDue != null">
+            ,TXHD_VALUE_DUE = #{txhdValueDue}
+        </if>
+        <if test="txhdValueChange != null">
+            ,TXHD_VALUE_CHANGE = #{txhdValueChange}
+        </if>
+        <if test="txhdValRounding != null">
+            ,TXHD_VAL_ROUNDING = #{txhdValRounding}
+        </if>
+        <if test="txhdValueTaxable != null">
+            ,TXHD_VALUE_TAXABLE = #{txhdValueTaxable}
+        </if>
+        <if test="txhdValueTax != null">
+            ,TXHD_VALUE_TAX = #{txhdValueTax}
+        </if>
+        <if test="customer != null">
+            ,CUSTOMER_ID = #{customer.id}
+        </if>
+        <if test="txhdVoidTxnNr != null">
+            ,TXHD_VOID_TXN_NR = #{txhdVoidTxnNr}
+        </if>
+        <if test="txhdTaxExempt != null">
+            ,TXHD_TAX_EXEMPT = #{txhdTaxExempt}
+        </if>
+        <if test="txhdRefundExpiry != null">
+            ,TXHD_REFUND_EXPIRY = #{txhdRefundExpiry}
+        </if>
+        <if test="txhdCollectDate != null">
+            ,TXHD_COLLECT_DATE = #{txhdCollectDate}
+        </if>
+        WHERE TXHD_ID = #{id}
+    </update>
 
 
     <insert id="insertTxnDetail" parameterType="TxnDetail" useGeneratedKeys="true" keyProperty="id" keyColumn="TXDE_ID">
@@ -480,6 +530,75 @@
         )
     </insert>
 
+    <update id="updateTxnDetail" parameterType="TxnDetail" >
+        UPDATE TXN_DETAIL SET
+        ORGU_ID = #{orguId}
+        <if test="txdePriceOveriden != null">
+            ,TXDE_PRICE_OVRIDEN = #{txdePriceOveriden}
+        </if>
+        <if test="product != null">
+            ,TXDE_PROD_ID = #{product.id}
+        </if>
+        <if test="unitOfMeasure != null">
+            ,TXDE_UNOM_ID = #{unitOfMeasure.id}
+        </if>
+        <if test="txdeValueLine != null">
+            ,TXDE_VALUE_LINE = #{txdeValueLine}
+        </if>
+        <if test="txdeProfitMargin != null">
+            ,TXDE_PROFIT_MARGIN = #{txdeProfitMargin}
+        </if>
+        <if test="txdeValueProfit != null">
+            ,TXDE_VALUE_PROFIT = #{txdeValueProfit}
+        </if>
+        <if test="txdeValueGross != null">
+            ,TXDE_VALUE_GROSS = #{txdeValueGross}
+        </if>
+        <if test="txdeTax != null">
+            ,TXDE_TAX = #{txdeTax}
+        </if>
+        <if test="txdeValueNet != null">
+            ,TXDE_VALUE_NET = #{txdeValueNet}
+        </if>
+        <if test="txdeQuantitySold != null">
+            ,TXDE_QUANTITY_SOLD = #{txdeQuantitySold}
+        </if>
+        <if test="txdePriceSold != null">
+            ,TXDE_PRICE_SOLD = #{txdePriceSold}
+        </if>
+        <if test="txdeLineRefund != null">
+            ,TXDE_LINE_REFUND = #{txdeLineRefund}
+        </if>
+        <if test="txdeItemVoid != null">
+            ,TXDE_ITEM_VOID = #{txdeItemVoid}
+        </if>
+        <if test="txdeSerialNumber != null">
+            ,TXDE_SERIAL_NUMBER = #{txdeSerialNumber}
+        </if>
+        <if test="txdeWasSplitPck != null">
+            ,TXDE_WAS_SPLIT_PCK = #{txdeWasSplitPck}
+        </if>
+        <if test="txdeDetailLevel != null">
+            ,TXDE_DETAIL_LEVEL = #{txdeDetailLevel}
+        </if>
+        <if test="txdeParentDetail != null">
+            ,TXDE_PARENT_DETAIL = #{txdeParentDetail}
+        </if>
+        <if test="txdeDetailType != null">
+            ,TXDE_DETAIL_TYPE = #{txdeDetailType.id}
+        </if>
+        <if test="txdeDiscPrice != null">
+            ,TXDE_DISC_PRICE = #{txdeDiscPrice}
+        </if>
+        <if test="txdeReturnOrguId != null">
+            ,TXDE_RETURN_ORGU_ID = #{txdeReturnOrguId}
+        </if>
+        <if test="txdeReturnStoreId != null">
+            ,TXDE_RETURN_STORE_ID = #{txdeReturnStoreId}
+        </if>
+        WHERE TXDE_ID = #{id}
+    </update>
+
 
     <insert id="insertTxnMedia" parameterType="TxnMedia" useGeneratedKeys="true" keyProperty="id" keyColumn="TXMD_ID">
         INSERT INTO TXN_MEDIA(
@@ -547,6 +666,12 @@
         </if>
         )
     </insert>
+
+    <update id="voidTxnMedia" parameterType="TxnMedia" >
+        UPDATE TXN_MEDIA SET
+          TXMD_VOIDED = #{txmdVoided}
+        WHERE TXMD_ID = #{id}
+    </update>
 
 
     <select id="getTxnDetailPerTxhdId" resultMap="txnDetailMap" >
