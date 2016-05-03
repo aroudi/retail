@@ -7,8 +7,16 @@ cimgApp.controller('supplierSearchCtrl', function($scope, $state, $timeout,baseD
         enableFiltering: true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'supplierCode', enableCellEdit:false, width:'20%'},
-            {field:'supplierName', enableCellEdit:false, width:'50%'},
+            {field:'supplierCode', enableCellEdit:false, width:'20%',
+                cellTooltip: function(row,col) {
+                    return row.entity.supplierCode
+                }
+            },
+            {field:'supplierName', enableCellEdit:false, width:'50%',
+                cellTooltip: function(row,col) {
+                    return row.entity.supplierName
+                }
+            },
             {field:'supplierType.displayName', displayName:'Supplier Type',enableCellEdit:false, width:'10%'},
             {field:'supplierStatus.displayName', displayName:'Status',enableCellEdit:false, width:'10%'}
         ]

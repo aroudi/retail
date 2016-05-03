@@ -45,8 +45,16 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
             rowTemplate : rowtpl,
             columnDefs: [
                 {field: 'id', visible: false, enableCellEdit: false},
-                {field: 'product.prodSku', displayName: 'SKU', enableCellEdit: false, width: '5%'},
-                {field: 'product.prodName', displayName: 'Name', enableCellEdit: false, width: '30%'},
+                {field: 'product.prodSku', displayName: 'SKU', enableCellEdit: false, width: '5%',
+                    cellTooltip: function(row,col) {
+                        return row.entity.product.prodSku
+                    }
+                },
+                {field: 'product.prodName', displayName: 'Name', enableCellEdit: false, width: '30%',
+                    cellTooltip: function(row,col) {
+                        return row.entity.product.prodName
+                    }
+                },
                 {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false, width: '5%'},
                 {field: 'txdeValueLine', displayName: 'Cost', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 {field: 'txdeValueProfit', displayName: 'Profit', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
@@ -82,14 +90,20 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
 
 
     function initTxnMediaList() {
+        var tenderTpl='<div ng-class="{\'blue\':row.entity.txmdVoided==false, \'red\':row.entity.txmdVoided==true }"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
         $scope.txnMediaList = {
             enableFiltering: true,
             showGridFooter: true,
             showColumnFooter:true,
             gridFooterTemplate:"<div id=\"currency-default\"> Total:{{grid.appScope.calculateAmountPaid() | currency}}</div>",
+            rowTemplate : tenderTpl,
             columnDefs: [
                 {field:'id', visible:false, enableCellEdit:false},
-                {field:'paymentMedia.paymName',displayName:'Payment Media', visible:true, enableCellEdit:false, width: '50%'},
+                {field:'paymentMedia.paymName',displayName:'Payment Media', visible:true, enableCellEdit:false, width: '50%',
+                    cellTooltip: function(row,col) {
+                        return row.entity.paymentMedia.paymName
+                    }
+                },
                 {field:'txmdAmountLocal', displayName:'Amount', visible:true, cellFilter:'currency', footerCellFilter:'currency', /*aggregationType: uiGridConstants.aggregationTypes.sum, */ enableCellEdit:false, width: '40%'},
                 {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="row.entity.id > 0" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>', width: '10%'}
 
@@ -118,7 +132,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
         ngDialog.openConfirm({
             template:'views/pages/customerSearch.html',
             controller:'customerSearchCtrl',
-            className: 'ngdialog-theme-default'
+            className: 'ngdialog-theme-default',
+            closeByDocument:false
         }).then (function (value){
                 $scope.customer = value;
             }, function(reason) {
@@ -131,15 +146,21 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
         ngDialog.openConfirm({
             template:'views/pages/productSaleItemSearch.html',
             controller:'productSaleItemSearchCtrl',
-            className: 'ngdialog-theme-default'
-        }).then (function (value){
+            className: 'ngdialog-theme-default',
+            closeByDocument:false
+        }).then (function (selectedItems){
                 //alert('returned value = ' + value);
-                var txnDetail = createTxnDetail();
-                txnDetail.product = value;
-                txnDetail.unitOfMeasure = txnDetail.product.sellPrice.unitOfMeasure;
-                evaluatRowItem(txnDetail)
-                $scope.txnDetailList.data.push(txnDetail);
-                totalTransaction();
+                if (selectedItems != undefined) {
+                    for (var i = 0; i < selectedItems.length; i++) {
+                        var selectedProduct = selectedItems[i];
+                        var txnDetail = createTxnDetail();
+                        txnDetail.product = selectedProduct;
+                        txnDetail.unitOfMeasure = txnDetail.product.sellPrice.unitOfMeasure;
+                        evaluatRowItem(txnDetail)
+                        $scope.txnDetailList.data.push(txnDetail);
+                        totalTransaction();
+                    }
+                }
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }

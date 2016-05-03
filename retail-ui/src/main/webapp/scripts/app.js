@@ -31,18 +31,21 @@ var cimgApp = angular
     'ngMessages'
   ]);
 
-/*
+//SIT
 var config_data = {
-    'SERVER' : 'asmet568',
-    'PORT'   : '8189',
+    'SERVER' : '10.0.0.17',
+    'PORT'   : '8080',
     'WEBAPP' :'cimg-web-services'
 }
-*/
+
+//DEV
+/*
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
+*/
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -58,6 +61,8 @@ var service_uri = {
     'PRODUCT_ADD_URI' : 'product/add',
     'PRODUCT_GET_URI' : 'product/get',
     'UPLOAD_BOQ_URI'  : 'billOfQuantity/upload',
+    'BOQDETAIL_GET_PER_BOQID_URI' : 'billOfQuantity/getPerBoqId/',
+    'BOQDETAIL_GET_ALL' : 'billOfQuantity/getAll',
     'MEDIA_TYPE_ALL_URI' : 'paymentMedia/getAllMediaTypes',
     'PAYMENT_MEDIA_OF_TYPE_URI' : 'paymentMedia/getOfMediatype/',
     'PRODUCT_SALE_ITEM_ALL_URI' : 'product/allProductSaleItem',

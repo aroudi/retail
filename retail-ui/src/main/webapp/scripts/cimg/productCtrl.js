@@ -47,9 +47,21 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
                 {field:'id', visible:false, enableCellEdit:false},
                 {field:'solId', visible:false, enableCellEdit:false},
                 {field:'prodId', visible:false, enableCellEdit:false},
-                {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false},
-                {field:'catalogueNo', displayName:'CatNo',enableCellEdit:false},
-                {field:'partNo', enableCellEdit:false},
+                {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false,
+                    cellTooltip: function(row,col) {
+                        return row.entity.supplier.supplierName
+                    }
+                },
+                {field:'catalogueNo', displayName:'CatNo',enableCellEdit:false,
+                    cellTooltip: function(row,col) {
+                        return row.entity.catalogueNo
+                    }
+                },
+                {field:'partNo', enableCellEdit:false,
+                    cellTooltip: function(row,col) {
+                        return row.entity.partNo
+                    }
+                },
                 {field:'unitOfMeasure.unomCode', displayName:'UNOM',enableCellEdit:false},
                 {field:'unomQty',displayName:'Qty', enableCellEdit:false, type: 'number'},
                 {field:'price', enableCellEdit:false, cellFilter: 'currency'},
@@ -165,7 +177,8 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
         ngDialog.openConfirm({
             template:'views/pages/supplierSearch.html',
             controller:'supplierSearchCtrl',
-            className: 'ngdialog-theme-default'
+            className: 'ngdialog-theme-default',
+            closeByDocument:false
         }).then (function (value){
             //alert('returned value = ' + value);
             $scope.supplier = value;

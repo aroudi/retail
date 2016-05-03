@@ -23,4 +23,10 @@ public interface BillOfQuantityService {
      * @return List of BoqDetail
      */
     List<BoqDetail> getBoqDetailByBoqId(long id);
+
+    /**
+     * get bill of quantity detail .
+     * @return List of BoqDetail
+     */
+    List<BoqDetail> getAllBoqDetail();
 }

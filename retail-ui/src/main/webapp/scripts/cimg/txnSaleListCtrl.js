@@ -8,7 +8,19 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state, $timeout,baseData
             {field:'id', visible:false, enableCellEdit:false},
             {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'10%'},
             {field:'txhdTxnNr', enableCellEdit:false, width:'10%'},
-            {field:'txhdState.displayName', displayName:'State', enableCellEdit:false, width:'10%'},
+            {field:'txhdState.displayName', displayName:'State', enableCellEdit:false, width:'10%',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    if (grid.getCellValue(row, col) === 'DRAFT') {
+                        return 'amber';
+                    } else if (grid.getCellValue(row, col) === 'VOID') {
+                        return 'red'
+                    } else if (grid.getCellValue(row, col) === 'SUSPEND') {
+                        return 'blue'
+                    } else if (grid.getCellValue(row, col) === 'FINAL') {
+                        return 'green'
+                    }
+                }
+            },
             {field:'txhdTxnType.displayName' , displayName:'Type', enableCellEdit:false, width:'10%'},
             {field:'txhdValueGross', displayName:'Total',enableCellEdit:false, width:'20%', cellFilter:'currency'},
             {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'20%', cellFilter:'currency'},

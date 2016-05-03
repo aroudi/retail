@@ -6,13 +6,37 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseData
         enableFiltering: true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'prodSku', enableCellEdit:false, width:'10%'},
-            {field:'reference', enableCellEdit:false, width:'10%'},
-            {field:'prodName', displayName:'Name',enableCellEdit:false, width:'20%'},
-            {field:'prodDesc', displayName:'Description',enableCellEdit:false, width:'20%'},
+            {field:'prodSku', enableCellEdit:false, width:'10%',
+                cellTooltip: function(row,col) {
+                    return row.entity.prodSku
+                }
+            },
+            {field:'reference', enableCellEdit:false, width:'10%',
+                cellTooltip: function(row,col) {
+                    return row.entity.reference
+                }
+            },
+            {field:'prodName', displayName:'Name',enableCellEdit:false, width:'20%',
+                cellTooltip: function(row,col) {
+                    return row.entity.prodName
+                }
+            },
+            {field:'prodDesc', displayName:'Description',enableCellEdit:false, width:'20%',
+                cellTooltip: function(row,col) {
+                    return row.entity.prodDesc
+                }
+            },
             {field:'prodBrand', displayName:'Brand',enableCellEdit:false, width:'10%'},
             {field:'prodClass', displayName:'Class',enableCellEdit:false, width:'10%'},
-            {field:'prodOrguLink.status.displayName', displayName:'Status',enableCellEdit:false, width:'10%'},
+            {field:'prodOrguLink.status.displayName', displayName:'Status',enableCellEdit:false, width:'10%',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    if (grid.getCellValue(row, col) === 'IMPORTED') {
+                        return 'amber';
+                    } else if (grid.getCellValue(row, col) === 'LIVE') {
+                        return 'green'
+                    }
+                }
+            },
             {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a>', width:'10%' }
         ]
     }

@@ -8,7 +8,7 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <form role="form">
+                        <form role="form" name="mainForm">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="panel panel-info">
@@ -19,11 +19,18 @@
                                             <div class="row">
                                                 <div class="col-lg-12">
                                                     <div class="col-lg-6">
-                                                        <div class="form-group">
-                                                            <label>Customer</label>
-                                                            <input class="form-control" data-ng-model="customer.companyName" ng-disabled="true">
-                                                            <button type="button" class="btn btn-success" ng-click="searchCustomer()">Customer</button>
-                                                        </div >
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group">
+                                                                <label>Customer</label>
+                                                                <input class="form-control" data-ng-model="customer.companyName" ng-disabled="true">
+                                                            </div >
+                                                        </div>
+                                                        <div class="col-lg-2">
+                                                            <div class="form-group">
+                                                                <label>&nbsp;</label>
+                                                                <button type="button" class="btn btn-primary" ng-click="searchCustomer()">Customer</button>
+                                                            </div >
+                                                        </div>
                                                     </div >
                                                     <div class="col-lg-6">
                                                         <div class="form-group">
@@ -38,13 +45,11 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <button type="button" class="btn btn-success" ng-click="searchProduct()">Add Product</button>
-                            </div>
-                            <div class="row">
                                 <div class="col-lg-12">
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
                                             Products
+                                            <button type="button" class="btn btn-primary" ng-click="searchProduct()">Add Product</button>
                                         </div>
                                         <div class="panel-body">
                                             <div class="row">
@@ -81,8 +86,12 @@
                                                                         </select>
                                                                     </div>
                                                                     <div class="row">
-                                                                        <label>Amount</label>
-                                                                        <input class="form-control" data-ng-model="paymentAmount">
+                                                                        <label>Amount
+                                                                           <span class="btn btn-warning btn-xs" ng-show="mainForm.paymentAmount.$error.pattern">
+                                                                                Invalid!
+                                                                           </span>
+                                                                        </label>
+                                                                        <input class="form-control" name="paymentAmount" data-ng-model="paymentAmount" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
                                                                     </div>
                                                                 </div >
                                                             </div>
@@ -97,7 +106,7 @@
                                                                         <tr>
                                                                             <td>
                                                                                 <!--<button type="button" class="btn btn-outline btn-primary" ng-click="addTransposition()">Add</button> -->
-                                                                                <a href=""><i tooltip="Add to the list" tooltip-placement="bottom" class="fa fa-long-arrow-right fa-2x" ng-click="addTxnMedia()" ></i> </a>
+                                                                                <a href=""><i tooltip="Add to the list" tooltip-placement="bottom" class="fa fa-long-arrow-right fa-2x" ng-click="addTxnMedia()" ng-show="!mainForm.paymentAmount.$error.pattern" ></i> </a>
                                                                             </td>
                                                                         </tr>
                                                                         <tr>

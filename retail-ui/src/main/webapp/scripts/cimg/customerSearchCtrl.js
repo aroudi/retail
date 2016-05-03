@@ -11,7 +11,11 @@ cimgApp.controller('customerSearchCtrl', function($scope, $state, $timeout,baseD
             {field:'code', enableCellEdit:false, width:'10%'},
             {field:'firstName', displayName:'First Name',enableCellEdit:false, width:'10%'},
             {field:'surName', displayName:'Sur Name',enableCellEdit:false, width:'10%'},
-            {field:'companyName', displayName:'Company Name',enableCellEdit:false, width:'20%'},
+            {field:'companyName', displayName:'Company Name',enableCellEdit:false, width:'20%',
+                cellTooltip: function(row,col) {
+                    return row.entity.companyName
+                }
+            },
             {field:'mobile', enableCellEdit:false, width:'10%'},
             {field:'address', enableCellEdit:false , width:'30%'},
         ]

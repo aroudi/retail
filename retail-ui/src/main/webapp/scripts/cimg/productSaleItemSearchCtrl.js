@@ -1,23 +1,42 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productSaleItemSearchCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, PRODUCT_SALE_ITEM_ALL_URI) {
+cimgApp.controller('productSaleItemSearchCtrl', function($scope, $state, $timeout, uiGridConstants, baseDataService, SUCCESS, FAILURE, PRODUCT_SALE_ITEM_ALL_URI) {
 
     $scope.gridOptions = {
         enableFiltering: true,
+        enableSelectAll:true,
+        enableRowSelection:true,
+        selectionRowHeaderWidth:35,
+        showGridFooter:true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'prodSku', enableCellEdit:false, width:'15%'},
-            {field:'reference', enableCellEdit:false, width:'15%'},
-            {field:'prodName', displayName:'Name',enableCellEdit:false, width:'30%'},
-            {field:'prodDesc', displayName:'Description',enableCellEdit:false, width:'20%'},
+            {field:'prodSku', enableCellEdit:false, width:'15%',
+                cellTooltip: function(row,col) {
+                    return row.entity.prodSku
+                }
+            },
+            {field:'reference', enableCellEdit:false, width:'15%',
+                cellTooltip: function(row,col) {
+                    return row.entity.reference
+                }
+            },
+            {field:'prodName', displayName:'Name',enableCellEdit:false, width:'30%',
+                cellTooltip: function(row,col) {
+                    return row.entity.prodName
+                }
+            },
+            {field: 'prodDesc', displayName: 'Description', enableCellEdit: false, width: '20%',
+                cellTooltip: function (row, col) {
+                    return row.entity.prodDesc
+                }
+            },
             {field:'prodBrand', displayName:'Brand',enableCellEdit:false, width:'10%'},
             {field:'prodClass', displayName:'Class',enableCellEdit:false, width:'10%'}
         ]
     }
-    $scope.gridOptions.enableRowSelection = true;
-    $scope.gridOptions.multiSelect = false;
-    $scope.gridOptions.noUnselect= true;
+    $scope.gridOptions.multiSelect = true;
+    //$scope.gridOptions.noUnselect= true;
 
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
@@ -37,7 +56,8 @@ cimgApp.controller('productSaleItemSearchCtrl', function($scope, $state, $timeou
 
     $scope.submit = function () {
         if ($scope.selectedOption != undefined) {
-            $scope.confirm($scope.selectedOption);
+            //$scope.confirm($scope.selectedOption);
+            $scope.confirm($scope.gridApi.selection.getSelectedRows());
         }
     }
 

@@ -60,8 +60,13 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
         })
         .state('dashboard.home',{
             url:'/home',
+            controller: 'txnSaleListCtrl',
+            templateUrl:'views/pages/generalList.html',
+            access: "user",
+            /*
             controller: 'MainCtrl',
             templateUrl:'views/dashboard/home.html',
+            */
             resolve: {
                 loadMyFiles:function($ocLazyLoad) {
                     return $ocLazyLoad.load({
@@ -127,6 +132,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
         .state('dashboard.boqDetailPerBoqId',{
             url:'/boqDetailPerBoqId',
             controller: 'boqDetailListCtrl',
+            templateUrl:'views/pages/boqDetailList.html',
+            access: "user"
+        })
+        .state('dashboard.boqList',{
+            url:'/boqList',
+            controller: 'boqListCtrl',
             templateUrl:'views/pages/boqDetailList.html',
             access: "user"
         })

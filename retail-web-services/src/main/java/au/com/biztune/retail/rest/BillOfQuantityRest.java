@@ -59,4 +59,14 @@ public class BillOfQuantityRest {
     public List<BoqDetail> getBoqDetailByBoqId (@PathParam("id") long id) {
         return billOfQuantityService.getBoqDetailByBoqId(id);
     }
+    /**
+     * get BillOfQuantity Detail.
+     * @return List of BoqDetail
+     */
+    @GET
+    @Path("/getAll")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<BoqDetail> getAllBoq () {
+        return billOfQuantityService.getAllBoqDetail();
+    }
 }

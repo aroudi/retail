@@ -219,6 +219,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnMedia.setOrguId(txnHeader.getStore().getOrgUnit().getId());
                 txnMedia.setStoreId(txnHeader.getStore().getId());
                 txnMedia.setTxhdId(txnHeader.getId());
+                txnMedia.setTxmdVoided(txnMediaForm.isTxmdVoided());
                 txnMedia.setMedtId(txnMediaForm.getPaymentMedia().getMediaType().getId());
                 txnMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
                 final ConfigCategory txntMediaType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_SALE);

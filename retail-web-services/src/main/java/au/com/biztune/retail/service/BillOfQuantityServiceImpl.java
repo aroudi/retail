@@ -341,8 +341,34 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             customer = new Customer();
             customer.setCustomerType(IdBConstant.CUSTOMER_TYPE_COMPANY);
             customer.setAddress(client.getAdd1());
-            customer.setSurName(client.getContactName());
+            customer.setCompanyName(client.getClientName());
+            try {
+                if (client.getContactName() != null) {
+                    final String[] splited = client.getContactName().split("\\s+");
+                    customer.setFirstName(splited[0]);
+                    customer.setSurName(splited[1]);
+                }
+
+            } catch (Exception e) {
+                logger.error("Error in splitting the customer name:", e);
+            }
             customerDao.insert(customer);
+        } else {
+            customer.setCustomerType(IdBConstant.CUSTOMER_TYPE_COMPANY);
+            customer.setAddress(client.getAdd1());
+            customer.setCompanyName(client.getClientName());
+            try {
+                if (client.getContactName() != null) {
+                    final String[] splited = client.getContactName().split("\\s+");
+                    customer.setFirstName(splited[0]);
+                    customer.setSurName(splited[1]);
+                }
+
+            } catch (Exception e) {
+                logger.error("Error in splitting the customer name:", e);
+            }
+            customerDao.update(customer);
+
         }
         return customer;
     }
@@ -355,6 +381,18 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     public List<BoqDetail> getBoqDetailByBoqId(long id) {
         try {
             return boqDetailDao.getBoqDetailByBoqId(id);
+        } catch (Exception e) {
+            logger.error("Error in getting Bill Of Quantity Details", e);
+            return  null;
+        }
+    }
+    /**
+     * get bill of quantity detail .
+     * @return List of BoqDetail
+     */
+    public List<BoqDetail> getAllBoqDetail() {
+        try {
+            return boqDetailDao.getAllBoqDetail();
         } catch (Exception e) {
             logger.error("Error in getting Bill Of Quantity Details", e);
             return  null;

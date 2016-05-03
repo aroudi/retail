@@ -7,7 +7,11 @@ cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,baseDat
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'supplierCode', enableCellEdit:false, width:'20%'},
-            {field:'supplierName', enableCellEdit:false, width:'50%'},
+            {field:'supplierName', enableCellEdit:false, width:'50%',
+                cellTooltip: function(row,col) {
+                    return row.entity.supplierName
+                }
+            },
             {field:'supplierType.displayName', displayName:'Supplier Type',enableCellEdit:false, width:'10%'},
             {field:'supplierStatus.displayName', displayName:'Status',enableCellEdit:false, width:'10%'},
             {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editSupplier(row)"></i></a>', width:'10%' }

@@ -43,6 +43,11 @@
         boqd.BOQ_DETAIL_ID = #{value}
     </select>
 
+    <select id="getAllBoqDetail" resultMap="BoqDetailMap" >
+        <include refid="getBoqDetail">
+        </include>
+    </select>
+
     <select id="getBoqDetailByBoqId" resultMap="BoqDetailMap" >
         <include refid="getBoqDetail">
         </include>

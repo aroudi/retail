@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqDetailListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, BOQDETAIL_GET_PER_BOQID_URI, PRODUCT_GET_URI, BOQDETAIL_GET_ALL) {
+cimgApp.controller('boqListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, PRODUCT_GET_URI, BOQDETAIL_GET_ALL) {
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
@@ -42,10 +42,9 @@ cimgApp.controller('boqDetailListCtrl', function($scope, $state, $timeout,baseDa
             baseDataService.setRow(row.entity);
         });
     };
-    getBoqDetailPerBoqId();
-    function getBoqDetailPerBoqId() {
-        var boqDetailUri = BOQDETAIL_GET_PER_BOQID_URI + baseDataService.getRowId();
-        baseDataService.getBaseData(boqDetailUri).then(function(response){
+    getBoqList();
+    function getBoqList() {
+        baseDataService.getBaseData(BOQDETAIL_GET_ALL).then(function(response){
             var data = angular.copy(response.data);
             $scope.gridOptions.data = data;
         });
