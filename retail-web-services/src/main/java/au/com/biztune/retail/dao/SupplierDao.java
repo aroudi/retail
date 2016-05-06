@@ -59,6 +59,14 @@ public interface SupplierDao {
     Supplier getSupplierByOrgUnitIdAndSuppId(long orgUnitId, long suppId);
 
     /**
+     * get list of all suppliers per orgunit id and suppid.
+     * @param suppId suppId
+     * @return Supplier.
+     */
+    Supplier getSupplierBySuppId(long suppId);
+
+
+    /**
      * get list of all suppliers per orgunit id and code.
      * @param orgUnitId orgUnitId
      * @param suppName suppName

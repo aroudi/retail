@@ -21,10 +21,31 @@
         <result column="SPRC_PREFER_BUY" property="sprcPrefferBuy" />
         <result column="SPRC_MIN_ORD_VAL" property="sprcMinOrdVal" />
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+        <association property="unitOfMeasureContent" column="UNOM_ID_CONTENT" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="legalTender" column="LEGT_ID" select="au.com.biztune.retail.dao.LegalTenderDao.getLegalTenderById" />
         <association property="supplier" column="SOL_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySolId" />
     </resultMap>
 
+    <resultMap id="suppPurchaseProdMap" type="ProductPurchaseItem" >
+        <id column="SPRC_ID" property="id" />
+        <result column="SOL_ID" property="solId" />
+        <result column="PROD_ID" property="prodId" />
+        <result column="CATALOGUE_NO" property="catalogueNo" />
+        <result column="PART_NO" property="partNo" />
+        <result column="UNOM_QTY" property="unomQty" />
+        <result column="PRICE" property="price" />
+        <result column="BULK_PRICE" property="bulkPrice" />
+        <result column="BULK_QTY" property="bulkQty" />
+        <result column="SPRC_MIN_ORD_QTY" property="sprcMinOrdQty" />
+        <result column="SPRC_LEAD_TIME" property="sprcLeadTime" />
+        <result column="SPRC_CREATED" property="sprcCreated" />
+        <result column="SPRC_MODIFIED" property="sprcModified" />
+        <result column="SPRC_PREFER_BUY" property="sprcPrefferBuy" />
+        <result column="SPRC_MIN_ORD_VAL" property="sprcMinOrdVal" />
+        <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+        <association property="unitOfMeasureContent" column="UNOM_ID_CONTENT" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+        <association property="legalTender" column="LEGT_ID" select="au.com.biztune.retail.dao.LegalTenderDao.getLegalTenderById" />
+    </resultMap>
 
     <sql id="suppProdPriceColumns">
         ${alias}.SPRC_ID,
@@ -43,6 +64,7 @@
         ${alias}.SPRC_PREFER_BUY,
         ${alias}.SPRC_MIN_ORD_VAL,
         ${alias}.UNOM_ID,
+        ${alias}.UNOM_ID_CONTENT,
         ${alias}.LEGT_ID
 </sql>
 
@@ -80,6 +102,24 @@
           spp.PROD_ID= #{value}
     </select>
 
+    <select id="getAllSupplierProductsPerOrgUnitIdAndSuppId" resultMap="suppPurchaseProdMap" >
+        SELECT
+        <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>
+        FROM
+        SUPP_PROD_PRICE spp INNER JOIN SUPP_ORGU_LINK sol ON (spp.sol_id = sol.sol_id)
+        WHERE
+        sol.ORGU_ID= #{param1} AND sol.SUPP_ID = {param2}
+    </select>
+
+    <select id="getSupplierProductPerSprcId" resultMap="suppPurchaseProdMap" >
+        SELECT
+        <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>
+        FROM
+        SUPP_PROD_PRICE spp
+        WHERE
+        sol.SPRC_ID= #{value}
+    </select>
+
     <insert id="insert" parameterType="SuppProdPrice" useGeneratedKeys="true" keyProperty="id" keyColumn="SPRC_ID">
         INSERT INTO SUPP_PROD_PRICE(
             SOL_ID,
@@ -97,6 +137,7 @@
             SPRC_PREFER_BUY,
             SPRC_MIN_ORD_VAL,
             UNOM_ID,
+            UNOM_ID_CONTENT,
             LEGT_ID
         ) VALUES (
         #{solId},
@@ -189,6 +230,13 @@
             ,#{unitOfMeasure.id}
         </if>
         <if test="unitOfMeasure == null">
+            ,null
+        </if>
+
+        <if test="unitOfMeasureContent != null">
+            ,#{unitOfMeasureContent.id}
+        </if>
+        <if test="unitOfMeasureContent == null">
             ,null
         </if>
 

@@ -1,5 +1,6 @@
 package au.com.biztune.retail.dao;
 
+import au.com.biztune.retail.domain.ProductPurchaseItem;
 import au.com.biztune.retail.domain.SuppProdPrice;
 
 import java.util.List;
@@ -24,6 +25,23 @@ public interface SuppProdPriceDao {
      * @return SuppProdPrice
      */
     List<SuppProdPrice> getAllSuppProdPricesByOrguIdAndProdId(long orguId, long prodId);
+
+    /**
+     * get all supplier prices for specific product.
+     * @param orgUnitId orgUnitId
+     * @param suppId suppId
+     * @return List of SuppProdPrice
+     */
+    List<ProductPurchaseItem> getAllSupplierProductsPerOrgUnitIdAndSuppId(long orgUnitId, long suppId);
+
+
+
+    /**
+     * get all supplier prices for specific product.
+     * @param sprcId sprcId
+     * @return List of SuppProdPrice
+     */
+    ProductPurchaseItem getSupplierProductPerSprcId(long sprcId);
 
     /**
      * get all supplier prices for specific product.

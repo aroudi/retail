@@ -1,13 +1,9 @@
 package au.com.biztune.retail.domain;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
-import java.sql.Timestamp;
-
 /**
  * Created by arash on 22/03/2016.
  */
-public class SuppProdPrice {
+public class ProductPurchaseItem {
     private long id;
     private long solId;
     private long prodId;
@@ -19,21 +15,10 @@ public class SuppProdPrice {
     private double price;
     private double bulkPrice;
     private double bulkQty;
-    @JsonIgnore
     private LegalTender legalTender;
-    @JsonIgnore
     private double sprcMinOrdQty;
-    @JsonIgnore
     private long sprcLeadTime;
-    @JsonIgnore
-    private Timestamp sprcCreated;
-    @JsonIgnore
-    private Timestamp sprcModified;
-    @JsonIgnore
-    private boolean sprcPrefferBuy;
-    @JsonIgnore
     private double sprcMinOrdVal;
-    private Supplier supplier;
 
     public long getId() {
         return id;
@@ -81,6 +66,14 @@ public class SuppProdPrice {
 
     public void setUnitOfMeasure(UnitOfMeasure unitOfMeasure) {
         this.unitOfMeasure = unitOfMeasure;
+    }
+
+    public UnitOfMeasure getUnitOfMeasureContent() {
+        return unitOfMeasureContent;
+    }
+
+    public void setUnitOfMeasureContent(UnitOfMeasure unitOfMeasureContent) {
+        this.unitOfMeasureContent = unitOfMeasureContent;
     }
 
     public double getUnomQty() {
@@ -139,51 +132,11 @@ public class SuppProdPrice {
         this.sprcLeadTime = sprcLeadTime;
     }
 
-    public Timestamp getSprcCreated() {
-        return sprcCreated;
-    }
-
-    public void setSprcCreated(Timestamp sprcCreated) {
-        this.sprcCreated = sprcCreated;
-    }
-
-    public Timestamp getSprcModified() {
-        return sprcModified;
-    }
-
-    public void setSprcModified(Timestamp sprcModified) {
-        this.sprcModified = sprcModified;
-    }
-
-    public boolean isSprcPrefferBuy() {
-        return sprcPrefferBuy;
-    }
-
-    public void setSprcPrefferBuy(boolean sprcPrefferBuy) {
-        this.sprcPrefferBuy = sprcPrefferBuy;
-    }
-
     public double getSprcMinOrdVal() {
         return sprcMinOrdVal;
     }
 
     public void setSprcMinOrdVal(double sprcMinOrdVal) {
         this.sprcMinOrdVal = sprcMinOrdVal;
-    }
-
-    public Supplier getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    public UnitOfMeasure getUnitOfMeasureContent() {
-        return unitOfMeasureContent;
-    }
-
-    public void setUnitOfMeasureContent(UnitOfMeasure unitOfMeasureContent) {
-        this.unitOfMeasureContent = unitOfMeasureContent;
     }
 }
