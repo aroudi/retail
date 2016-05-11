@@ -10,6 +10,7 @@
         <result column="CATEGORY_CODE" property="categoryCode" />
         <result column="DISPLAY_NAME" property="displayName" />
         <result column="DESCRIPTION" property="description" />
+        <result column="COLOR" property="color" />
         <result column="CATEGORY_ORDER" property="categoryOrder" />
     </resultMap>
 
@@ -18,7 +19,8 @@
         ${alias}.CONFIG_TYPE_ID,
         ${alias}.CATEGORY_CODE,
         ${alias}.DISPLAY_NAME,
-        ${alias}.DESCRIPTION
+        ${alias}.DESCRIPTION,
+        ${alias}.COLOR
     </sql>
 
 

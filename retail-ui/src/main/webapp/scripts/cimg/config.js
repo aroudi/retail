@@ -129,16 +129,16 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/FileUpload.html',
             access: "user"
         })
-        .state('dashboard.boqDetailPerBoqId',{
-            url:'/boqDetailPerBoqId',
+        .state('dashboard.viewBoqDetail',{
+            url:'/viewBoqDetail',
             controller: 'boqDetailListCtrl',
-            templateUrl:'views/pages/boqDetailList.html',
+            templateUrl:'views/pages/boqWhole.html',
             access: "user"
         })
         .state('dashboard.boqList',{
             url:'/boqList',
             controller: 'boqListCtrl',
-            templateUrl:'views/pages/boqDetailList.html',
+            templateUrl:'views/pages/boqHeaderList.html',
             access: "user"
         })
         .state('dashboard.createSaleTransaction',{

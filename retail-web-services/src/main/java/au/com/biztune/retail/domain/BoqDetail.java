@@ -13,6 +13,11 @@ public class BoqDetail {
     private double cost;
     private double margin;
     private double sellPrice;
+    private Supplier supplier;
+    private double qtyOnStock;
+    private double qtyPurchased;
+    private double qtyBalance;
+    private ConfigCategory bqdStatus;
 
     public long getId() {
         return id;
@@ -84,5 +89,45 @@ public class BoqDetail {
 
     public void setSellPrice(double sellPrice) {
         this.sellPrice = sellPrice;
+    }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
+    }
+
+    public double getQtyOnStock() {
+        return qtyOnStock;
+    }
+
+    public void setQtyOnStock(double qtyOnStock) {
+        this.qtyOnStock = qtyOnStock;
+    }
+
+    public double getQtyPurchased() {
+        return qtyPurchased;
+    }
+
+    public void setQtyPurchased(double qtyPurchased) {
+        this.qtyPurchased = qtyPurchased;
+    }
+
+    public double getQtyBalance() {
+        return qtyBalance;
+    }
+
+    public void setQtyBalance(double qtyBalance) {
+        this.qtyBalance = qtyBalance;
+    }
+
+    public ConfigCategory getBqdStatus() {
+        return bqdStatus;
+    }
+
+    public void setBqdStatus(ConfigCategory bqdStatus) {
+        this.bqdStatus = bqdStatus;
     }
 }

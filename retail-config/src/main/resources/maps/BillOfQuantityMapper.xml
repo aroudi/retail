@@ -6,24 +6,57 @@
     <!-- result maps -->
     <resultMap id="BillOfQuantityMap" type="BillOfQuantity" >
         <id column="BOQ_ID" property="id" />
+        <result column="ORGU_ID" property="orguId" />
         <result column="REFERENCE_CODE" property="referenceCode" />
         <result column="BOQ_NAME" property="boqName" />
         <result column="ORDER_NO" property="orderNo" />
         <result column="NOTE" property="note" />
         <result column="DATE_CREATED" property="dateCreated" />
-        <!--association resultMap="au.com.biztune.retail.dao.ProjectDao.projectMap" property="project" /-->
+        <result column="BOQ_LAST_MODIFIED_DATE" property="boqLastModifiedDate" />
+        <result column="BOQ_LAST_MODIFIED_BY" property="boqLastModifiedBy" />
+        <result column="BOQ_VALUE_GROSS" property="boqValueGross" />
+        <result column="BOQ_VALUE_NETT" property="boqValueNett" />
+        <result column="BOQ_TOTAL_QTY" property="boqTotalQty" />
+        <result column="BOQ_TOTAL_LINES" property="boqTotalLines" />
         <association property="project" column="PROJECT_ID" select="au.com.biztune.retail.dao.ProjectDao.getProjectById" />
+        <association property="boqStatus" column="BOQ_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
+    <resultMap id="BillOfQuantityDetailMap" type="BillOfQuantity" >
+        <id column="BOQ_ID" property="id" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="REFERENCE_CODE" property="referenceCode" />
+        <result column="BOQ_NAME" property="boqName" />
+        <result column="ORDER_NO" property="orderNo" />
+        <result column="NOTE" property="note" />
+        <result column="DATE_CREATED" property="dateCreated" />
+        <result column="BOQ_LAST_MODIFIED_DATE" property="boqLastModifiedDate" />
+        <result column="BOQ_LAST_MODIFIED_BY" property="boqLastModifiedBy" />
+        <result column="BOQ_VALUE_GROSS" property="boqValueGross" />
+        <result column="BOQ_VALUE_NETT" property="boqValueNett" />
+        <result column="BOQ_TOTAL_QTY" property="boqTotalQty" />
+        <result column="BOQ_TOTAL_LINES" property="boqTotalLines" />
+        <association property="project" column="PROJECT_ID" select="au.com.biztune.retail.dao.ProjectDao.getProjectById" />
+        <association property="boqStatus" column="BOQ_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <collection property="lines" javaType="ArrayList" column="BOQ_ID" ofType="BoqDetail" select="au.com.biztune.retail.dao.BoqDetailDao.getBoqDetailByBoqId"/>
+    </resultMap>
 
     <sql id="boqColumns">
      ${alias}.BOQ_ID,
+     ${alias}.ORGU_ID,
      ${alias}.PROJECT_ID,
      ${alias}.REFERENCE_CODE,
      ${alias}.BOQ_NAME,
      ${alias}.ORDER_NO,
      ${alias}.NOTE,
-     ${alias}.DATE_CREATED
+     ${alias}.DATE_CREATED,
+     ${alias}.BOQ_STATUS,
+     ${alias}.BOQ_LAST_MODIFIED_DATE,
+     ${alias}.BOQ_LAST_MODIFIED_BY,
+     ${alias}.BOQ_VALUE_GROSS,
+     ${alias}.BOQ_VALUE_NETT,
+     ${alias}.BOQ_TOTAL_QTY,
+     ${alias}.BOQ_TOTAL_LINES
     </sql>
 
     <sql id="getBillOfQuantity">
@@ -33,6 +66,11 @@
         BILL_OF_QUANTITY boq
     </sql>
 
+    <select id="getAllBillOfQuantities" resultMap="BillOfQuantityMap" >
+        <include refid="getBillOfQuantity">
+        </include>
+    </select>
+
     <select id="getBillOfQuantityByName" resultMap="BillOfQuantityMap" >
         <include refid="getBillOfQuantity">
         </include>
@@ -40,7 +78,7 @@
           boq.BOQ_NAME = #{value}
     </select>
 
-    <select id="getBillOfQuantityById" resultMap="BillOfQuantityMap" >
+    <select id="getBillOfQuantityById" resultMap="BillOfQuantityDetailMap" >
         <include refid="getBillOfQuantity">
         </include>
         WHERE
@@ -49,13 +87,22 @@
 
     <insert id="insert" parameterType="BillOfQuantity" useGeneratedKeys="true" keyProperty="id" keyColumn="BOQ_ID">
         INSERT INTO BILL_OF_QUANTITY(
-         PROJECT_ID,
-         BOQ_NAME,
-         REFERENCE_CODE,
-         ORDER_NO,
-         NOTE,
-         DATE_CREATED
+             ORGU_ID,
+             PROJECT_ID,
+             BOQ_NAME,
+             REFERENCE_CODE,
+             ORDER_NO,
+             NOTE,
+             DATE_CREATED,
+            BOQ_STATUS,
+            BOQ_LAST_MODIFIED_DATE,
+            BOQ_LAST_MODIFIED_BY,
+            BOQ_VALUE_GROSS,
+            BOQ_VALUE_NETT,
+            BOQ_TOTAL_QTY,
+            BOQ_TOTAL_LINES
         ) VALUES (
+        #{orguId},
         #{project.id},
         #{boqName}
         <if test="referenceCode != null">
@@ -82,6 +129,51 @@
         <if test="dateCreated == null">
             ,null
         </if>
+
+        <if test="boqStatus != null">
+            ,#{boqStatus.id}
+        </if>
+        <if test="boqStatus == null">
+            ,null
+        </if>
+        <if test="boqLastModifiedDate != null">
+            ,#{boqLastModifiedDate}
+        </if>
+        <if test="boqLastModifiedDate == null">
+            ,null
+        </if>
+
+        <if test="boqLastModifiedBy != null">
+            ,#{boqLastModifiedBy}
+        </if>
+        <if test="boqLastModifiedBy == null">
+            ,null
+        </if>
+
+        <if test="boqValueGross != null">
+            ,#{boqValueGross}
+        </if>
+        <if test="boqValueGross == null">
+            ,null
+        </if>
+        <if test="boqValueNett != null">
+            ,#{boqValueNett}
+        </if>
+        <if test="boqValueNett == null">
+            ,null
+        </if>
+        <if test="boqTotalQty != null">
+            ,#{boqTotalQty}
+        </if>
+        <if test="boqTotalQty == null">
+            ,null
+        </if>
+        <if test="boqTotalLines != null">
+            ,#{boqTotalLines}
+        </if>
+        <if test="boqTotalLines == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -105,6 +197,27 @@
         </if>
         <if test="dateCreated != null">
             ,DATE_CREATED = #{dateCreated}
+        </if>
+        <if test="boqStatus != null">
+            ,BOQ_STATUS = #{boqStatus.id}
+        </if>
+        <if test="boqLastModifiedDate != null">
+            ,BOQ_LAST_MODIFIED_DATE = #{boqLastModifiedDate}
+        </if>
+        <if test="boqLastModifiedBy != null">
+            ,BOQ_LAST_MODIFIED_BY = #{boqLastModifiedBy}
+        </if>
+        <if test="boqValueGross != null">
+            ,BOQ_VALUE_GROSS = #{boqValueGross}
+        </if>
+        <if test="boqValueNett != null">
+            ,BOQ_VALUE_NETT = #{boqValueNett}
+        </if>
+        <if test="boqTotalQty != null">
+            ,BOQ_TOTAL_QTY = #{boqTotalQty}
+        </if>
+        <if test="boqTotalLines != null">
+            ,BOQ_TOTAL_LINES = #{boqTotalLines}
         </if>
     </sql>
     <update id="updatePerId" parameterType="BillOfQuantity" >

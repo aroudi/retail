@@ -130,7 +130,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
         }
         final Customer customer = importClient(client);
         final Project project = importProject(inputProject, customer);
-        final au.com.biztune.retail.domain.BillOfQuantity billOfQuantityObj = importBillOfQuantityHeader(header, project);
+        final au.com.biztune.retail.domain.BillOfQuantity billOfQuantityObj = importBillOfQuantityHeader(header, project, productList);
         importBoqDetail(productList, billOfQuantityObj);
         return billOfQuantityObj.getId();
     }
@@ -258,6 +258,10 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             boqDetail.setQuantity(importedProduct.getQty());
             boqDetail.setSellPrice(importedProduct.getSellPrice());
             boqDetail.setUnitOfMeasure(unitOfMeasure);
+            boqDetail.setSupplier(supplier);
+            boqDetail.setQtyOnStock(0);
+            boqDetail.setQtyPurchased(0);
+            boqDetail.setQtyBalance(boqDetail.getQuantity());
             boqDetailDao.insert(boqDetail);
         }
     }
@@ -266,10 +270,19 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
      * import BillOfQuantity Header.
      * @param header header
      */
-    private au.com.biztune.retail.domain.BillOfQuantity importBillOfQuantityHeader(BillOfQuantity.Header header, Project project) {
+    private au.com.biztune.retail.domain.BillOfQuantity importBillOfQuantityHeader(BillOfQuantity.Header header, Project project, BillOfQuantity.BillOfQuantities products) {
         if (header == null) {
             return null;
         }
+        double valueGross = 0;
+        int lines = 0;
+        double totalQty = 0;
+        for (BillOfQuantity.BillOfQuantities.Product importedProduct: products.getProduct()) {
+            lines++;
+            valueGross = valueGross + importedProduct.getCost();
+            totalQty = totalQty + importedProduct.getQty();
+        }
+
         au.com.biztune.retail.domain.BillOfQuantity billOfQuantity = billOfQuantityDao.getBillOfQuantityByName(header.getName());
         if (billOfQuantity == null) {
             billOfQuantity = new au.com.biztune.retail.domain.BillOfQuantity();
@@ -278,6 +291,14 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             billOfQuantity.setDateCreated(new java.sql.Timestamp(new Date().getTime()));
             billOfQuantity.setNote(header.getNote());
             billOfQuantity.setOrderNo(header.getOrderNumber());
+            billOfQuantity.setOrguId(sessionState.getOrgUnit().getId());
+            final ConfigCategory staus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_NEW);
+            if (staus != null) {
+                billOfQuantity.setBoqStatus(staus);
+            }
+            billOfQuantity.setBoqValueGross(valueGross);
+            billOfQuantity.setBoqTotalQty(totalQty);
+            billOfQuantity.setBoqTotalLines(lines);
             billOfQuantityDao.insert(billOfQuantity);
         }
         return billOfQuantity;
@@ -386,15 +407,31 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             return  null;
         }
     }
+
     /**
-     * get bill of quantity detail .
-     * @return List of BoqDetail
+     * get bill of quantity header per BOQ Id.
+     * @param id id
+     * @return BOQ
      */
-    public List<BoqDetail> getAllBoqDetail() {
+    public au.com.biztune.retail.domain.BillOfQuantity getBoqHeaderByBoqId(long id) {
         try {
-            return boqDetailDao.getAllBoqDetail();
+            return billOfQuantityDao.getBillOfQuantityById(id);
         } catch (Exception e) {
-            logger.error("Error in getting Bill Of Quantity Details", e);
+            logger.error("Error in getting Bill Of Quantity", e);
+            return  null;
+        }
+    }
+
+
+    /**
+     * get list of bill of quantity .
+     * @return List of BOQ
+     */
+    public List<au.com.biztune.retail.domain.BillOfQuantity> getAllBoq() {
+        try {
+            return billOfQuantityDao.getAllBillOfQuantities();
+        } catch (Exception e) {
+            logger.error("Error in getting Bill Of Quantities", e);
             return  null;
         }
     }

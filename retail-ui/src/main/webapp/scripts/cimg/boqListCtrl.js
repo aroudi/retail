@@ -1,34 +1,40 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, PRODUCT_GET_URI, BOQDETAIL_GET_ALL) {
+cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI ) {
     $scope.gridOptions = {
         enableFiltering: true,
+        showGridFooter: true,
+        showColumnFooter: true,
+        enableColumnResizing: true,
+        enableSorting:true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'billOfQuantity.boqName', displayName:'Header Name',enableCellEdit:false, width:'10%',
+            {field:'boqName', displayName:'Header Name',enableCellEdit:false, width:'10%',
                 cellTooltip: function(row,col) {
-                    return row.entity.billOfQuantity.boqName
+                    return row.entity.boqName
                 }
             },
-            {field:'billOfQuantity.orderNo', displayName:'Order No',enableCellEdit:false, width:'10%'},
-            {field:'billOfQuantity.project.projectName',displayName:'Project', enableCellEdit:false, width:'15%',
+            {field:'referenceCode', displayName:'Reference',enableCellEdit:false, width:'10%',
                 cellTooltip: function(row,col) {
-                    return row.entity.billOfQuantity.project.projectName
+                    return row.entity.referenceCode
                 }
             },
-            {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'5%'},
-            {field:'product.prodName', displayName:'Product',enableCellEdit:false, width:'20%',
+            {field:'orderNo', displayName:'Order No',enableCellEdit:false, width:'10%'},
+            {field:'project.projectName',displayName:'Project', enableCellEdit:false, width:'30%',
                 cellTooltip: function(row,col) {
-                    return row.entity.product.prodName
+                    return row.entity.project.projectName
                 }
             },
-            {field:'prodIsNew', displayName:'New',enableCellEdit:false, width:'5%'},
-            {field:'quantity', displayName:'Qty',enableCellEdit:false, width:'7%'},
-            {field:'cost', displayName:'Cost',enableCellEdit:false, width:'7%'},
-            {field:'margin', displayName:'Margin',enableCellEdit:false, width:'8%'},
-            {field:'sellPrice', displayName:'Price',enableCellEdit:false, width:'8%'},
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit Product" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a>', width:'5%' }
+            {field:'dateCreated', displayName:'Created',enableCellEdit:false, width:'8%', cellFilter:'date:\'yyyy-MM-dd HH:mm\'' },
+            {field:'boqValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'boqValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'boqStatus', displayName:'status',enableCellEdit:false, width:'7%', cellFilter:'boqStatusFilter',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                   return grid.getCellValue(row, col).color
+                }
+            },
+            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Edit Product" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewBoqDetail(row)"></i></a>', width:'5%' }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -44,23 +50,23 @@ cimgApp.controller('boqListCtrl', function($scope, $state, $timeout,baseDataServ
     };
     getBoqList();
     function getBoqList() {
-        baseDataService.getBaseData(BOQDETAIL_GET_ALL).then(function(response){
+        baseDataService.getBaseData(BOQ_GET_ALL_URI).then(function(response){
             var data = angular.copy(response.data);
             $scope.gridOptions.data = data;
         });
     }
 
-    $scope.editProduct = function(row) {
+    $scope.viewBoqDetail = function(row) {
         if (row == undefined || row.entity == undefined) {
             alert('row is undefined');
             return;
         }
-        var productGetURI = PRODUCT_GET_URI + '/' + row.entity.product.id;
-        baseDataService.getBaseData(productGetURI).then(function(response){
+        var boqGetURI = BOQ_GET_URI +  row.entity.id;
+        baseDataService.getBaseData(boqGetURI).then(function(response){
             baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
-            $state.go('dashboard.createProduct');
+            $state.go('dashboard.viewBoqDetail');
         });
     }
 });

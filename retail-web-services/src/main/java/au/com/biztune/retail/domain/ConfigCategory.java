@@ -10,6 +10,7 @@ public class ConfigCategory {
         private String displayName;
         private String description;
         private int categoryOrder;
+        private String color;
 
     public long getId() {
         return id;
@@ -57,5 +58,13 @@ public class ConfigCategory {
 
     public void setCategoryOrder(int categoryOrder) {
         this.categoryOrder = categoryOrder;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

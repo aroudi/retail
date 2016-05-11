@@ -11,15 +11,17 @@
         <result column="COST" property="cost" />
         <result column="MARGIN" property="margin" />
         <result column="SELL_PRICE" property="sellPrice" />
-        <association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" />
+        <!--association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" /-->
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="product" column="PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
+        <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
     </resultMap>
 
 
     <sql id="boqDetailColumns">
      ${alias}.BOQ_DETAIL_ID,
      ${alias}.BOQ_ID,
+     ${alias}.SUPPLIER_ID,
      ${alias}.UNOM_ID,
      ${alias}.PROD_ID,
      ${alias}.PROD_IS_NEW,
@@ -36,18 +38,6 @@
         BOQ_DETAIL boqd
     </sql>
 
-    <select id="getBoqDetailById" resultMap="BoqDetailMap" >
-        <include refid="getBoqDetail">
-        </include>
-        WHERE
-        boqd.BOQ_DETAIL_ID = #{value}
-    </select>
-
-    <select id="getAllBoqDetail" resultMap="BoqDetailMap" >
-        <include refid="getBoqDetail">
-        </include>
-    </select>
-
     <select id="getBoqDetailByBoqId" resultMap="BoqDetailMap" >
         <include refid="getBoqDetail">
         </include>
@@ -58,6 +48,7 @@
     <insert id="insert" parameterType="BoqDetail" useGeneratedKeys="true" keyProperty="id" keyColumn="BOQ_DETAIL_ID">
         INSERT INTO BOQ_DETAIL(
             BOQ_ID,
+            SUPPLIER_ID,
             UNOM_ID,
             PROD_ID,
             PROD_IS_NEW,
@@ -67,6 +58,12 @@
             SELL_PRICE
         ) VALUES (
         #{billOfQuantity.id}
+        <if test="supplier != null">
+            ,#{supplier.id}
+        </if>
+        <if test="supplier == null">
+            ,null
+        </if>
         <if test="unitOfMeasure != null">
             ,#{unitOfMeasure.id}
         </if>
@@ -115,6 +112,9 @@
     <sql id="updateStatement">
         UPDATE BOQ_DETAIL SET
         LCOUNT= 0
+        <if test="supplier != null">
+            ,SUPPLIER_ID = #{supplier.id}
+        </if>
         <if test="billOfQuantity != null">
             ,BOQ_ID = #{billOfQuantity.id}
         </if>

@@ -8,12 +8,6 @@ import java.util.List;
  * Created by arash on 1/04/2016.
  */
 public interface BoqDetailDao {
-    /**
-     * get BoqDetail per id.
-     * @param id id
-     * @return BoqDetail
-     */
-    BoqDetail getBoqDetailById(long id);
 
     /**
      * insert BOQDetail.
@@ -39,10 +33,4 @@ public interface BoqDetailDao {
      * @return List of BoqDetail
      */
     List<BoqDetail> getBoqDetailByBoqId(long id);
-
-    /**
-     * get list of BoqDetail by BoqId.
-     * @return List of BoqDetail
-     */
-    List<BoqDetail> getAllBoqDetail();
 }

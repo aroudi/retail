@@ -25,8 +25,16 @@ public interface BillOfQuantityService {
     List<BoqDetail> getBoqDetailByBoqId(long id);
 
     /**
-     * get bill of quantity detail .
-     * @return List of BoqDetail
+     * get list of bill of quantity .
+     * @return List of BOQ
      */
-    List<BoqDetail> getAllBoqDetail();
-}
+    List<au.com.biztune.retail.domain.BillOfQuantity> getAllBoq();
+
+
+    /**
+     * get bill of quantity header per BOQ Id.
+     * @param id id
+     * @return BOQ
+     */
+    au.com.biztune.retail.domain.BillOfQuantity getBoqHeaderByBoqId(long id);
+    }

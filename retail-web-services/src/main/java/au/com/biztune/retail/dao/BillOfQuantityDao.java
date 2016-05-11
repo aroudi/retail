@@ -2,6 +2,8 @@ package au.com.biztune.retail.dao;
 
 import au.com.biztune.retail.domain.BillOfQuantity;
 
+import java.util.List;
+
 /**
  * Created by arash on 1/04/2016.
  */
@@ -21,6 +23,12 @@ public interface BillOfQuantityDao {
      */
     BillOfQuantity getBillOfQuantityById(long id);
 
+
+    /**
+     * get all bill of quantities.
+     * @return list of BOQ
+     */
+    List<BillOfQuantity> getAllBillOfQuantities();
     /**
      * insert.
      * @param billOfQuantity billOfQuantity

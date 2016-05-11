@@ -2,6 +2,7 @@
 
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.domain.BillOfQuantity;
 import au.com.biztune.retail.domain.BoqDetail;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.service.BillOfQuantityService;
@@ -54,19 +55,34 @@ public class BillOfQuantityRest {
      * @return List of BoqDetail
      */
     @GET
-    @Path("/getPerBoqId/{id}")
+    @Path("/detail/getPerBoqId/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<BoqDetail> getBoqDetailByBoqId (@PathParam("id") long id) {
         return billOfQuantityService.getBoqDetailByBoqId(id);
     }
+
     /**
-     * get BillOfQuantity Detail.
-     * @return List of BoqDetail
+     * get BillOfQuantity by BOQId.
+     * @param id id.
+     * @return Bill Of Quantity
      */
     @GET
-    @Path("/getAll")
+    @Path("/header/get/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<BoqDetail> getAllBoq () {
-        return billOfQuantityService.getAllBoqDetail();
+    public BillOfQuantity getBoqById (@PathParam("id") long id) {
+        return billOfQuantityService.getBoqHeaderByBoqId(id);
     }
+
+
+    /**
+     * get List of BillOfQuantity .
+     * @return List of
+     */
+    @GET
+    @Path("/header/getAll")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<BillOfQuantity> getAllBoq () {
+        return billOfQuantityService.getAllBoq();
+    }
+
 }

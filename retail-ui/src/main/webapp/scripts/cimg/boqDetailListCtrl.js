@@ -1,34 +1,39 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqDetailListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, BOQDETAIL_GET_PER_BOQID_URI, PRODUCT_GET_URI, BOQDETAIL_GET_ALL) {
+cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state, $timeout,baseDataService, SUCCESS, FAILURE,  PRODUCT_GET_URI) {
+
     $scope.gridOptions = {
         enableFiltering: true,
+        showGridFooter: true,
+        showColumnFooter: true,
+        enableColumnResizing: true,
+        enableSorting:true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'billOfQuantity.boqName', displayName:'Header Name',enableCellEdit:false, width:'10%',
-                cellTooltip: function(row,col) {
-                    return row.entity.billOfQuantity.boqName
-                }
-            },
-            {field:'billOfQuantity.orderNo', displayName:'Order No',enableCellEdit:false, width:'10%'},
-            {field:'billOfQuantity.project.projectName',displayName:'Project', enableCellEdit:false, width:'15%',
-                cellTooltip: function(row,col) {
-                    return row.entity.billOfQuantity.project.projectName
-                }
-            },
-            {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'5%'},
-            {field:'product.prodName', displayName:'Product',enableCellEdit:false, width:'20%',
+            {field:'supplier.supplierName', displayName:'Supplier', enableCellEdit:false, width:'20%'},
+            {field:'product.prodName', displayName:'Product',enableCellEdit:false, width:'30%',
                 cellTooltip: function(row,col) {
                     return row.entity.product.prodName
                 }
             },
-            {field:'prodIsNew', displayName:'New',enableCellEdit:false, width:'5%'},
-            {field:'quantity', displayName:'Qty',enableCellEdit:false, width:'7%'},
-            {field:'cost', displayName:'Cost',enableCellEdit:false, width:'7%'},
+            {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'5%'},
+            {field:'quantity', displayName:'Qty',enableCellEdit:false, width:'10%', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'cost', displayName:'Cost',enableCellEdit:false, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'margin', displayName:'Margin',enableCellEdit:false, width:'8%'},
-            {field:'sellPrice', displayName:'Price',enableCellEdit:false, width:'8%'},
+            {field:'sellPrice', displayName:'Price',enableCellEdit:false, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'prodIsNew', displayName:'New Item',enableCellEdit:false, width:'8%', cellFilter:'booleanFilter',
+                cellClass:
+                    function(grid, row, col, rowRenderIndex, colRenderIndex) {
+                        if (grid.getCellValue(row, col) === true) {
+                            return 'red';
+                        } else {
+                            return 'green'
+                        }
+                    }
+            },
             {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit Product" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a>', width:'5%' }
+
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -42,13 +47,12 @@ cimgApp.controller('boqDetailListCtrl', function($scope, $state, $timeout,baseDa
             baseDataService.setRow(row.entity);
         });
     };
-    getBoqDetailPerBoqId();
-    function getBoqDetailPerBoqId() {
-        var boqDetailUri = BOQDETAIL_GET_PER_BOQID_URI + baseDataService.getRowId();
-        baseDataService.getBaseData(boqDetailUri).then(function(response){
-            var data = angular.copy(response.data);
-            $scope.gridOptions.data = data;
-        });
+
+    initPageData();
+    function initPageData() {
+        $scope.billOfQuantity = angular.copy(baseDataService.getRow());
+        $scope.gridOptions.data = angular.copy($scope.billOfQuantity.lines);
+        baseDataService.setRow({});
     }
 
     $scope.editProduct = function(row) {

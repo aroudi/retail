@@ -1,7 +1,7 @@
 /**
  * Created by arash on 16/12/2014.
  */
-cimgApp.controller('UploadController', function($scope, $state, fileUploadService,singleFileUploadService,baseDataService, SUCCESS, FAILURE, UPLOAD_BOQ_URI) {
+cimgApp.controller('UploadController', function($scope, $state, fileUploadService,singleFileUploadService,baseDataService, SUCCESS, FAILURE, UPLOAD_BOQ_URI, BOQ_GET_URI) {
 
     $scope.fileName ='Bill Of Quantity'
     $scope.fileSet = [
@@ -23,8 +23,13 @@ cimgApp.controller('UploadController', function($scope, $state, fileUploadServic
             serviceResponse = response.data;
             if (serviceResponse.status == SUCCESS) {
                 //dashboard.boqDetailPerBoqId
-                baseDataService.setRowId(serviceResponse.info);
-                $state.go('dashboard.boqDetailPerBoqId');
+                var boqGetURI = BOQ_GET_URI +  serviceResponse.info;
+                baseDataService.getBaseData(boqGetURI).then(function(response){
+                    baseDataService.setIsPageNew(false);
+                    baseDataService.setRow(response.data);
+                    //redirect to the supplier page.
+                    $state.go('dashboard.viewBoqDetail');
+                });
             } else {
             }
         });
