@@ -9,7 +9,8 @@ import java.sql.Timestamp;
  */
 public class Customer {
     private long id;
-    private String customerType;
+    private ConfigCategory customerType;
+    private ConfigCategory customerStatus;
     private String firstName;
     private String surName;
     private String middleName;
@@ -17,6 +18,7 @@ public class Customer {
     @JsonIgnore
     private Timestamp dateOfBirth;
     private String address;
+    private String address2;
     private String email;
     private String mobile;
     private String phone;
@@ -155,11 +157,27 @@ public class Customer {
         this.dateOfBirthStr = dateOfBirthStr;
     }
 
-    public String getCustomerType() {
+    public ConfigCategory getCustomerType() {
         return customerType;
     }
 
-    public void setCustomerType(String customerType) {
+    public void setCustomerType(ConfigCategory customerType) {
         this.customerType = customerType;
+    }
+
+    public ConfigCategory getCustomerStatus() {
+        return customerStatus;
+    }
+
+    public void setCustomerStatus(ConfigCategory customerStatus) {
+        this.customerStatus = customerStatus;
+    }
+
+    public String getAddress2() {
+        return address2;
+    }
+
+    public void setAddress2(String address2) {
+        this.address2 = address2;
     }
 }

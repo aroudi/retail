@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('customerCtrl', function($scope, $state, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI) {
+cimgApp.controller('customerCtrl', function($scope, $state, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI) {
     //set default data on the page
     initPageData();
     function initPageData() {
@@ -16,6 +16,10 @@ cimgApp.controller('customerCtrl', function($scope, $state, UserService, baseDat
         baseDataService.getBaseData(CUSTOMERGRADE_ALL_URI).then(function(response){
             $scope.gradeSet = response.data;
             $scope.customer.grade = baseDataService.populateSelectList($scope.customer.grade,$scope.gradeSet);
+        });
+        baseDataService.getBaseData(CUSTOMER_TYPE_URI).then(function(response){
+            $scope.customerTypeSet = response.data;
+            $scope.customer.customerType = baseDataService.populateSelectList($scope.customer.customerType,$scope.customerTypeSet);
         });
     }
 

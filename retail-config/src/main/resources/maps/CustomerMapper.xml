@@ -6,13 +6,13 @@
     <!-- result maps -->
     <resultMap id="customerMap" type="Customer" >
         <id column="customer_id" property="id" />
-        <result column="Customer_Type" property="customerType" />
         <result column="First_Name" property="firstName" />
         <result column="Sur_Name" property="surName" />
         <result column="Middle_Name" property="middleName" />
         <result column="Company_Name" property="companyName" />
         <result column="Date_Of_Birth" property="dateOfBirth" />
         <result column="Address" property="address" />
+        <result column="Address2" property="address2" />
         <result column="E_Mail" property="email" />
         <result column="Mobile" property="mobile" />
         <result column="Phone" property="phone" />
@@ -21,17 +21,21 @@
         <result column="Title" property="title" />
         <result column="Fax" property="fax" />
         <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
+        <association property="customerType" column="Customer_Type" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="customerStatus" column="CUSTOMER_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
     <sql id="customerColumns">
         ${alias}.CUSTOMER_ID,
         ${alias}.Customer_Type,
+        ${alias}.CUSTOMER_STATUS,
         ${alias}.First_Name,
         ${alias}.Sur_Name,
         ${alias}.Middle_Name,
         ${alias}.Company_Name,
         ${alias}.Date_Of_Birth,
         ${alias}.Address,
+        ${alias}.Address2,
         ${alias}.E_Mail,
         ${alias}.Mobile,
         ${alias}.Phone,
@@ -97,12 +101,14 @@
     <insert id="insert" parameterType="Customer" useGeneratedKeys="true" keyProperty="id" keyColumn="CUSTOMER_ID">
         INSERT INTO CUSTOMER(
         Customer_Type,
+        CUSTOMER_STATUS,
         First_Name,
         Sur_Name,
         Middle_Name,
         Company_Name,
         Date_Of_Birth,
         Address,
+        Address2,
         E_Mail,
         Mobile,
         Phone,
@@ -112,7 +118,13 @@
         Fax,
         grade_Id
         ) VALUES (
-        #{customerType}
+        #{customerType.id}
+        <if test="customerStatus != null">
+            ,#{customerStatus.id}
+        </if>
+        <if test="customerStatus == null">
+            ,null
+        </if>
         <if test="firstName != null">
             ,#{firstName}
         </if>
@@ -147,6 +159,12 @@
             ,#{address}
         </if>
         <if test="address == null">
+            ,null
+        </if>
+        <if test="address2 != null">
+            ,#{address2}
+        </if>
+        <if test="address2 == null">
             ,null
         </if>
         <if test="email != null">
@@ -209,7 +227,10 @@
         UPDATE CUSTOMER SET
             Code = #{code}
             <if test="customerType != null">
-                ,Customer_Type = #{customerType}
+                ,Customer_Type = #{customerType.id}
+            </if>
+            <if test="customerStatus != null">
+                ,CUSTOMER_STATUS = #{customerStatus.id}
             </if>
             <if test="firstName != null">
                 ,First_Name = #{firstName}
@@ -228,6 +249,9 @@
             </if>
             <if test="address != null">
                 ,Address = #{address}
+            </if>
+            <if test="address2 != null">
+                ,Address2 = #{address2}
             </if>
             <if test="email != null">
                 ,E_Mail = #{email}

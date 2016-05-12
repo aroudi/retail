@@ -1,11 +1,12 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.dao.ConfigCategoryDao;
 import au.com.biztune.retail.dao.CustomerDao;
 import au.com.biztune.retail.dao.CustomerGradeDao;
+import au.com.biztune.retail.domain.ConfigCategory;
 import au.com.biztune.retail.domain.Customer;
 import au.com.biztune.retail.domain.CustomerGrade;
 import au.com.biztune.retail.response.CommonResponse;
-import au.com.biztune.retail.util.DateUtil;
 import au.com.biztune.retail.util.IdBConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private CustomerGradeDao customerGradeDao;
+
+    @Autowired
+    private ConfigCategoryDao configCategoryDao;
     /**
      * return all customers.
      * @return list of Customer
@@ -57,6 +61,10 @@ public class CustomerServiceImpl implements CustomerService {
                 return response;
             }
             final boolean isNew = customer.getId() > 0 ? false : true;
+            final ConfigCategory customerStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_CUSTOMER_STATUS, IdBConstant.CUSTOMER_STATUS_CONFIRMED);
+            if (customerStatus != null) {
+                customer.setCustomerStatus(customerStatus);
+            }
             if (isNew) {
                 //check if customer code is already in there
                 final Customer customer1 = customerDao.getCustomerByCode(customer.getCode());
@@ -65,7 +73,7 @@ public class CustomerServiceImpl implements CustomerService {
                     response.setMessage("customer with code " + customer.getClass() + " already exists");
                     return response;
                 }
-                customer.setDateOfBirth(DateUtil.stringToDate(customer.getDateOfBirthStr(), "dd-MM-yyyy HH:mm"));
+                //customer.setDateOfBirth(DateUtil.stringToDate(customer.getDateOfBirthStr(), "dd-MM-yyyy HH:mm"));
                 customerDao.insert(customer);
             } else {
                 customerDao.update(customer);
@@ -100,7 +108,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer getCustomerById(long id) {
         try {
             final Customer customer =  customerDao.getCustomerById(id);
-            customer.setDateOfBirthStr(DateUtil.dateToString(customer.getDateOfBirth(), "dd-MM-yyyy HH:mm"));
+            //customer.setDateOfBirthStr(DateUtil.dateToString(customer.getDateOfBirth(), "dd-MM-yyyy HH:mm"));
             return customer;
         } catch (Exception e) {
             logger.error("Error in getting customer with id: " + id, e);
@@ -116,7 +124,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer getCustomerByCode(String code) {
         try {
             final Customer customer = customerDao.getCustomerByCode(code);
-            customer.setDateOfBirthStr(DateUtil.dateToString(customer.getDateOfBirth(), "dd-MM-yyyy HH:mm"));
+            //customer.setDateOfBirthStr(DateUtil.dateToString(customer.getDateOfBirth(), "dd-MM-yyyy HH:mm"));
             return customer;
         } catch (Exception e) {
             logger.error("Error in getting customer with code: " + code, e);

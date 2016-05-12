@@ -83,6 +83,7 @@ var response_status = {
 
 var type_constant = {
     'SUPPLIER_TYPE_URI' : 'categories/SUPPLIER_TYPE',
+    'CUSTOMER_TYPE_URI' : 'categories/CUSTOMER_TYPE',
     'SUPPLIER_STATUS_URI' : 'categories/SUPPLIER_STATUS',
     'PRODUCT_STATUS_URI' : 'categories/PRODUCT_STATUS',
     'PRODUCT_TYPE_URI' : 'categories/PRODUCT_TYPE'
@@ -618,7 +619,7 @@ cimgApp.filter('booleanFilter', function() {
         }
     };
 });
-cimgApp.filter('boqStatusFilter', function() {
+cimgApp.filter('configCategoryFilter', function() {
     return function (status) {
         return status.displayName;
     };

@@ -180,7 +180,6 @@ public interface IdBConstant {
      * BILL OF QUANTITY HEADER STATUS ON ORDER.
      */
     String BOQ_STATUS_ON_ORDER = "BOQ_STATUS_ON_ORDER";
-
     /**
      * BILL OF QUANTITY HEADER STATUS FINAL.
      */
@@ -190,4 +189,30 @@ public interface IdBConstant {
      * BILL OF QUANTITY HEADER STATUS CANCELLED.
      */
     String BOQ_STATUS_CANCELLED = "BOQ_STATUS_CANCELLED";
+
+    /**
+     * CUSTOMER STATUS.
+     */
+    String TYPE_CUSTOMER_STATUS = "CUSTOMER_STATUS";
+    /**
+     * CUSTOMER STATUS NEW.
+     */
+    String CUSTOMER_STATUS_NEW = "CUSTOMER_STATUS_NEW";
+    /**
+     * CUSTOMER STATUS CONFIRMED.
+     */
+    String CUSTOMER_STATUS_CONFIRMED = "CUSTOMER_STATUS_CONFIRMED";
+
+    /**
+     * CUSTOMER TYPE.
+     */
+    String TYPE_CUSTOMER_TYPE = "CUSTOMER_STATUS";
+    /**
+     * CUSTOMER TYPE COD.
+     */
+    String CUSTOMER_TYPE_CASH_ONLY = "CUSTOMER_TYPE_CASH_ONLY";
+    /**
+     * CUSTOMER TYPE ACCOUNT.
+     */
+    String CUSTOMER_TYPE_ACCOUNT = "CUSTOMER_TYPE_ACCOUNT";
 }

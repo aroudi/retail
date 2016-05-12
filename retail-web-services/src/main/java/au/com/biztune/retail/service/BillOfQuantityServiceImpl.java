@@ -360,7 +360,14 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
         Customer customer = customerDao.getCustomerByCompanyName(client.getClientName());
         if (customer == null) {
             customer = new Customer();
-            customer.setCustomerType(IdBConstant.CUSTOMER_TYPE_COMPANY);
+            final ConfigCategory customerType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_CUSTOMER_TYPE, IdBConstant.CUSTOMER_TYPE_CASH_ONLY);
+            if (customerType != null) {
+                customer.setCustomerType(customerType);
+            }
+            final ConfigCategory customerStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_CUSTOMER_STATUS, IdBConstant.CUSTOMER_STATUS_NEW);
+            if (customerStatus != null) {
+                customer.setCustomerStatus(customerStatus);
+            }
             customer.setAddress(client.getAdd1());
             customer.setCompanyName(client.getClientName());
             try {
@@ -375,7 +382,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             }
             customerDao.insert(customer);
         } else {
-            customer.setCustomerType(IdBConstant.CUSTOMER_TYPE_COMPANY);
+            //customer.setCustomerType(IdBConstant.CUSTOMER_TYPE_COMPANY);
             customer.setAddress(client.getAdd1());
             customer.setCompanyName(client.getClientName());
             try {
