@@ -18,6 +18,7 @@ public class BoqDetail {
     private double qtyPurchased;
     private double qtyBalance;
     private ConfigCategory bqdStatus;
+    private String comment;
 
     public long getId() {
         return id;
@@ -129,5 +130,13 @@ public class BoqDetail {
 
     public void setBqdStatus(ConfigCategory bqdStatus) {
         this.bqdStatus = bqdStatus;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

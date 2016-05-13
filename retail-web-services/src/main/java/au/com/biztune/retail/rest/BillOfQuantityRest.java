@@ -85,4 +85,16 @@ public class BillOfQuantityRest {
         return billOfQuantityService.getAllBoq();
     }
 
+    /**
+     * update Bill Of Quantity Stock quantity.
+     * @param billOfQuantity billOfQuantity
+     * @return CommonResponse
+     */
+    @Path("/updateStockQty")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse updateBoqStockQty (BillOfQuantity billOfQuantity) {
+        return billOfQuantityService.updateBoqStockInfo(billOfQuantity);
+    }
 }

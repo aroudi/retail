@@ -65,6 +65,7 @@ var service_uri = {
     'BOQDETAIL_GET_PER_BOQID_URI' : 'billOfQuantity/detail/getPerBoqId/',
     'BOQ_GET_ALL_URI' : 'billOfQuantity/header/getAll',
     'BOQ_GET_URI' : 'billOfQuantity/header/get/',
+    'UPDATE_BOQ_STOCK_URI'  : 'billOfQuantity/updateStockQty',
     'MEDIA_TYPE_ALL_URI' : 'paymentMedia/getAllMediaTypes',
     'PAYMENT_MEDIA_OF_TYPE_URI' : 'paymentMedia/getOfMediatype/',
     'PRODUCT_SALE_ITEM_ALL_URI' : 'product/allProductSaleItem',
@@ -117,7 +118,7 @@ cimgApp.service('configService', function (SERVER,PORT,WEBAPP) {
 
 });
 
-cimgApp.service('baseDataService', function ($location, $http, $window, configService) {
+cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog, configService) {
 
     var row;
     var rowId;
@@ -245,6 +246,13 @@ cimgApp.service('baseDataService', function ($location, $http, $window, configSe
             strDate = strDate.split(/[-: ]/);
 
             return new Date(strDate[2],strDate[1]-1,strDate[0],strDate[3],strDate[4]);
+        },
+        displayMessage : function (message) {
+            ngDialog.open({
+                template: '<h1>Message</h1><h1> <p>' + message + '</p>',
+                closeByDocument: false,
+                plain: true
+            });
         }
     }
 

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.PoBoqLinkDao">
+    <!-- result maps -->
+    <resultMap id="PoBoqLinkMap" type="PoBoqLink" >
+        <id column="PBQL_ID" property="id" />
+        <result column="POH_ID" property="pohId" />
+        <result column="POH_ORDER_NUMBER" property="pohOrderNumber" />
+        <result column="POL_ID" property="polId" />
+        <result column="BOQ_ID" property="boqId" />
+        <result column="BOQ_NAME" property="boqName" />
+        <result column="PROJECT_ID" property="projectId" />
+        <result column="PROJECT_CODE" property="projectCode" />
+        <result column="BOQ_DETAIL_ID" property="boqDetailId" />
+        <result column="BOQ_QTY_TOTAL" property="boqQtyTotal" />
+        <result column="PO_QTY_RECEIVED" property="poQtyReceived" />
+        <result column="BOQ_QTY_BALANCE" property="boqQtyBalance" />
+        <association property="status" column="BPQL_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+    </resultMap>
+
+    <sql id="poBoqLinkColumns">
+     ${alias}.PBQL_ID,
+     ${alias}.POH_ID,
+     ${alias}.POH_ORDER_NUMBER,
+     ${alias}.POL_ID,
+     ${alias}.BOQ_ID,
+     ${alias}.BOQ_NAME,
+     ${alias}.PROJECT_ID,
+     ${alias}.PROJECT_CODE,
+     ${alias}.BOQ_DETAIL_ID,
+     ${alias}.BOQ_QTY_TOTAL,
+     ${alias}.PO_QTY_RECEIVED,
+     ${alias}.BOQ_QTY_BALANCE,
+     ${alias}.BPQL_STATUS
+    </sql>
+
+    <sql id="getPoBoqLink">
+        SELECT
+        <include refid="poBoqLinkColumns"><property name="alias" value="pboql"/></include>
+        FROM
+        PO_BOQ_LINK pboql
+    </sql>
+
+    <select id="getAllPoBoqLinkPerPohId" resultMap="PoBoqLinkMap" >
+        <include refid="getPoBoqLink">
+        </include>
+        WHERE pboql.POH_ID = #{value}
+    </select>
+
+    <select id="getAllPoBoqLinkPerPolId" resultMap="PoBoqLinkMap" >
+        <include refid="getPoBoqLink">
+        </include>
+        WHERE pboql.POL_ID = #{value}
+    </select>
+
+    <select id="getAllPoBoqLinkPerBoqId" resultMap="PoBoqLinkMap" >
+        <include refid="getPoBoqLink">
+        </include>
+        WHERE pboql.BOQ_ID = #{value}
+    </select>
+
+    <select id="getPoBoqLinkPerBoqDetailId" resultMap="PoBoqLinkMap" >
+        <include refid="getPoBoqLink">
+        </include>
+        WHERE pboql.BOQ_DETAIL_ID = #{value}
+    </select>
+
+    <insert id="insert" parameterType="PoBoqLink" useGeneratedKeys="true" keyProperty="id" keyColumn="PBQL_ID">
+        INSERT INTO PO_BOQ_LINK(
+            POH_ID,
+            POH_ORDER_NUMBER,
+            POL_ID,
+            BOQ_ID,
+            BOQ_NAME,
+            PROJECT_ID,
+            PROJECT_CODE,
+            BOQ_DETAIL_ID,
+            BOQ_QTY_TOTAL,
+            PO_QTY_RECEIVED,
+            BOQ_QTY_BALANCE,
+            BPQL_STATUS
+        ) VALUES (
+        #{pohId}
+        <if test="pohOrderNumber != null">
+            ,#{pohOrderNumber}
+        </if>
+        <if test="pohOrderNumber == null">
+            ,null
+        </if>
+        ,#{pohId}
+        ,#{boqId}
+
+       <if test="boqName != null">
+            ,#{boqName}
+        </if>
+        <if test="boqName == null">
+            ,null
+        </if>
+
+        <if test="projectId != null">
+            ,#{projectId}
+        </if>
+        <if test="projectId == null">
+            ,null
+        </if>
+
+        <if test="projectCode != null">
+            ,#{projectCode}
+        </if>
+        <if test="projectCode == null">
+            ,null
+        </if>
+       ,#{boqDetailId}
+        <if test="boqQtyTotal != null">
+            ,#{boqQtyTotal}
+        </if>
+        <if test="boqQtyTotal == null">
+            ,null
+        </if>
+        <if test="poQtyReceived != null">
+            ,#{poQtyReceived}
+        </if>
+        <if test="poQtyReceived == null">
+            ,null
+        </if>
+
+        <if test="boqQtyBalance != null">
+            ,#{boqQtyBalance}
+        </if>
+        <if test="boqQtyBalance == null">
+            ,null
+        </if>
+
+        <if test="status != null">
+            ,#{status.id}
+        </if>
+        <if test="status == null">
+            ,null
+        </if>
+        )
+    </insert>
+    <update id="updateQtyReceived" parameterType="PoBoqLink" >
+          UPDATE PO_BOQ_LINK
+          SET PO_QTY_RECEIVED = #{poQtyReceived}, BOQ_QTY_BALANCE=#{boqQtyBalance}
+          WHERE PBQL_ID = #{id}
+    </update>
+</mapper>

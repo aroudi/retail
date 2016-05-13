@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state, $timeout,baseDataService, SUCCESS, FAILURE,  PRODUCT_GET_URI) {
+cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE,  PRODUCT_GET_URI, UPDATE_BOQ_STOCK_URI) {
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -11,17 +11,19 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
         enableSorting:true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'supplier.supplierName', displayName:'Supplier', enableCellEdit:false, width:'20%'},
-            {field:'product.prodName', displayName:'Product',enableCellEdit:false, width:'30%',
+            {field:'supplier.supplierName', displayName:'Supplier', enableCellEdit:false, width:'15%'},
+            {field:'product.prodName', displayName:'Product',enableCellEdit:false, width:'25%',
                 cellTooltip: function(row,col) {
                     return row.entity.product.prodName
                 }
             },
             {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'5%'},
-            {field:'quantity', displayName:'Qty',enableCellEdit:false, width:'10%', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'cost', displayName:'Cost',enableCellEdit:false, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'margin', displayName:'Margin',enableCellEdit:false, width:'8%'},
-            {field:'sellPrice', displayName:'Price',enableCellEdit:false, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'cost', displayName:'Cost',enableCellEdit:false, width:'5%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'quantity', displayName:'Qty',enableCellEdit:false, width:'5%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'qtyOnStock', displayName:'Stock', width:'5%', type: 'number', enableCellEdit:true, cellClass:"blue"},
+            {field:'comment', displayName:'Location', width:'10%', enableCellEdit:true, cellClass:"blue"},
+            {field:'qtyPurchased', displayName:'Purchased',enableCellEdit:false, width:'7%', aggregationType: uiGridConstants.aggregationTypes.sum, type: 'number'},
+            {field:'qtyBalance', displayName:'Balance',enableCellEdit:false, width:'7%', aggregationType: uiGridConstants.aggregationTypes.sum, type: 'number'},
             {field:'prodIsNew', displayName:'New Item',enableCellEdit:false, width:'8%', cellFilter:'booleanFilter',
                 cellClass:
                     function(grid, row, col, rowRenderIndex, colRenderIndex) {
@@ -48,10 +50,21 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
         });
     };
 
+    $scope.$on('uiGridEventEndCellEdit', function (event) {
+        var boqDetail = event.targetScope.row.entity;
+        cellData = event.targetScope.row.entity[event.targetScope.col.field];
+        //txnDetail.txdeQuantitySold = cellData;
+        if (boqDetail.qtyOnStock > boqDetail.quantity) {
+            baseDataService.displayMessage('Invalid number');
+            return;
+        }
+        boqDetail.qtyBalance = boqDetail.quantity - (boqDetail.qtyOnStock + boqDetail.qtyPurchased);
+    })
+
     initPageData();
     function initPageData() {
         $scope.billOfQuantity = angular.copy(baseDataService.getRow());
-        $scope.gridOptions.data = angular.copy($scope.billOfQuantity.lines);
+        $scope.gridOptions.data = $scope.billOfQuantity.lines;
         baseDataService.setRow({});
     }
 
@@ -68,4 +81,30 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
             $state.go('dashboard.createProduct');
         });
     }
+    $scope.updateBoqStock = function () {
+
+        /*
+         var userId = UserService.getUserId();
+         if (userId == undefined || userId == 0) {
+         alert('you need to login first');
+         $state.go('dashboard.login');
+         }
+         */
+
+        //$scope.facility.lastModifiedBy = userId;
+        var rowObject = $scope.billOfQuantity;
+        baseDataService.addRow(rowObject, UPDATE_BOQ_STOCK_URI).then(function(response) {
+            addResponse = response.data;
+            if (addResponse.status == SUCCESS ) {
+                $state.go('dashboard.boqList');
+            } else {
+                alert('Not able to update stock quantity. ' + addResponse.message);
+            }
+        });
+        return;
+    }
+    $scope.cancelForm = function() {
+        $state.go($scope.previouseState);
+    }
+
 });

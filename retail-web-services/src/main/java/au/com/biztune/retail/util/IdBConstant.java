@@ -215,4 +215,24 @@ public interface IdBConstant {
      * CUSTOMER TYPE ACCOUNT.
      */
     String CUSTOMER_TYPE_ACCOUNT = "CUSTOMER_TYPE_ACCOUNT";
+    /**
+     * Bill Of Quantity line status.
+     */
+    String TYPE_BOQ_LINE_STATUS = "BOQ_LINE_STATUS";
+    /**
+     * Bill Of Quantity line status PENDING.
+     */
+    String BOQ_LINE_STATUS_PENDING = "BOQ_LINE_STATUS_PENDING";
+    /**
+     * Bill Of Quantity line status Purchase Order Created.
+     */
+    String BOQ_LINE_STATUS_PO_CREATED = "BOQ_LINE_STATUS_PO_CREATED";
+    /**
+     * Bill Of Quantity line status Purchase Order Confirmed.
+     */
+    String BOQ_LINE_STATUS_PO_CONFIRMED = "BOQ_LINE_STATUS_PO_CONFIRMED";
+    /**
+     * Bill Of Quantity line status Good Received.
+     */
+    String BOQ_LINE_STATUS_GOOD_RECEIVED = "BOQ_LINE_STATUS_GOOD_RECEIVED";
 }

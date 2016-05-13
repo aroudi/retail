@@ -37,4 +37,10 @@ public interface BillOfQuantityService {
      * @return BOQ
      */
     au.com.biztune.retail.domain.BillOfQuantity getBoqHeaderByBoqId(long id);
+    /**
+     * update bill of quantity on stock information.
+     * @param billOfQuantity billOfQuantity
+     * @return Response
+     */
+    CommonResponse updateBoqStockInfo(au.com.biztune.retail.domain.BillOfQuantity billOfQuantity);
     }

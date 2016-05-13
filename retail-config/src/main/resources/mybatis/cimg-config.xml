@@ -36,6 +36,7 @@
         <typeAlias type="au.com.biztune.retail.domain.PurchaseOrderHeader" alias="PurchaseOrderHeader" />
         <typeAlias type="au.com.biztune.retail.domain.PurchaseLine" alias="PurchaseLine" />
         <typeAlias type="au.com.biztune.retail.domain.ProductPurchaseItem" alias="ProductPurchaseItem" />
+        <typeAlias type="au.com.biztune.retail.domain.PoBoqLink" alias="PoBoqLink" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />
@@ -58,5 +59,6 @@
         <mapper resource="maps/PaymentMediaMapper.xml" />
         <mapper resource="maps/TxnMapper.xml" />
         <mapper resource="maps/PurchaseOrderMapper.xml" />
+        <mapper resource="maps/PoBoqLinkMapper.xml" />
     </mappers>
 </configuration>

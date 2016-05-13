@@ -442,4 +442,32 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             return  null;
         }
     }
+
+    /**
+     * update bill of quantity on stock information.
+     * @param billOfQuantity billOfQuantity
+     * @return Response
+     */
+    public CommonResponse updateBoqStockInfo(au.com.biztune.retail.domain.BillOfQuantity billOfQuantity) {
+        final CommonResponse response = new CommonResponse();
+        try {
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+
+            if (billOfQuantity == null) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("bill of quantity object is null");
+                return response;
+            }
+            // update bill of quantity details:
+            for (BoqDetail boqDetail: billOfQuantity.getLines()) {
+                boqDetailDao.updateStockQty(boqDetail);
+            }
+            return response;
+        } catch (Exception e) {
+            logger.error("Exception in updating bill of quantity:", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("exception in saving data");
+            return response;
+        }
+    }
 }

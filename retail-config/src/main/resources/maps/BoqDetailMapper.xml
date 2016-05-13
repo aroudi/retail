@@ -8,9 +8,13 @@
         <id column="BOQ_DETAIL_ID" property="id" />
         <result column="PROD_IS_NEW" property="prodIsNew" />
         <result column="QUANTITY" property="quantity" />
+        <result column="QTY_ON_STOCK" property="qtyOnStock" />
+        <result column="QTY_PURCHASED" property="qtyPurchased" />
+        <result column="QTY_BALANCE" property="qtyBalance" />
         <result column="COST" property="cost" />
         <result column="MARGIN" property="margin" />
         <result column="SELL_PRICE" property="sellPrice" />
+        <result column="COMMENT" property="comment" />
         <!--association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" /-->
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="product" column="PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
@@ -28,7 +32,11 @@
      ${alias}.QUANTITY,
      ${alias}.COST,
      ${alias}.MARGIN,
-     ${alias}.SELL_PRICE
+     ${alias}.SELL_PRICE,
+     ${alias}.QTY_ON_STOCK,
+     ${alias}.QTY_PURCHASED,
+     ${alias}.QTY_BALANCE,
+     ${alias}.COMMENT
     </sql>
 
     <sql id="getBoqDetail">
@@ -55,7 +63,11 @@
             QUANTITY,
             COST,
             MARGIN,
-            SELL_PRICE
+            SELL_PRICE,
+            QTY_ON_STOCK,
+            QTY_PURCHASED,
+            QTY_BALANCE,
+            COMMENT
         ) VALUES (
         #{billOfQuantity.id}
         <if test="supplier != null">
@@ -106,6 +118,30 @@
         <if test="sellPrice == null">
             ,null
         </if>
+        <if test="qtyOnStock != null">
+            ,#{qtyOnStock}
+        </if>
+        <if test="qtyOnStock == null">
+            ,null
+        </if>
+        <if test="qtyPurchased != null">
+            ,#{qtyPurchased}
+        </if>
+        <if test="qtyPurchased == null">
+            ,null
+        </if>
+        <if test="qtyBalance != null">
+            ,#{qtyBalance}
+        </if>
+        <if test="qtyBalance == null">
+            ,null
+        </if>
+        <if test="comment != null">
+            ,#{comment}
+        </if>
+        <if test="comment == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -139,11 +175,31 @@
         <if test="sellPrice != null">
             ,SELL_PRICE = #{sellPrice}
         </if>
+        <if test="qtyOnStock != null">
+            ,QTY_ON_STOCK = #{qtyOnStock}
+        </if>
+        <if test="qtyPurchased != null">
+            ,QTY_PURCHASED = #{qtyPurchased}
+        </if>
+        <if test="qtyBalance != null">
+            ,QTY_BALANCE = #{qtyBalance}
+        </if>
+        <if test="comment != null">
+            ,COMMENT = #{comment}
+        </if>
     </sql>
     <update id="updatePerId" parameterType="BoqDetail" >
           <include refid="updateStatement">
           </include>
           WHERE BOQ_DETAIL_ID = #{id}
+    </update>
+
+    <update id="updateStockQty" parameterType="BoqDetail" >
+        UPDATE BOQ_DETAIL SET
+          QTY_ON_STOCK = #{qtyOnStock},
+          QTY_BALANCE = #{qtyBalance},
+          COMMENT = #{comment}
+        WHERE BOQ_DETAIL_ID = #{id}
     </update>
 
     <delete id="deleteBoqDetailPerBoqId" >
