@@ -15,7 +15,7 @@
         <result column="MARGIN" property="margin" />
         <result column="SELL_PRICE" property="sellPrice" />
         <result column="COMMENT" property="comment" />
-        <!--association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" /-->
+        <association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" />
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="product" column="PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
@@ -51,6 +51,18 @@
         </include>
         WHERE
         boqd.BOQ_ID = #{value}
+    </select>
+
+    <select id="getBoqDetailForMultipleBoqId" resultMap="BoqDetailMap" >
+        <include refid="getBoqDetail">
+        </include>
+        WHERE
+        boqd.BOQ_ID in
+        <foreach collection="list" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
+        order by boqd.SUPPLIER_ID, boqd.PROD_ID
     </select>
 
     <insert id="insert" parameterType="BoqDetail" useGeneratedKeys="true" keyProperty="id" keyColumn="BOQ_DETAIL_ID">

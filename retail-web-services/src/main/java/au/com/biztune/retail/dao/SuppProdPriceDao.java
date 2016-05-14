@@ -32,16 +32,26 @@ public interface SuppProdPriceDao {
      * @param suppId suppId
      * @return List of SuppProdPrice
      */
-    List<ProductPurchaseItem> getAllSupplierProductsPerOrgUnitIdAndSuppId(long orgUnitId, long suppId);
+    List<ProductPurchaseItem> getAllProductPurchaseItemsPerOrgUnitIdAndSuppId(long orgUnitId, long suppId);
 
 
 
     /**
-     * get all supplier prices for specific product.
+     * get Product Purchase Item Per SprcId.
      * @param sprcId sprcId
      * @return List of SuppProdPrice
      */
-    ProductPurchaseItem getSupplierProductPerSprcId(long sprcId);
+    ProductPurchaseItem getProductPurchaseItemPerSprcId(long sprcId);
+
+
+    /**
+     * get Product Purchase Item Per Orgunit Id, ProdId and SuppId.
+     * @param orguId orguId
+     * @param prodId prodId
+     * @param suppId suppId
+     * @return List of SuppProdPrice
+     */
+    ProductPurchaseItem getProductPurchaseItemByOrguIdAndProdIdAndSuppId(long orguId, long prodId, long suppId);
 
     /**
      * get all supplier prices for specific product.

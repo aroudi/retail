@@ -1,6 +1,8 @@
 package au.com.biztune.retail.domain;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by arash on 5/05/2016.
@@ -31,6 +33,19 @@ public class PurchaseLine {
     private double polQtyCounted;
     private double polContents;
     private UnitOfMeasure unomContents;
+    private List<PoBoqLink> poBoqLinks;
+
+    /**
+     * add poBoqLink to list.
+     * @param poBoqLink poBoqLink
+     */
+    public void addPoBoqLink(PoBoqLink poBoqLink) {
+        if (poBoqLinks == null) {
+            poBoqLinks = new ArrayList<PoBoqLink>();
+        }
+        poBoqLinks.add(poBoqLink);
+    }
+
 
     public long getId() {
         return id;
@@ -230,5 +245,13 @@ public class PurchaseLine {
 
     public void setUnomContents(UnitOfMeasure unomContents) {
         this.unomContents = unomContents;
+    }
+
+    public List<PoBoqLink> getPoBoqLinks() {
+        return poBoqLinks;
+    }
+
+    public void setPoBoqLinks(List<PoBoqLink> poBoqLinks) {
+        this.poBoqLinks = poBoqLinks;
     }
 }

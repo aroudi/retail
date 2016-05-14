@@ -15,7 +15,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -55,6 +57,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     private PriceBandDao priceBandDao;
     @Autowired
     private PriceDao priceDao;
+    @Autowired
+    private PurchaseOrderService purchaseOrderService;
     /**
      * upload Bill Of Quantity.
      * @param uploadedInputStream uploadedInputStream
@@ -470,4 +474,71 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             return response;
         }
     }
+
+    /**
+     * generate Purchase orders from bill of quantities.
+     * @param billOfQuantities list of BillOfQyantity Objects.
+     * @return response
+     */
+    public CommonResponse createPurchaseOrderFromBillOfQuantities(List<au.com.biztune.retail.domain.BillOfQuantity> billOfQuantities) {
+        final CommonResponse response = new CommonResponse();
+        try {
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+            if (billOfQuantities == null) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("bill of quantity list is null");
+                return response;
+            }
+            //extract boqIds from list.
+            final List<Long> boqIdList = new ArrayList<Long>();
+            for (au.com.biztune.retail.domain.BillOfQuantity billOfQuantity : billOfQuantities) {
+                if (billOfQuantity == null) {
+                    continue;
+                }
+                boqIdList.add(billOfQuantity.getId());
+            }
+            //fetch all Bill Of Quantity details from db
+            final List<BoqDetail> boqDetailList = boqDetailDao.getBoqDetailForMultipleBoqId(boqIdList);
+            //iterate the boqDetailList and group them per supplier.
+            final HashMap<Long, List<BoqDetail>> supplierBoqDetailMap = new HashMap<Long, List<BoqDetail>>();
+            for (BoqDetail boqDetail: boqDetailList) {
+                final Long key = boqDetail.getSupplier().getId();
+                if (!supplierBoqDetailMap.containsKey(key)) {
+                    final List<BoqDetail> supplierBoqList = new ArrayList<BoqDetail>();
+                    supplierBoqList.add(boqDetail);
+                    supplierBoqDetailMap.put(key, supplierBoqList);
+                } else {
+                    supplierBoqDetailMap.get(key).add(boqDetail);
+                }
+            }
+
+            for (Long supplierKey: supplierBoqDetailMap.keySet()) {
+                final List<BoqDetail> supplierBoqItems = supplierBoqDetailMap.get(supplierKey);
+                if (supplierBoqItems == null || supplierBoqItems.size() < 1) {
+                    continue;
+                }
+                //get the first item from the list and create the Purchase Order Header.
+                final BoqDetail boqDetailItem = supplierBoqItems.get(0);
+                final PurchaseOrderHeader purchaseOrderHeader = purchaseOrderService.createPoFromBoq(boqDetailItem);
+                for (BoqDetail item : supplierBoqItems) {
+                    if (item == null) {
+                        continue;
+                    }
+                    //now we have item. let's create the header
+                    purchaseOrderService.addLineToPoFromBoqDetail(purchaseOrderHeader, item);
+                }
+                //now we have created Purchase Order. its time to save it
+                purchaseOrderService.savePurchaseOrder(purchaseOrderHeader);
+            }
+
+            return response;
+
+        } catch (Exception e) {
+            logger.error("Exception in creating Purchase Order from Bill Of Quantities:", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("exception in generatin purchase order from bill of quantities");
+            return response;
+        }
+    }
+
 }

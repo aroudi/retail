@@ -1,6 +1,7 @@
 package au.com.biztune.retail.domain;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +37,28 @@ public class PurchaseOrderHeader {
     private ConfigCategory pohCreationType;
     private List<PurchaseLine> lines;
 
+
+    /**
+     * add line to purchase Order.
+     * @param purchaseLine purchaseLine
+     */
+    public void addLine(PurchaseLine purchaseLine) {
+        if (lines == null) {
+            lines = new ArrayList<PurchaseLine>();
+            lines.add(purchaseLine);
+            return;
+        }
+        for (PurchaseLine pl : lines) {
+            //if line exists, we need to accumulate the qty and cost of the line
+            if (pl.getPurchaseItem().getProdId() == purchaseLine.getPurchaseItem().getProdId()) {
+                pl.setPolQtyOrdered(pl.getPolQtyOrdered() + purchaseLine.getPolQtyOrdered());
+                pl.setPolValueOrdered(pl.getPolValueOrdered() + purchaseLine.getPolValueOrdered());
+                pl.getPoBoqLinks().addAll(purchaseLine.getPoBoqLinks());
+                return;
+            }
+        }
+        lines.add(purchaseLine);
+    }
     public String getDelvName() {
         return delvName;
     }

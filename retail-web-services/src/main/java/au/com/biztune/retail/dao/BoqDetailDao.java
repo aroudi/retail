@@ -38,4 +38,11 @@ public interface BoqDetailDao {
      * @return List of BoqDetail
      */
     List<BoqDetail> getBoqDetailByBoqId(long id);
+
+    /**
+     * get all BOQ Details for multiple boq ids.
+     * @param boqIds list of BOQ id.
+     * @return List of BoqDetail
+     */
+    List<BoqDetail> getBoqDetailForMultipleBoqId(List boqIds);
 }

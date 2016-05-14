@@ -63,24 +63,24 @@
 
     <resultMap id="purchaseLineMap" type="PurchaseLine" >
         <id column="POL_ID" property="id" />
-        <result column="POH_ID" property="txdePriceOveriden" />
-        <result column="POL_UNIT_COST" property="txdeValueLine" />
-        <result column="POL_PRICE" property="txdeProfitMargin" />
-        <result column="POL_SPECIAL_BUY" property="txdeValueProfit" />
-        <result column="POL_QTY_ORDERED" property="txdeValueGross" />
-        <result column="POL_QTY_CANCELLED" property="txdeTax" />
-        <result column="POL_QTY_RECEIVED" property="txdeValueNet" />
-        <result column="POL_QTY_INVOICED" property="txdeQuantitySold" />
-        <result column="POL_VALUE_ORDERED" property="txdePriceSold" />
-        <result column="POL_VALUE_RECEIVED" property="txdeLineRefund" />
-        <result column="POL_VALUE_INVOICED" property="txdeItemVoid" />
-        <result column="POL_FREE_TEXT" property="txdeSerialNumber" />
-        <result column="POL_MODIFIED" property="txdeWasSplitPck" />
-        <result column="POL_DATE_RECEIVED" property="txdeDetailLevel" />
-        <result column="POL_PRICE_CHECKED" property="txdeParentDetail" />
-        <result column="POL_ID_PARENT_LINE" property="txdeDiscPrice" />
-        <result column="POL_QTY_COUNTED" property="txdeDiscPrice" />
-        <result column="POL_CONTENTS" property="txdeDiscPrice" />
+        <result column="POH_ID" property="pohId" />
+        <result column="POL_UNIT_COST" property="polUnitCost" />
+        <result column="POL_PRICE" property="polPrice" />
+        <result column="POL_SPECIAL_BUY" property="polSpecialBuy" />
+        <result column="POL_QTY_ORDERED" property="polQtyOrdered" />
+        <result column="POL_QTY_CANCELLED" property="polQtyCancelled" />
+        <result column="POL_QTY_RECEIVED" property="polQtyReceived" />
+        <result column="POL_QTY_INVOICED" property="polQtyInvoiced" />
+        <result column="POL_VALUE_ORDERED" property="polValueOrdered" />
+        <result column="POL_VALUE_RECEIVED" property="polValueReceived" />
+        <result column="POL_VALUE_INVOICED" property="polValueInvoiced" />
+        <result column="POL_FREE_TEXT" property="polFreeText" />
+        <result column="POL_MODIFIED" property="polModified" />
+        <result column="POL_DATE_RECEIVED" property="polDateReceived" />
+        <result column="POL_PRICE_CHECKED" property="polPriceChecked" />
+        <result column="POL_ID_PARENT_LINE" property="polIdParentLine" />
+        <result column="POL_QTY_COUNTED" property="polQtyCounted" />
+        <result column="POL_CONTENTS" property="polContents" />
         <association property="purchaseItem" column="SPRC_ID" select="au.com.biztune.retail.dao.SuppProdPriceDao.getSupplierProductPerSprcId" />
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="unomContents" column="UNOM_ID_CONTENTS" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
@@ -345,6 +345,7 @@
 
         )
     </insert>
+
     <update id="updatePurchaseOrderHeader" parameterType="PurchaseORderHeader" >
         UPDATE PURCHASE_ORDER_HEADER SET
         ORGU_ID = #{orgUnit.id}

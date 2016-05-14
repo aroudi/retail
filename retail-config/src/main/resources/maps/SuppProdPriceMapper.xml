@@ -102,7 +102,7 @@
           spp.PROD_ID= #{value}
     </select>
 
-    <select id="getAllSupplierProductsPerOrgUnitIdAndSuppId" resultMap="suppPurchaseProdMap" >
+    <select id="getAllProductPurchaseItemsPerOrgUnitIdAndSuppId" resultMap="suppPurchaseProdMap" >
         SELECT
         <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>
         FROM
@@ -111,13 +111,26 @@
         sol.ORGU_ID= #{param1} AND sol.SUPP_ID = {param2}
     </select>
 
-    <select id="getSupplierProductPerSprcId" resultMap="suppPurchaseProdMap" >
+    <select id="getProductPurchaseItemPerSprcId" resultMap="suppPurchaseProdMap" >
         SELECT
         <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>
         FROM
         SUPP_PROD_PRICE spp
         WHERE
         sol.SPRC_ID= #{value}
+    </select>
+
+    <select id="getProductPurchaseItemByOrguIdAndProdIdAndSuppId" resultMap="suppPurchaseProdMap" >
+        SELECT
+        <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>
+        FROM
+        SUPP_ORGU_LINK sol
+        INNER JOIN
+        SUPP_PROD_PRICE spp on (sol.SOL_ID = spp.SOL_ID)
+        WHERE
+        sol.ORGU_ID = #{param1}
+        AND spp.PROD_ID= #{param2}
+        AND sol.SUPP_ID = #{param3}
     </select>
 
     <insert id="insert" parameterType="SuppProdPrice" useGeneratedKeys="true" keyProperty="id" keyColumn="SPRC_ID">
