@@ -1,6 +1,7 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.BoqDetail;
+import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.response.CommonResponse;
 
 import java.io.InputStream;
@@ -43,4 +44,11 @@ public interface BillOfQuantityService {
      * @return Response
      */
     CommonResponse updateBoqStockInfo(au.com.biztune.retail.domain.BillOfQuantity billOfQuantity);
+
+    /**
+     * generate Purchase orders from bill of quantities.
+     * @param billOfQuantities list of BillOfQyantity Objects.
+     * @return response
+     */
+    List<PurchaseOrderHeader> createPurchaseOrderFromBillOfQuantities(List<au.com.biztune.retail.domain.BillOfQuantity> billOfQuantities);
     }

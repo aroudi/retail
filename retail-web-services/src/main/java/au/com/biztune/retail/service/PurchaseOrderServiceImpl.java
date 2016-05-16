@@ -1,6 +1,7 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.ConfigCategoryDao;
+import au.com.biztune.retail.dao.PoBoqLinkDao;
 import au.com.biztune.retail.dao.PurchaseOrderDao;
 import au.com.biztune.retail.dao.SuppProdPriceDao;
 import au.com.biztune.retail.domain.*;
@@ -35,6 +36,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Autowired
     private SuppProdPriceDao suppProdPriceDao;
 
+    @Autowired
+    private PoBoqLinkDao poBoqLinkDao;
 
     /**
      * save Purchase Order Header into database.
@@ -135,6 +138,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 purchaseLine.setUnomContents(productPurchaseItem.getUnitOfMeasureContent());
             }
             purchaseLine.setPolContents(productPurchaseItem.getUnomQty());
+            purchaseOrderDao.insertPurchaseLine(purchaseLine);
             createPoBoqLink(purchaseLine, boqDetail);
             purchaseOrderHeader.addLine(purchaseLine);
             //purchaseOrderDao.insertPurchaseLine(purchaseLine);
@@ -159,9 +163,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             poBoqLink.setPohOrderNumber(purchaseLine.getPohOrderNumber());
             poBoqLink.setPolId(purchaseLine.getId());
             poBoqLink.setPoQtyReceived(0);
+            poBoqLink.setProjectId(boqDetail.getBillOfQuantity().getProject().getId());
             poBoqLink.setProjectCode(boqDetail.getBillOfQuantity().getProject().getProjectCode());
             final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_PENDING);
             poBoqLink.setStatus(status);
+            poBoqLinkDao.insert(poBoqLink);
             purchaseLine.addPoBoqLink(poBoqLink);
         } catch (Exception e) {
             logger.error("Exception in creating purchase order to boq link:", e);

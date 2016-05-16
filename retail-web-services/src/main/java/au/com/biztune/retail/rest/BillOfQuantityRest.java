@@ -4,6 +4,7 @@ package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.BillOfQuantity;
 import au.com.biztune.retail.domain.BoqDetail;
+import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.service.BillOfQuantityService;
 import com.sun.jersey.multipart.FormDataParam;
@@ -96,5 +97,18 @@ public class BillOfQuantityRest {
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResponse updateBoqStockQty (BillOfQuantity billOfQuantity) {
         return billOfQuantityService.updateBoqStockInfo(billOfQuantity);
+    }
+
+    /**
+     * create PurchaseOrder from Bill Of Quantities.
+     * @param billOfQuantityList billOfQuantityList
+     * @return list of created PurchaseOrderHeader
+     */
+    @Path("/generatePurchaseOrder")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PurchaseOrderHeader> generatePurchaseOrderFromBoqs (List<BillOfQuantity> billOfQuantityList) {
+        return billOfQuantityService.createPurchaseOrderFromBillOfQuantities(billOfQuantityList);
     }
 }

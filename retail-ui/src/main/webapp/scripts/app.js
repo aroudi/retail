@@ -71,10 +71,8 @@ var service_uri = {
     'PRODUCT_SALE_ITEM_ALL_URI' : 'product/allProductSaleItem',
     'TXN_ALL_URI' : 'transaction/all',
     'TXN_ADD_URI' : 'transaction/add',
-    'TXN_GET_URI' : 'transaction/get/'
-
-
-    //
+    'TXN_GET_URI' : 'transaction/get/',
+    'CREATE_PO_FROM_BOQ_URI' : 'billOfQuantity/generatePurchaseOrder'
 }
 
 var response_status = {
@@ -414,6 +412,26 @@ cimgApp.service('UserInfo', function () {
         },
         setMessage: function (msg) {
             message = msg;
+        }
+    };
+});
+
+cimgApp.service('purchaseOrderService', function () {
+    /*userType must be user,admin or reader*/
+    var sourceOfData;
+    var generatedResultFromBoqList
+    return {
+        getSourceOfData: function () {
+            return sourceOfData;
+        },
+        setSrouceOfData: function (source) {
+            sourceOfData = source;
+        },
+        getGeneratedResultFromBoqList: function () {
+            return generatedResultFromBoqList;
+        },
+        setGeneratedResultFromBoqList: function (result) {
+            generatedResultFromBoqList = result;
         }
     };
 });

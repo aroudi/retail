@@ -61,4 +61,10 @@ public interface PurchaseOrderDao {
      * @return Purchase Order Header.
      */
     PurchaseOrderHeader getPurchaseOrderWholePerPohId (long pohId);
+
+    /**
+     * get Max PohId.
+     * @return pohId as long.
+     */
+    long getMaxPohId();
 }

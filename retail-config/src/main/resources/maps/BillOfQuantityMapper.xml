@@ -230,4 +230,8 @@
         </include>
         WHERE BOQ_NAME = #{boqName}
     </update>
+    <update id="updateStatusPerId" parameterType="BillOfQuantity" >
+        UPDATE BILL_OF_QUANTITY set BOQ_STATUS = #{boqStatus.id}
+        WHERE BOQ_ID = #{id}
+    </update>
 </mapper>

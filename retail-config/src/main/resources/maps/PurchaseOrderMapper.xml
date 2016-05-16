@@ -749,4 +749,11 @@
         WHERE poh.POH_ID=#{value}
     </select>
 
+    <select id="getMaxPohId" resultType="long" >
+        SELECT
+          max(poh_id)
+        FROM
+          PURCHASE_ORDER_HEADER
+    </select>
+
 </mapper>

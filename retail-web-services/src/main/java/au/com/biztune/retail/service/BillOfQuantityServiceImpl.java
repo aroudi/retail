@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
@@ -480,14 +481,13 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
      * @param billOfQuantities list of BillOfQyantity Objects.
      * @return response
      */
-    public CommonResponse createPurchaseOrderFromBillOfQuantities(List<au.com.biztune.retail.domain.BillOfQuantity> billOfQuantities) {
-        final CommonResponse response = new CommonResponse();
+    @Transactional
+    public List<PurchaseOrderHeader> createPurchaseOrderFromBillOfQuantities(List<au.com.biztune.retail.domain.BillOfQuantity> billOfQuantities) {
+        final List<PurchaseOrderHeader> result = new ArrayList<PurchaseOrderHeader>();
         try {
-            response.setStatus(IdBConstant.RESULT_SUCCESS);
             if (billOfQuantities == null) {
-                response.setStatus(IdBConstant.RESULT_FAILURE);
-                response.setMessage("bill of quantity list is null");
-                return response;
+                logger.debug("Bill Of Quantity list to create Purchase Order From is empty");
+                return null;
             }
             //extract boqIds from list.
             final List<Long> boqIdList = new ArrayList<Long>();
@@ -527,17 +527,22 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                     //now we have item. let's create the header
                     purchaseOrderService.addLineToPoFromBoqDetail(purchaseOrderHeader, item);
                 }
-                //now we have created Purchase Order. its time to save it
-                purchaseOrderService.savePurchaseOrder(purchaseOrderHeader);
+                result.add(purchaseOrderHeader);
             }
-
-            return response;
+            //now change the status of BillOfQuantities merged
+            final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_ON_ORDER);
+            for (au.com.biztune.retail.domain.BillOfQuantity billOfQuantity : billOfQuantities) {
+                if (billOfQuantity == null) {
+                    continue;
+                }
+                billOfQuantity.setBoqStatus(status);
+                billOfQuantityDao.updateStatusPerId(billOfQuantity);
+            }
+            return result;
 
         } catch (Exception e) {
             logger.error("Exception in creating Purchase Order from Bill Of Quantities:", e);
-            response.setStatus(IdBConstant.RESULT_FAILURE);
-            response.setMessage("exception in generatin purchase order from bill of quantities");
-            return response;
+            return null;
         }
     }
 

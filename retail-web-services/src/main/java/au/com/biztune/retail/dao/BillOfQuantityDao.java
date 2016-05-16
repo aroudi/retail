@@ -46,4 +46,10 @@ public interface BillOfQuantityDao {
      * @param id id.
      */
     void updatePerId(long id);
+
+    /**
+     * update boqStatus per id.
+     * @param billOfQuantity billOfQuantity
+     */
+    void updateStatusPerId(BillOfQuantity billOfQuantity);
 }

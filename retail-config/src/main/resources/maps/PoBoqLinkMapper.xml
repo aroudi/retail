@@ -89,7 +89,7 @@
         <if test="pohOrderNumber == null">
             ,null
         </if>
-        ,#{pohId}
+        ,#{polId}
         ,#{boqId}
 
        <if test="boqName != null">

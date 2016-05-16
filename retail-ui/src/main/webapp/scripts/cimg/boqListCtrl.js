@@ -1,9 +1,11 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI ) {
+cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI, CREATE_PO_FROM_BOQ_URI ) {
     $scope.gridOptions = {
         enableFiltering: true,
+        enableSelectAll:true,
+        enableRowSelection:true,
         showGridFooter: true,
         showColumnFooter: true,
         enableColumnResizing: true,
@@ -38,8 +40,8 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, $tim
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
-    $scope.gridOptions.multiSelect = false;
-    $scope.gridOptions.noUnselect= true;
+    $scope.gridOptions.multiSelect = true;
+    //$scope.gridOptions.noUnselect= true;
 
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
@@ -67,6 +69,15 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, $tim
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.viewBoqDetail');
+        });
+    }
+
+    $scope.generatePurchaseOrder= function() {
+        baseDataService.addRow($scope.gridApi.selection.getSelectedRows(), CREATE_PO_FROM_BOQ_URI).then(function(response) {
+            var purchaseOrderHeaderList = response.data;
+            purchaseOrderService.setSrouceOfData('Auto');
+            purchaseOrderService.setGeneratedResultFromBoqList(purchaseOrderHeaderList);
+            $state.go('dashboard.purchaseOrderList');
         });
     }
 });

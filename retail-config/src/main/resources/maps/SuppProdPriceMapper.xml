@@ -38,9 +38,6 @@
         <result column="BULK_QTY" property="bulkQty" />
         <result column="SPRC_MIN_ORD_QTY" property="sprcMinOrdQty" />
         <result column="SPRC_LEAD_TIME" property="sprcLeadTime" />
-        <result column="SPRC_CREATED" property="sprcCreated" />
-        <result column="SPRC_MODIFIED" property="sprcModified" />
-        <result column="SPRC_PREFER_BUY" property="sprcPrefferBuy" />
         <result column="SPRC_MIN_ORD_VAL" property="sprcMinOrdVal" />
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="unitOfMeasureContent" column="UNOM_ID_CONTENT" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />

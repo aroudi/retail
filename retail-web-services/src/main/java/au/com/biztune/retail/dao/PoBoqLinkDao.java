@@ -34,4 +34,10 @@ public interface PoBoqLinkDao {
      * @return PoBoqLink
      */
     PoBoqLink getPoBoqLinkPerBoqDetailId(long boqDetailId);
+
+    /**
+     * insert PurchaseOrder BillOfQuantity link to database.
+     * @param poBoqLink poBoqLink
+     */
+    void insert(PoBoqLink poBoqLink);
 }
