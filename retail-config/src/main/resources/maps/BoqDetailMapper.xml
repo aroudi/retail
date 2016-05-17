@@ -15,12 +15,29 @@
         <result column="MARGIN" property="margin" />
         <result column="SELL_PRICE" property="sellPrice" />
         <result column="COMMENT" property="comment" />
+        <!--association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" /-->
+        <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+        <association property="product" column="PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
+        <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
+        <collection property="linkedPurchaseOrders" javaType="ArrayList" column="BOQ_DETAIL_ID" ofType="PoBoqLink" select="au.com.biztune.retail.dao.PoBoqLinkDao.getPoBoqLinkPerBoqDetailId"/>
+    </resultMap>
+
+    <resultMap id="BoqDetailCompleteMap" type="BoqDetail" >
+        <id column="BOQ_DETAIL_ID" property="id" />
+        <result column="PROD_IS_NEW" property="prodIsNew" />
+        <result column="QUANTITY" property="quantity" />
+        <result column="QTY_ON_STOCK" property="qtyOnStock" />
+        <result column="QTY_PURCHASED" property="qtyPurchased" />
+        <result column="QTY_BALANCE" property="qtyBalance" />
+        <result column="COST" property="cost" />
+        <result column="MARGIN" property="margin" />
+        <result column="SELL_PRICE" property="sellPrice" />
+        <result column="COMMENT" property="comment" />
         <association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" />
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="product" column="PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
     </resultMap>
-
 
     <sql id="boqDetailColumns">
      ${alias}.BOQ_DETAIL_ID,
@@ -53,7 +70,7 @@
         boqd.BOQ_ID = #{value}
     </select>
 
-    <select id="getBoqDetailForMultipleBoqId" resultMap="BoqDetailMap" >
+    <select id="getBoqDetailForMultipleBoqId" resultMap="BoqDetailCompleteMap" >
         <include refid="getBoqDetail">
         </include>
         WHERE

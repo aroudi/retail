@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by arash on 14/05/2016.
@@ -129,19 +130,35 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                     boqDetail.getProduct().getId(), boqDetail.getSupplier().getId());
             purchaseLine.setPurchaseItem(productPurchaseItem);
             //todo: should it be the unit cost or the total cost????
-            purchaseLine.setPolUnitCost(productPurchaseItem.getPrice());
+            purchaseLine.setPolUnitCost(boqDetail.getCost());
             purchaseLine.setPolSpecialBuy(false);
             purchaseLine.setUnitOfMeasure(productPurchaseItem.getUnitOfMeasure());
-            purchaseLine.setPolQtyOrdered(boqDetail.getQtyPurchased());
-            purchaseLine.setPolValueOrdered(productPurchaseItem.getPrice() * boqDetail.getQtyPurchased());
+            purchaseLine.setPolQtyOrdered(boqDetail.getQtyBalance());
+            purchaseLine.setPolValueOrdered(purchaseLine.getPolUnitCost() * purchaseLine.getPolQtyOrdered());
             if (productPurchaseItem.getUnitOfMeasureContent() != null) {
                 purchaseLine.setUnomContents(productPurchaseItem.getUnitOfMeasureContent());
             }
             purchaseLine.setPolContents(productPurchaseItem.getUnomQty());
-            purchaseOrderDao.insertPurchaseLine(purchaseLine);
-            createPoBoqLink(purchaseLine, boqDetail);
-            purchaseOrderHeader.addLine(purchaseLine);
-            //purchaseOrderDao.insertPurchaseLine(purchaseLine);
+            //check if line already exists in purchase order header. if so update existing line; otherwise create new line
+            boolean lineFound = false;
+            if (purchaseOrderHeader.getLines() != null) {
+                for (PurchaseLine pl: purchaseOrderHeader.getLines()) {
+                    if (pl.getPurchaseItem().getProdId() == purchaseLine.getPurchaseItem().getProdId()) {
+                        pl.setPolQtyOrdered(pl.getPolQtyOrdered() + purchaseLine.getPolQtyOrdered());
+                        pl.setPolValueOrdered(pl.getPolValueOrdered() + purchaseLine.getPolValueOrdered());
+                        //pl.getPoBoqLinks().addAll(purchaseLine.getPoBoqLinks());
+                        purchaseOrderDao.updatePurchaseLine(pl);
+                        createPoBoqLink(pl, boqDetail);
+                        lineFound = true;
+                        break;
+                    }
+                }
+            }
+            if (!lineFound) {
+                purchaseOrderDao.insertPurchaseLine(purchaseLine);
+                createPoBoqLink(purchaseLine, boqDetail);
+                purchaseOrderHeader.addLine(purchaseLine);
+            }
 
         } catch (Exception e) {
             logger.error("Exception in adding line to Purchase Order Header:", e);
@@ -184,4 +201,30 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return IdBConstant.POH_NUMBER_PREFIX_AUTO + DateUtil.dateToString(currentDate, "yyyy-MM-dd") + pohId;
     }
 
+    /**
+     * get all purchase Order Header.
+     * @return List of PurchaseOrderHeader
+     */
+    public List<PurchaseOrderHeader> getAllPurchaseOrderHeaders() {
+        try {
+            return purchaseOrderDao.getAllPurchaseOrderHeaderPerOrguId(sessionState.getOrgUnit().getId());
+        } catch (Exception e) {
+            logger.error("Exception in getting purchase order header list:", e);
+            return null;
+        }
+    }
+
+    /**
+     * get PurchaseOrderHeader whole oblect per pohId.
+     * @param pohId pohId.
+     * @return PurchaseOrderHeader
+     */
+    public PurchaseOrderHeader getPurchaseOrderHeaderWhole(long pohId) {
+        try {
+            return purchaseOrderDao.getPurchaseOrderWholePerPohId(pohId);
+        } catch (Exception e) {
+            logger.error("Exception in getting purchase order header per pohId:", e);
+            return null;
+        }
+    }
 }

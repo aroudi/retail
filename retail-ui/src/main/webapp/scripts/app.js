@@ -28,6 +28,7 @@ var cimgApp = angular
     'ui.grid.edit',
     'ui.grid.rowEdit',
     'ui.grid.cellNav',
+    'ui.grid.resizeColumns',
     'ngMessages'
   ]);
 
@@ -72,7 +73,10 @@ var service_uri = {
     'TXN_ALL_URI' : 'transaction/all',
     'TXN_ADD_URI' : 'transaction/add',
     'TXN_GET_URI' : 'transaction/get/',
-    'CREATE_PO_FROM_BOQ_URI' : 'billOfQuantity/generatePurchaseOrder'
+    'CREATE_PO_FROM_BOQ_URI' : 'billOfQuantity/generatePurchaseOrder',
+    'POH_GET_ALL_URI' : 'purchaseOrder/header/all',
+    'POH_GET_URI' : 'purchaseOrder/header/getWhole/'
+    ///header/getWhole/{id}
 }
 
 var response_status = {
@@ -418,7 +422,7 @@ cimgApp.service('UserInfo', function () {
 
 cimgApp.service('purchaseOrderService', function () {
     /*userType must be user,admin or reader*/
-    var sourceOfData;
+    var sourceOfData = 'Manual';
     var generatedResultFromBoqList
     return {
         getSourceOfData: function () {

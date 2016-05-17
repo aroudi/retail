@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants,purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE) {
+cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants,purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
         enableSelectAll:true,
@@ -12,8 +12,8 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
         enableSorting:true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'10%'},
-            {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'10%',
+            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'15%'},
+            {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'45%',
                 cellTooltip: function(row,col) {
                     return row.entity.supplier.supplierName
                 }
@@ -48,6 +48,10 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             purchaseOrderService.setSrouceOfData('');
             $scope.gridOptions.data = purchaseOrderService.getGeneratedResultFromBoqList();
         } else {
+            baseDataService.getBaseData(POH_GET_ALL_URI).then(function(response){
+                var data = angular.copy(response.data);
+                $scope.gridOptions.data = data;
+            });
         }
     }
 
@@ -56,11 +60,12 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             alert('row is undefined');
             return;
         }
-        if ($scope.pohSrouceData == 'Auto') {
+        var pohGetURI = POH_GET_URI +  row.entity.id;
+        baseDataService.getBaseData(pohGetURI).then(function(response){
             baseDataService.setIsPageNew(false);
-            baseDataService.setRow(row.entity);
-            //redirect to the Purchase Order Detail
+            baseDataService.setRow(response.data);
+            //redirect to the supplier page.
             $state.go('dashboard.purchaseOrderDetail');
-        }
+        });
     }
 });

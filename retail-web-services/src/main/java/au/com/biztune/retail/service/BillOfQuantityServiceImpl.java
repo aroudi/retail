@@ -60,6 +60,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     private PriceDao priceDao;
     @Autowired
     private PurchaseOrderService purchaseOrderService;
+    @Autowired
+    private PurchaseOrderDao purchaseOrderDao;
     /**
      * upload Bill Of Quantity.
      * @param uploadedInputStream uploadedInputStream
@@ -187,7 +189,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 prodIsNew = true;
                 product = new Product();
                 product.setOrguIdOwning(sessionState.getOrgUnit().getId());
-                product.setProdSku(importedProduct.getReference());
+                product.setProdSku(importedProduct.getCatalogueNo());
                 product.setReference(importedProduct.getReference());
                 product.setProdName(importedProduct.getDescription());
                 product.setProdDesc(importedProduct.getDescription());
@@ -219,7 +221,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 suppProdPrice.setSolId(supplier.getSuppOrguLink().getId());
                 suppProdPrice.setCatalogueNo(importedProduct.getCatalogueNo());
                 suppProdPrice.setUnitOfMeasure(unitOfMeasure);
-                suppProdPrice.setUnomQty(importedProduct.getQty());
+                suppProdPrice.setUnitOfMeasureContent(unitOfMeasure);
+                suppProdPrice.setUnomQty(1);
                 suppProdPrice.setLegalTender(legalTender);
                 suppProdPrice.setPrice(importedProduct.getCost());
                 suppProdPrice.setSprcCreated(currentTime);
@@ -240,7 +243,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
 
                 final Price price1 = new Price();
                 //TODO: we need to set Quantity and price for each of imported BOQ in Price table
-                price1.setUnomQty(importedProduct.getQty());
+                price1.setUnomQty(1);
                 //price1.setMargin(margin);
                 price1.setPrcePrice(importedProduct.getSellPrice());
                 //price1.setPrceTaxIncluded(taxInclude);
@@ -527,6 +530,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                     //now we have item. let's create the header
                     purchaseOrderService.addLineToPoFromBoqDetail(purchaseOrderHeader, item);
                 }
+                //update the total fields in purchase order header.
+                purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
                 result.add(purchaseOrderHeader);
             }
             //now change the status of BillOfQuantities merged

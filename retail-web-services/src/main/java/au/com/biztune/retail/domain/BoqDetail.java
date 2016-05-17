@@ -1,5 +1,7 @@
 package au.com.biztune.retail.domain;
 
+import java.util.List;
+
 /**
  * Created by arash on 1/04/2016.
  */
@@ -19,6 +21,7 @@ public class BoqDetail {
     private double qtyBalance;
     private ConfigCategory bqdStatus;
     private String comment;
+    private List<PoBoqLink> linkedPurchaseOrders;
 
     public long getId() {
         return id;
@@ -138,5 +141,13 @@ public class BoqDetail {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public List<PoBoqLink> getLinkedPurchaseOrders() {
+        return linkedPurchaseOrders;
+    }
+
+    public void setLinkedPurchaseOrders(List<PoBoqLink> linkedPurchaseOrders) {
+        this.linkedPurchaseOrders = linkedPurchaseOrders;
     }
 }

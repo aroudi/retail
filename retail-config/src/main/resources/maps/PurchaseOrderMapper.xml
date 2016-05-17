@@ -58,7 +58,7 @@
         <result column="POH_TOTAL_LINES" property="pohTotalLines" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="pohStatus" column="POH_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
-        <collection property="lines" javaType="ArrayList" column="POH_ID" ofType="PurchaseLine" select="getPurchaseLinePerPohId"/>
+        <collection property="lines" javaType="ArrayList" column="POH_ID" ofType="PurchaseLine" select="getPurchaseLinesPerPohId"/>
     </resultMap>
 
     <resultMap id="purchaseLineMap" type="PurchaseLine" >
@@ -81,7 +81,7 @@
         <result column="POL_ID_PARENT_LINE" property="polIdParentLine" />
         <result column="POL_QTY_COUNTED" property="polQtyCounted" />
         <result column="POL_CONTENTS" property="polContents" />
-        <association property="purchaseItem" column="SPRC_ID" select="au.com.biztune.retail.dao.SuppProdPriceDao.getSupplierProductPerSprcId" />
+        <association property="purchaseItem" column="SPRC_ID" select="au.com.biztune.retail.dao.SuppProdPriceDao.getProductPurchaseItemPerSprcId" />
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="unomContents" column="UNOM_ID_CONTENTS" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
     </resultMap>
@@ -620,11 +620,7 @@
 
     <update id="updatePurchaseLine" parameterType="PurchaseLine" >
         UPDATE PURCHASE_LINE SET
-        POL_ID = #{id}
-        <if test="pohId != null">
-            ,POH_ID = #{pohId}
-        </if>
-
+          POH_ID = #{pohId}
         <if test="pohOrderNumber != null">
             ,POH_ORDER_NUMBER = #{pohOrderNumber}
         </if>
@@ -722,7 +718,7 @@
         <include refid="purchaseLineColumns"><property name="alias" value="pol"/></include>
         FROM
         PURCHASE_LINE pol
-        WHERE pol.pol_id=#{value}
+        WHERE pol.poh_id=#{value}
     </select>
 
     <select id="getAllPurchaseOrderHeaderPerOrguId" resultMap="purchaseOrderHeaderLiteMap" >

@@ -114,7 +114,7 @@
         FROM
         SUPP_PROD_PRICE spp
         WHERE
-        sol.SPRC_ID= #{value}
+        spp.SPRC_ID= #{value}
     </select>
 
     <select id="getProductPurchaseItemByOrguIdAndProdIdAndSuppId" resultMap="suppPurchaseProdMap" >

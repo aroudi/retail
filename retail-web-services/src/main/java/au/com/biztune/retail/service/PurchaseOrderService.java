@@ -4,6 +4,8 @@ import au.com.biztune.retail.domain.BoqDetail;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.response.CommonResponse;
 
+import java.util.List;
+
 /**
  * Created by arash on 14/05/2016.
  */
@@ -27,4 +29,17 @@ public interface PurchaseOrderService {
      * @return response
      */
     CommonResponse savePurchaseOrder(PurchaseOrderHeader purchaseOrderHeader);
+
+    /**
+     * get all purchase Order Header.
+     * @return List of PurchaseOrderHeader
+     */
+    List<PurchaseOrderHeader> getAllPurchaseOrderHeaders();
+
+    /**
+     * get PurchaseOrderHeader whole oblect per pohId.
+     * @param pohId pohId.
+     * @return PurchaseOrderHeader
+     */
+    PurchaseOrderHeader getPurchaseOrderHeaderWhole(long pohId);
 }

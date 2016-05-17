@@ -39,23 +39,26 @@ public class PurchaseOrderHeader {
 
 
     /**
+     * constructor.
+     */
+    public PurchaseOrderHeader() {
+        super();
+        this.pohValueGross = 0.00;
+        this.pohValueNett = 0.00;
+        this.pohTotalQty = 0;
+        this.pohTotalLines = 0;
+    }
+
+    /**
      * add line to purchase Order.
      * @param purchaseLine purchaseLine
      */
     public void addLine(PurchaseLine purchaseLine) {
+        this.setPohValueGross(this.getPohValueGross() + purchaseLine.getPolValueOrdered());
+        this.setPohTotalQty(this.getPohTotalQty() + purchaseLine.getPolQtyOrdered());
+        this.setPohTotalLines(this.getPohTotalLines() + 1);
         if (lines == null) {
             lines = new ArrayList<PurchaseLine>();
-            lines.add(purchaseLine);
-            return;
-        }
-        for (PurchaseLine pl : lines) {
-            //if line exists, we need to accumulate the qty and cost of the line
-            if (pl.getPurchaseItem().getProdId() == purchaseLine.getPurchaseItem().getProdId()) {
-                pl.setPolQtyOrdered(pl.getPolQtyOrdered() + purchaseLine.getPolQtyOrdered());
-                pl.setPolValueOrdered(pl.getPolValueOrdered() + purchaseLine.getPolValueOrdered());
-                pl.getPoBoqLinks().addAll(purchaseLine.getPoBoqLinks());
-                return;
-            }
         }
         lines.add(purchaseLine);
     }

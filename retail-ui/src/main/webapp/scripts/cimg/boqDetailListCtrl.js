@@ -9,10 +9,14 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
         showColumnFooter: true,
         enableColumnResizing: true,
         enableSorting:true,
+        expandableRowTemplate: 'views/pages/treeViewTemplate.html',
+        expandableRowScope:{
+            subGridVariable: 'subGridScopeVariable'
+        } ,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'supplier.supplierName', displayName:'Supplier', enableCellEdit:false, width:'15%'},
-            {field:'product.prodName', displayName:'Product',enableCellEdit:false, width:'25%',
+            {field:'product.prodSku', displayName:'SKU',enableCellEdit:false, width:'25%',
                 cellTooltip: function(row,col) {
                     return row.entity.product.prodName
                 }
@@ -64,6 +68,9 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
     initPageData();
     function initPageData() {
         $scope.billOfQuantity = angular.copy(baseDataService.getRow());
+        for (i=0; i<$scope.billOfQuantity.lines.length; i++) {
+            displayLinkedPurchaseOrders($scope.billOfQuantity.lines[i])
+        }
         $scope.gridOptions.data = $scope.billOfQuantity.lines;
         baseDataService.setRow({});
     }
@@ -106,5 +113,33 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
     $scope.cancelForm = function() {
         $state.go($scope.previouseState);
     }
+
+    function displayLinkedPurchaseOrders(boqLine) {
+        boqLine.subGridOptions = {
+                enableRowSelection :false,
+                enableColumnResizing: true,
+                columnDefs :[
+                    {name:"id", field:"id", visible:false},
+                    {name:"pohId", field:"pohId", visible:false},
+                    {name:"polId", field:"polId", visible:false},
+                    {name:"boqId", field:"boqId", visible:false},
+                    {name:"boqDetailId", field:"boqDetailId", visible:false},
+                    {name:"pohOrderNumber", field:"pohOrderNumber", displayName:"Purchase No", width:'20%',
+                        cellTooltip: function(row,col) {
+                            return row.entity.pohOrderNumber
+                        }
+                    },
+                    {name: "boqQtyTotal", field: "boqQtyTotal", displayName:"Qty Ordered", width: '10%'},
+                    {name: "poQtyReceived", field: "poQtyReceived", displayName:"Qty Received", width: '10%'},
+                    {name: "boqQtyBalance", field: "boqQtyBalance", displayName:"Qty Balance", width: '10%'},
+                    {field:'status', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+                        cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                            return grid.getCellValue(row, col).color
+                        }
+                    }
+                ],
+                data:boqLine.linkedPurchaseOrders
+            }
+        }
 
 });
