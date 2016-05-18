@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE,  PRODUCT_GET_URI, UPDATE_BOQ_STOCK_URI) {
+cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE,  PRODUCT_GET_URI, UPDATE_BOQ_STOCK_URI, POH_GET_URI) {
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -9,14 +9,16 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
         showColumnFooter: true,
         enableColumnResizing: true,
         enableSorting:true,
-        expandableRowTemplate: 'views/pages/treeViewTemplate.html',
+        //expandableRowTemplate: 'views/pages/treeViewTemplate.html',
+        /*
         expandableRowScope:{
             subGridVariable: 'subGridScopeVariable'
         } ,
+        */
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'supplier.supplierName', displayName:'Supplier', enableCellEdit:false, width:'15%'},
-            {field:'product.prodSku', displayName:'SKU',enableCellEdit:false, width:'25%',
+            {field:'product.prodSku', displayName:'SKU',enableCellEdit:false, width:'15%',
                 cellTooltip: function(row,col) {
                     return row.entity.product.prodName
                 }
@@ -26,8 +28,9 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
             {field:'quantity', displayName:'Qty',enableCellEdit:false, width:'5%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'qtyOnStock', displayName:'Stock', width:'5%', type: 'number', enableCellEdit:true, cellClass:"blue"},
             {field:'comment', displayName:'Location', width:'10%', enableCellEdit:true, cellClass:"blue"},
-            {field:'qtyPurchased', displayName:'Purchased',enableCellEdit:false, width:'7%', aggregationType: uiGridConstants.aggregationTypes.sum, type: 'number'},
-            {field:'qtyBalance', displayName:'Balance',enableCellEdit:false, width:'7%', aggregationType: uiGridConstants.aggregationTypes.sum, type: 'number'},
+            {field:'qtyPurchased', displayName:'Purchased', enableCellEdit:false, width:'7%', aggregationType: uiGridConstants.aggregationTypes.sum, type: 'number'},
+            {field:'qtyBalance', displayName:'Balance', enableCellEdit:false, width:'8%', aggregationType: uiGridConstants.aggregationTypes.sum, type: 'number'},
+            /*
             {field:'prodIsNew', displayName:'New Item',enableCellEdit:false, width:'8%', cellFilter:'booleanFilter',
                 cellClass:
                     function(grid, row, col, rowRenderIndex, colRenderIndex) {
@@ -37,6 +40,10 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
                             return 'green'
                         }
                     }
+            },
+            */
+            {field:'linkedPurchaseOrders', displayName:'Purchase Order No',enableCellEdit:false, width:'10%', cellFilter:'poBoqLinkOrderNumberFilter',
+                cellTemplate:'<a href="" ng-click="grid.appScope.viewPohDetail(row)">{{grid.appScope.getPoBoqLinkOrderNo(row)}}</a>'
             },
             {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit Product" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a>', width:'5%' }
 
@@ -52,25 +59,40 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
         gridApi.selection.on.rowSelectionChanged($scope, function(row) {
             baseDataService.setRow(row.entity);
         });
+        gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef){
+            if (colDef.name == 'qtyOnStock') {
+                $scope.qtyOnStockBeforeEditting = rowEntity.qtyOnStock;
+                //alert('$scope.qtyOnStockBeforeEditting = ' + $scope.qtyOnStockBeforeEditting);
+            }
+        })
     };
-
     $scope.$on('uiGridEventEndCellEdit', function (event) {
         var boqDetail = event.targetScope.row.entity;
         cellData = event.targetScope.row.entity[event.targetScope.col.field];
         //txnDetail.txdeQuantitySold = cellData;
         if (boqDetail.qtyOnStock > boqDetail.quantity) {
             baseDataService.displayMessage('Invalid number');
+            boqDetail.qtyOnStock = $scope.qtyOnStockBeforeEditting;
+            //event.targetScope.col.field.value = $scope.qtyOnStockBeforeEditting;
             return;
         }
         boqDetail.qtyBalance = boqDetail.quantity - (boqDetail.qtyOnStock + boqDetail.qtyPurchased);
     })
 
+    $scope.$on('uiGridEventStartCellEdit', function (event) {
+        var boqDetail = event.targetScope.row.entity;
+        $scope.qtyOnStockBeforeEditting = event.targetScope.row.entity[event.targetScope.col.field];
+        alert('before editting value = ' + $scope.qtyOnStockBeforeEditting);
+    })
+
     initPageData();
     function initPageData() {
         $scope.billOfQuantity = angular.copy(baseDataService.getRow());
+        /*
         for (i=0; i<$scope.billOfQuantity.lines.length; i++) {
             displayLinkedPurchaseOrders($scope.billOfQuantity.lines[i])
         }
+        */
         $scope.gridOptions.data = $scope.billOfQuantity.lines;
         baseDataService.setRow({});
     }
@@ -141,5 +163,25 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
                 data:boqLine.linkedPurchaseOrders
             }
         }
+
+    $scope.viewPohDetail = function(row) {
+        if (row == undefined || row.entity == undefined || row.entity.linkedPurchaseOrders == undefined || row.entity.linkedPurchaseOrders == null || row.entity.linkedPurchaseOrders.length < 1) {
+            return;
+        }
+        var pohGetURI = POH_GET_URI +  row.entity.linkedPurchaseOrders[0].pohId;
+        baseDataService.getBaseData(pohGetURI).then(function(response){
+            baseDataService.setIsPageNew(false);
+            baseDataService.setRow(response.data);
+            //redirect to the supplier page.
+            $state.go('dashboard.purchaseOrderDetail');
+        });
+    }
+
+    $scope.getPoBoqLinkOrderNo = function (row) {
+        if (row.entity.linkedPurchaseOrders ==undefined || row.entity.linkedPurchaseOrders ==null || row.entity.linkedPurchaseOrders.length < 1 ) {
+            return '***';
+        }
+        return row.entity.linkedPurchaseOrders[0].pohOrderNumber;
+    };
 
 });

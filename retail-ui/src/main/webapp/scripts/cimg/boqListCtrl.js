@@ -4,7 +4,7 @@
 cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI, CREATE_PO_FROM_BOQ_URI ) {
     $scope.gridOptions = {
         enableFiltering: true,
-        enableSelectAll:true,
+        enableSelectAll:false,
         enableRowSelection:true,
         showGridFooter: true,
         showColumnFooter: true,
@@ -47,6 +47,11 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
         gridApi.selection.on.rowSelectionChanged($scope, function(row) {
+            if (row.entity.boqStatus.displayName != 'NEW') {
+                //baseDataService.displayMessage('Purchase Order already has been created');
+                $scope.gridApi.selection.unSelectRow(row.entity);
+            }
+            //row.unselectR
             baseDataService.setRow(row.entity);
         });
     };
@@ -71,7 +76,6 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
             $state.go('dashboard.viewBoqDetail');
         });
     }
-
     $scope.generatePurchaseOrder= function() {
         baseDataService.addRow($scope.gridApi.selection.getSelectedRows(), CREATE_PO_FROM_BOQ_URI).then(function(response) {
             var purchaseOrderHeaderList = response.data;
@@ -79,5 +83,12 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
             purchaseOrderService.setGeneratedResultFromBoqList(purchaseOrderHeaderList);
             $state.go('dashboard.purchaseOrderList');
         });
+    }
+
+    $scope.isRowSelected = function(){
+        if ($scope.gridApi.selection.getSelectedRows().length > 1) {
+            return true;
+        }
+        return false;
     }
 });

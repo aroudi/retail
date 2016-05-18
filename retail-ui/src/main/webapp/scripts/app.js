@@ -662,4 +662,12 @@ cimgApp.filter('configCategoryFilter', function() {
             return lastModifiedBy.firstName + ' ' + lastModifiedBy.sureName;
         };
     });
+cimgApp.filter('poBoqLinkOrderNumberFilter', function() {
+    return function (linkedPurchaseOrders) {
+        if (linkedPurchaseOrders ==undefined || linkedPurchaseOrders ==null || linkedPurchaseOrders.length < 1 ) {
+            return '***';
+        }
+        return linkedPurchaseOrders[0].pohOrderNumber;
+    };
+});
 

@@ -529,6 +529,10 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                     }
                     //now we have item. let's create the header
                     purchaseOrderService.addLineToPoFromBoqDetail(purchaseOrderHeader, item);
+                    //update billOfQuantity Item : purchased and balance values
+                    item.setQtyPurchased(item.getQtyBalance());
+                    item.setQtyBalance(0.00);
+                    boqDetailDao.updatePerId(item);
                 }
                 //update the total fields in purchase order header.
                 purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
