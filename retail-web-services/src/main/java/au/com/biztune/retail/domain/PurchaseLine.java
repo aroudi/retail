@@ -32,6 +32,7 @@ public class PurchaseLine {
     private long polIdParentLine;
     private double polQtyCounted;
     private double polContents;
+    private ConfigCategory polCreationType;
     private UnitOfMeasure unomContents;
     private List<PoBoqLink> poBoqLinks;
 
@@ -254,4 +255,13 @@ public class PurchaseLine {
     public void setPoBoqLinks(List<PoBoqLink> poBoqLinks) {
         this.poBoqLinks = poBoqLinks;
     }
+
+    public ConfigCategory getPolCreationType() {
+        return polCreationType;
+    }
+
+    public void setPolCreationType(ConfigCategory polCreationType) {
+        this.polCreationType = polCreationType;
+    }
+
 }

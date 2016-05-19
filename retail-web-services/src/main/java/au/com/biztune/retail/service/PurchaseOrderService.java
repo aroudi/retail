@@ -1,6 +1,7 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.BoqDetail;
+import au.com.biztune.retail.domain.ProductPurchaseItem;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.response.CommonResponse;
 
@@ -20,8 +21,9 @@ public interface PurchaseOrderService {
      * add lines to Purchase Order Header.
      * @param purchaseOrderHeader purchaseOrderHeader
      * @param boqDetail boqDetail
+     * @return boolean
      */
-    void addLineToPoFromBoqDetail(PurchaseOrderHeader purchaseOrderHeader, BoqDetail boqDetail);
+    boolean addLineToPoFromBoqDetail(PurchaseOrderHeader purchaseOrderHeader, BoqDetail boqDetail);
 
     /**
      * save Purchase Order Header into database.
@@ -42,4 +44,10 @@ public interface PurchaseOrderService {
      * @return PurchaseOrderHeader
      */
     PurchaseOrderHeader getPurchaseOrderHeaderWhole(long pohId);
+    /**
+     * get product purchase items for specific supplier.
+     * @param suppId suppId
+     * @return List of PruductPurchaseItem
+     */
+    List<ProductPurchaseItem> getAllSupplierProductPurchaseItems(long suppId);
 }

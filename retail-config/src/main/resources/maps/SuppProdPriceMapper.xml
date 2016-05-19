@@ -105,7 +105,7 @@
         FROM
         SUPP_PROD_PRICE spp INNER JOIN SUPP_ORGU_LINK sol ON (spp.sol_id = sol.sol_id)
         WHERE
-        sol.ORGU_ID= #{param1} AND sol.SUPP_ID = {param2}
+        sol.ORGU_ID= #{param1} AND sol.SUPP_ID = #{param2}
     </select>
 
     <select id="getProductPurchaseItemPerSprcId" resultMap="suppPurchaseProdMap" >

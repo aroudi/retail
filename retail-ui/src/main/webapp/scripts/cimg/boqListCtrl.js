@@ -86,7 +86,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
     }
 
     $scope.isRowSelected = function(){
-        if ($scope.gridApi.selection.getSelectedRows().length > 1) {
+        if ($scope.gridApi.selection.getSelectedRows().length > 0) {
             return true;
         }
         return false;

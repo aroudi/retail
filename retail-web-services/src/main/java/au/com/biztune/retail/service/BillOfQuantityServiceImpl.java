@@ -270,6 +270,10 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             boqDetail.setQtyOnStock(0);
             boqDetail.setQtyPurchased(0);
             boqDetail.setQtyBalance(boqDetail.getQuantity());
+            final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_PENDING);
+            if (status != null) {
+                boqDetail.setBqdStatus(status);
+            }
             boqDetailDao.insert(boqDetail);
         }
     }
@@ -528,11 +532,18 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                         continue;
                     }
                     //now we have item. let's create the header
-                    purchaseOrderService.addLineToPoFromBoqDetail(purchaseOrderHeader, item);
-                    //update billOfQuantity Item : purchased and balance values
-                    item.setQtyPurchased(item.getQtyBalance());
-                    item.setQtyBalance(0.00);
-                    boqDetailDao.updatePerId(item);
+                    if (purchaseOrderService.addLineToPoFromBoqDetail(purchaseOrderHeader, item)) {
+                        //update billOfQuantity Item : purchased and balance values
+                        item.setQtyPurchased(item.getQtyBalance());
+                        item.setQtyBalance(0.00);
+                        final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_PO_CREATED);
+                        if (status != null) {
+                            item.setBqdStatus(status);
+                        }
+                        boqDetailDao.updatePerId(item);
+                    } else {
+                        logger.debug("not able to create purchase order line for boq item : " + purchaseOrderHeader.getPohOrderNumber() + " item: " + item.getId());
+                    }
                 }
                 //update the total fields in purchase order header.
                 purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);

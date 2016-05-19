@@ -34,4 +34,18 @@ public class ConfigCategoryServiceImpl implements ConfigCategoryService {
         }
     }
 
+    /**
+     * get category of type and code.
+     * @param type type
+     * @param code code
+     * @return ConfigCategory
+     */
+    public ConfigCategory getCategoryOfTypeAndCode(String type, String code) {
+        try {
+            return categoryDao.getCategoryOfTypeAndCode(type, code);
+        } catch (Exception e) {
+            logger.error("Exception in retrieving category: ", e);
+            return null;
+        }
+    }
 }

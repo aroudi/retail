@@ -45,6 +45,11 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
             {field:'linkedPurchaseOrders', displayName:'Purchase Order No',enableCellEdit:false, width:'10%', cellFilter:'poBoqLinkOrderNumberFilter',
                 cellTemplate:'<a href="" ng-click="grid.appScope.viewPohDetail(row)">{{grid.appScope.getPoBoqLinkOrderNo(row)}}</a>'
             },
+            {field:'bqdStatus', displayName:'status',enableCellEdit:false, width:'7%', cellFilter:'configCategoryFilter',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return grid.getCellValue(row, col).color
+                }
+            },
             {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit Product" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a>', width:'5%' }
 
         ]
@@ -70,8 +75,13 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
         var boqDetail = event.targetScope.row.entity;
         cellData = event.targetScope.row.entity[event.targetScope.col.field];
         //txnDetail.txdeQuantitySold = cellData;
+        if (boqDetail.bqdStatus.displayName!='PENDING') {
+            baseDataService.displayMessage('Warning!!','You can only change the value on PENDING status');
+            boqDetail.qtyOnStock = $scope.qtyOnStockBeforeEditting;
+            return;
+        }
         if (boqDetail.qtyOnStock > boqDetail.quantity) {
-            baseDataService.displayMessage('Invalid number');
+            baseDataService.displayMessage('Warning!!','Invalid number');
             boqDetail.qtyOnStock = $scope.qtyOnStockBeforeEditting;
             //event.targetScope.col.field.value = $scope.qtyOnStockBeforeEditting;
             return;
@@ -183,5 +193,4 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
         }
         return row.entity.linkedPurchaseOrders[0].pohOrderNumber;
     };
-
 });

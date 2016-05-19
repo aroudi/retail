@@ -15,4 +15,11 @@ public interface ConfigCategoryService {
      * @return list of categories.
      */
     List<ConfigCategory> getCategoriesOfType(String typeName);
+    /**
+     * get category of type and code.
+     * @param type type
+     * @param code code
+     * @return ConfigCategory
+     */
+    ConfigCategory getCategoryOfTypeAndCode(String type, String code);
 }

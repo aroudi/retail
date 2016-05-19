@@ -84,6 +84,7 @@
         <association property="purchaseItem" column="SPRC_ID" select="au.com.biztune.retail.dao.SuppProdPriceDao.getProductPurchaseItemPerSprcId" />
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="unomContents" column="UNOM_ID_CONTENTS" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+        <association property="polCreationType" column="POL_CREATION_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
     <sql id="purchaseOrderHeaderColumns">
@@ -142,7 +143,8 @@
         ${alias}.POL_QTY_COUNTED,
         ${alias}.POL_CONTENTS,
         ${alias}.UNOM_ID_CONTENTS,
-        ${alias}.POL_STATUS
+        ${alias}.POL_STATUS,
+        ${alias}.POL_CREATION_TYPE
     </sql>
 
     <insert id="insertPurchaseOrderHeader" parameterType="PurchaseORderHeader" useGeneratedKeys="true" keyProperty="id" keyColumn="POH_ID">
@@ -453,7 +455,8 @@
         POL_ID_PARENT_LINE,
         POL_QTY_COUNTED,
         POL_CONTENTS,
-        UNOM_ID_CONTENTS
+        UNOM_ID_CONTENTS,
+        POL_CREATION_TYPE
         ) VALUES (
         #{pohId}
         <if test="pohOrderNumber != null">
@@ -615,6 +618,12 @@
         <if test="unomContents == null">
             ,null
         </if>
+        <if test="polCreationType != null">
+            ,#{polCreationType.id}
+        </if>
+        <if test="polCreationType == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -709,6 +718,9 @@
         </if>
         <if test="unomContents != null">
             ,UNOM_ID_CONTENTS = #{unomContents.id}
+        </if>
+        <if test="polCreationType != null">
+            ,POL_CREATION_TYPE = #{polCreationType.id}
         </if>
         WHERE POL_ID = #{id}
     </update>

@@ -1,6 +1,7 @@
 // Sydney Trains 2015
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.domain.ProductPurchaseItem;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.service.PurchaseOrderService;
 import org.slf4j.Logger;
@@ -58,4 +59,15 @@ public class PurchaseOrderRest {
         return purchaseOrderService.getPurchaseOrderHeaderWhole(id);
     }
 
+    /**
+     * get Product Purchase Items per supplier id.
+     * @param suppId suppId.
+     * @return List of ProductPurchaseItem
+     */
+    @GET
+    @Path("/detail/getPurchaseItems/{suppId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ProductPurchaseItem> getProductPurchaseItemsPerSuppId (@PathParam("suppId") long suppId) {
+        return purchaseOrderService.getAllSupplierProductPurchaseItems(suppId);
+    }
 }

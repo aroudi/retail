@@ -115,11 +115,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
      * add lines to Purchase Order Header.
      * @param purchaseOrderHeader purchaseOrderHeader
      * @param boqDetail boqDetail
+     * @return true if successfull, otherwise return false;
      */
-    public void addLineToPoFromBoqDetail(PurchaseOrderHeader purchaseOrderHeader, BoqDetail boqDetail) {
+    public boolean addLineToPoFromBoqDetail(PurchaseOrderHeader purchaseOrderHeader, BoqDetail boqDetail) {
         try {
             if (purchaseOrderHeader == null || boqDetail == null) {
-                return;
+                return false;
             }
             //check if line is already exists. then we need to modify it
             final PurchaseLine purchaseLine = new PurchaseLine();
@@ -139,6 +140,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 purchaseLine.setUnomContents(productPurchaseItem.getUnitOfMeasureContent());
             }
             purchaseLine.setPolContents(productPurchaseItem.getUnomQty());
+            final ConfigCategory polCreationType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_CREATION_TYPE, IdBConstant.POH_CREATION_TYPE_AUTO);
+            if (polCreationType != null) {
+                purchaseLine.setPolCreationType(polCreationType);
+            }
             //check if line already exists in purchase order header. if so update existing line; otherwise create new line
             boolean lineFound = false;
             if (purchaseOrderHeader.getLines() != null) {
@@ -159,9 +164,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 createPoBoqLink(purchaseLine, boqDetail);
                 purchaseOrderHeader.addLine(purchaseLine);
             }
-
+            return true;
         } catch (Exception e) {
             logger.error("Exception in adding line to Purchase Order Header:", e);
+            return false;
         }
     }
 
@@ -224,6 +230,20 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             return purchaseOrderDao.getPurchaseOrderWholePerPohId(pohId);
         } catch (Exception e) {
             logger.error("Exception in getting purchase order header per pohId:", e);
+            return null;
+        }
+    }
+
+    /**
+     * get product purchase items for specific supplier.
+     * @param suppId suppId
+     * @return List of PruductPurchaseItem
+     */
+    public List<ProductPurchaseItem> getAllSupplierProductPurchaseItems(long suppId) {
+        try {
+            return suppProdPriceDao.getAllProductPurchaseItemsPerOrgUnitIdAndSuppId(sessionState.getOrgUnit().getId(), suppId);
+        } catch (Exception e) {
+            logger.error("Exception in getting product purchase items per supplier:", e);
             return null;
         }
     }

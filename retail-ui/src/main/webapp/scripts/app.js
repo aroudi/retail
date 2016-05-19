@@ -75,8 +75,9 @@ var service_uri = {
     'TXN_GET_URI' : 'transaction/get/',
     'CREATE_PO_FROM_BOQ_URI' : 'billOfQuantity/generatePurchaseOrder',
     'POH_GET_ALL_URI' : 'purchaseOrder/header/all',
-    'POH_GET_URI' : 'purchaseOrder/header/getWhole/'
-    ///header/getWhole/{id}
+    'POH_GET_URI' : 'purchaseOrder/header/getWhole/',
+    'GET_PURCHASE_ITEMS_PER_SUPPLIER_URI' : 'purchaseOrder/detail/getPurchaseItems/'
+
 }
 
 var response_status = {
@@ -89,7 +90,9 @@ var type_constant = {
     'CUSTOMER_TYPE_URI' : 'categories/CUSTOMER_TYPE',
     'SUPPLIER_STATUS_URI' : 'categories/SUPPLIER_STATUS',
     'PRODUCT_STATUS_URI' : 'categories/PRODUCT_STATUS',
-    'PRODUCT_TYPE_URI' : 'categories/PRODUCT_TYPE'
+    'PRODUCT_TYPE_URI' : 'categories/PRODUCT_TYPE',
+    'POL_CREATION_TYPE_MANUAL' : 'categories/POH_CREATION_TYPE/POH_CREATION_TYPE_MANUAL',
+    'POL_CREATION_TYPE_AUTO' : 'categories/POH_CREATION_TYPE/POH_CREATION_TYPE_AUTO'
 }
 
 angular.forEach(config_data, function(key, value) {
@@ -249,9 +252,9 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
 
             return new Date(strDate[2],strDate[1]-1,strDate[0],strDate[3],strDate[4]);
         },
-        displayMessage : function (message) {
+        displayMessage : function (heading,message) {
             ngDialog.open({
-                template: '<h1>Message</h1><h1> <p>' + message + '</p>',
+                template: '<h1>'+heading+'</h1><h1> <p>' + message + '</p>',
                 closeByDocument: false,
                 plain: true
             });

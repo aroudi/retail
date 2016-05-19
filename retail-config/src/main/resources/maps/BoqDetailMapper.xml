@@ -19,6 +19,7 @@
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="product" column="PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
+        <association property="bqdStatus" column="BQD_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <collection property="linkedPurchaseOrders" javaType="ArrayList" column="BOQ_DETAIL_ID" ofType="PoBoqLink" select="au.com.biztune.retail.dao.PoBoqLinkDao.getPoBoqLinkPerBoqDetailId"/>
     </resultMap>
 
@@ -36,6 +37,7 @@
         <association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" />
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="product" column="PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
+        <association property="bqdStatus" column="BQD_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
     </resultMap>
 
@@ -53,7 +55,8 @@
      ${alias}.QTY_ON_STOCK,
      ${alias}.QTY_PURCHASED,
      ${alias}.QTY_BALANCE,
-     ${alias}.COMMENT
+     ${alias}.COMMENT,
+     ${alias}.BQD_STATUS
     </sql>
 
     <sql id="getBoqDetail">
@@ -96,7 +99,8 @@
             QTY_ON_STOCK,
             QTY_PURCHASED,
             QTY_BALANCE,
-            COMMENT
+            COMMENT,
+            BQD_STATUS
         ) VALUES (
         #{billOfQuantity.id}
         <if test="supplier != null">
@@ -171,6 +175,12 @@
         <if test="comment == null">
             ,null
         </if>
+        <if test="bqdStatus != null">
+            ,#{bqdStatus.id}
+        </if>
+        <if test="bqdStatus == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -215,6 +225,9 @@
         </if>
         <if test="comment != null">
             ,COMMENT = #{comment}
+        </if>
+        <if test="bqdStatus != null">
+            ,BQD_STATUS = #{bqdStatus.id}
         </if>
     </sql>
     <update id="updatePerId" parameterType="BoqDetail" >
