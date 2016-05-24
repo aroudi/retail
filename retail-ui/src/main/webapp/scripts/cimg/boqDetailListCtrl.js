@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE,  PRODUCT_GET_URI, UPDATE_BOQ_STOCK_URI, POH_GET_URI) {
+cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE,  PRODUCT_GET_URI, UPDATE_BOQ_STOCK_URI, POH_GET_URI) {
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -193,4 +193,7 @@ cimgApp.controller('boqDetailListCtrl', function($scope,uiGridConstants, $state,
         }
         return row.entity.linkedPurchaseOrders[0].pohOrderNumber;
     };
+    $scope.formatDate = function(value) {
+        return $filter('date')(value, 'medium');
+    }
 });

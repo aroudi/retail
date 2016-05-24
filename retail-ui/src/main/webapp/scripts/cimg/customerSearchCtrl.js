@@ -7,8 +7,12 @@ cimgApp.controller('customerSearchCtrl', function($scope, $state, $timeout,baseD
         enableFiltering: true,
         columnDefs: [
             {field:'customerId', visible:false, enableCellEdit:false},
-            {field:'customerType', displayName:'Type',enableCellEdit:false, width:'10%'},
-            {field:'code', enableCellEdit:false, width:'10%'},
+            {field:'customerType', displayName:'Type',enableCellEdit:false, width:'8%', cellFilter:'configCategoryFilter',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return grid.getCellValue(row, col).color
+                }
+            },
+            {field:'code', displayName:'ABN', enableCellEdit:false, width:'10%'},
             {field:'firstName', displayName:'First Name',enableCellEdit:false, width:'10%'},
             {field:'surName', displayName:'Sur Name',enableCellEdit:false, width:'10%'},
             {field:'companyName', displayName:'Company Name',enableCellEdit:false, width:'20%',

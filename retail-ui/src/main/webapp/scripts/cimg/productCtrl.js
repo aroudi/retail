@@ -63,10 +63,10 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
                     }
                 },
                 {field:'unitOfMeasure.unomCode', displayName:'UNOM',enableCellEdit:false},
-                {field:'unomQty',displayName:'Qty', enableCellEdit:false, type: 'number'},
-                {field:'price', enableCellEdit:false, cellFilter: 'currency'},
-                {field:'bulkQty', enableCellEdit:false, type: 'number'},
-                {field:'bulkPrice', enableCellEdit:false, cellFilter: 'currency'}
+                {field:'unomQty',displayName:'Qty', enableCellEdit:true, type: 'number'},
+                {field:'price', enableCellEdit:true, cellFilter: 'currency'},
+                {field:'bulkQty', enableCellEdit:true, type: 'number'},
+                {field:'bulkPrice', enableCellEdit:true, cellFilter: 'currency'}
             ]
         }
         $scope.gridOptions.enableRowSelection = false;
@@ -114,7 +114,8 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
     $scope.removeSuppProdPrice= function () {
         var selectedRow = baseDataService.getRow();
         rowIndex = getArrIndexOf($scope.gridOptions.data, selectedRow);
-        if (rowIndex>-1) {
+        //only new added row can be deleted
+        if (rowIndex>-1 && selectedRow.id < 0) {
             $scope.gridOptions.data.splice(rowIndex,1);
             baseDataService.setRowSelected(false);
         }

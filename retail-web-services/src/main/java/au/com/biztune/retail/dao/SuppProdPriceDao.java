@@ -67,6 +67,11 @@ public interface SuppProdPriceDao {
     void insert(SuppProdPrice suppProdPrice);
 
     /**
+     * update values on suppProdPrice.
+     * @param suppProdPrice suppProdPrice.
+     */
+    void updateValues(SuppProdPrice suppProdPrice);
+    /**
      * delete supplier product price per id.
      * @param id id
      */

@@ -67,4 +67,11 @@ public interface PurchaseOrderDao {
      * @return pohId as long.
      */
     long getMaxPohId();
+
+    /**
+     * delete purchase line where their ids not in the proposed list.
+     * @param pohId pohId
+     * @param polIdList polIdList
+     */
+    void deletePurchaseLineWhereIdNotIn(long pohId, List polIdList);
 }

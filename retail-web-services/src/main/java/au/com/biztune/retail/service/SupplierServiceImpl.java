@@ -2,6 +2,7 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.ContactDao;
 import au.com.biztune.retail.dao.SupplierDao;
+import au.com.biztune.retail.domain.Contact;
 import au.com.biztune.retail.domain.SuppOrguLink;
 import au.com.biztune.retail.domain.Supplier;
 import au.com.biztune.retail.response.CommonResponse;
@@ -74,7 +75,7 @@ public class SupplierServiceImpl implements SupplierService {
                     return response;
                 }
                 supplier.setCreateDate(timestamp);
-                if (supplier.getClass() != null) {
+                if (supplier.getContact() != null) {
                     contactDao.insert(supplier.getContact());
                 }
                 supplierDao.insertSupplier(supplier);
@@ -89,7 +90,12 @@ public class SupplierServiceImpl implements SupplierService {
                 supplierDao.insertSuppOrguLink(suppOrguLink);
             } else {
                 if (supplier.getContact() != null) {
-                    contactDao.update(supplier.getContact());
+                    final Contact existingContact = contactDao.getContactById(supplier.getContact().getId());
+                    if (existingContact != null) {
+                        contactDao.update(supplier.getContact());
+                    } else {
+                        contactDao.insert(supplier.getContact());
+                    }
                 }
                 supplierDao.updateSupplier(supplier);
                 SuppOrguLink suppOrguLink = supplier.getSuppOrguLink();

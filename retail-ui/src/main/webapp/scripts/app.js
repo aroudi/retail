@@ -76,7 +76,8 @@ var service_uri = {
     'CREATE_PO_FROM_BOQ_URI' : 'billOfQuantity/generatePurchaseOrder',
     'POH_GET_ALL_URI' : 'purchaseOrder/header/all',
     'POH_GET_URI' : 'purchaseOrder/header/getWhole/',
-    'GET_PURCHASE_ITEMS_PER_SUPPLIER_URI' : 'purchaseOrder/detail/getPurchaseItems/'
+    'GET_PURCHASE_ITEMS_PER_SUPPLIER_URI' : 'purchaseOrder/detail/getPurchaseItems/',
+    'POH_SAVE_URI' : 'purchaseOrder/add'
 
 }
 
@@ -92,7 +93,8 @@ var type_constant = {
     'PRODUCT_STATUS_URI' : 'categories/PRODUCT_STATUS',
     'PRODUCT_TYPE_URI' : 'categories/PRODUCT_TYPE',
     'POL_CREATION_TYPE_MANUAL' : 'categories/POH_CREATION_TYPE/POH_CREATION_TYPE_MANUAL',
-    'POL_CREATION_TYPE_AUTO' : 'categories/POH_CREATION_TYPE/POH_CREATION_TYPE_AUTO'
+    'POL_CREATION_TYPE_AUTO' : 'categories/POH_CREATION_TYPE/POH_CREATION_TYPE_AUTO',
+    'POH_STATUS_IN_PROGRESS' : 'categories/POH_STATUS/POH_STATUS_IN_PROGRESS'
 }
 
 angular.forEach(config_data, function(key, value) {
@@ -258,8 +260,20 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
                 closeByDocument: false,
                 plain: true
             });
+        },
+        getArrIndexOf: function (arr,item) {
+        if (arr == undefined || item== undefined)
+            return -1;
+        for (var j = 0; j < arr.length; j++) {
+            if (arr[j].id == item.id) {
+                return j;
+            }
         }
+        return -1;
     }
+
+
+}
 
 });
 
@@ -673,4 +687,3 @@ cimgApp.filter('poBoqLinkOrderNumberFilter', function() {
         return linkedPurchaseOrders[0].pohOrderNumber;
     };
 });
-

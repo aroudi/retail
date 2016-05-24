@@ -10,25 +10,25 @@
                             <div class="col-lg-3">
                                 <div class="form-group">
                                     <label>Name:</label>
-                                    <input class="form-control" data-ng-model="billOfQuantity.boqName">
+                                    <input class="form-control" data-ng-model="billOfQuantity.boqName" ng-disabled="true">
                                 </div >
                             </div >
                             <div class="col-lg-3">
                                 <div class="form-group">
                                     <label>Reference Code:</label>
-                                    <input class="form-control" data-ng-model="billOfQuantity.referenceCode">
+                                    <input class="form-control" data-ng-model="billOfQuantity.referenceCode" ng-disabled="true">
                                 </div >
                             </div >
                             <div class="col-lg-3">
                                 <div class="form-group">
                                     <label>Date Created:</label>
-                                    <input type="date" class="form-control" data-ng-model="billOfQuantity.dateCreated">
+                                    <span class="form-control"> {{formatDate(billOfQuantity.dateCreated)}} </span>
                                 </div >
                             </div >
                             <div class="col-lg-3">
                                 <div class="form-group">
                                     <label>Status:</label>
-                                    <input class="form-control" data-ng-model="billOfQuantity.boqStatus.displayName">
+                                    <input class="form-control" data-ng-model="billOfQuantity.boqStatus.displayName" ng-disabled="true">
                                 </div >
                             </div >
                         </div>
@@ -38,25 +38,25 @@
                             <div class="col-lg-5">
                                 <div class="form-group">
                                     <label>Project:</label>
-                                    <input class="form-control" data-ng-model="billOfQuantity.project.projectName">
+                                    <input class="form-control" data-ng-model="billOfQuantity.project.projectName" ng-disabled="true">
                                 </div >
                             </div >
                             <div class="col-lg-3">
                                 <div class="form-group">
                                     <label>Order No:</label>
-                                    <input class="form-control" data-ng-model="billOfQuantity.orderNo">
+                                    <input class="form-control" data-ng-model="billOfQuantity.orderNo" ng-disabled="true">
                                 </div >
                             </div >
                             <div class="col-lg-2">
                                 <div class="form-group">
                                     <label>Value Gross:</label>
-                                    <input class="form-control" data-ng-model="billOfQuantity.boqValueGross" data-blur-currency>
+                                    <input class="form-control" data-ng-model="billOfQuantity.boqValueGross" data-blur-currency ng-disabled="true">
                                 </div >
                             </div >
                             <div class="col-lg-2">
                                 <div class="form-group">
                                     <label>Value Net:</label>
-                                    <input class="form-control" data-ng-model="billOfQuantity.boqValueNett" data-blur-currency>
+                                    <input class="form-control" data-ng-model="billOfQuantity.boqValueNett" data-blur-currency ng-disabled="true">
                                 </div >
                             </div >
                         </div>

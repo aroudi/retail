@@ -94,6 +94,18 @@
                     </li>
                 </ul>
             </li>
+            <li ng-class="{active: collapseVar==6}">{{dropDown}}
+                <a href="" ng-click="check(6)"><i class="fa fa-comments fa-fw"></i> Purchase Order<span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=6">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.purchaseOrderDetail">Create Purchase Order</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.purchaseOrderList">Purchase Order List</a>
+                    </li>
+                </ul>
+            </li>
 
         </ul>
     </div>

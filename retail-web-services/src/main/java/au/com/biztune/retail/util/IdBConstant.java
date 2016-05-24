@@ -206,7 +206,7 @@ public interface IdBConstant {
     /**
      * CUSTOMER TYPE.
      */
-    String TYPE_CUSTOMER_TYPE = "CUSTOMER_STATUS";
+    String TYPE_CUSTOMER_TYPE = "CUSTOMER_TYPE";
     /**
      * CUSTOMER TYPE COD.
      */

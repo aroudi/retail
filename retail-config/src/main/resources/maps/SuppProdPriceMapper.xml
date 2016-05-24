@@ -259,6 +259,15 @@
         )
     </insert>
 
+
+    <update id="updateValues" parameterType="SuppProdPrice" >
+        UPDATE SUPP_PROD_PRICE SET
+            UNOM_QTY =#{unomQty},
+            PRICE =#{price},
+            BULK_PRICE =#{bulkPrice},
+            BULK_QTY=#{bulkQty}
+        WHERE SPRC_ID = #{id}
+    </update>
     <delete id="deleteSuppProdPricePerId" >
         DELETE
         From SUPP_PROD_PRICE

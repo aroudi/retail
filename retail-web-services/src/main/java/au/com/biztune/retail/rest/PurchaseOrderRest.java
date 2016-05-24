@@ -3,6 +3,7 @@ package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.ProductPurchaseItem;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
+import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.service.PurchaseOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,5 +70,18 @@ public class PurchaseOrderRest {
     @Produces(MediaType.APPLICATION_JSON)
     public List<ProductPurchaseItem> getProductPurchaseItemsPerSuppId (@PathParam("suppId") long suppId) {
         return purchaseOrderService.getAllSupplierProductPurchaseItems(suppId);
+    }
+
+    /**
+     * add/edit a Purchase order.
+     * @param purchaseOrderHeader purchaseOrderHeader
+     * @return CommonResponse
+     */
+    @Path("/add")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse addPurchaseOrder (PurchaseOrderHeader purchaseOrderHeader) {
+        return purchaseOrderService.savePurchaseOrder(purchaseOrderHeader);
     }
 }

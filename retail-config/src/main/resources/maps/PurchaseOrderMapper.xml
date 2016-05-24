@@ -85,6 +85,7 @@
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="unomContents" column="UNOM_ID_CONTENTS" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="polCreationType" column="POL_CREATION_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <collection property="poBoqLinks" javaType="ArrayList" column="POL_ID" ofType="PoBoqLink" select="au.com.biztune.retail.dao.PoBoqLinkDao.getAllPoBoqLinkPerPolId"/>
     </resultMap>
 
     <sql id="purchaseOrderHeaderColumns">
@@ -763,5 +764,17 @@
         FROM
           PURCHASE_ORDER_HEADER
     </select>
+
+    <delete id="deletePurchaseLineWhereIdNotIn" >
+        DELETE from
+        PURCHASE_LINE
+        where POH_ID = #{param1} AND
+        POL_ID not in
+        <foreach collection="param2" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
 
 </mapper>

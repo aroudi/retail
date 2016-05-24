@@ -218,16 +218,21 @@ public class ProductServiceImpl implements ProductService {
     private void createSuppProdPrice(ProductForm productForm, Product product) {
         if (productForm.getSuppProdPrices() != null && productForm.getSuppProdPrices().size() > 0) {
             for (SuppProdPrice suppProdPrice : productForm.getSuppProdPrices()) {
-                final LegalTender legalTender = legalTenderDao.getLegalTenderByCode(IdBConstant.LEGAL_TENDER_AU);
-                suppProdPrice.setLegalTender(legalTender);
-                if (suppProdPrice.getSupplier() != null) {
-                    suppProdPrice.setSolId(suppProdPrice.getSupplier().getSuppOrguLink().getId());
+                if (suppProdPrice.getId() > 0) {
+                    suppProdPriceDao.updateValues(suppProdPrice);
+                } else {
+                    final LegalTender legalTender = legalTenderDao.getLegalTenderByCode(IdBConstant.LEGAL_TENDER_AU);
+                    suppProdPrice.setLegalTender(legalTender);
+                    if (suppProdPrice.getSupplier() != null) {
+                        suppProdPrice.setSolId(suppProdPrice.getSupplier().getSuppOrguLink().getId());
+                    }
+                    suppProdPrice.setSprcCreated(new Timestamp(new Date().getTime()));
+                    suppProdPrice.setSprcModified(new Timestamp(new Date().getTime()));
+                    suppProdPrice.setProdId(product.getId());
+                    suppProdPriceDao.insert(suppProdPrice);
+                    logger.info("supplier price inserted");
                 }
-                suppProdPrice.setSprcCreated(new Timestamp(new Date().getTime()));
-                suppProdPrice.setSprcModified(new Timestamp(new Date().getTime()));
-                suppProdPrice.setProdId(product.getId());
-                suppProdPriceDao.insert(suppProdPrice);
-                logger.info("supplier price inserted");
+
             }
         }
     }
@@ -255,7 +260,8 @@ public class ProductServiceImpl implements ProductService {
 
     private void deleteProductRelatedObjects(ProductForm productForm) {
         priceDao.deleteProdPricePerProdId(productForm.getProdId());
-        suppProdPriceDao.deleteSuppProdPricePerProdIdAndOrguId(productForm.getProdId(), sessionState.getOrgUnit().getId());
+        //ProductPurchaseItem might get used in PurchaseOrder and we can not delete it.
+        //suppProdPriceDao.deleteSuppProdPricePerProdIdAndOrguId(productForm.getProdId(), sessionState.getOrgUnit().getId());
         productDao.deleteProdTaxLink(productForm.getProuId());
         productDao.deleteProdOrguLink(productForm.getProuId());
     }

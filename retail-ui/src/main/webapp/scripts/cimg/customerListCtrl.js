@@ -11,7 +11,7 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout,baseDat
                     return grid.getCellValue(row, col).color
                 }
             },
-            {field:'code', enableCellEdit:false, width:'7%'},
+            {field:'code', displayName:'ABN', enableCellEdit:false, width:'7%'},
             {field:'firstName', displayName:'First Name',enableCellEdit:false, width:'10%',
                 cellTooltip: function(row,col) {
                     return row.entity.firstName

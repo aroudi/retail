@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -55,17 +56,41 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 return response;
             }
             final boolean isNew = purchaseOrderHeader.getId() > 0 ? false : true;
+            final Timestamp currentDate = new Timestamp(new Date().getTime());
+            purchaseOrderHeader.setOrgUnit(sessionState.getOrgUnit());
+            String pohNumber = purchaseOrderHeader.getPohOrderNumber();
             if (isNew) {
+                final ConfigCategory creationType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_CREATION_TYPE, IdBConstant.POH_CREATION_TYPE_MANUAL);
+                purchaseOrderHeader.setPohCreationType(creationType);
+                purchaseOrderHeader.setPohCreatedDate(currentDate);
+                purchaseOrderHeader.setPohLastModifiedDate(currentDate);
+                final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_IN_PROGRESS);
+                purchaseOrderHeader.setPohStatus(status);
                 purchaseOrderDao.insertPurchaseOrderHeader(purchaseOrderHeader);
+                //generate purchase order number
+                pohNumber = generatePohNumber(purchaseOrderHeader.getId(), IdBConstant.POH_NUMBER_PREFIX_MANUAL);
+                purchaseOrderHeader.setPohOrderNumber(pohNumber);
+                purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
+
             } else {
                 purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
             }
+            final List<Long> updatedLines = new ArrayList<Long>();
             for (PurchaseLine purchaseLine : purchaseOrderHeader.getLines()) {
-                if (isNew) {
+                //if line id is less than 0; the line is new then insert it
+                if (purchaseLine.getId() < 0) {
+                    purchaseLine.setPohOrderNumber(pohNumber);
+                    purchaseLine.setPohId(purchaseOrderHeader.getId());
                     purchaseOrderDao.insertPurchaseLine(purchaseLine);
+                } else {
+                    purchaseOrderDao.updatePurchaseLine(purchaseLine);
                 }
-                    //todo: the business process should be clarified.
+                updatedLines.add(purchaseLine.getId());
             }
+           //delete from db, removed lines.
+            purchaseOrderDao.deletePurchaseLineWhereIdNotIn(purchaseOrderHeader.getId(), updatedLines);
+            //include the purchase order number in the response
+            response.setInfo(purchaseOrderHeader.getPohOrderNumber());
             return response;
         } catch (Exception e) {
             logger.error("Exception in saving Purchase Order Header:", e);
@@ -101,7 +126,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             //save purchase order header
             purchaseOrderDao.insertPurchaseOrderHeader(purchaseOrderHeader);
             //assinge number to purchase order header.
-            final String pohNumber = generatePohNumber(purchaseOrderHeader.getId());
+            final String pohNumber = generatePohNumber(purchaseOrderHeader.getId(), IdBConstant.POH_NUMBER_PREFIX_AUTO);
             purchaseOrderHeader.setPohOrderNumber(pohNumber);
             purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
             return purchaseOrderHeader;
@@ -200,11 +225,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     /**
      * generate Purchase Order Header Number.
      * @param pohId pohId
+     * @param preFix preFix
      * @return PohNumber
      */
-    public String generatePohNumber(long pohId) {
+    public String generatePohNumber(long pohId, String preFix) {
         final Timestamp currentDate = new Timestamp(new Date().getTime());
-        return IdBConstant.POH_NUMBER_PREFIX_AUTO + DateUtil.dateToString(currentDate, "yyyy-MM-dd") + pohId;
+        return preFix + DateUtil.dateToString(currentDate, "yyyy-MM-dd") + "-" + pohId;
     }
 
     /**
