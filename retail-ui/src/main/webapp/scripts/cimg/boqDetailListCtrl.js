@@ -9,12 +9,10 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
         showColumnFooter: true,
         enableColumnResizing: true,
         enableSorting:true,
-        //expandableRowTemplate: 'views/pages/treeViewTemplate.html',
-        /*
+        expandableRowTemplate: '<div ui-grid="row.entity.subGridOptions" ui-grid-selection style ="height: 100px;"></div>',
         expandableRowScope:{
             subGridVariable: 'subGridScopeVariable'
         } ,
-        */
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'supplier.supplierName', displayName:'Supplier', enableCellEdit:false, width:'15%'},
@@ -98,11 +96,9 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
     initPageData();
     function initPageData() {
         $scope.billOfQuantity = angular.copy(baseDataService.getRow());
-        /*
         for (i=0; i<$scope.billOfQuantity.lines.length; i++) {
             displayLinkedPurchaseOrders($scope.billOfQuantity.lines[i])
         }
-        */
         $scope.gridOptions.data = $scope.billOfQuantity.lines;
         baseDataService.setRow({});
     }
@@ -131,6 +127,12 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
          */
 
         //$scope.facility.lastModifiedBy = userId;
+        for (i=0; i<$scope.billOfQuantity.lines.length; i++) {
+            if ($scope.billOfQuantity.lines[i].subGridOptions != undefined ||$scope.billOfQuantity.lines[i].subGridOptions != null) {
+                delete $scope.billOfQuantity.lines[i].subGridOptions;
+            }
+        }
+
         var rowObject = $scope.billOfQuantity;
         baseDataService.addRow(rowObject, UPDATE_BOQ_STOCK_URI).then(function(response) {
             addResponse = response.data;

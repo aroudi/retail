@@ -9,6 +9,10 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         showColumnFooter: true,
         enableColumnResizing: true,
         enableSorting:true,
+        expandableRowTemplate: '<div ui-grid="row.entity.subGridOptions" ui-grid-selection style ="height: 100px;"></div>',
+        expandableRowScope:{
+            subGridVariable: 'subGridScopeVariable'
+        } ,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'40%'},
@@ -64,6 +68,9 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         } else {
             $scope.purchaseOrderHeader = angular.copy(baseDataService.getRow());
             $scope.gridOptions.data = $scope.purchaseOrderHeader.lines;
+            for (i=0; i<$scope.gridOptions.data.length; i++) {
+                displayLinkedBoqs($scope.gridOptions.data[i])
+            }
             baseDataService.setRow({});
             baseDataService.setIsPageNew(true);
             $scope.pageIsNew = false;
@@ -163,6 +170,13 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         var rowObject = $scope.purchaseOrderHeader;
         if ($scope.pageIsNew) {
             $scope.purchaseOrderHeader.lines = $scope.gridOptions.data
+        } else {
+            //remove the subgrid info from data before submitting:
+            for (i=0; i<$scope.gridOptions.data.length; i++) {
+                if ($scope.gridOptions.data[i].subGridOptions != undefined || $scope.gridOptions.data[i].subGridOptions != null) {
+                    delete $scope.gridOptions.data[i].subGridOptions;
+                }
+            }
         }
         baseDataService.addRow(rowObject, POH_SAVE_URI).then(function(response) {
             addResponse = response.data;
@@ -213,4 +227,40 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
     $scope.formatDate = function(value) {
         return $filter('date')(value, 'medium');
     }
+
+    function displayLinkedBoqs(line) {
+        line.subGridOptions = {
+            enableRowSelection :false,
+            enableColumnResizing: true,
+            columnDefs :[
+                {name:"id", field:"id", visible:false},
+                {name:"pohId", field:"pohId", visible:false},
+                {name:"polId", field:"polId", visible:false},
+                {name:"boqId", field:"boqId", visible:false},
+                {name:"projectId", field:"projectId", visible:false},
+                {name:"boqDetailId", field:"boqDetailId", visible:false},
+                {name:"boqName", field:"boqName", displayName:"BOQ Name", width:'30%',
+                    cellTooltip: function(row,col) {
+                        return row.entity.boqName
+                    }
+                },
+                {name:"projectCode", field:"projectCode", displayName:"Project Code", width:'25%',
+                    cellTooltip: function(row,col) {
+                        return row.entity.projectCode
+                    }
+                },
+                {name: "boqQtyTotal", field: "boqQtyTotal", displayName:"BOQ Qty Total", width: '10%'},
+                {name: "poQtyReceived", field: "poQtyReceived", displayName:"Qty Received", width: '10%'},
+                {name: "boqQtyBalance", field: "boqQtyBalance", displayName:"BOQ Qty Balance", width: '10%'},
+                {field:'status', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+                    cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                        return grid.getCellValue(row, col).color
+                    }
+                }
+            ],
+            data:line.poBoqLinks
+        }
+    }
+
+
 });
