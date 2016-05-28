@@ -1,6 +1,7 @@
 package au.com.biztune.retail.domain;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * Created by arash on 27/05/2016.
@@ -25,6 +26,7 @@ public class DeliveryNoteHeader {
     private ConfigCategory delnType;
     private ConfigCategory delnStatus;
     private LegalTender legalTender;
+    private List<DeliveryNoteLine> lines;
 
     public long getId() {
         return id;
@@ -176,5 +178,13 @@ public class DeliveryNoteHeader {
 
     public void setLegalTender(LegalTender legalTender) {
         this.legalTender = legalTender;
+    }
+
+    public List<DeliveryNoteLine> getLines() {
+        return lines;
+    }
+
+    public void setLines(List<DeliveryNoteLine> lines) {
+        this.lines = lines;
     }
 }

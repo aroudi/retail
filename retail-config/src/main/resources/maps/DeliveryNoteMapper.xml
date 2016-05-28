@@ -2,475 +2,333 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="au.com.biztune.retail.dao.PurchaseOrderDao">
-    <!-- result maps -->
+<mapper namespace="au.com.biztune.retail.dao.DeliveryNoteDao">
 
-    <resultMap id="purchaseOrderHeaderLiteMap" type="PurchaseORderHeader" >
-        <id column="POH_ID" property="id" />
-        <result column="POH_ORDER_NUMBER" property="pohOrderNumber" />
-        <result column="POH_SUPP_REF" property="pohSuppRef" />
-        <result column="POH_SUPP_CONTACT" property="pohSuppContact" />
-        <result column="POH_CREATED_DATE" property="pohCreatedDate" />
-        <result column="POH_LAST_MODIFIED_DATE" property="pohLastModifiedDate" />
-        <result column="POH_LAST_MODIFIED_BY" property="pohLastModifiedBy" />
-        <result column="POH_LAST_DELV_DATE" property="pohLastDelvDate" />
-        <result column="POH_CANCELLED" property="pohCancelled" />
-        <result column="POH_APPROVED" property="pohApproved" />
-        <result column="POH_DELV_NAME" property="delvName" />
-        <result column="POH_DELV_ADDRESS" property="delvAddress" />
-        <result column="POH_DELV_PHONE" property="delvPhone" />
-        <result column="POH_DELV_MOBILE" property="delvMobile" />
-        <result column="POH_DELV_DATE" property="pohDelvDate" />
-        <result column="POH_EXP_TRANSMIT" property="pohExpTransmit" />
-        <result column="POH_ACT_TRANSMIT" property="pohActTransmit" />
-        <result column="POH_CONFIRM_DATE" property="pohConfirmDate" />
-        <result column="POH_VALUE_GROSS" property="pohValueGross" />
-        <result column="POH_VALUE_NETT" property="pohValueNett" />
-        <result column="POH_TOTAL_QTY" property="pohTotalQty" />
-        <result column="POH_TOTAL_LINES" property="pohTotalLines" />
-        <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
-        <association property="pohStatus" column="POH_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
-    </resultMap>
-
-
-    <resultMap id="purchaseOrderHeaderMap" type="PurchaseORderHeader" >
-        <id column="POH_ID" property="id" />
-        <result column="POH_ORDER_NUMBER" property="pohOrderNumber" />
-        <result column="POH_SUPP_REF" property="pohSuppRef" />
-        <result column="POH_SUPP_CONTACT" property="pohSuppContact" />
-        <result column="POH_CREATED_DATE" property="pohCreatedDate" />
-        <result column="POH_LAST_MODIFIED_DATE" property="pohLastModifiedDate" />
-        <result column="POH_LAST_MODIFIED_BY" property="pohLastModifiedBy" />
-        <result column="POH_LAST_DELV_DATE" property="pohLastDelvDate" />
-        <result column="POH_CANCELLED" property="pohCancelled" />
-        <result column="POH_APPROVED" property="pohApproved" />
-        <result column="POH_DELV_NAME" property="delvName" />
-        <result column="POH_DELV_ADDRESS" property="delvAddress" />
-        <result column="POH_DELV_PHONE" property="delvPhone" />
-        <result column="POH_DELV_MOBILE" property="delvMobile" />
-        <result column="POH_DELV_DATE" property="pohDelvDate" />
-        <result column="POH_EXP_TRANSMIT" property="pohExpTransmit" />
-        <result column="POH_ACT_TRANSMIT" property="pohActTransmit" />
-        <result column="POH_CONFIRM_DATE" property="pohConfirmDate" />
-        <result column="POH_VALUE_GROSS" property="pohValueGross" />
-        <result column="POH_VALUE_NETT" property="pohValueNett" />
-        <result column="POH_TOTAL_QTY" property="pohTotalQty" />
-        <result column="POH_TOTAL_LINES" property="pohTotalLines" />
-        <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
-        <association property="pohStatus" column="POH_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
-        <collection property="lines" javaType="ArrayList" column="POH_ID" ofType="PurchaseLine" select="getPurchaseLinesPerPohId"/>
-    </resultMap>
-
-    <resultMap id="purchaseLineMap" type="PurchaseLine" >
-        <id column="POL_ID" property="id" />
+    <resultMap id="deliveryNoteHeaderLiteMap" type="DeliveryNoteHeader" >
+        <id column="DELN_ID" property="id" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="DELN_NOTE_NUMBER" property="delnNoteNumber" />
+        <result column="DELN_GRN" property="delnGrn" />
         <result column="POH_ID" property="pohId" />
-        <result column="POL_UNIT_COST" property="polUnitCost" />
-        <result column="POL_PRICE" property="polPrice" />
-        <result column="POL_SPECIAL_BUY" property="polSpecialBuy" />
-        <result column="POL_QTY_ORDERED" property="polQtyOrdered" />
-        <result column="POL_QTY_CANCELLED" property="polQtyCancelled" />
-        <result column="POL_QTY_RECEIVED" property="polQtyReceived" />
-        <result column="POL_QTY_INVOICED" property="polQtyInvoiced" />
-        <result column="POL_VALUE_ORDERED" property="polValueOrdered" />
-        <result column="POL_VALUE_RECEIVED" property="polValueReceived" />
-        <result column="POL_VALUE_INVOICED" property="polValueInvoiced" />
-        <result column="POL_FREE_TEXT" property="polFreeText" />
-        <result column="POL_MODIFIED" property="polModified" />
-        <result column="POL_DATE_RECEIVED" property="polDateReceived" />
-        <result column="POL_PRICE_CHECKED" property="polPriceChecked" />
-        <result column="POL_ID_PARENT_LINE" property="polIdParentLine" />
-        <result column="POL_QTY_COUNTED" property="polQtyCounted" />
-        <result column="POL_CONTENTS" property="polContents" />
-        <association property="purchaseItem" column="SPRC_ID" select="au.com.biztune.retail.dao.SuppProdPriceDao.getProductPurchaseItemPerSprcId" />
-        <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
-        <association property="unomContents" column="UNOM_ID_CONTENTS" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
-        <association property="polCreationType" column="POL_CREATION_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
-        <collection property="poBoqLinks" javaType="ArrayList" column="POL_ID" ofType="PoBoqLink" select="au.com.biztune.retail.dao.PoBoqLinkDao.getAllPoBoqLinkPerPolId"/>
+        <result column="POH_ORDER_NUMBER" property="pohOrderNumber" />
+        <result column="DELN_DELIVERY_DATE" property="delnDeliveryDate" />
+        <result column="DELN_CREATED_DATE" property="delnCreatedDate" />
+        <result column="DELN_LAST_MODIFIED_DATE" property="delnLastModifiedDate" />
+        <result column="DELN_LAST_MODIFIED_BY" property="delnLastModifiedBy" />
+        <result column="DELN_VALUE_GROSS" property="delnValueGross" />
+        <result column="DELN_VALUE_NETT" property="delnValueNett" />
+        <result column="POH_QTY_ORDERED" property="pohQtyOrdered" />
+        <result column="DELN_TOTAL_QTY" property="delnTotalQty" />
+        <result column="DELN_TOTAL_LINES" property="delnTotalLines" />
+        <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
+        <association property="pohStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
-    <sql id="purchaseOrderHeaderColumns">
-        ${alias}.POH_ID,
+    <resultMap id="deliveryNoteHeaderMap" type="DeliveryNoteHeader" >
+        <id column="DELN_ID" property="id" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="DELN_NOTE_NUMBER" property="delnNoteNumber" />
+        <result column="DELN_GRN" property="delnGrn" />
+        <result column="POH_ID" property="pohId" />
+        <result column="POH_ORDER_NUMBER" property="pohOrderNumber" />
+        <result column="DELN_DELIVERY_DATE" property="delnDeliveryDate" />
+        <result column="DELN_CREATED_DATE" property="delnCreatedDate" />
+        <result column="DELN_LAST_MODIFIED_DATE" property="delnLastModifiedDate" />
+        <result column="DELN_LAST_MODIFIED_BY" property="delnLastModifiedBy" />
+        <result column="DELN_VALUE_GROSS" property="delnValueGross" />
+        <result column="DELN_VALUE_NETT" property="delnValueNett" />
+        <result column="POH_QTY_ORDERED" property="pohQtyOrdered" />
+        <result column="DELN_TOTAL_QTY" property="delnTotalQty" />
+        <result column="DELN_TOTAL_LINES" property="delnTotalLines" />
+        <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
+        <association property="pohStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="legalTender" column="LEGT_ID" select="au.com.biztune.retail.dao.LegalTenderDao.getLegalTenderById" />
+        <collection property="lines" javaType="ArrayList" column="POH_ID" ofType="PurchaseLine" select="getDelNoteLinesPerDlnId"/>
+    </resultMap>
+    <resultMap id="deliveryNoteLineMap" type="DeliveryNoteLine" >
+        <id column="DLNL_ID" property="id" />
+        <result column="DELN_ID" property="delnId" />
+        <result column="POL_ID" property="polId" />
+        <result column="DELN_GRN" property="delnGrn" />
+        <result column="DLNL_LINE_NUMBER" property="dlnlLineNumber" />
+        <result column="DLNL_UNIT_COST" property="dlnlUnitCost" />
+        <result column="RCVD_QTY" property="rcvdQty" />
+        <result column="TOTAL_COST" property="totalCost" />
+        <result column="DLNL_QTY_REJECTED" property="dlnlQtyRegected" />
+        <result column="DLNL_DISCREPANCY" property="dlnlDiscrepancy" />
+        <result column="DLNL_QTY" property="dlnlQty" />
+        <association property="purchaseItem" column="SPRC_ID" select="au.com.biztune.retail.dao.SuppProdPriceDao.getProductPurchaseItemPerSprcId" />
+        <association property="dlnlCaseSize" column="DLNL_CASE_SIZE" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+        <association property="dlnlProductSize" column="DLNL_PRODUCT_SIZE" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+        <association property="rcvdCaseSize" column="RCVD_CASE_SIZE" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+        <association property="rcvdProductSize" column="RCVD_PRODUCT_SIZE" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+    </resultMap>
+
+    <sql id="deliveryNoteHeaderColumns">
+        ${alias}.DELN_ID,
         ${alias}.ORGU_ID,
+        ${alias}.DELN_NOTE_NUMBER,
+        ${alias}.DELN_GRN,
+        ${alias}.POH_ID,
         ${alias}.POH_ORDER_NUMBER,
         ${alias}.SUPPLIER_ID,
-        ${alias}.POH_SUPP_REF,
-        ${alias}.POH_SUPP_CONTACT,
-        ${alias}.POH_CREATED_DATE,
-        ${alias}.POH_LAST_MODIFIED_DATE,
-        ${alias}.POH_LAST_MODIFIED_BY,
-        ${alias}.POH_LAST_DELV_DATE,
-        ${alias}.POH_CANCELLED,
-        ${alias}.POH_APPROVED,
-        ${alias}.POH_DELV_NAME,
-        ${alias}.POH_DELV_ADDRESS,
-        ${alias}.POH_DELV_PHONE,
-        ${alias}.POH_DELV_MOBILE,
-        ${alias}.POH_DELV_DATE,
-        ${alias}.POH_EXP_TRANSMIT,
-        ${alias}.POH_ACT_TRANSMIT,
-        ${alias}.POH_CONFIRM_DATE,
-        ${alias}.POH_VALUE_GROSS,
-        ${alias}.POH_VALUE_NETT,
-        ${alias}.POH_TOTAL_QTY,
-        ${alias}.POH_TOTAL_LINES,
-        ${alias}.POH_TYPE,
-        ${alias}.POH_STATUS,
-        ${alias}.POH_CREATION_TYPE
+        ${alias}.DELN_DELIVERY_DATE,
+        ${alias}.DELN_CREATED_DATE,
+        ${alias}.DELN_LAST_MODIFIED_DATE,
+        ${alias}.DELN_LAST_MODIFIED_BY,
+        ${alias}.DELN_VALUE_GROSS,
+        ${alias}.DELN_VALUE_NETT,
+        ${alias}.POH_QTY_ORDERED,
+        ${alias}.DELN_TOTAL_QTY,
+        ${alias}.DELN_TOTAL_LINES,
+        ${alias}.DELN_TYPE,
+        ${alias}.DELN_STATUS,
+        ${alias}.LEGT_ID
     </sql>
 
-    <sql id="purchaseLineColumns">
+    <sql id="deliveryNoteLineColumns">
+        ${alias}.DLNL_ID,
+        ${alias}.DELN_ID,
         ${alias}.POL_ID,
-        ${alias}.POH_ID,
-        ${alias}.POH_ORDER_NUMBER,
-        ${alias}.POL_LINE_NUMBER,
+        ${alias}.DELN_GRN,
+        ${alias}.DLNL_LINE_NUMBER,
         ${alias}.SPRC_ID,
-        ${alias}.POL_UNIT_COST,
-        ${alias}.POL_PRICE,
-        ${alias}.POL_SPECIAL_BUY,
-        ${alias}.TXLV_ID,
-        ${alias}.UNOM_ID,
-        ${alias}.POL_QTY_ORDERED,
-        ${alias}.POL_QTY_CANCELLED,
-        ${alias}.POL_QTY_RECEIVED,
-        ${alias}.POL_QTY_INVOICED,
-        ${alias}.POL_VALUE_ORDERED,
-        ${alias}.POL_VALUE_RECEIVED,
-        ${alias}.POL_VALUE_INVOICED,
-        ${alias}.POL_FREE_TEXT,
-        ${alias}.POL_MODIFIED,
-        ${alias}.POL_DATE_RECEIVED,
-        ${alias}.POL_PRICE_CHECKED,
-        ${alias}.POL_ID_PARENT_LINE,
-        ${alias}.POL_QTY_COUNTED,
-        ${alias}.POL_CONTENTS,
-        ${alias}.UNOM_ID_CONTENTS,
-        ${alias}.POL_STATUS,
-        ${alias}.POL_CREATION_TYPE
+        ${alias}.DLNL_CASE_SIZE,
+        ${alias}.DLNL_PRODUCT_SIZE,
+        ${alias}.DLNL_UNIT_COST,
+        ${alias}.DLNL_QTY,
+        ${alias}.RCVD_CASE_SIZE,
+        ${alias}.RCVD_PRODUCT_SIZE,
+        ${alias}.RCVD_QTY,
+        ${alias}.TOTAL_COST,
+        ${alias}.DLNL_QTY_REJECTED,
+        ${alias}.DLNL_STATUS,
+        ${alias}.DLNL_DISCREPANCY
     </sql>
 
-    <insert id="insertPurchaseOrderHeader" parameterType="PurchaseORderHeader" useGeneratedKeys="true" keyProperty="id" keyColumn="POH_ID">
-        INSERT INTO PURCHASE_ORDER_HEADER(
-         ORGU_ID,
-         POH_ORDER_NUMBER,
-         SUPPLIER_ID,
-         POH_SUPP_REF,
-         POH_SUPP_CONTACT,
-         POH_CREATED_DATE,
-         POH_LAST_MODIFIED_DATE,
-         POH_LAST_MODIFIED_BY,
-         POH_LAST_DELV_DATE,
-         POH_CANCELLED,
-         POH_APPROVED,
-         POH_DELV_NAME,
-         POH_DELV_ADDRESS,
-         POH_DELV_PHONE,
-         POH_DELV_MOBILE,
-         POH_DELV_DATE,
-         POH_EXP_TRANSMIT,
-         POH_ACT_TRANSMIT,
-         POH_CONFIRM_DATE,
-         POH_VALUE_GROSS,
-         POH_VALUE_NETT,
-         POH_TOTAL_QTY,
-         POH_TOTAL_LINES,
-         POH_TYPE,
-         POH_STATUS,
-         POH_CREATION_TYPE
+    <insert id="insertDeliveryNoteHeader" parameterType="DeliveryNoteHeader" useGeneratedKeys="true" keyProperty="id" keyColumn="DELN_ID">
+        INSERT INTO DELIVERY_NOTE_HEADER(
+            ORGU_ID,
+            DELN_NOTE_NUMBER,
+            DELN_GRN,
+            POH_ID,
+            POH_ORDER_NUMBER,
+            SUPPLIER_ID,
+            DELN_DELIVERY_DATE,
+            DELN_CREATED_DATE,
+            DELN_LAST_MODIFIED_DATE,
+            DELN_LAST_MODIFIED_BY,
+            DELN_VALUE_GROSS,
+            DELN_VALUE_NETT,
+            POH_QTY_ORDERED,
+            DELN_TOTAL_QTY,
+            DELN_TOTAL_LINES,
+            DELN_TYPE,
+            DELN_STATUS,
+            LEGT_ID
         ) VALUES (
-        #{orgUnit.id},
-        #{pohOrderNumber}
-        <if test="supplier != null">
-            ,#{supplier.id}
+        #{orgUnit.id}
+        <if test="delnNoteNumber != null">
+            ,#{delnNoteNumber}
         </if>
-        <if test="supplier == null">
+        <if test="delnNoteNumber == null">
             ,null
         </if>
-        <if test="pohSuppRef != null">
-            ,#{pohSuppRef}
+        <if test="delnGrn != null">
+            ,#{delnGrn}
         </if>
-        <if test="pohSuppRef == null">
+        <if test="delnGrn == null">
             ,null
         </if>
-
-        <if test="pohSuppContact != null">
-            ,#{pohSuppContact}
+        <if test="pohId != null">
+            ,#{pohId}
         </if>
-        <if test="pohSuppContact == null">
+        <if test="pohId == null">
             ,null
         </if>
-
-        <if test="pohCreatedDate != null">
-            ,#{pohCreatedDate}
-        </if>
-        <if test="pohCreatedDate == null">
-            ,null
-        </if>
-
-        <if test="pohLastModifiedDate != null">
-            ,#{pohLastModifiedDate}
-        </if>
-        <if test="pohLastModifiedDate == null">
-            ,null
-        </if>
-
-        <if test="pohLastModifiedBy != null">
-            ,#{pohLastModifiedBy}
-        </if>
-        <if test="pohLastModifiedBy == null">
-            ,null
-        </if>
-
-        <if test="pohLastDelvDate != null">
-            ,#{pohLastDelvDate}
-        </if>
-        <if test="pohLastDelvDate == null">
-            ,null
-        </if>
-
-        <if test="pohCancelled != null">
-            ,#{pohCancelled}
-        </if>
-        <if test="pohCancelled == null">
-            ,null
-        </if>
-
-        <if test="pohApproved != null">
-            ,#{pohApproved}
-        </if>
-        <if test="pohApproved == null">
-            ,null
-        </if>
-
-        <if test="delvName != null">
-            ,#{delvName}
-        </if>
-        <if test="delvName == null">
-            ,null
-        </if>
-
-        <if test="delvAddress != null">
-            ,#{delvAddress}
-        </if>
-        <if test="delvAddress == null">
-            ,null
-        </if>
-
-        <if test="delvPhone != null">
-            ,#{delvPhone}
-        </if>
-        <if test="delvPhone == null">
-            ,null
-        </if>
-
-        <if test="delvMobile != null">
-            ,#{delvMobile}
-        </if>
-        <if test="delvMobile == null">
-            ,null
-        </if>
-
-        <if test="pohDelvDate != null">
-            ,#{pohDelvDate}
-        </if>
-        <if test="pohDelvDate == null">
-            ,null
-        </if>
-
-        <if test="pohExpTransmit != null">
-            ,#{pohExpTransmit}
-        </if>
-        <if test="pohExpTransmit == null">
-            ,null
-        </if>
-
-        <if test="pohActTransmit != null">
-            ,#{pohActTransmit}
-        </if>
-        <if test="pohActTransmit == null">
-            ,null
-        </if>
-
-        <if test="pohConfirmDate != null">
-            ,#{pohConfirmDate}
-        </if>
-        <if test="pohConfirmDate == null">
-            ,null
-        </if>
-
-        <if test="pohValueGross != null">
-            ,#{pohValueGross}
-        </if>
-        <if test="pohValueGross == null">
-            ,null
-        </if>
-
-        <if test="pohValueNett != null">
-            ,#{pohValueNett}
-        </if>
-        <if test="pohValueNett == null">
-            ,null
-        </if>
-
-        <if test="pohTotalQty != null">
-            ,#{pohTotalQty}
-        </if>
-        <if test="pohTotalQty == null">
-            ,null
-        </if>
-
-        <if test="pohTotalLines != null">
-            ,#{pohTotalLines}
-        </if>
-        <if test="pohTotalLines == null">
-            ,null
-        </if>
-
-        <if test="pohType != null">
-            ,#{pohType.id}
-        </if>
-        <if test="pohType == null">
-            ,null
-        </if>
-
-        <if test="pohStatus != null">
-            ,#{pohStatus.id}
-        </if>
-        <if test="pohStatus == null">
-            ,null
-        </if>
-
-        <if test="pohCreationType != null">
-            ,#{pohCreationType.id}
-        </if>
-        <if test="pohCreationType == null">
-            ,null
-        </if>
-
-        )
-    </insert>
-
-    <update id="updatePurchaseOrderHeader" parameterType="PurchaseORderHeader" >
-        UPDATE PURCHASE_ORDER_HEADER SET
-        ORGU_ID = #{orgUnit.id}
-        <if test="pohOrderNumber != null">
-            ,POH_ORDER_NUMBER = #{pohOrderNumber}
-        </if>
-        <if test="supplier != null">
-            ,SUPPLIER_ID = #{supplier.id}
-        </if>
-        <if test="pohSuppRef != null">
-            ,POH_SUPP_REF = #{pohSuppRef}
-        </if>
-        <if test="pohSuppContact != null">
-            ,POH_SUPP_CONTACT = #{pohSuppContact}
-        </if>
-        <if test="pohCreatedDate != null">
-            ,POH_CREATED_DATE = #{pohCreatedDate}
-        </if>
-        <if test="pohLastModifiedDate != null">
-            ,POH_LAST_MODIFIED_DATE = #{pohLastModifiedDate}
-        </if>
-        <if test="pohLastModifiedBy != null">
-            ,POH_LAST_MODIFIED_BY = #{pohLastModifiedBy}
-        </if>
-        <if test="pohLastDelvDate != null">
-            ,POH_LAST_DELV_DATE = #{pohLastDelvDate}
-        </if>
-        <if test="pohCancelled != null">
-            ,POH_CANCELLED = #{pohCancelled}
-        </if>
-        <if test="pohApproved != null">
-            ,POH_APPROVED = #{pohApproved}
-        </if>
-        <if test="delvName != null">
-            ,POH_DELV_NAME = #{delvName}
-        </if>
-        <if test="delvAddress != null">
-            ,POH_DELV_ADDRESS = #{delvAddress}
-        </if>
-        <if test="delvPhone != null">
-            ,POH_DELV_PHONE = #{delvPhone}
-        </if>
-        <if test="delvMobile != null">
-            ,POH_DELV_MOBILE = #{delvMobile}
-        </if>
-        <if test="pohDelvDate != null">
-            ,POH_DELV_DATE = #{pohDelvDate}
-        </if>
-        <if test="pohExpTransmit != null">
-            ,POH_EXP_TRANSMIT = #{pohExpTransmit}
-        </if>
-        <if test="pohActTransmit != null">
-            ,POH_ACT_TRANSMIT = #{pohActTransmit}
-        </if>
-        <if test="pohConfirmDate != null">
-            ,POH_CONFIRM_DATE = #{pohConfirmDate}
-        </if>
-        <if test="pohValueGross != null">
-            ,POH_VALUE_GROSS = #{pohValueGross}
-        </if>
-        <if test="pohValueNett != null">
-            ,POH_VALUE_NETT = #{pohValueNett}
-        </if>
-        <if test="pohTotalQty != null">
-            ,POH_TOTAL_QTY = #{pohTotalQty}
-        </if>
-        <if test="pohTotalLines != null">
-            ,POH_TOTAL_LINES = #{pohTotalLines}
-        </if>
-        <if test="pohType != null">
-            ,POH_TYPE = #{pohType.id}
-        </if>
-        <if test="pohStatus != null">
-            ,POH_STATUS = #{pohStatus.id}
-        </if>
-        <if test="pohCreationType != null">
-            ,POH_CREATION_TYPE = #{pohCreationType.id}
-        </if>
-        WHERE POH_ID = #{id}
-    </update>
-
-
-    <insert id="insertPurchaseLine" parameterType="PurchaseLine" useGeneratedKeys="true" keyProperty="id" keyColumn="POL_ID">
-        INSERT INTO PURCHASE_LINE(
-        POH_ID,
-        POH_ORDER_NUMBER,
-        POL_LINE_NUMBER,
-        SPRC_ID,
-        POL_UNIT_COST,
-        POL_PRICE,
-        POL_SPECIAL_BUY,
-        TXLV_ID,
-        UNOM_ID,
-        POL_QTY_ORDERED,
-        POL_QTY_CANCELLED,
-        POL_QTY_RECEIVED,
-        POL_QTY_INVOICED,
-        POL_VALUE_ORDERED,
-        POL_VALUE_RECEIVED,
-        POL_VALUE_INVOICED,
-        POL_FREE_TEXT,
-        POL_MODIFIED,
-        POL_DATE_RECEIVED,
-        POL_PRICE_CHECKED,
-        POL_ID_PARENT_LINE,
-        POL_QTY_COUNTED,
-        POL_CONTENTS,
-        UNOM_ID_CONTENTS,
-        POL_CREATION_TYPE
-        ) VALUES (
-        #{pohId}
         <if test="pohOrderNumber != null">
             ,#{pohOrderNumber}
         </if>
         <if test="pohOrderNumber == null">
             ,null
         </if>
-
-        <if test="polLineNumber != null">
-            ,#{polLineNumber}
+        <if test="supplier != null">
+            ,#{supplier.id}
         </if>
-        <if test="polLineNumber == null">
+        <if test="supplier == null">
+            ,null
+        </if>
+        <if test="delnDeliveryDate != null">
+            ,#{delnDeliveryDate}
+        </if>
+        <if test="delnDeliveryDate == null">
+            ,null
+        </if>
+        <if test="delnCreatedDate != null">
+            ,#{delnCreatedDate}
+        </if>
+        <if test="delnCreatedDate == null">
+            ,null
+        </if>
+        <if test="delnLastModifiedDate != null">
+            ,#{delnLastModifiedDate}
+        </if>
+        <if test="delnLastModifiedDate == null">
+            ,null
+        </if>
+        <if test="delnLastModifiedBy != null">
+            ,#{delnLastModifiedBy.id}
+        </if>
+        <if test="delnLastModifiedBy == null">
+            ,null
+        </if>
+        <if test="delnValueGross != null">
+            ,#{delnValueGross}
+        </if>
+        <if test="delnValueGross == null">
+            ,null
+        </if>
+        <if test="delnValueNett != null">
+            ,#{delnValueNett}
+        </if>
+        <if test="delnValueNett == null">
+            ,null
+        </if>
+        <if test="pohQtyOrdered != null">
+            ,#{pohQtyOrdered}
+        </if>
+        <if test="pohQtyOrdered == null">
+            ,null
+        </if>
+        <if test="delnTotalQty != null">
+            ,#{delnTotalQty}
+        </if>
+        <if test="delnTotalQty == null">
+            ,null
+        </if>
+        <if test="delnTotalLines != null">
+            ,#{delnTotalLines}
+        </if>
+        <if test="delnTotalLines == null">
+            ,null
+        </if>
+        <if test="delnType != null">
+            ,#{delnType.id}
+        </if>
+        <if test="delnType == null">
+            ,null
+        </if>
+        <if test="delnStatus != null">
+            ,#{delnStatus.id}
+        </if>
+        <if test="delnStatus == null">
+            ,null
+        </if>
+        <if test="legalTender != null">
+            ,#{legalTender.id}
+        </if>
+        <if test="legalTender == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <update id="updateDeliveryNoteHeader" parameterType="DeliveryNoteHeader" >
+        UPDATE DELIVERY_NOTE_HEADER SET
+        ORGU_ID = #{orgUnit.id}
+        <if test="delnNoteNumber != null">
+            ,DELN_NOTE_NUMBER = #{delnNoteNumber}
+        </if>
+        <if test="delnGrn != null">
+            ,DELN_GRN = #{delnGrn}
+        </if>
+        <if test="pohId != null">
+            ,POH_ID = #{pohId}
+        </if>
+        <if test="pohOrderNumber != null">
+            ,POH_ORDER_NUMBER = #{pohOrderNumber}
+        </if>
+        <if test="supplier != null">
+            ,SUPPLIER_ID = #{supplier.id}
+        </if>
+        <if test="delnDeliveryDate != null">
+            ,DELN_DELIVERY_DATE = #{delnDeliveryDate}
+        </if>
+        <if test="delnCreatedDate != null">
+            ,DELN_CREATED_DATE = #{delnCreatedDate}
+        </if>
+        <if test="delnLastModifiedBy != null">
+            ,DELN_LAST_MODIFIED_BY = #{delnLastModifiedBy.id}
+        </if>
+        <if test="delnLastModifiedDate != null">
+            ,DELN_LAST_MODIFIED_DATE = #{delnLastModifiedDate}
+        </if>
+        <if test="delnValueGross != null">
+            ,DELN_VALUE_GROSS = #{delnValueGross}
+        </if>
+        <if test="delnValueNett != null">
+            ,DELN_VALUE_NETT = #{delnValueNett}
+        </if>
+        <if test="pohQtyOrdered != null">
+            ,POH_QTY_ORDERED = #{pohQtyOrdered}
+        </if>
+        <if test="delnTotalQty != null">
+            ,DELN_TOTAL_QTY = #{delnTotalQty}
+        </if>
+        <if test="delnTotalLines != null">
+            ,DELN_TOTAL_LINES = #{delnTotalLines}
+        </if>
+        <if test="delnType != null">
+            ,DELN_TYPE = #{delnType.id}
+        </if>
+        <if test="delnStatus != null">
+            ,DELN_STATUS = #{delnStatus.id}
+        </if>
+        <if test="legalTender != null">
+            ,LEGT_ID = #{legalTender.id}
+        </if>
+        WHERE DELN_ID = #{id}
+    </update>
+
+
+    <insert id="insertDeliveryNoteLine" parameterType="DeliveryNoteLine" useGeneratedKeys="true" keyProperty="id" keyColumn="DLNL_ID">
+        INSERT INTO DELIVERY_NOTE_LINE(
+            DELN_ID,
+            POL_ID,
+            DELN_GRN,
+            DLNL_LINE_NUMBER,
+            SPRC_ID,
+            DLNL_CASE_SIZE,
+            DLNL_PRODUCT_SIZE,
+            DLNL_UNIT_COST,
+            DLNL_QTY,
+            RCVD_CASE_SIZE,
+            RCVD_PRODUCT_SIZE,
+            RCVD_QTY,
+            TOTAL_COST,
+            DLNL_QTY_REJECTED,
+            DLNL_STATUS,
+            DLNL_DISCREPANCY
+        ) VALUES (
+        #{delnId}
+        <if test="polId != null">
+            ,#{polId}
+        </if>
+        <if test="polId == null">
+            ,null
+        </if>
+
+        <if test="delnGrn != null">
+            ,#{delnGrn}
+        </if>
+        <if test="delnGrn == null">
+            ,null
+        </if>
+
+        <if test="dlnlLineNumber != null">
+            ,#{dlnlLineNumber}
+        </if>
+        <if test="dlnlLineNumber == null">
             ,null
         </if>
 
@@ -481,300 +339,180 @@
             ,null
         </if>
 
-        <if test="polUnitCost != null">
-            ,#{polUnitCost}
+        <if test="dlnlCaseSize != null">
+            ,#{dlnlCaseSize.id}
         </if>
-        <if test="polUnitCost == null">
+        <if test="dlnlCaseSize == null">
             ,null
         </if>
 
-        <if test="polPrice != null">
-            ,#{polPrice}
+        <if test="dlnlProductSize != null">
+            ,#{dlnlProductSize.id}
         </if>
-        <if test="polPrice == null">
+        <if test="dlnlProductSize == null">
             ,null
         </if>
 
-        <if test="polSpecialBuy != null">
-            ,#{polSpecialBuy}
+        <if test="dlnlUnitCost != null">
+            ,#{dlnlUnitCost}
         </if>
-        <if test="polSpecialBuy == null">
+        <if test="dlnlUnitCost == null">
             ,null
         </if>
 
-        <if test="taxLegVariance != null">
-            ,#{taxLegVariance.id}
+        <if test="dlnlQty != null">
+            ,#{dlnlQty}
         </if>
-        <if test="taxLegVariance == null">
+        <if test="dlnlQty == null">
             ,null
         </if>
 
-        <if test="unitOfMeasure != null">
-            ,#{unitOfMeasure.id}
+        <if test="rcvdCaseSize != null">
+            ,#{rcvdCaseSize.id}
         </if>
-        <if test="unitOfMeasure == null">
+        <if test="rcvdCaseSize == null">
             ,null
         </if>
 
-        <if test="polQtyOrdered != null">
-            ,#{polQtyOrdered}
+        <if test="rcvdProductSize != null">
+            ,#{rcvdProductSize.id}
         </if>
-        <if test="polQtyOrdered == null">
+        <if test="rcvdProductSize == null">
             ,null
         </if>
 
-        <if test="polQtyCancelled != null">
-            ,#{polQtyCancelled}
+        <if test="rcvdQty != null">
+            ,#{rcvdQty}
         </if>
-        <if test="polQtyCancelled == null">
+        <if test="rcvdQty == null">
             ,null
         </if>
 
-        <if test="polQtyReceived != null">
-            ,#{polQtyReceived}
+        <if test="totalCost != null">
+            ,#{totalCost}
         </if>
-        <if test="polQtyReceived == null">
+        <if test="totalCost == null">
             ,null
         </if>
 
-        <if test="polQtyInvoiced != null">
-            ,#{polQtyInvoiced}
+        <if test="dlnlQtyRegected != null">
+            ,#{dlnlQtyRegected}
         </if>
-        <if test="polQtyInvoiced == null">
+        <if test="dlnlQtyRegected == null">
             ,null
         </if>
 
-        <if test="polValueOrdered != null">
-            ,#{polValueOrdered}
+        <if test="dlnlStatus != null">
+            ,#{dlnlStatus.id}
         </if>
-        <if test="polValueOrdered == null">
+        <if test="dlnlStatus == null">
             ,null
         </if>
 
-        <if test="polValueReceived != null">
-            ,#{polValueReceived}
+        <if test="dlnlDiscrepancy != null">
+            ,#{dlnlDiscrepancy}
         </if>
-        <if test="polValueReceived == null">
-            ,null
-        </if>
-
-        <if test="polValueInvoiced != null">
-            ,#{polValueInvoiced}
-        </if>
-        <if test="polValueInvoiced == null">
-            ,null
-        </if>
-
-        <if test="polFreeText != null">
-            ,#{polFreeText}
-        </if>
-        <if test="polFreeText == null">
-            ,null
-        </if>
-
-        <if test="polModified != null">
-            ,#{polModified}
-        </if>
-        <if test="polModified == null">
-            ,null
-        </if>
-
-        <if test="polDateReceived != null">
-            ,#{polDateReceived}
-        </if>
-        <if test="polDateReceived == null">
-            ,null
-        </if>
-
-        <if test="polPriceChecked != null">
-            ,#{polPriceChecked}
-        </if>
-        <if test="polPriceChecked == null">
-            ,null
-        </if>
-
-        <if test="polIdParentLine != null">
-            ,#{polIdParentLine}
-        </if>
-        <if test="polIdParentLine == null">
-            ,null
-        </if>
-
-        <if test="polQtyCounted != null">
-            ,#{polQtyCounted}
-        </if>
-        <if test="polQtyCounted == null">
-            ,null
-        </if>
-        <if test="polContents != null">
-            ,#{polContents}
-        </if>
-        <if test="polContents == null">
-            ,null
-        </if>
-
-        <if test="unomContents != null">
-            ,#{unomContents.id}
-        </if>
-        <if test="unomContents == null">
-            ,null
-        </if>
-        <if test="polCreationType != null">
-            ,#{polCreationType.id}
-        </if>
-        <if test="polCreationType == null">
+        <if test="dlnlDiscrepancy == null">
             ,null
         </if>
         )
     </insert>
 
-    <update id="updatePurchaseLine" parameterType="PurchaseLine" >
-        UPDATE PURCHASE_LINE SET
-          POH_ID = #{pohId}
-        <if test="pohOrderNumber != null">
-            ,POH_ORDER_NUMBER = #{pohOrderNumber}
+    <update id="updateDeliveryNoteLine" parameterType="DeliveryNoteLine" >
+        UPDATE DELIVERY_NOTE_LINE SET
+        DELN_ID = #{delnId}
+        <if test="polId != null">
+            ,POL_ID = #{polId}
         </if>
 
-        <if test="polLineNumber != null">
-            ,POL_LINE_NUMBER = #{polLineNumber}
+        <if test="delnGrn != null">
+            ,DELN_GRN = #{delnGrn}
+        </if>
+
+        <if test="dlnlLineNumber != null">
+            ,DLNL_LINE_NUMBER = #{dlnlLineNumber}
         </if>
 
         <if test="purchaseItem != null">
             ,SPRC_ID = #{purchaseItem.id}
         </if>
 
-        <if test="polUnitCost != null">
-            ,POL_UNIT_COST = #{polUnitCost}
+        <if test="dlnlCaseSize != null">
+            ,DLNL_CASE_SIZE = #{dlnlCaseSize.id}
         </if>
 
-        <if test="polPrice != null">
-            ,POL_PRICE = #{polPrice}
+        <if test="dlnlProductSize != null">
+            ,DLNL_PRODUCT_SIZE = #{dlnlProductSize.id}
         </if>
 
-        <if test="polSpecialBuy != null">
-            ,POL_SPECIAL_BUY = #{polSpecialBuy}
+        <if test="dlnlUnitCost != null">
+            ,DLNL_UNIT_COST = #{dlnlUnitCost}
         </if>
 
-        <if test="taxLegVariance != null">
-            ,TXLV_ID = #{taxLegVariance}
+        <if test="dlnlQty != null">
+            ,DLNL_QTY = #{dlnlQty}
         </if>
 
-        <if test="unitOfMeasure != null">
-            ,UNOM_ID = #{unitOfMeasure.id}
+        <if test="rcvdCaseSize != null">
+            ,RCVD_CASE_SIZE = #{rcvdCaseSize.id}
         </if>
 
-        <if test="polQtyOrdered != null">
-            ,POL_QTY_ORDERED = #{polQtyOrdered}
+        <if test="rcvdProductSize != null">
+            ,RCVD_PRODUCT_SIZE = #{rcvdProductSize.id}
         </if>
 
-        <if test="polQtyCancelled != null">
-            ,POL_QTY_CANCELLED = #{polQtyCancelled}
+        <if test="rcvdQty != null">
+            ,RCVD_QTY = #{rcvdQty}
         </if>
 
-        <if test="polQtyReceived != null">
-            ,POL_QTY_RECEIVED = #{polQtyReceived}
+        <if test="totalCost != null">
+            ,TOTAL_COST = #{totalCost}
         </if>
 
-        <if test="polQtyInvoiced != null">
-            ,POL_QTY_INVOICED = #{polQtyInvoiced}
+        <if test="dlnlQtyRegected != null">
+            ,DLNL_QTY_REJECTED = #{dlnlQtyRegected}
         </if>
 
-        <if test="polValueOrdered != null">
-            ,POL_VALUE_ORDERED = #{polValueOrdered}
+        <if test="dlnlStatus != null">
+            ,DLNL_STATUS = #{dlnlStatus.id}
         </if>
 
-        <if test="polValueReceived != null">
-            ,POL_VALUE_RECEIVED = #{polValueReceived}
+        <if test="dlnlDiscrepancy != null">
+            ,DLNL_DISCREPANCY = #{dlnlDiscrepancy}
         </if>
-
-        <if test="polValueInvoiced != null">
-            ,POL_VALUE_INVOICED = #{polValueInvoiced}
-        </if>
-
-        <if test="polFreeText != null">
-            ,POL_FREE_TEXT = #{polFreeText}
-        </if>
-
-        <if test="polModified != null">
-            ,POL_MODIFIED = #{polModified}
-        </if>
-
-        <if test="polDateReceived != null">
-            ,POL_DATE_RECEIVED = #{polDateReceived}
-        </if>
-
-        <if test="polPriceChecked != null">
-            ,POL_PRICE_CHECKED = #{polPriceChecked}
-        </if>
-
-        <if test="polIdParentLine != null">
-            ,POL_ID_PARENT_LINE = #{polIdParentLine}
-        </if>
-
-        <if test="polQtyCounted != null">
-            ,POL_QTY_COUNTED = #{polQtyCounted}
-        </if>
-        <if test="polContents != null">
-            ,POL_CONTENTS = #{polContents}
-        </if>
-        <if test="unomContents != null">
-            ,UNOM_ID_CONTENTS = #{unomContents.id}
-        </if>
-        <if test="polCreationType != null">
-            ,POL_CREATION_TYPE = #{polCreationType.id}
-        </if>
-        WHERE POL_ID = #{id}
+        WHERE DLNL_ID = #{id}
     </update>
 
-    <select id="getPurchaseLinesPerPohId" resultMap="purchaseLineMap" >
+    <select id="getDelNoteLinesPerDlnId" resultMap="DeliveryNoteLine" >
         SELECT
-        <include refid="purchaseLineColumns"><property name="alias" value="pol"/></include>
+        <include refid="deliveryNoteLineColumns"><property name="alias" value="dlnl"/></include>
         FROM
-        PURCHASE_LINE pol
-        WHERE pol.poh_id=#{value}
+        DELIVERY_NOTE_LINE dlnl
+        WHERE dlnl.DELN_ID=#{value}
     </select>
 
-    <select id="getAllPurchaseOrderHeaderPerOrguId" resultMap="purchaseOrderHeaderLiteMap" >
+    <select id="getAllDelNoteHeaderPerOrguId" resultMap="deliveryNoteHeaderLiteMap" >
         SELECT
-        <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>
+        <include refid="deliveryNoteHeaderColumns"><property name="alias" value="deln"/></include>
         FROM
-        PURCHASE_ORDER_HEADER poh
-        WHERE poh.ORGU_ID=#{value}
+        DELIVERY_NOTE_HEADER deln
+        WHERE deln.ORGU_ID=#{value}
     </select>
 
-    <select id="getPurchaseOrderHeaderPerOrderNo" resultMap="purchaseOrderHeaderLiteMap" >
+    <select id="getDelNoteHeaderPerNoteNumber" resultMap="deliveryNoteHeaderLiteMap" >
         SELECT
-        <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>
+        <include refid="deliveryNoteHeaderColumns"><property name="alias" value="deln"/></include>
         FROM
-        PURCHASE_ORDER_HEADER poh
-        WHERE poh.POH_ORDER_NUMBER=#{value}
+        DELIVERY_NOTE_HEADER deln
+        WHERE deln.DELN_NOTE_NUMBER=#{value}
     </select>
 
-    <select id="getPurchaseOrderWholePerPohId" resultMap="purchaseOrderHeaderMap" >
+    <select id="getDelNoteWholePerDelnId" resultMap="deliveryNoteHeaderMap" >
         SELECT
-        <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>
+        <include refid="deliveryNoteHeaderColumns"><property name="alias" value="deln"/></include>
         FROM
-        PURCHASE_ORDER_HEADER poh
-        WHERE poh.POH_ID=#{value}
+        DELIVERY_NOTE_HEADER deln
+        WHERE deln.DELN_ID=#{value}
     </select>
-
-    <select id="getMaxPohId" resultType="long" >
-        SELECT
-          max(poh_id)
-        FROM
-          PURCHASE_ORDER_HEADER
-    </select>
-
-    <delete id="deletePurchaseLineWhereIdNotIn" >
-        DELETE from
-        PURCHASE_LINE
-        where POH_ID = #{param1} AND
-        POL_ID not in
-        <foreach collection="param2" item="item" index="index"
-                 open ="(" separator="," close=")">
-            #{item}
-        </foreach>
-    </delete>
-
 
 </mapper>
