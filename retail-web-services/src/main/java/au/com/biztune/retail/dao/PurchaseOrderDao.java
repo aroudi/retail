@@ -49,6 +49,15 @@ public interface PurchaseOrderDao {
 
 
     /**
+     * get all purchase Order Header.
+     * @param orguId orguId
+     * @param supplierId supplierId
+     * @param configStatusCode configStatusCode
+     * @return List of PurchaseOrderHeader
+     */
+    List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode(long orguId, long supplierId, String configStatusCode);
+
+    /**
      * get purchase order header per order no.
      * @param  orderNo orderNo
      * @return Purchase Order Header

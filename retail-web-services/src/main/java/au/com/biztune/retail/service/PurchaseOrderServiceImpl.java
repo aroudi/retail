@@ -64,8 +64,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 purchaseOrderHeader.setPohCreationType(creationType);
                 purchaseOrderHeader.setPohCreatedDate(currentDate);
                 purchaseOrderHeader.setPohLastModifiedDate(currentDate);
-                final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_IN_PROGRESS);
-                purchaseOrderHeader.setPohStatus(status);
+                //final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_IN_PROGRESS);
+                //purchaseOrderHeader.setPohStatus(status);
                 purchaseOrderDao.insertPurchaseOrderHeader(purchaseOrderHeader);
                 //generate purchase order number
                 pohNumber = generatePohNumber(purchaseOrderHeader.getId(), IdBConstant.POH_NUMBER_PREFIX_MANUAL);
@@ -270,6 +270,20 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             return suppProdPriceDao.getAllProductPurchaseItemsPerOrgUnitIdAndSuppId(sessionState.getOrgUnit().getId(), suppId);
         } catch (Exception e) {
             logger.error("Exception in getting product purchase items per supplier:", e);
+            return null;
+        }
+    }
+    /**
+     * get all purchase Order Header.
+     * @param configStatusCode configStatusCode
+     * @param supplierId supplierId
+     * @return List of PurchaseOrderHeader
+     */
+    public List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode(long supplierId, String configStatusCode) {
+        try {
+            return purchaseOrderDao.getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode(sessionState.getOrgUnit().getId(), supplierId, configStatusCode);
+        } catch (Exception e) {
+            logger.error("Exception in getting purchase order header list:", e);
             return null;
         }
     }

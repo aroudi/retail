@@ -243,4 +243,26 @@ public interface IdBConstant {
      * PurchaseOrderHeader Number AUTHO CREATED Prefix.
      */
     String POH_NUMBER_PREFIX_MANUAL = "PO-M-";
+
+    /**
+     * Delivery Note Status.
+     */
+    String TYPE_DLV_NOTE_STATUS = "DLV_NOTE_STATUS";
+    /**
+     * DELIVERY NOTE STATUS STATUS IN PROGRESS.
+     */
+    String DLV_NOTE_STATUS_IN_PROGRESS = "DLV_NOTE_STATUS_IN_PROGRESS";
+    /**
+     * DELIVERY NOTE STATUS ON HOLD.
+     */
+    String DLV_NOTE_STATUS_ON_HOLD = "DLV_NOTE_STATUS_ON_HOLD";
+    /**
+     * DELIVERY NOTE STATUS COMPLETE.
+     */
+    String DLV_NOTE_STATUS_COMPLETE = "DLV_NOTE_STATUS_COMPLETE";
+    /**
+     * GRN number Prefix.
+     */
+    String GRN_PREFIX = "GRN-";
+
 }

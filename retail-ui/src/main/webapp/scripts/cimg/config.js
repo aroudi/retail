@@ -153,6 +153,18 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/purchaseOrderDetail.html',
             access: "user"
         })
+        .state('dashboard.deliveryNoteList',{
+            url:'/deliveryNoteList',
+            controller: 'deliveryNoteListCtrl',
+            templateUrl:'views/pages/deliveryNoteList.html',
+            access: "user"
+        })
+        .state('dashboard.deliveryNote',{
+            url:'/deliveryNote',
+            controller: 'deliveryNoteCtrl',
+            templateUrl:'views/pages/deliveryNote.html',
+            access: "user"
+        })
         .state('dashboard.createSaleTransaction',{
             url:'/createSaleTransaction',
             controller: 'txnSaleCtrl',

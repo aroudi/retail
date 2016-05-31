@@ -21,7 +21,7 @@
         <result column="DELN_TOTAL_QTY" property="delnTotalQty" />
         <result column="DELN_TOTAL_LINES" property="delnTotalLines" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
-        <association property="pohStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
     <resultMap id="deliveryNoteHeaderMap" type="DeliveryNoteHeader" >
@@ -41,7 +41,7 @@
         <result column="DELN_TOTAL_QTY" property="delnTotalQty" />
         <result column="DELN_TOTAL_LINES" property="delnTotalLines" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
-        <association property="pohStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="legalTender" column="LEGT_ID" select="au.com.biztune.retail.dao.LegalTenderDao.getLegalTenderById" />
         <collection property="lines" javaType="ArrayList" column="POH_ID" ofType="PurchaseLine" select="getDelNoteLinesPerDlnId"/>
     </resultMap>
@@ -127,7 +127,7 @@
             DELN_STATUS,
             LEGT_ID
         ) VALUES (
-        #{orgUnit.id}
+        #{orguId}
         <if test="delnNoteNumber != null">
             ,#{delnNoteNumber}
         </if>
@@ -177,7 +177,7 @@
             ,null
         </if>
         <if test="delnLastModifiedBy != null">
-            ,#{delnLastModifiedBy.id}
+            ,#{delnLastModifiedBy}
         </if>
         <if test="delnLastModifiedBy == null">
             ,null
@@ -235,7 +235,7 @@
 
     <update id="updateDeliveryNoteHeader" parameterType="DeliveryNoteHeader" >
         UPDATE DELIVERY_NOTE_HEADER SET
-        ORGU_ID = #{orgUnit.id}
+        ORGU_ID = #{orguId}
         <if test="delnNoteNumber != null">
             ,DELN_NOTE_NUMBER = #{delnNoteNumber}
         </if>
@@ -258,7 +258,7 @@
             ,DELN_CREATED_DATE = #{delnCreatedDate}
         </if>
         <if test="delnLastModifiedBy != null">
-            ,DELN_LAST_MODIFIED_BY = #{delnLastModifiedBy.id}
+            ,DELN_LAST_MODIFIED_BY = #{delnLastModifiedBy}
         </if>
         <if test="delnLastModifiedDate != null">
             ,DELN_LAST_MODIFIED_DATE = #{delnLastModifiedDate}
@@ -483,7 +483,7 @@
         WHERE DLNL_ID = #{id}
     </update>
 
-    <select id="getDelNoteLinesPerDlnId" resultMap="DeliveryNoteLine" >
+    <select id="getDelNoteLinesPerDlnId" resultMap="deliveryNoteLineMap" >
         SELECT
         <include refid="deliveryNoteLineColumns"><property name="alias" value="dlnl"/></include>
         FROM
@@ -514,5 +514,19 @@
         DELIVERY_NOTE_HEADER deln
         WHERE deln.DELN_ID=#{value}
     </select>
+    <update id="updateDeliveryNoteGrnNo" parameterType="DeliveryNoteHeader" >
+      UPDATE DELIVERY_NOTE_HEADER SET DELN_GRN = #{delnGrn} WHERE  DELN_ID = #{id}
+    </update>
+
+    <delete id="deleteDeliveryNoteLineWhereIdNotIn" >
+        DELETE from
+        DELIVERY_NOTE_LINE
+        where DELN_ID = #{param1} AND
+        DLNL_ID not in
+        <foreach collection="param2" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
 
 </mapper>

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_STATUS_IN_PROGRESS, POH_SAVE_URI) {
+cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI) {
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -79,13 +79,10 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             var data = angular.copy(response.data);
             $scope.polCreationTypeManual = data;
         });
-
-        if ($scope.pageIsNew) {
-            baseDataService.getBaseData(POH_STATUS_IN_PROGRESS).then(function(response){
-                var data = angular.copy(response.data);
-                $scope.purchaseOrderHeader.pohStatus = data;
-            });
-        }
+        baseDataService.getBaseData(POH_STATUS_URI).then(function(response){
+            $scope.pohStatusSet = response.data;
+            $scope.purchaseOrderHeader.pohStatus = baseDataService.populateSelectList($scope.purchaseOrderHeader.pohStatus,$scope.pohStatusSet);
+        });
 
     }
 

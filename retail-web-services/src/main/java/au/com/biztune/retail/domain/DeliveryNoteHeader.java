@@ -27,6 +27,7 @@ public class DeliveryNoteHeader {
     private ConfigCategory delnStatus;
     private LegalTender legalTender;
     private List<DeliveryNoteLine> lines;
+    private String deliveryDate;
 
     public long getId() {
         return id;
@@ -186,5 +187,13 @@ public class DeliveryNoteHeader {
 
     public void setLines(List<DeliveryNoteLine> lines) {
         this.lines = lines;
+    }
+
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(String deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 }

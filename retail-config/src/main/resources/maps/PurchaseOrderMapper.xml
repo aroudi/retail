@@ -742,6 +742,14 @@
         WHERE poh.ORGU_ID=#{value}
     </select>
 
+    <select id="getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode" resultMap="purchaseOrderHeaderLiteMap" >
+        SELECT
+        <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>
+        FROM
+        PURCHASE_ORDER_HEADER poh INNER JOIN CONFIG_CATEGORY cc on (poh.POH_STATUS = cc.CATEGORY_ID)
+        WHERE poh.ORGU_ID=#{param1} and poh.SUPPLIER_ID=#{param2} and cc.CATEGORY_CODE=#{param3}
+    </select>
+
     <select id="getPurchaseOrderHeaderPerOrderNo" resultMap="purchaseOrderHeaderLiteMap" >
         SELECT
         <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>

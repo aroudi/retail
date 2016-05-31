@@ -35,6 +35,11 @@ public interface DeliveryNoteDao {
     void updateDeliveryNoteLine(DeliveryNoteLine deliveryNoteLine);
 
     /**
+     * update delivery note grn number per id.
+     * @param deliveryNoteHeader deliveryNoteHeader
+     */
+    void updateDeliveryNoteGrnNo(DeliveryNoteHeader deliveryNoteHeader);
+    /**
      * get all lines of delivery note by id.
      * @param delnId delnId
      * @return List of DeliveryNote Lines
@@ -61,4 +66,11 @@ public interface DeliveryNoteDao {
      * @return DeliveryNoteHeader
      */
     DeliveryNoteHeader getDelNoteWholePerDelnId(long delnId);
+
+    /**
+     * delete all deliverynote lines where line id not in the list, per deliverynote id.
+     * @param deliveryNoteId deliveryNoteId
+     * @param deliveryNoteLines deliveryNoteLines
+     */
+    void deleteDeliveryNoteLineWhereIdNotIn(long deliveryNoteId, List deliveryNoteLines);
 }

@@ -77,8 +77,11 @@ var service_uri = {
     'POH_GET_ALL_URI' : 'purchaseOrder/header/all',
     'POH_GET_URI' : 'purchaseOrder/header/getWhole/',
     'GET_PURCHASE_ITEMS_PER_SUPPLIER_URI' : 'purchaseOrder/detail/getPurchaseItems/',
-    'POH_SAVE_URI' : 'purchaseOrder/add'
-
+    'POH_SAVE_URI' : 'purchaseOrder/add',
+    'POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI' : 'purchaseOrder/header/all/confirmed/',
+    'DEL_NOTE_SAVE_URI' : 'deliveryNote/add',
+    'DEL_NOTE_GET_ALL_URI' : 'deliveryNote/header/all',
+    'DEL_NOTE_GET_URI' : 'deliveryNote/header/getWhole/'
 }
 
 var response_status = {
@@ -94,7 +97,9 @@ var type_constant = {
     'PRODUCT_TYPE_URI' : 'categories/PRODUCT_TYPE',
     'POL_CREATION_TYPE_MANUAL' : 'categories/POH_CREATION_TYPE/POH_CREATION_TYPE_MANUAL',
     'POL_CREATION_TYPE_AUTO' : 'categories/POH_CREATION_TYPE/POH_CREATION_TYPE_AUTO',
-    'POH_STATUS_IN_PROGRESS' : 'categories/POH_STATUS/POH_STATUS_IN_PROGRESS'
+    'POH_STATUS_IN_PROGRESS' : 'categories/POH_STATUS/POH_STATUS_IN_PROGRESS',
+    'POH_STATUS_URI' : 'categories/POH_STATUS',
+    'DLV_NOTE_STATUS_URI' : 'categories/DLV_NOTE_STATUS'
 }
 
 angular.forEach(config_data, function(key, value) {
