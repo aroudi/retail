@@ -59,6 +59,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             final Timestamp currentDate = new Timestamp(new Date().getTime());
             purchaseOrderHeader.setOrgUnit(sessionState.getOrgUnit());
             String pohNumber = purchaseOrderHeader.getPohOrderNumber();
+            //check if status is confirmed
+            if (purchaseOrderHeader.getPohStatus() != null && purchaseOrderHeader.getPohStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_CONFIRMED)) {
+                purchaseOrderHeader.setPohConfirmDate(currentDate);
+                purchaseOrderHeader.setPohApproved(true);
+            }
             if (isNew) {
                 final ConfigCategory creationType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_CREATION_TYPE, IdBConstant.POH_CREATION_TYPE_MANUAL);
                 purchaseOrderHeader.setPohCreationType(creationType);
@@ -275,13 +280,21 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
     /**
      * get all purchase Order Header.
-     * @param configStatusCode configStatusCode
      * @param supplierId supplierId
      * @return List of PurchaseOrderHeader
      */
-    public List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode(long supplierId, String configStatusCode) {
+    public List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode(long supplierId) {
         try {
-            return purchaseOrderDao.getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode(sessionState.getOrgUnit().getId(), supplierId, configStatusCode);
+            final List<Long> statusIds = new ArrayList<Long>();
+            ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_CONFIRMED);
+            if (status != null) {
+                statusIds.add(status.getId());
+            }
+            status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_PARTIAL_REC);
+            if (status != null) {
+                statusIds.add(status.getId());
+            }
+            return purchaseOrderDao.getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusIds(sessionState.getOrgUnit().getId(), supplierId, statusIds);
         } catch (Exception e) {
             logger.error("Exception in getting purchase order header list:", e);
             return null;

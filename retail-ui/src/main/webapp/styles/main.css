@@ -118,3 +118,21 @@ background-color: #eee;
     font-weight: bold;
     display: inline;
 }
+
+.brown {
+
+    width: 200px;
+    /*background-color:#e6ac00 !important;*/
+    color: #5b3c40 !important;
+    font-weight: bold;
+    display: inline;
+}
+
+.editModeColor {
+
+    width: 200px;
+    /*background-color:#e6ac00 !important;*/
+    color: #00008B !important;
+    font-weight: bold;
+    display: inline;
+}

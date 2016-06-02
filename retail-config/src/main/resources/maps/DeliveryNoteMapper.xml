@@ -43,7 +43,7 @@
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="legalTender" column="LEGT_ID" select="au.com.biztune.retail.dao.LegalTenderDao.getLegalTenderById" />
-        <collection property="lines" javaType="ArrayList" column="POH_ID" ofType="PurchaseLine" select="getDelNoteLinesPerDlnId"/>
+        <collection property="lines" javaType="ArrayList" column="DELN_ID" ofType="DeliveryNoteLine" select="getDelNoteLinesPerDlnId"/>
     </resultMap>
     <resultMap id="deliveryNoteLineMap" type="DeliveryNoteLine" >
         <id column="DLNL_ID" property="id" />

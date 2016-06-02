@@ -78,7 +78,7 @@ var service_uri = {
     'POH_GET_URI' : 'purchaseOrder/header/getWhole/',
     'GET_PURCHASE_ITEMS_PER_SUPPLIER_URI' : 'purchaseOrder/detail/getPurchaseItems/',
     'POH_SAVE_URI' : 'purchaseOrder/add',
-    'POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI' : 'purchaseOrder/header/all/confirmed/',
+    'POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI' : 'purchaseOrder/header/search/orguIdSupIdStatusId/',
     'DEL_NOTE_SAVE_URI' : 'deliveryNote/add',
     'DEL_NOTE_GET_ALL_URI' : 'deliveryNote/header/all',
     'DEL_NOTE_GET_URI' : 'deliveryNote/header/getWhole/'

@@ -52,10 +52,10 @@ public interface PurchaseOrderDao {
      * get all purchase Order Header.
      * @param orguId orguId
      * @param supplierId supplierId
-     * @param configStatusCode configStatusCode
+     * @param statusIds statusIds
      * @return List of PurchaseOrderHeader
      */
-    List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode(long orguId, long supplierId, String configStatusCode);
+    List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusIds(long orguId, long supplierId, List statusIds);
 
     /**
      * get purchase order header per order no.
@@ -83,4 +83,11 @@ public interface PurchaseOrderDao {
      * @param polIdList polIdList
      */
     void deletePurchaseLineWhereIdNotIn(long pohId, List polIdList);
+
+    /**
+     * get Purchase Order Line per id.
+     * @param polId polId
+     * @return Purchase Order Line
+     */
+    PurchaseLine getPurchaseLinePerId(long polId);
 }

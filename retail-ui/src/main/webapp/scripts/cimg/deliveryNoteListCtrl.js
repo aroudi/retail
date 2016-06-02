@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConstants,purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_GET_ALL_URI, DEL_NOTE_GET_URI) {
+cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConstants,purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_GET_ALL_URI, DEL_NOTE_GET_URI, POH_GET_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
         enableSelectAll:true,
@@ -12,9 +12,12 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
         enableSorting:true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'10%'},
+            {field:'pohId', visible:false, enableCellEdit:false},
             {field:'delnNoteNumber', displayName:'Note No',enableCellEdit:false, width:'10%'},
             {field:'delnGrn', displayName:'GRN',enableCellEdit:false, width:'10%'},
+            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'10%',
+                cellTemplate:'<a href="" ng-click="grid.appScope.viewPurchaseOrderDetail(row)">{{grid.appScope.getLinkedPurchaseOrder(row)}}</a>'
+            },
             {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'30%',
                 cellTooltip: function(row,col) {
                     return row.entity.supplier.supplierName
@@ -64,4 +67,25 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
             $state.go('dashboard.deliveryNote');
         });
     }
+
+    $scope.viewPurchaseOrderDetail = function(row) {
+        if (row == undefined || row.entity == undefined) {
+            return;
+        }
+        var pohGetURI = POH_GET_URI +  row.entity.pohId;
+        baseDataService.getBaseData(pohGetURI).then(function(response){
+            baseDataService.setIsPageNew(false);
+            baseDataService.setRow(response.data);
+            //redirect to the supplier page.
+            $state.go('dashboard.purchaseOrderDetail');
+        });
+    }
+
+    $scope.getLinkedPurchaseOrder = function (row) {
+        if (row.entity.pohOrderNumber ==undefined || row.entity.pohOrderNumber ==null ) {
+            return '***';
+        }
+        return row.entity.pohOrderNumber;
+    };
+
 });

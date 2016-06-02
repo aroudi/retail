@@ -5,7 +5,6 @@ import au.com.biztune.retail.domain.ProductPurchaseItem;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.service.PurchaseOrderService;
-import au.com.biztune.retail.util.IdBConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,12 +91,12 @@ public class PurchaseOrderRest {
      * @return list of confirmed purchase order header
      */
 
-    @Path("/header/all/confirmed/{suppId}")
+    @Path("/header/search/orguIdSupIdStatusId/{suppId}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<PurchaseOrderHeader> getAllConfirmedPurchaseOrderPerSupplierId(@PathParam("suppId") long suppId) {
         try {
-            return purchaseOrderService.getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode(suppId, IdBConstant.POH_STATUS_CONFIRMED);
+            return purchaseOrderService.getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode(suppId);
         } catch (Exception e) {
             logger.error ("Error in retrieving purchase order header List :", e);
             return null;

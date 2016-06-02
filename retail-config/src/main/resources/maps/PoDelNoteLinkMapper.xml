@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.PoDelNoteLinkDao">
+    <!-- result maps -->
+    <resultMap id="PoDelNoteLinkMap" type="PoDelNoteLink" >
+        <id column="PODLVL_ID" property="id" />
+        <result column="POH_ID" property="pohId" />
+        <result column="POH_ORDER_NUMBER" property="pohOrderNumber" />
+        <result column="DELN_ID" property="delnId" />
+        <result column="DELN_NOTE_NUMBER" property="delnNoteNumber" />
+        <result column="DELN_GRN" property="delnGrn" />
+        <result column="DELN_DELIVERY_DATE" property="delnDeliveryDate" />
+    </resultMap>
+
+    <sql id="PoDelNoteLinkColumns">
+        ${alias}.PODLVL_ID,
+        ${alias}.POH_ID,
+        ${alias}.POH_ORDER_NUMBER,
+        ${alias}.DELN_ID,
+        ${alias}.DELN_NOTE_NUMBER,
+        ${alias}.DELN_GRN,
+        ${alias}.DELN_DELIVERY_DATE
+    </sql>
+
+    <insert id="insert" parameterType="PoDelNoteLink" useGeneratedKeys="true" keyProperty="id" keyColumn="PODLVL_ID">
+        INSERT INTO PO_DEL_NOTE_LINK(
+        POH_ID,
+        POH_ORDER_NUMBER,
+        DELN_ID,
+        DELN_NOTE_NUMBER,
+        DELN_GRN,
+        DELN_DELIVERY_DATE
+        ) VALUES (
+        #{pohId}
+        <if test="pohOrderNumber != null">
+            ,#{pohOrderNumber}
+        </if>
+        <if test="pohOrderNumber == null">
+            ,null
+        </if>
+        ,#{delnId}
+        <if test="delnNoteNumber != null">
+            ,#{delnNoteNumber}
+        </if>
+        <if test="delnNoteNumber == null">
+            ,null
+        </if>
+
+        <if test="delnGrn != null">
+            ,#{delnGrn}
+        </if>
+        <if test="delnGrn == null">
+            ,null
+        </if>
+
+        <if test="delnDeliveryDate != null">
+            ,#{delnDeliveryDate}
+        </if>
+        <if test="delnDeliveryDate == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <sql id="getPoDelNoteLink">
+        SELECT
+        <include refid="PoDelNoteLinkColumns"><property name="alias" value="pdlvnotel"/></include>
+        FROM
+        PO_DEL_NOTE_LINK pdlvnotel
+    </sql>
+
+    <select id="getAllPoDelNoteLinkPerPohId" resultMap="PoDelNoteLinkMap" >
+        <include refid="getPoDelNoteLink">
+        </include>
+        WHERE pdlvnotel.POH_ID = #{value}
+    </select>
+
+    <select id="getAllPoDelNoteLinkPerDelNoteId" resultMap="PoDelNoteLinkMap" >
+        <include refid="getPoDelNoteLink">
+        </include>
+        WHERE pdlvnotel.DELN_ID = #{value}
+    </select>
+
+</mapper>

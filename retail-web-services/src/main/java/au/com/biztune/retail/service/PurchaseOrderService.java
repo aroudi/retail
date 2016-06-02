@@ -52,9 +52,8 @@ public interface PurchaseOrderService {
     List<ProductPurchaseItem> getAllSupplierProductPurchaseItems(long suppId);
     /**
      * get all purchase Order Header.
-     * @param configStatusCode configStatusCode
      * @param supplierId supplierId
      * @return List of PurchaseOrderHeader
      */
-    List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode(long supplierId, String configStatusCode);
+    List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode(long supplierId);
 }

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants,purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI) {
+cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants,purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
         enableSelectAll:true,
@@ -10,6 +10,29 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
         showColumnFooter: true,
         enableColumnResizing: true,
         enableSorting:true,
+        expandableRowTemplate: '<div ui-grid="row.entity.subGridOptions" ui-grid-selection style ="height: 100px;"></div>',
+        expandableRowScope:{
+            viewDelNoteDetail : function(row) {
+                if (row == undefined || row.entity == undefined) {
+                    return;
+                }
+                var deliveryNoteGetURI = DEL_NOTE_GET_URI +  row.entity.delnId;
+                baseDataService.getBaseData(deliveryNoteGetURI).then(function(response){
+                    baseDataService.setIsPageNew(false);
+                    baseDataService.setRow(response.data);
+                    //redirect to the supplier page.
+                    $state.go('dashboard.deliveryNote');
+                });
+            },
+
+            getLinkedDelNote : function (row) {
+                if (row.entity.delnNoteNumber ==undefined || row.entity.delnNoteNumber ==null ) {
+                    return '***';
+                }
+                return row.entity.delnNoteNumber;
+            },
+            subGridVariable: 'subGridScopeVariable'
+        } ,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'15%'},
@@ -51,6 +74,9 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             baseDataService.getBaseData(POH_GET_ALL_URI).then(function(response){
                 var data = angular.copy(response.data);
                 $scope.gridOptions.data = data;
+                for (i=0; i<$scope.gridOptions.data.length; i++) {
+                    displayLinkedDelNotes($scope.gridOptions.data[i])
+                }
             });
         }
     }
@@ -67,5 +93,23 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             //redirect to the supplier page.
             $state.go('dashboard.purchaseOrderDetail');
         });
+    }
+
+    function displayLinkedDelNotes(line) {
+        line.subGridOptions = {
+            enableRowSelection :false,
+            enableColumnResizing: true,
+            columnDefs :[
+                {field:"id", visible:false},
+                {field:"pohId", visible:false},
+                {field:"delnId", visible:false},
+                {field:"delnNoteNumber", displayName:"Delivery Note No.", visible:true, width:'40%',
+                    cellTemplate:'<a href="" ng-click="grid.appScope.viewDelNoteDetail(row)">{{grid.appScope.getLinkedDelNote(row)}}</a>'
+                },
+                {field:"delnGrn", displayName:"GRN No", visible:true, width:'40%'},
+                {field:"delnDeliveryDate", displayName:"Delivery Date", width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\'' }
+            ],
+            data:line.linkedDelNotes
+        }
     }
 });

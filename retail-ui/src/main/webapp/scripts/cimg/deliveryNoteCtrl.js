@@ -9,22 +9,26 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         showColumnFooter: true,
         enableColumnResizing: true,
         enableSorting:true,
-        expandableRowTemplate: '<div ui-grid="row.entity.subGridOptions" ui-grid-selection style ="height: 100px;"></div>',
-        expandableRowScope:{
-            subGridVariable: 'subGridScopeVariable'
-        } ,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'40%'},
-            {field:'dlnlProductSize.unomDesc', displayName:'Product Size', enableCellEdit:false, width:'10%'},
-            {field:'dlnlCaseSize.unomDesc', displayName:'Case Size', enableCellEdit:false, width:'10%'},
-            {field:'dlnlUnitCost', displayName:'Case Cost',enableCellEdit:true, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'dlnlQty', displayName:'Del Qty',enableCellEdit:true, width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'rcvdCaseSize.unomDesc', displayName:'Recd Case Size', enableCellEdit:false, width:'10%'},
-            {field:'rcvdQty', displayName:'Rec Qty',enableCellEdit:true, width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'30%'},
+            {field:'dlnlProductSize.unomDesc', displayName:'Product Size', enableCellEdit:false, width:'8%'},
+            {field:'dlnlCaseSize.unomDesc', displayName:'Case Size', enableCellEdit:false, width:'7%'},
+            {field:'dlnlUnitCost', displayName:'Case Cost',enableCellEdit:true, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'dlnlQty', displayName:'Del Qty',enableCellEdit:true, width:'8%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            },
+            {field:'rcvdCaseSize.unomDesc', displayName:'Recd Case Size', enableCellEdit:false, width:'8%'},
+            {field:'rcvdQty', displayName:'Rec Qty',enableCellEdit:true, width:'7%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            },
             {field:'totalCost', displayName:'Total Cost',enableCellEdit:false, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'dlnlDiscrepancy', displayName:'',enableCellEdit:false, width:'10%'},
-            {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.removeItem(row)" ></i></a>', width: '5%'}
+            {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeItem(row)" ng-disabled="disablePage"></i></a>', width: '5%'}
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -54,16 +58,24 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
 
     initPageData();
     function initPageData() {
+        $scope.disablePage = false;
         if ( baseDataService.getIsPageNew()) {
             $scope.deliveryNoteHeader = {};
+            $scope.deliveryNoteHeader.deliveryDate = new Date();
             $scope.deliveryNoteHeader.id = -1;
             $scope.pageIsNew = true;
         } else {
             $scope.deliveryNoteHeader = angular.copy(baseDataService.getRow());
             $scope.gridOptions.data = $scope.deliveryNoteHeader.lines;
+            $scope.deliveryNoteHeader.deliveryDate = new Date($scope.deliveryNoteHeader.deliveryDate);
             baseDataService.setRow({});
             baseDataService.setIsPageNew(true);
             $scope.pageIsNew = false;
+            if ($scope.deliveryNoteHeader.delnStatus.categoryCode == 'DLV_NOTE_STATUS_COMPLETE') {
+                $scope.disablePage = true;
+            } else {
+                $scope.disablePage = false;
+            }
         }
         baseDataService.getBaseData(DLV_NOTE_STATUS_URI).then(function(response){
             $scope.delnStatusSet = response.data;
@@ -118,10 +130,10 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             'dlnlCaseSize' : purchaseOrderLine.unitOfMeasure,
             'dlnlProductSize' : purchaseOrderLine.unomContents,
             'dlnlUnitCost' : purchaseOrderLine.polUnitCost,
-            'dlnlQty' : purchaseOrderLine.polQtyOrdered,
+            'dlnlQty' : purchaseOrderLine.polQtyOrdered - purchaseOrderLine.polQtyReceived,
             'rcvdCaseSize' : purchaseOrderLine.unitOfMeasure,
             'rcvdProductSize' :  $scope.unomContents,
-            'rcvdQty' :  purchaseOrderLine.polQtyOrdered
+            'rcvdQty' :  purchaseOrderLine.polQtyOrdered - purchaseOrderLine.polQtyReceived
         }
         return deliveryNoteLineObject;
     }
@@ -134,6 +146,11 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
     }
     $scope.saveDeliveryNote = function () {
 
+
+        if ($scope.disablePage) {
+            baseDataService.displayMessage("Warning", "You can not submit an already confirmed delivery note!!!! ");
+            return;
+        }
         /*
          var userId = UserService.getUserId();
          if (userId == undefined || userId == 0) {

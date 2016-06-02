@@ -30,6 +30,7 @@
         <result column="POH_TOTAL_LINES" property="pohTotalLines" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="pohStatus" column="POH_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <collection property="linkedDelNotes" javaType="ArrayList" column="POH_ID" ofType="PoDelNoteLink" select="au.com.biztune.retail.dao.PoDelNoteLinkDao.getAllPoDelNoteLinkPerPohId"/>
     </resultMap>
 
 
@@ -85,6 +86,7 @@
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="unomContents" column="UNOM_ID_CONTENTS" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="polCreationType" column="POL_CREATION_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="polStatus" column="POL_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <collection property="poBoqLinks" javaType="ArrayList" column="POL_ID" ofType="PoBoqLink" select="au.com.biztune.retail.dao.PoBoqLinkDao.getAllPoBoqLinkPerPolId"/>
     </resultMap>
 
@@ -351,13 +353,7 @@
 
     <update id="updatePurchaseOrderHeader" parameterType="PurchaseORderHeader" >
         UPDATE PURCHASE_ORDER_HEADER SET
-        ORGU_ID = #{orgUnit.id}
-        <if test="pohOrderNumber != null">
-            ,POH_ORDER_NUMBER = #{pohOrderNumber}
-        </if>
-        <if test="supplier != null">
-            ,SUPPLIER_ID = #{supplier.id}
-        </if>
+        POH_ORDER_NUMBER = #{pohOrderNumber}
         <if test="pohSuppRef != null">
             ,POH_SUPP_REF = #{pohSuppRef}
         </if>
@@ -457,7 +453,8 @@
         POL_QTY_COUNTED,
         POL_CONTENTS,
         UNOM_ID_CONTENTS,
-        POL_CREATION_TYPE
+        POL_CREATION_TYPE,
+        POL_STATUS
         ) VALUES (
         #{pohId}
         <if test="pohOrderNumber != null">
@@ -625,6 +622,12 @@
         <if test="polCreationType == null">
             ,null
         </if>
+        <if test="polStatus != null">
+            ,#{polStatus.id}
+        </if>
+        <if test="polStatus == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -723,6 +726,9 @@
         <if test="polCreationType != null">
             ,POL_CREATION_TYPE = #{polCreationType.id}
         </if>
+        <if test="polStatus != null">
+            ,POL_STATUS = #{polStatus.id}
+        </if>
         WHERE POL_ID = #{id}
     </update>
 
@@ -734,6 +740,14 @@
         WHERE pol.poh_id=#{value}
     </select>
 
+    <select id="getPurchaseLinePerId" resultMap="purchaseLineMap" >
+        SELECT
+        <include refid="purchaseLineColumns"><property name="alias" value="pol"/></include>
+        FROM
+        PURCHASE_LINE pol
+        WHERE pol.POL_ID=#{value}
+    </select>
+
     <select id="getAllPurchaseOrderHeaderPerOrguId" resultMap="purchaseOrderHeaderLiteMap" >
         SELECT
         <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>
@@ -742,12 +756,16 @@
         WHERE poh.ORGU_ID=#{value}
     </select>
 
-    <select id="getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode" resultMap="purchaseOrderHeaderLiteMap" >
+    <select id="getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusIds" resultMap="purchaseOrderHeaderLiteMap" >
         SELECT
         <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>
         FROM
         PURCHASE_ORDER_HEADER poh INNER JOIN CONFIG_CATEGORY cc on (poh.POH_STATUS = cc.CATEGORY_ID)
-        WHERE poh.ORGU_ID=#{param1} and poh.SUPPLIER_ID=#{param2} and cc.CATEGORY_CODE=#{param3}
+        WHERE poh.ORGU_ID=#{param1} and poh.SUPPLIER_ID=#{param2} and cc.CATEGORY_ID in
+        <foreach collection="param3" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 
     <select id="getPurchaseOrderHeaderPerOrderNo" resultMap="purchaseOrderHeaderLiteMap" >

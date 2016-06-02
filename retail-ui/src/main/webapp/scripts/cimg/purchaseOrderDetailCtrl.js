@@ -15,17 +15,22 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         } ,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'40%'},
+            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'30%'},
             {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'10%'},
             {field:'polUnitCost', displayName:'Cost',enableCellEdit:false, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'polQtyOrdered', displayName:'Qty',enableCellEdit:true, width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'polQtyOrdered', displayName:'Qty Ordered',enableCellEdit:true, width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            },
             {field:'polValueOrdered', displayName:'Value',enableCellEdit:false, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'polQtyReceived', displayName:'Qty Received', enableCellEdit:false,width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'polCreationType', displayName:'Type',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }
             },
-            {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.removeItem(row)" ></i></a>', width: '5%'}
+            {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeItem(row)" ng-disabled="disablePage"></i></a>', width: '5%'}
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -60,6 +65,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
 
     initPageData();
     function initPageData() {
+        $scope.disablePage = false;
         if ( baseDataService.getIsPageNew()) {
             $scope.purchaseOrderHeader = {};
             $scope.purchaseOrderHeader.pohCreatedDate = new Date().getTime();
@@ -68,6 +74,11 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         } else {
             $scope.purchaseOrderHeader = angular.copy(baseDataService.getRow());
             $scope.gridOptions.data = $scope.purchaseOrderHeader.lines;
+            if ($scope.purchaseOrderHeader.pohStatus.categoryCode == 'POH_STATUS_PARTIAL_REC' || $scope.purchaseOrderHeader.pohStatus.categoryCode == 'POH_STATUS_GOOD_RECEIVED') {
+                $scope.disablePage = true;
+            } else {
+                $scope.disablePage = false;
+            }
             for (i=0; i<$scope.gridOptions.data.length; i++) {
                 displayLinkedBoqs($scope.gridOptions.data[i])
             }

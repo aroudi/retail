@@ -36,6 +36,7 @@ public class PurchaseOrderHeader {
     private ConfigCategory pohStatus;
     private ConfigCategory pohCreationType;
     private List<PurchaseLine> lines;
+    private List<PoDelNoteLink> linkedDelNotes;
 
 
     /**
@@ -284,5 +285,13 @@ public class PurchaseOrderHeader {
 
     public void setLines(List<PurchaseLine> lines) {
         this.lines = lines;
+    }
+
+    public List<PoDelNoteLink> getLinkedDelNotes() {
+        return linkedDelNotes;
+    }
+
+    public void setLinkedDelNotes(List<PoDelNoteLink> linkedDelNotes) {
+        this.linkedDelNotes = linkedDelNotes;
     }
 }

@@ -1,6 +1,6 @@
 <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
+        <div class="col-lg-12" >
+            <div class="panel panel-primary">
                 <div class="panel-heading">
                     Delivery Note
                 </div>
@@ -10,13 +10,13 @@
                             <div class="form-group">
                                 <label>Supplier</label>
                                 <input class="form-control" data-ng-model="deliveryNoteHeader.supplier.supplierName" ng-disabled="true">
-                                <button type="button" class="btn btn-success" ng-click="searchSupplier()" ng-show="pageIsNew">Supplier</button>
+                                <button type="button" class="btn btn-success" ng-click="searchSupplier()" ng-show="pageIsNew" >Supplier</button>
                             </div >
                         </div >
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label>Status:</label>
-                                <select class="form-control" data-ng-model="deliveryNoteHeader.delnStatus"
+                                <select class="form-control" data-ng-model="deliveryNoteHeader.delnStatus" ng-disabled="disablePage == true"
                                         ng-options="type.displayName for type in delnStatusSet" >
                                 </select>
                             </div >
@@ -27,13 +27,13 @@
                             <div class="col-lg-4">
                                 <div class="form-group">
                                     <label>Delivery Note:</label>
-                                    <input class="form-control" data-ng-model="deliveryNoteHeader.delnNoteNumber" >
+                                    <input class="form-control" data-ng-model="deliveryNoteHeader.delnNoteNumber"  ng-disabled="disablePage == true">
                                 </div >
                             </div >
                             <div class="col-lg-4">
                                 <div class="form-group">
                                     <label>Delivery Date:</label>
-                                    <input type="date" class="form-control" data-ng-model="deliveryNoteHeader.deliveryDate" >
+                                    <input type="date" class="form-control" data-ng-model="deliveryNoteHeader.deliveryDate" ng-disabled="disablePage == true">
                                 </div >
                             </div >
                             <div class="col-lg-4">
@@ -41,7 +41,7 @@
                                     <div class="form-group">
                                         <label>Order No:</label>
                                         <input class="form-control" data-ng-model="deliveryNoteHeader.pohOrderNumber" ng-disabled="true">
-                                        <button type="button" class="btn btn-success" ng-click="searchPurchaseOrder()" ng-show="pageIsNew">Purchase Order</button>
+                                        <button type="button" class="btn btn-success" ng-click="searchPurchaseOrder()" ng-show="pageIsNew" ng-disabled="disablePage == true">Purchase Order</button>
                                     </div >
                                 </div >
                             </div >
@@ -50,24 +50,28 @@
                     <div class="row">
                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                         <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                        <button type="button" class="btn btn-success" ng-click="saveDeliveryNote()">Submit</button>
+                        <button type="button" class="btn btn-success" ng-click="saveDeliveryNote()" ng-disabled="disablePage == true">Submit</button>
                     </div>
+                    <div class="row">
+                        &nbsp; &nbsp;
+                    </div>
+                    <div class="row">
+                        <div class="panel  panel-info">
+                            <div class="panel-heading">
+                                Lines:
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div id="deliveryNoteLineList" ui-grid ="gridOptions"  class="grid" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-cellNav  style="height:600px"  ></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
-    <div class="col-lg-12">
-        <div class="panel  panel-primary">
-            <div class="panel-heading">
-                Lines:
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div id="deliveryNoteLineList" ui-grid ="gridOptions"  class="grid" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-cellNav ui-grid-expandable  style="height:750px"  ></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
