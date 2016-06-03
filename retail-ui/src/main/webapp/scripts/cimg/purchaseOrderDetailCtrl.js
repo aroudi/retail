@@ -2,7 +2,7 @@
  * Created by arash on 14/08/2015.
  */
 cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI) {
-
+    var rowtpl='<div ng-class="{\'brown\':row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\'}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
     $scope.gridOptions = {
         enableFiltering: true,
         showGridFooter: true,
@@ -13,6 +13,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         expandableRowScope:{
             subGridVariable: 'subGridScopeVariable'
         } ,
+        rowTemplate : rowtpl,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'30%'},
@@ -30,7 +31,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                     return grid.getCellValue(row, col).color
                 }
             },
-            {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeItem(row)" ng-disabled="disablePage"></i></a>', width: '5%'}
+            {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeItem(row)" ng-disabled="disablePage"></i></a> <a href=""><i tooltip="update BOQ" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-show="row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\'" ng-click="grid.appScope.updateBoqQtyRcvd(row)"></i></a>', width: '5%'}
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -240,6 +241,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         line.subGridOptions = {
             enableRowSelection :false,
             enableColumnResizing: true,
+            enableRowEdit : true,
             columnDefs :[
                 {name:"id", field:"id", visible:false},
                 {name:"pohId", field:"pohId", visible:false},
@@ -258,17 +260,39 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                     }
                 },
                 {name: "boqQtyTotal", field: "boqQtyTotal", displayName:"BOQ Qty Total", width: '10%'},
-                {name: "poQtyReceived", field: "poQtyReceived", displayName:"Qty Received", width: '10%'},
+                {name: "poQtyReceived", enableCellEdit:true, field: "poQtyReceived", displayName:"Qty Received", width: '10%',
+                    cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                        return 'editModeColor'
+                    }
+                },
                 {name: "boqQtyBalance", field: "boqQtyBalance", displayName:"BOQ Qty Balance", width: '10%'},
                 {field:'status', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                     cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                         return grid.getCellValue(row, col).color
                     }
                 }
+                //{name:'Action', width:'5%',cellTemplate:'<button type="button" ng-show="row.grid.appScope.row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\'" class="btn btn-success" ng-click="grid.appScope.updateBoqQtyRcvd(row)" >Update</button>'}
             ],
             data:line.poBoqLinks
         }
     }
+    $scope.updateBoqQtyRcvd = function (row) {
+        var purchaseLine = row.entity;
 
+        ngDialog.openConfirm({
+            template:'views/pages/purchaseLineBoqDetail.html',
+            controller:'purchaseLineBoqDetailCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false,
+            resolve: {purchaseOrderLine: function(){return angular.copy(purchaseLine)}}
+        }).then (function (updatedLine){
+                if (updatedLine != undefined) {
+                    row.entity = updatedLine;
+                }
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    }
 
 });

@@ -259,12 +259,33 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
 
             return new Date(strDate[2],strDate[1]-1,strDate[0],strDate[3],strDate[4]);
         },
-        displayMessage : function (heading,message) {
+        displayMessage : function (heading,mBody) {
+
+            var myMessage = {
+                'title': heading,
+                'body' : mBody,
+                 'type': 'info'
+            }
+            ngDialog.openConfirm({
+                template:'views/pages/messageDialog.html',
+                controller:'messageDialogCtrl',
+                className: 'ngdialog-theme-plain custom-width',
+                closeByDocument:false,
+                resolve: {message: function(){return myMessage}}
+            }).then (function (msg){
+                    if (msg != undefined) {
+                    }
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                }
+            );
+            /*
             ngDialog.open({
                 template: '<h1>'+heading+'</h1><h1> <p>' + message + '</p>',
                 closeByDocument: false,
                 plain: true
             });
+            */
         },
         getArrIndexOf: function (arr,item) {
         if (arr == undefined || item== undefined)

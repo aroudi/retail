@@ -1,0 +1,22 @@
+<div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    {{message.title}}
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <h4> {{message.body}} </h4>
+                    </div>
+                    <div class="row">
+                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                        <button type="button" class="btn btn-primary" ng-click="cancel()" ng-show="message.type=='yesNo'">Cancel</button>
+                        <button type="button" class="btn btn-success" ng-click="submit()">Ok</button>
+                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    </div>
+                </div>
+
+            </div>
+        </div>
+</div>
+
