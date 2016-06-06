@@ -85,6 +85,20 @@ public class PurchaseOrderRest {
         return purchaseOrderService.savePurchaseOrder(purchaseOrderHeader);
     }
 
+
+    /**
+     * update linked boqs.
+     * @param purchaseOrderHeader purchaseOrderHeader
+     * @return CommonResponse
+     */
+    @Path("/updateLinkedBoqs")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse updateLinkedBqos (PurchaseOrderHeader purchaseOrderHeader) {
+        return purchaseOrderService.updateLinkedBqos(purchaseOrderHeader);
+    }
+
     /**
      * Returns list of Purchase Order Header confirmed.
      * @param suppId suppId.

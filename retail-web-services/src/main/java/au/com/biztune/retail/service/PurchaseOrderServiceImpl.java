@@ -1,9 +1,6 @@
 package au.com.biztune.retail.service;
 
-import au.com.biztune.retail.dao.ConfigCategoryDao;
-import au.com.biztune.retail.dao.PoBoqLinkDao;
-import au.com.biztune.retail.dao.PurchaseOrderDao;
-import au.com.biztune.retail.dao.SuppProdPriceDao;
+import au.com.biztune.retail.dao.*;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.session.SessionState;
@@ -40,6 +37,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Autowired
     private PoBoqLinkDao poBoqLinkDao;
+
+    @Autowired
+    private BoqDetailDao boqDetailDao;
 
     /**
      * save Purchase Order Header into database.
@@ -104,6 +104,65 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             return response;
         }
     }
+
+    /**
+     * when PurchaseOrder status is equal to Good Received, we need to update figures on lined BOQs.
+     * @param purchaseOrderHeader purchaseOrderHeader
+     * @return Response
+     */
+    public CommonResponse updateLinkedBqos(PurchaseOrderHeader purchaseOrderHeader) {
+        final CommonResponse response = new CommonResponse();
+        ConfigCategory status = null;
+        try {
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+            if (purchaseOrderHeader == null) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("purchase order object or its related objects are null");
+                return response;
+            }
+            if (!purchaseOrderHeader.getPohStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_PARTIAL_REC) || !purchaseOrderHeader.getPohStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED)) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("goods still yet to be received!!!");
+                return response;
+            }
+            for (PurchaseLine purchaseLine: purchaseOrderHeader.getLines()) {
+                //WE CHANGE THE BOQ LINKED ONLY IF GOOD PARTIALLY OR TOTALLY HAD BEEN RECEIVED
+                if (purchaseLine == null || !purchaseLine.getPolStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED)
+                        || !purchaseLine.getPolStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_PARTIAL_REC))
+                {
+                    continue;
+                }
+                for (PoBoqLink linkedBoq: purchaseLine.getPoBoqLinks()) {
+                    if (linkedBoq == null) {
+                        continue;
+                    }
+                    if (linkedBoq.getBoqQtyBalance() == 0) {
+                        status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_GOOD_RECEIVED);
+                    } else if (linkedBoq.getBoqQtyBalance() < linkedBoq.getBoqQtyTotal()) {
+                        status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_PARTIAL_RECEIVED);
+                    }
+                    linkedBoq.setStatus(status);
+                    poBoqLinkDao.updateQtyReceived(linkedBoq);
+                    //get the related BOQ line and update its figure and status as well.
+                    final BoqDetail linkedBoqLine = boqDetailDao.getBoqDetailById(linkedBoq.getBoqId());
+                    if (linkedBoqLine != null) {
+                        linkedBoqLine.setBqdStatus(status);
+                        linkedBoqLine.setQtyReceived(linkedBoq.getPoQtyReceived());
+                        linkedBoqLine.setQtyBalance(linkedBoqLine.getQtyPurchased() - linkedBoqLine.getQtyReceived());
+                        boqDetailDao.updateQtyReceived(linkedBoqLine);
+                    }
+                }
+            }
+            return response;
+
+        } catch (Exception e) {
+            logger.error("Exception in updating linked BOQs:", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Exception in updating linked BOQs");
+            return response;
+        }
+    }
+
     /**
      * create Purchase Order From Boq.
      * @param boqDetail boqDetail

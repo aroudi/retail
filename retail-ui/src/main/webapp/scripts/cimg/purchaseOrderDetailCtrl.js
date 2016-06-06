@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI) {
+cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI) {
     var rowtpl='<div ng-class="{\'brown\':row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\'}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
     $scope.gridOptions = {
         enableFiltering: true,
@@ -31,7 +31,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                     return grid.getCellValue(row, col).color
                 }
             },
-            {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeItem(row)" ng-disabled="disablePage"></i></a> <a href=""><i tooltip="update BOQ" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-show="row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\'" ng-click="grid.appScope.updateBoqQtyRcvd(row)"></i></a>', width: '5%'}
+            {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeItem(row)" ng-disabled="disablePage"></i></a> <a href=""><i tooltip="update BOQ" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-show="row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\' || row.entity.polStatus.categoryCode==\'POH_STATUS_PARTIAL_REC\'" ng-click="grid.appScope.updateBoqQtyRcvd(row)"></i></a>', width: '5%'}
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -200,6 +200,40 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         });
         return;
     }
+
+    $scope.updateLinkedBoqs = function () {
+
+        /*
+         var userId = UserService.getUserId();
+         if (userId == undefined || userId == 0) {
+         alert('you need to login first');
+         $state.go('dashboard.login');
+         }
+         */
+
+        //$scope.facility.lastModifiedBy = userId;
+        var rowObject = $scope.purchaseOrderHeader;
+        if ($scope.pageIsNew) {
+            $scope.purchaseOrderHeader.lines = $scope.gridOptions.data
+        } else {
+            //remove the subgrid info from data before submitting:
+            for (i=0; i<$scope.gridOptions.data.length; i++) {
+                if ($scope.gridOptions.data[i].subGridOptions != undefined || $scope.gridOptions.data[i].subGridOptions != null) {
+                    delete $scope.gridOptions.data[i].subGridOptions;
+                }
+            }
+        }
+        baseDataService.addRow(rowObject, POH_UPDATE_LINKED_BOQS_URI).then(function(response) {
+            addResponse = response.data;
+            if (addResponse.status == SUCCESS ) {
+                $state.go('dashboard.purchaseOrderList');
+            } else {
+                baseDataService.displayMessage("Error in saving data", addResponse.message);
+            }
+        });
+        return;
+    }
+
 
     $scope.removeItem = function(row) {
         if (row == undefined || row.entity == undefined) {

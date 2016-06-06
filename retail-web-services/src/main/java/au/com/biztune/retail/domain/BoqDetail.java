@@ -19,6 +19,7 @@ public class BoqDetail {
     private double qtyOnStock;
     private double qtyPurchased;
     private double qtyBalance;
+    private double qtyReceived;
     private ConfigCategory bqdStatus;
     private String comment;
     private List<PoBoqLink> linkedPurchaseOrders;
@@ -149,5 +150,13 @@ public class BoqDetail {
 
     public void setLinkedPurchaseOrders(List<PoBoqLink> linkedPurchaseOrders) {
         this.linkedPurchaseOrders = linkedPurchaseOrders;
+    }
+
+    public double getQtyReceived() {
+        return qtyReceived;
+    }
+
+    public void setQtyReceived(double qtyReceived) {
+        this.qtyReceived = qtyReceived;
     }
 }

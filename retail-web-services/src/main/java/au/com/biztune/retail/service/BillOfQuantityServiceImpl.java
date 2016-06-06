@@ -535,7 +535,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                     if (purchaseOrderService.addLineToPoFromBoqDetail(purchaseOrderHeader, item)) {
                         //update billOfQuantity Item : purchased and balance values
                         item.setQtyPurchased(item.getQtyBalance());
-                        item.setQtyBalance(0.00);
+                        //item.setQtyBalance(0.00);
                         final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_PO_CREATED);
                         if (status != null) {
                             item.setBqdStatus(status);

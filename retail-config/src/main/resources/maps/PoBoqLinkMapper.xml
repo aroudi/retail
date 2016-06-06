@@ -143,7 +143,7 @@
     </insert>
     <update id="updateQtyReceived" parameterType="PoBoqLink" >
           UPDATE PO_BOQ_LINK
-          SET PO_QTY_RECEIVED = #{poQtyReceived}, BOQ_QTY_BALANCE=#{boqQtyBalance}
+          SET PO_QTY_RECEIVED = #{poQtyReceived}, BOQ_QTY_BALANCE=#{boqQtyBalance}, BPQL_STATUS=#{status.id}
           WHERE PBQL_ID = #{id}
     </update>
 </mapper>

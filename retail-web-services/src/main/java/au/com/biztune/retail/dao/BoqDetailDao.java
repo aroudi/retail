@@ -45,4 +45,17 @@ public interface BoqDetailDao {
      * @return List of BoqDetail
      */
     List<BoqDetail> getBoqDetailForMultipleBoqId(List boqIds);
+
+    /**
+     * get BOQDetail by id.
+     * @param id id
+     * @return BOQDetail
+     */
+    BoqDetail getBoqDetailById(long id);
+
+    /**
+     * update received, balance and status.
+     * @param boqDetail boqDetail
+     */
+    void updateQtyReceived(BoqDetail boqDetail);
 }

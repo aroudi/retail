@@ -237,9 +237,9 @@ public interface IdBConstant {
      */
     String BOQ_LINE_STATUS_PO_CREATED = "BOQ_LINE_STATUS_PO_CREATED";
     /**
-     * Bill Of Quantity line status Purchase Order Confirmed.
+     * Bill Of Quantity line status partial received.
      */
-    String BOQ_LINE_STATUS_PO_CONFIRMED = "BOQ_LINE_STATUS_PO_CONFIRMED";
+    String BOQ_LINE_STATUS_PARTIAL_RECEIVED = "BOQ_LINE_STATUS_PARTIAL_RECEIVED";
     /**
      * Bill Of Quantity line status Good Received.
      */

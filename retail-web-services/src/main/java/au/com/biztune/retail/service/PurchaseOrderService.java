@@ -56,4 +56,11 @@ public interface PurchaseOrderService {
      * @return List of PurchaseOrderHeader
      */
     List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusCode(long supplierId);
+
+    /**
+     * when PurchaseOrder status is equal to Good Received, we need to update figures on lined BOQs.
+     * @param purchaseOrderHeader purchaseOrderHeader
+     * @return Response
+     */
+    CommonResponse updateLinkedBqos(PurchaseOrderHeader purchaseOrderHeader);
 }

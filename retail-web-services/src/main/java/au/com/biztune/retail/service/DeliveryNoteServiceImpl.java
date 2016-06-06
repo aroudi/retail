@@ -35,6 +35,9 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
     private PurchaseOrderDao purchaseOrderDao;
     @Autowired
     private PoDelNoteLinkDao poDelNoteLinkDao;
+
+    @Autowired
+    private PoBoqLinkDao poBoqLinkDao;
     /**
      * save DeliveryNote into database.
      * @param deliveryNoteHeader deliveryNoteHeader
@@ -164,6 +167,10 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                     continue;
                 }
                 purchaseLine = purchaseOrderDao.getPurchaseLinePerId(deliveryNoteLine.getPolId());
+                //check if PurchaseOrderLine is already received. if so skip it
+                if (purchaseLine.getPolStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED)) {
+                   continue;
+                }
                 if (purchaseLine.getPolQtyReceived() >= 0) {
                     qtyReceived = purchaseLine.getPolQtyReceived() + deliveryNoteLine.getRcvdQty();
                 } else {
@@ -174,11 +181,16 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 purchaseLine.setPolDateReceived(deliveryNoteHeader.getDelnDeliveryDate());
                 if (qtyReceived >= purchaseLine.getPolQtyOrdered()) {
                     polStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_GOOD_RECEIVED);
+
                 } else {
                     polStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_PARTIAL_REC);
                 }
                 purchaseLine.setPolStatus(polStatus);
                 purchaseOrderDao.updatePurchaseLine(purchaseLine);
+                if (polStatus.getCategoryCode() == IdBConstant.POH_STATUS_GOOD_RECEIVED) {
+                    //only update related linked boq received when all of the ordered item has been received.
+                    updatePurchaseLineLinkedBoq(purchaseLine);
+                }
             }
             //change the status of purchase order
             //retreive purchase order whole object from db.
@@ -207,6 +219,44 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
 
         } catch (Exception e) {
             logger.error("Exception in updating related purchase order", e);
+            return false;
+        }
+    }
+
+    private boolean updatePurchaseLineLinkedBoq(PurchaseLine purchaseLine) {
+        try {
+            if (purchaseLine == null) {
+                return false;
+            }
+            final List<PoBoqLink> linkedBoq = poBoqLinkDao.getAllPoBoqLinkPerPolId(purchaseLine.getId());
+            final double qtyReceived = purchaseLine.getPolQtyReceived();
+            ConfigCategory status = null;
+            double qtyRemain = qtyReceived;
+            for (PoBoqLink poBoqLink:linkedBoq) {
+                if (poBoqLink == null || poBoqLink.getBoqQtyBalance() == 0) {
+                    continue;
+                }
+                if (qtyRemain >= poBoqLink.getBoqQtyBalance()) {
+                    poBoqLink.setPoQtyReceived(poBoqLink.getPoQtyReceived() + poBoqLink.getBoqQtyBalance());
+                    poBoqLink.setBoqQtyBalance(0);
+                    qtyRemain = qtyRemain - poBoqLink.getBoqQtyBalance();
+                    status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_GOOD_RECEIVED);
+                } else {
+                    poBoqLink.setPoQtyReceived(poBoqLink.getPoQtyReceived() + qtyRemain);
+                    poBoqLink.setBoqQtyBalance(poBoqLink.getBoqQtyBalance() - qtyRemain);
+                    status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_PARTIAL_RECEIVED);
+                    qtyRemain = 0;
+                }
+                poBoqLink.setStatus(status);
+                poBoqLinkDao.updateQtyReceived(poBoqLink);
+                if (qtyRemain == 0) {
+                    break;
+                }
+            }
+            return true;
+
+        } catch (Exception e) {
+            logger.error("Error in updating purchase order line linked BOQ", e);
             return false;
         }
     }

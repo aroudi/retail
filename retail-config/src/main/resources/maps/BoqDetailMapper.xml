@@ -10,6 +10,7 @@
         <result column="QUANTITY" property="quantity" />
         <result column="QTY_ON_STOCK" property="qtyOnStock" />
         <result column="QTY_PURCHASED" property="qtyPurchased" />
+        <result column="QTY_RECEIVED" property="qtyReceived" />
         <result column="QTY_BALANCE" property="qtyBalance" />
         <result column="COST" property="cost" />
         <result column="MARGIN" property="margin" />
@@ -29,6 +30,7 @@
         <result column="QUANTITY" property="quantity" />
         <result column="QTY_ON_STOCK" property="qtyOnStock" />
         <result column="QTY_PURCHASED" property="qtyPurchased" />
+        <result column="QTY_RECEIVED" property="qtyReceived" />
         <result column="QTY_BALANCE" property="qtyBalance" />
         <result column="COST" property="cost" />
         <result column="MARGIN" property="margin" />
@@ -54,6 +56,7 @@
      ${alias}.SELL_PRICE,
      ${alias}.QTY_ON_STOCK,
      ${alias}.QTY_PURCHASED,
+     ${alias}.QTY_RECEIVED,
      ${alias}.QTY_BALANCE,
      ${alias}.COMMENT,
      ${alias}.BQD_STATUS
@@ -71,6 +74,13 @@
         </include>
         WHERE
         boqd.BOQ_ID = #{value}
+    </select>
+
+    <select id="getBoqDetailById" resultMap="BoqDetailMap" >
+        <include refid="getBoqDetail">
+        </include>
+        WHERE
+        boqd.BOQ_DETAIL_ID = #{value}
     </select>
 
     <select id="getBoqDetailForMultipleBoqId" resultMap="BoqDetailCompleteMap" >
@@ -241,6 +251,14 @@
           QTY_ON_STOCK = #{qtyOnStock},
           QTY_BALANCE = #{qtyBalance},
           COMMENT = #{comment}
+        WHERE BOQ_DETAIL_ID = #{id}
+    </update>
+
+    <update id="updateQtyReceived" parameterType="BoqDetail" >
+        UPDATE BOQ_DETAIL SET
+        QTY_RECEIVED = #{qtyReceived},
+        QTY_BALANCE = #{qtyBalance},
+        BQD_STATUS = #{bqdStatus.id}
         WHERE BOQ_DETAIL_ID = #{id}
     </update>
 

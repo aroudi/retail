@@ -40,4 +40,11 @@ public interface PoBoqLinkDao {
      * @param poBoqLink poBoqLink
      */
     void insert(PoBoqLink poBoqLink);
+
+
+    /**
+     * update PoBoqLink.
+     * @param poBoqLink poBoqLink
+     */
+    void updateQtyReceived(PoBoqLink poBoqLink);
 }
