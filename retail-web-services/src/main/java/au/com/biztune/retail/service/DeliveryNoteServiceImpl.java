@@ -168,7 +168,7 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 }
                 purchaseLine = purchaseOrderDao.getPurchaseLinePerId(deliveryNoteLine.getPolId());
                 //check if PurchaseOrderLine is already received. if so skip it
-                if (purchaseLine.getPolStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED)) {
+                if (purchaseLine.getPolStatus() != null && purchaseLine.getPolStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED)) {
                    continue;
                 }
                 if (purchaseLine.getPolQtyReceived() >= 0) {
@@ -187,7 +187,7 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 }
                 purchaseLine.setPolStatus(polStatus);
                 purchaseOrderDao.updatePurchaseLine(purchaseLine);
-                if (polStatus.getCategoryCode() == IdBConstant.POH_STATUS_GOOD_RECEIVED) {
+                if (polStatus.getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED)) {
                     //only update related linked boq received when all of the ordered item has been received.
                     updatePurchaseLineLinkedBoq(purchaseLine);
                 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -40,6 +41,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Autowired
     private BoqDetailDao boqDetailDao;
+
+    @Autowired
+    private BillOfQuantityDao billOfQuantityDao;
 
     /**
      * save Purchase Order Header into database.
@@ -112,6 +116,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
      */
     public CommonResponse updateLinkedBqos(PurchaseOrderHeader purchaseOrderHeader) {
         final CommonResponse response = new CommonResponse();
+        final HashMap<Long, String> poLinkedBoqs = new HashMap<Long, String>();
         ConfigCategory status = null;
         try {
             response.setStatus(IdBConstant.RESULT_SUCCESS);
@@ -120,7 +125,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 response.setMessage("purchase order object or its related objects are null");
                 return response;
             }
-            if (!purchaseOrderHeader.getPohStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_PARTIAL_REC) || !purchaseOrderHeader.getPohStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED)) {
+            if (!purchaseOrderHeader.getPohStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_PARTIAL_REC)
+                    && !purchaseOrderHeader.getPohStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED))
+            {
                 response.setStatus(IdBConstant.RESULT_FAILURE);
                 response.setMessage("goods still yet to be received!!!");
                 return response;
@@ -128,7 +135,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             for (PurchaseLine purchaseLine: purchaseOrderHeader.getLines()) {
                 //WE CHANGE THE BOQ LINKED ONLY IF GOOD PARTIALLY OR TOTALLY HAD BEEN RECEIVED
                 if (purchaseLine == null || !purchaseLine.getPolStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED)
-                        || !purchaseLine.getPolStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_PARTIAL_REC))
+                        && !purchaseLine.getPolStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_PARTIAL_REC))
                 {
                     continue;
                 }
@@ -143,8 +150,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                     }
                     linkedBoq.setStatus(status);
                     poBoqLinkDao.updateQtyReceived(linkedBoq);
+
+                    //add to hashmap for later update
+                    if (!poLinkedBoqs.containsKey(linkedBoq.getBoqId())) {
+                        poLinkedBoqs.put(linkedBoq.getBoqId(), linkedBoq.getBoqName());
+                    }
                     //get the related BOQ line and update its figure and status as well.
-                    final BoqDetail linkedBoqLine = boqDetailDao.getBoqDetailById(linkedBoq.getBoqId());
+                    final BoqDetail linkedBoqLine = boqDetailDao.getBoqDetailById(linkedBoq.getBoqDetailId());
                     if (linkedBoqLine != null) {
                         linkedBoqLine.setBqdStatus(status);
                         linkedBoqLine.setQtyReceived(linkedBoq.getPoQtyReceived());
@@ -152,6 +164,43 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                         boqDetailDao.updateQtyReceived(linkedBoqLine);
                     }
                 }
+            }
+
+            //update the status of BOQ object
+            //ConfigCategory status = null;
+            boolean areAllLineReceived = true;
+            boolean partiallyReceived = false;
+            for (Long boqId: poLinkedBoqs.keySet()) {
+                //get boq object
+                final BillOfQuantity billOfQuantity = billOfQuantityDao.getBillOfQuantityById(boqId);
+                if (billOfQuantity == null) {
+                    continue;
+                }
+                for (BoqDetail boqDetail : billOfQuantity.getLines()) {
+                    if (boqDetail == null) {
+                        continue;
+                    }
+                    if (boqDetail.getBqdStatus() != null && (boqDetail.getBqdStatus().getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_GOOD_RECEIVED)
+                            || (boqDetail.getBqdStatus().getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_PARTIAL_RECEIVED))))
+                    {
+                        partiallyReceived = true;
+                    }
+                    if (boqDetail.getBqdStatus() == null || boqDetail.getBqdStatus() != null && !boqDetail.getBqdStatus().getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_GOOD_RECEIVED)) {
+                        areAllLineReceived = false;
+                    }
+                }
+
+                if (areAllLineReceived) {
+                    status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_RECEIVED);
+
+                } else if (partiallyReceived) {
+                    status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_PARTIAL_REC);
+
+                } else {
+                    status = billOfQuantity.getBoqStatus();
+                }
+                billOfQuantity.setBoqStatus(status);
+                billOfQuantityDao.updateStatusPerId(billOfQuantity);
             }
             return response;
 
@@ -232,6 +281,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             final ConfigCategory polCreationType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_CREATION_TYPE, IdBConstant.POH_CREATION_TYPE_AUTO);
             if (polCreationType != null) {
                 purchaseLine.setPolCreationType(polCreationType);
+            }
+            final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_IN_PROGRESS);
+            if (status != null) {
+                purchaseLine.setPolStatus(status);
             }
             //check if line already exists in purchase order header. if so update existing line; otherwise create new line
             boolean lineFound = false;

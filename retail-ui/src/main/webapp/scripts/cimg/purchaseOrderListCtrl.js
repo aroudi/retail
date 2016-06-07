@@ -36,7 +36,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'15%'},
-            {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'45%',
+            {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'40%',
                 cellTooltip: function(row,col) {
                     return row.entity.supplier.supplierName
                 }
@@ -44,7 +44,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             {field:'pohCreatedDate', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
             {field:'pohValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'pohValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'pohStatus', displayName:'status',enableCellEdit:false, width:'7%', cellFilter:'configCategoryFilter',
+            {field:'pohStatus', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                    return grid.getCellValue(row, col).color
                 }
