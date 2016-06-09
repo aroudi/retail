@@ -17,15 +17,15 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
                     return row.entity.boqName
                 }
             },
-            {field:'referenceCode', displayName:'Reference',enableCellEdit:false, width:'10%',
-                cellTooltip: function(row,col) {
-                    return row.entity.referenceCode
-                }
-            },
             {field:'orderNo', displayName:'Order No',enableCellEdit:false, width:'10%'},
             {field:'project.projectName',displayName:'Project', enableCellEdit:false, width:'30%',
                 cellTooltip: function(row,col) {
                     return row.entity.project.projectName
+                }
+            },
+            {field:'project.referenceNo', displayName:'Project Ref.',enableCellEdit:false, width:'10%',
+                cellTooltip: function(row,col) {
+                    return row.entity.project.referenceNo
                 }
             },
             {field:'dateCreated', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\'' },

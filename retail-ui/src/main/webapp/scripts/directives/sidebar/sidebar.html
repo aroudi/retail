@@ -68,7 +68,7 @@
                 <!-- /.nav-second-level -->
             </li>
             <li ng-class="{active: collapseVar==4}">{{dropDown}}
-                <a href="" ng-click="check(4)"><i class="fa fa-comments fa-fw"></i> Import<span
+                <a href="" ng-click="check(4)"><i class="fa fa-comments fa-fw"></i> Bill Of Quantity<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=4">
                     <li ui-sref-active="active">
@@ -76,21 +76,6 @@
                     </li>
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.boqList">BOQ List</a>
-                    </li>
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.purchaseOrderList">Purchase Order List</a>
-                    </li>
-                </ul>
-            </li>
-            <li ng-class="{active: collapseVar==5}">{{dropDown}}
-                <a href="" ng-click="check(5)"><i class="fa fa-comments fa-fw"></i> Sale Transaction<span
-                        class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=5">
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.createSaleTransaction">Create Sale Transaction</a>
-                    </li>
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.listSaleTransaction">Transaction List</a>
                     </li>
                 </ul>
             </li>
@@ -116,6 +101,18 @@
                     </li>
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.deliveryNoteList">Delivery Note List</a>
+                    </li>
+                </ul>
+            </li>
+            <li ng-class="{active: collapseVar==5}">{{dropDown}}
+                <a href="" ng-click="check(5)"><i class="fa fa-comments fa-fw"></i> Sale Transaction<span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=5">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.createSaleTransaction">Create Sale Transaction</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.listSaleTransaction">Transaction List</a>
                     </li>
                 </ul>
             </li>

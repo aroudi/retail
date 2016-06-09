@@ -140,15 +140,17 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                     continue;
                 }
                 for (PoBoqLink linkedBoq: purchaseLine.getPoBoqLinks()) {
+                    status = null;
                     if (linkedBoq == null) {
                         continue;
                     }
                     if (linkedBoq.getBoqQtyBalance() == 0) {
                         status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_GOOD_RECEIVED);
+                        linkedBoq.setStatus(status);
                     } else if (linkedBoq.getBoqQtyBalance() < linkedBoq.getBoqQtyTotal()) {
                         status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_PARTIAL_RECEIVED);
+                        linkedBoq.setStatus(status);
                     }
-                    linkedBoq.setStatus(status);
                     poBoqLinkDao.updateQtyReceived(linkedBoq);
 
                     //add to hashmap for later update
@@ -158,7 +160,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                     //get the related BOQ line and update its figure and status as well.
                     final BoqDetail linkedBoqLine = boqDetailDao.getBoqDetailById(linkedBoq.getBoqDetailId());
                     if (linkedBoqLine != null) {
-                        linkedBoqLine.setBqdStatus(status);
+                        if (status != null){
+                            linkedBoqLine.setBqdStatus(status);
+                        }
                         linkedBoqLine.setQtyReceived(linkedBoq.getPoQtyReceived());
                         linkedBoqLine.setQtyBalance(linkedBoqLine.getQtyPurchased() - linkedBoqLine.getQtyReceived());
                         boqDetailDao.updateQtyReceived(linkedBoqLine);

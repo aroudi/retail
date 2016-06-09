@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI) {
+cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS) {
     var rowtpl='<div ng-class="{\'brown\':row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\'}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
     $scope.gridOptions = {
         enableFiltering: true,
@@ -96,8 +96,20 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             var data = angular.copy(response.data);
             $scope.polCreationTypeManual = data;
         });
+        baseDataService.getBaseData(POH_STATUS_IN_PROGRESS).then(function(response){
+            var data = angular.copy(response.data);
+            $scope.statusOnProgress = data;
+        });
         baseDataService.getBaseData(POH_STATUS_URI).then(function(response){
-            $scope.pohStatusSet = response.data;
+            //$scope.pohStatusSet = response.data;
+            $scope.pohStatusSet = [];
+            var arr = response.data;
+            //we shouldn't display PARTIAL REC and GOOD RECEIVED
+            for (i=0; i< arr.length; i++) {
+                if (arr[i].displayName !='PARTIAL REC' && arr[i].displayName !='GOOD RECEIVED' ) {
+                    $scope.pohStatusSet.push(arr[i]);
+                }
+            }
             $scope.purchaseOrderHeader.pohStatus = baseDataService.populateSelectList($scope.purchaseOrderHeader.pohStatus,$scope.pohStatusSet);
         });
 
@@ -144,7 +156,9 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             'polQtyOrdered' : 0.00,
             'polValueOrdered' : 0.00,
             'unomContents' : item.unitOfMeasure,
-            'polCreationType' :  $scope.polCreationTypeManual
+            'polCreationType' :  $scope.polCreationTypeManual,
+            'polStatus' :  $scope.statusOnProgress
+            //polStatus
         }
         return purchaseLineObject;
     }
@@ -217,15 +231,12 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
          */
 
         //$scope.facility.lastModifiedBy = userId;
+        $scope.purchaseOrderHeader.lines = $scope.gridOptions.data;
         var rowObject = $scope.purchaseOrderHeader;
-        if ($scope.pageIsNew) {
-            $scope.purchaseOrderHeader.lines = $scope.gridOptions.data
-        } else {
-            //remove the subgrid info from data before submitting:
-            for (i=0; i<$scope.gridOptions.data.length; i++) {
-                if ($scope.gridOptions.data[i].subGridOptions != undefined || $scope.gridOptions.data[i].subGridOptions != null) {
-                    delete $scope.gridOptions.data[i].subGridOptions;
-                }
+        //remove the subgrid info from data before submitting:
+        for (i=0; i<$scope.gridOptions.data.length; i++) {
+            if ($scope.gridOptions.data[i].subGridOptions != undefined || $scope.gridOptions.data[i].subGridOptions != null) {
+                delete $scope.gridOptions.data[i].subGridOptions;
             }
         }
         baseDataService.addRow(rowObject, POH_UPDATE_LINKED_BOQS_URI).then(function(response) {
@@ -288,7 +299,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                 {name:"boqId", field:"boqId", visible:false},
                 {name:"projectId", field:"projectId", visible:false},
                 {name:"boqDetailId", field:"boqDetailId", visible:false},
-                {name:"boqName", field:"boqName", displayName:"BOQ Name", width:'30%',
+                {name:"boqName", field:"boqName", displayName:"BOQ Name", width:'25%',
                     cellTooltip: function(row,col) {
                         return row.entity.boqName
                     }
@@ -298,13 +309,13 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                         return row.entity.projectCode
                     }
                 },
-                {name: "boqQtyTotal", field: "boqQtyTotal", displayName:"BOQ Qty Total", width: '10%'},
+                {name: "boqQtyTotal", field: "boqQtyTotal", displayName:"BOQ Total", width: '15%'},
                 {name: "poQtyReceived", enableCellEdit:true, field: "poQtyReceived", displayName:"Qty Received", width: '10%',
                     cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                         return 'editModeColor'
                     }
                 },
-                {name: "boqQtyBalance", field: "boqQtyBalance", displayName:"BOQ Qty Balance", width: '10%'},
+                {name: "boqQtyBalance", field: "boqQtyBalance", displayName:"BOQ Balance", width: '15%'},
                 {field:'status', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                     cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                         return grid.getCellValue(row, col).color
@@ -323,7 +334,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             controller:'purchaseLineBoqDetailCtrl',
             className: 'ngdialog-theme-default',
             closeByDocument:false,
-            resolve: {purchaseOrderLine: function(){return angular.copy(purchaseLine)}}
+            resolve: {purchaseOrderLine: function(){return purchaseLine}}
         }).then (function (updatedLine){
                 if (updatedLine != undefined) {
                     row.entity = updatedLine;
@@ -333,5 +344,4 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             }
         );
     }
-
 });

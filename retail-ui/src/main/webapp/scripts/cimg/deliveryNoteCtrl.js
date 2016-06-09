@@ -11,23 +11,33 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         enableSorting:true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'30%'},
-            {field:'dlnlProductSize.unomDesc', displayName:'Product Size', enableCellEdit:false, width:'8%'},
-            {field:'dlnlCaseSize.unomDesc', displayName:'Case Size', enableCellEdit:false, width:'7%'},
-            {field:'dlnlUnitCost', displayName:'Case Cost',enableCellEdit:true, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'dlnlQty', displayName:'Del Qty',enableCellEdit:true, width:'8%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'35%'},
+            //{field:'dlnlProductSize.unomDesc', displayName:'Product Size', enableCellEdit:false, width:'8%'},
+            {field:'dlnlCaseSize.unomDesc', displayName:'Case Size', enableCellEdit:false, width:'10%'},
+            {field:'dlnlUnitCost', displayName:'Case Cost',enableCellEdit:true, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            //polQtyOrdered
+            {field:'dlnlQty', displayName:'Del Qty',enableCellEdit:true, width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
-            {field:'rcvdCaseSize.unomDesc', displayName:'Recd Case Size', enableCellEdit:false, width:'8%'},
-            {field:'rcvdQty', displayName:'Rec Qty',enableCellEdit:true, width:'7%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+            //{field:'rcvdCaseSize.unomDesc', displayName:'Recd Case Size', enableCellEdit:false, width:'8%'},
+            {field:'rcvdQty', displayName:'Rec Qty',enableCellEdit:true, width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
             {field:'totalCost', displayName:'Total Cost',enableCellEdit:false, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'dlnlDiscrepancy', displayName:'',enableCellEdit:false, width:'10%'},
+            {field:'dlnlDiscrepancy', displayName:'Discrepancy',enableCellEdit:false, type:'boolean', width:'10%',cellFilter:'booleanFilter',
+                cellClass:
+                    function(grid, row, col, rowRenderIndex, colRenderIndex) {
+                        if (grid.getCellValue(row, col) === true) {
+                            return 'red';
+                        } else {
+                            return 'green'
+                        }
+                    }
+            },
             {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeItem(row)" ng-disabled="disablePage"></i></a>', width: '5%'}
         ]
     }
@@ -52,6 +62,13 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
     };
     $scope.$on('uiGridEventEndCellEdit', function (event) {
         var deliveryNoteLine = event.targetScope.row.entity;
+        //dlnlDiscrepancy
+        if (deliveryNoteLine.dlnlQty == deliveryNoteLine.rcvdQty) {
+            deliveryNoteLine.dlnlDiscrepancy = false;
+        } else {
+            deliveryNoteLine.dlnlDiscrepancy = true;
+        }
+
         //update the total value of the line
         updateLineTotalCost(deliveryNoteLine);
     })
@@ -133,7 +150,9 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             'dlnlQty' : purchaseOrderLine.polQtyOrdered - purchaseOrderLine.polQtyReceived,
             'rcvdCaseSize' : purchaseOrderLine.unitOfMeasure,
             'rcvdProductSize' :  $scope.unomContents,
-            'rcvdQty' :  purchaseOrderLine.polQtyOrdered - purchaseOrderLine.polQtyReceived
+            'rcvdQty' :  purchaseOrderLine.polQtyOrdered - purchaseOrderLine.polQtyReceived,
+            'dlnlDiscrepancy' : false
+
         }
         return deliveryNoteLineObject;
     }
