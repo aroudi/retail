@@ -160,7 +160,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                     //get the related BOQ line and update its figure and status as well.
                     final BoqDetail linkedBoqLine = boqDetailDao.getBoqDetailById(linkedBoq.getBoqDetailId());
                     if (linkedBoqLine != null) {
-                        if (status != null){
+                        if (status != null) {
                             linkedBoqLine.setBqdStatus(status);
                         }
                         linkedBoqLine.setQtyReceived(linkedBoq.getPoQtyReceived());
