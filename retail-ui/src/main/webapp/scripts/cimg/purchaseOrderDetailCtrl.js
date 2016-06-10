@@ -101,7 +101,8 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             $scope.statusOnProgress = data;
         });
         baseDataService.getBaseData(POH_STATUS_URI).then(function(response){
-            //$scope.pohStatusSet = response.data;
+            $scope.pohStatusSet = response.data;
+            /*
             $scope.pohStatusSet = [];
             var arr = response.data;
             //we shouldn't display PARTIAL REC and GOOD RECEIVED
@@ -110,6 +111,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                     $scope.pohStatusSet.push(arr[i]);
                 }
             }
+            */
             $scope.purchaseOrderHeader.pohStatus = baseDataService.populateSelectList($scope.purchaseOrderHeader.pohStatus,$scope.pohStatusSet);
         });
 
