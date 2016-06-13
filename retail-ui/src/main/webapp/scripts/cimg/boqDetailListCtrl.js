@@ -31,7 +31,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             {field:'qtyOnStock', displayName:'Stock', width:'5%', type: 'number', enableCellEdit:true, cellClass:"blue"},
             {field:'comment', displayName:'Location', width:'7%', enableCellEdit:true, cellClass:"blue"},
             {field:'qtyBalance', displayName:'Balance', enableCellEdit:false, width:'6%', type: 'number'},
-            {field:'linkedPurchaseOrders', displayName:'Purchase Order No',enableCellEdit:false, width:'9%', cellFilter:'poBoqLinkOrderNumberFilter',
+            {field:'linkedPurchaseOrders', displayName:'Purchase Order',enableCellEdit:false, width:'9%', cellFilter:'poBoqLinkOrderNumberFilter',
                 cellTemplate:'<a href="" ng-click="grid.appScope.viewPohDetail(row)">{{grid.appScope.getPoBoqLinkOrderNo(row)}}</a>'
             },
             {field:'changeComment', displayName:'Comment', width:'8%', enableCellEdit:true, cellClass:"blue"},

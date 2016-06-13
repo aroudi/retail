@@ -512,7 +512,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             final List<Long> boqIdList = new ArrayList<Long>();
             for (au.com.biztune.retail.domain.BillOfQuantity billOfQuantity : billOfQuantities) {
                 //not generate for voided items.
-                if (billOfQuantity == null ) {
+                if (billOfQuantity == null) {
                     continue;
                 }
                 boqIdList.add(billOfQuantity.getId());
