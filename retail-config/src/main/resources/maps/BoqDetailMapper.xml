@@ -13,14 +13,17 @@
         <result column="QTY_RECEIVED" property="qtyReceived" />
         <result column="QTY_BALANCE" property="qtyBalance" />
         <result column="COST" property="cost" />
+        <result column="ITEM_VALUE" property="itemValue" />
         <result column="MARGIN" property="margin" />
         <result column="SELL_PRICE" property="sellPrice" />
         <result column="COMMENT" property="comment" />
+        <result column="CHANGE_COMMENT" property="changeComment" />
         <!--association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" /-->
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="product" column="PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="bqdStatus" column="BQD_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="bqdCreationType" column="BQD_CREATION_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <collection property="linkedPurchaseOrders" javaType="ArrayList" column="BOQ_DETAIL_ID" ofType="PoBoqLink" select="au.com.biztune.retail.dao.PoBoqLinkDao.getPoBoqLinkPerBoqDetailId"/>
     </resultMap>
 
@@ -33,13 +36,16 @@
         <result column="QTY_RECEIVED" property="qtyReceived" />
         <result column="QTY_BALANCE" property="qtyBalance" />
         <result column="COST" property="cost" />
+        <result column="ITEM_VALUE" property="itemValue" />
         <result column="MARGIN" property="margin" />
         <result column="SELL_PRICE" property="sellPrice" />
         <result column="COMMENT" property="comment" />
+        <result column="CHANGE_COMMENT" property="changeComment" />
         <association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" />
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="product" column="PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
         <association property="bqdStatus" column="BQD_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="bqdCreationType" column="BQD_CREATION_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
     </resultMap>
 
@@ -59,7 +65,10 @@
      ${alias}.QTY_RECEIVED,
      ${alias}.QTY_BALANCE,
      ${alias}.COMMENT,
-     ${alias}.BQD_STATUS
+     ${alias}.BQD_STATUS,
+     ${alias}.BQD_CREATION_TYPE,
+     ${alias}.CHANGE_COMMENT,
+     ${alias}.ITEM_VALUE
     </sql>
 
     <sql id="getBoqDetail">
@@ -110,7 +119,10 @@
             QTY_PURCHASED,
             QTY_BALANCE,
             COMMENT,
-            BQD_STATUS
+            BQD_STATUS,
+            BQD_CREATION_TYPE,
+            CHANGE_COMMENT,
+            ITEM_VALUE
         ) VALUES (
         #{billOfQuantity.id}
         <if test="supplier != null">
@@ -191,6 +203,24 @@
         <if test="bqdStatus == null">
             ,null
         </if>
+        <if test="bqdCreationType != null">
+            ,#{bqdCreationType.id}
+        </if>
+        <if test="bqdCreationType == null">
+            ,null
+        </if>
+        <if test="changeComment != null">
+            ,#{changeComment}
+        </if>
+        <if test="changeComment == null">
+            ,null
+        </if>
+        <if test="itemValue != null">
+            ,#{itemValue}
+        </if>
+        <if test="itemValue == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -239,6 +269,15 @@
         <if test="bqdStatus != null">
             ,BQD_STATUS = #{bqdStatus.id}
         </if>
+        <if test="bqdCreationType != null">
+            ,BQD_CREATION_TYPE = #{bqdCreationType.id}
+        </if>
+        <if test="changeComment != null">
+            ,CHANGE_COMMENT = #{changeComment}
+        </if>
+        <if test="itemValue != null">
+            ,ITEM_VALUE = #{itemValue}
+        </if>
     </sql>
     <update id="updatePerId" parameterType="BoqDetail" >
           <include refid="updateStatement">
@@ -251,6 +290,20 @@
           QTY_ON_STOCK = #{qtyOnStock},
           QTY_BALANCE = #{qtyBalance},
           COMMENT = #{comment}
+        WHERE BOQ_DETAIL_ID = #{id}
+    </update>
+
+    <update id="updateBoqLine" parameterType="BoqDetail" >
+        UPDATE BOQ_DETAIL SET
+        QTY_ON_STOCK = #{qtyOnStock},
+        QTY_BALANCE = #{qtyBalance},
+        BQD_STATUS = #{bqdStatus.id}
+        <if test="comment != null">
+            ,COMMENT = #{comment}
+        </if>
+        <if test="changeComment != null">
+            ,CHANGE_COMMENT = #{changeComment}
+        </if>
         WHERE BOQ_DETAIL_ID = #{id}
     </update>
 

@@ -3,52 +3,49 @@
  */
 cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE,  PRODUCT_GET_URI, UPDATE_BOQ_STOCK_URI, POH_GET_URI) {
 
+    var rowtpl='<div ng-class="{\'red\':row.entity.bqdStatus.categoryCode==\'BOQ_LINE_STATUS_VOID\'}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
     $scope.gridOptions = {
         enableFiltering: true,
         showGridFooter: true,
         showColumnFooter: true,
+        gridFooterTemplate:"<div id=\"currency-default\"> Total:{{grid.appScope.billOfQuantity.boqValueGross | currency}}</div>",
         enableColumnResizing: true,
         enableSorting:true,
         expandableRowTemplate: '<div ui-grid="row.entity.subGridOptions" ui-grid-selection style ="height: 100px;"></div>',
         expandableRowScope:{
             subGridVariable: 'subGridScopeVariable'
         } ,
+        rowTemplate : rowtpl,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'supplier.supplierName', displayName:'Supplier', enableCellEdit:false, width:'15%'},
-            {field:'product.prodSku', displayName:'SKU',enableCellEdit:false, width:'15%',
+            {field:'supplier.supplierName', displayName:'Supplier', enableCellEdit:false, width:'10%'},
+            {field:'product.prodSku', displayName:'SKU',enableCellEdit:false, width:'14%',
                 cellTooltip: function(row,col) {
                     return row.entity.product.prodName
                 }
             },
             {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'5%'},
-            {field:'cost', displayName:'Cost',enableCellEdit:false, width:'5%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'quantity', displayName:'Qty',enableCellEdit:false, width:'5%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'cost', displayName:'Cost',enableCellEdit:false, width:'5%', cellFilter: 'currency', footerCellFilter: 'currency'},
+            {field:'quantity', displayName:'Qty',enableCellEdit:false, width:'5%',type: 'number'},
+            {field:'itemValue', displayName:'Total', enableCellEdit:false, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency'},
             {field:'qtyOnStock', displayName:'Stock', width:'5%', type: 'number', enableCellEdit:true, cellClass:"blue"},
-            {field:'comment', displayName:'Location', width:'10%', enableCellEdit:true, cellClass:"blue"},
-            {field:'qtyPurchased', displayName:'Purchased', enableCellEdit:false, width:'7%', aggregationType: uiGridConstants.aggregationTypes.sum, type: 'number'},
-            {field:'qtyBalance', displayName:'Balance', enableCellEdit:false, width:'8%', aggregationType: uiGridConstants.aggregationTypes.sum, type: 'number'},
-            /*
-            {field:'prodIsNew', displayName:'New Item',enableCellEdit:false, width:'8%', cellFilter:'booleanFilter',
-                cellClass:
-                    function(grid, row, col, rowRenderIndex, colRenderIndex) {
-                        if (grid.getCellValue(row, col) === true) {
-                            return 'red';
-                        } else {
-                            return 'green'
-                        }
-                    }
-            },
-            */
-            {field:'linkedPurchaseOrders', displayName:'Purchase Order No',enableCellEdit:false, width:'10%', cellFilter:'poBoqLinkOrderNumberFilter',
+            {field:'comment', displayName:'Location', width:'7%', enableCellEdit:true, cellClass:"blue"},
+            {field:'qtyBalance', displayName:'Balance', enableCellEdit:false, width:'6%', type: 'number'},
+            {field:'linkedPurchaseOrders', displayName:'Purchase Order No',enableCellEdit:false, width:'9%', cellFilter:'poBoqLinkOrderNumberFilter',
                 cellTemplate:'<a href="" ng-click="grid.appScope.viewPohDetail(row)">{{grid.appScope.getPoBoqLinkOrderNo(row)}}</a>'
+            },
+            {field:'changeComment', displayName:'Comment', width:'8%', enableCellEdit:true, cellClass:"blue"},
+            {field:'bqdCreationType', displayName:'Created',enableCellEdit:false, width:'7%', cellFilter:'configCategoryFilter',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return grid.getCellValue(row, col).color
+                }
             },
             {field:'bqdStatus', displayName:'status',enableCellEdit:false, width:'7%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }
             },
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit Product" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a>', width:'5%' }
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit Product" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a><a href=""><i tooltip="void item" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-show="row.entity.bqdStatus.categoryCode == \'BOQ_LINE_STATUS_PENDING\'" ng-click="grid.appScope.voidItem(row)"></i></a>', width:'5%' }
 
         ]
     }
@@ -198,4 +195,44 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
     $scope.formatDate = function(value) {
         return $filter('date')(value, 'medium');
     }
+
+    $scope.voidItem = function (row) {
+        var boqBackUpItem = angular.copy(row.entity);
+        var boqOriginalItem = row.entity;
+
+        ngDialog.openConfirm({
+            template:'views/pages/addComment.html',
+            controller:'boqDetailVoidLineCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false,
+            resolve: {boqItem: function(){return boqOriginalItem}}
+        }).then (function (updatedLine){
+                if (updatedLine != undefined) {
+                    row.entity = updatedLine;
+                    $scope.billOfQuantity.boqValueGross = $scope.billOfQuantity.boqValueGross - row.entity.itemValue;
+                }
+            }, function(reason) {
+                row.entity = boqBackUpItem;
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    }
+
+    $scope.addItem = function () {
+        ngDialog.openConfirm({
+            template:'views/pages/boqDetailAddLine.html',
+            controller:'boqDetailAddLineCtrl',
+            className: 'ngdialog-theme-plain',
+            closeByDocument:false
+            //resolve: {supplier: function(){return $scope.purchaseOrderHeader.supplier}}
+        }).then (function (selectedItem){
+                if (selectedItem != undefined) {
+                    $scope.gridOptions.data.push(selectedItem);
+                    $scope.billOfQuantity.boqValueGross = $scope.billOfQuantity.boqValueGross + selectedItem.itemValue;
+                }
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    };
 });

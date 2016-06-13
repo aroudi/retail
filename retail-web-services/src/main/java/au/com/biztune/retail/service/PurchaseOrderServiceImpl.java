@@ -181,7 +181,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                     continue;
                 }
                 for (BoqDetail boqDetail : billOfQuantity.getLines()) {
-                    if (boqDetail == null) {
+                    if (boqDetail == null || boqDetail.getBqdStatus().getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_VOID)) {
                         continue;
                     }
                     if (boqDetail.getBqdStatus() != null && (boqDetail.getBqdStatus().getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_GOOD_RECEIVED)

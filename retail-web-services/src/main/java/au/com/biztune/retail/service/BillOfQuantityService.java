@@ -43,7 +43,7 @@ public interface BillOfQuantityService {
      * @param billOfQuantity billOfQuantity
      * @return Response
      */
-    CommonResponse updateBoqStockInfo(au.com.biztune.retail.domain.BillOfQuantity billOfQuantity);
+    CommonResponse update(au.com.biztune.retail.domain.BillOfQuantity billOfQuantity);
 
     /**
      * generate Purchase orders from bill of quantities.

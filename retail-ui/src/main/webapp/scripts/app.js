@@ -33,21 +33,21 @@ var cimgApp = angular
   ]);
 
 //SIT
-
+/*
 var config_data = {
     'SERVER' : '10.0.0.17',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
-
+*/
 //DEV
-/*
+
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
-*/
+
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -99,6 +99,8 @@ var type_constant = {
     'POL_CREATION_TYPE_MANUAL' : 'categories/POH_CREATION_TYPE/POH_CREATION_TYPE_MANUAL',
     'POL_CREATION_TYPE_AUTO' : 'categories/POH_CREATION_TYPE/POH_CREATION_TYPE_AUTO',
     'POH_STATUS_IN_PROGRESS' : 'categories/POH_STATUS/POH_STATUS_IN_PROGRESS',
+    'BOQ_LINE_STATUS_VOID' : 'categories/BOQ_LINE_STATUS/BOQ_LINE_STATUS_VOID',
+    'BOQ_LINE_STATUS_PENDING' : 'categories/BOQ_LINE_STATUS/BOQ_LINE_STATUS_PENDING',
     'POH_STATUS_URI' : 'categories/POH_STATUS',
     'DLV_NOTE_STATUS_URI' : 'categories/DLV_NOTE_STATUS'
 }

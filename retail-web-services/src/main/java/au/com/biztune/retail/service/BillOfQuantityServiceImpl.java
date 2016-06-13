@@ -269,10 +269,15 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             boqDetail.setSupplier(supplier);
             boqDetail.setQtyOnStock(0);
             boqDetail.setQtyPurchased(0);
+            boqDetail.setItemValue(boqDetail.getCost() * boqDetail.getQuantity());
             boqDetail.setQtyBalance(boqDetail.getQuantity());
             final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_PENDING);
             if (status != null) {
                 boqDetail.setBqdStatus(status);
+            }
+            final ConfigCategory creationType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_CREATION_TYPE, IdBConstant.POH_CREATION_TYPE_AUTO);
+            if (status != null) {
+                boqDetail.setBqdCreationType(creationType);
             }
             boqDetailDao.insert(boqDetail);
         }
@@ -291,7 +296,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
         double totalQty = 0;
         for (BillOfQuantity.BillOfQuantities.Product importedProduct: products.getProduct()) {
             lines++;
-            valueGross = valueGross + importedProduct.getCost();
+            valueGross = valueGross + importedProduct.getCost() * importedProduct.getQty();
             totalQty = totalQty + importedProduct.getQty();
         }
 
@@ -460,7 +465,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
      * @param billOfQuantity billOfQuantity
      * @return Response
      */
-    public CommonResponse updateBoqStockInfo(au.com.biztune.retail.domain.BillOfQuantity billOfQuantity) {
+    public CommonResponse update(au.com.biztune.retail.domain.BillOfQuantity billOfQuantity) {
         final CommonResponse response = new CommonResponse();
         try {
             response.setStatus(IdBConstant.RESULT_SUCCESS);
@@ -470,10 +475,17 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 response.setMessage("bill of quantity object is null");
                 return response;
             }
-            // update bill of quantity details:
+            // update bill of quantity details for current items. add new items
             for (BoqDetail boqDetail: billOfQuantity.getLines()) {
-                boqDetailDao.updateStockQty(boqDetail);
+                if (boqDetail.getId() >= 0) {
+                    boqDetailDao.updateBoqLine(boqDetail);
+                } else {
+                    boqDetail.setBillOfQuantity(billOfQuantity);
+                    boqDetailDao.insert(boqDetail);
+                }
             }
+            //update boq header
+            billOfQuantityDao.updatePerId(billOfQuantity);
             return response;
         } catch (Exception e) {
             logger.error("Exception in updating bill of quantity:", e);
@@ -499,7 +511,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             //extract boqIds from list.
             final List<Long> boqIdList = new ArrayList<Long>();
             for (au.com.biztune.retail.domain.BillOfQuantity billOfQuantity : billOfQuantities) {
-                if (billOfQuantity == null) {
+                //not generate for voided items.
+                if (billOfQuantity == null ) {
                     continue;
                 }
                 boqIdList.add(billOfQuantity.getId());
@@ -509,6 +522,10 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             //iterate the boqDetailList and group them per supplier.
             final HashMap<Long, List<BoqDetail>> supplierBoqDetailMap = new HashMap<Long, List<BoqDetail>>();
             for (BoqDetail boqDetail: boqDetailList) {
+                //don't include voided items.
+                if (boqDetail.getBqdStatus().getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_VOID)) {
+                    continue;
+                }
                 final Long key = boqDetail.getSupplier().getId();
                 if (!supplierBoqDetailMap.containsKey(key)) {
                     final List<BoqDetail> supplierBoqList = new ArrayList<BoqDetail>();

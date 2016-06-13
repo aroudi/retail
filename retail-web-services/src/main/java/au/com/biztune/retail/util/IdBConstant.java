@@ -254,6 +254,12 @@ public interface IdBConstant {
      * Bill Of Quantity line status Good Received.
      */
     String BOQ_LINE_STATUS_GOOD_RECEIVED = "BOQ_LINE_STATUS_GOOD_RECEIVED";
+
+    /**
+     * Bill Of Quantity line status VOID.
+     */
+    String BOQ_LINE_STATUS_VOID = "BOQ_LINE_STATUS_VOID";
+
     /**
      * PurchaseOrderHeader Number AUTHO CREATED Prefix.
      */

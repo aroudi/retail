@@ -37,15 +37,15 @@ public interface BillOfQuantityDao {
 
     /**
      * update Per Name.
-     * @param name name.
+     * @param billOfQuantity billOfQuantity.
      */
-    void updatePerName(String name);
+    void updatePerName(BillOfQuantity billOfQuantity);
 
     /**
      * update Per id.
-     * @param id id.
+     * @param billOfQuantity billOfQuantity.
      */
-    void updatePerId(long id);
+    void updatePerId(BillOfQuantity billOfQuantity);
 
     /**
      * update boqStatus per id.

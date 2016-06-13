@@ -26,6 +26,13 @@ public interface BoqDetailDao {
      * @param boqDetail boqDetail
      */
     void updateStockQty(BoqDetail boqDetail);
+
+
+    /**
+     * update boqDetail info.
+     * @param boqDetail boqDetail
+     */
+    void updateBoqLine(BoqDetail boqDetail);
     /**
      * delete BOQDetail per boqId.
      * @param boqId boqId

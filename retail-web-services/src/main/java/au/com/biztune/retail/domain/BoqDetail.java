@@ -13,6 +13,7 @@ public class BoqDetail {
     private boolean prodIsNew;
     private double quantity;
     private double cost;
+    private double itemValue;
     private double margin;
     private double sellPrice;
     private Supplier supplier;
@@ -21,7 +22,9 @@ public class BoqDetail {
     private double qtyBalance;
     private double qtyReceived;
     private ConfigCategory bqdStatus;
+    private ConfigCategory bqdCreationType;
     private String comment;
+    private String changeComment;
     private List<PoBoqLink> linkedPurchaseOrders;
 
     public long getId() {
@@ -158,5 +161,29 @@ public class BoqDetail {
 
     public void setQtyReceived(double qtyReceived) {
         this.qtyReceived = qtyReceived;
+    }
+
+    public ConfigCategory getBqdCreationType() {
+        return bqdCreationType;
+    }
+
+    public void setBqdCreationType(ConfigCategory bqdCreationType) {
+        this.bqdCreationType = bqdCreationType;
+    }
+
+    public String getChangeComment() {
+        return changeComment;
+    }
+
+    public void setChangeComment(String changeComment) {
+        this.changeComment = changeComment;
+    }
+
+    public double getItemValue() {
+        return itemValue;
+    }
+
+    public void setItemValue(double itemValue) {
+        this.itemValue = itemValue;
     }
 }

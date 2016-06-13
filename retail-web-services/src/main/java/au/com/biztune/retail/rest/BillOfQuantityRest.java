@@ -96,7 +96,7 @@ public class BillOfQuantityRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResponse updateBoqStockQty (BillOfQuantity billOfQuantity) {
-        return billOfQuantityService.updateBoqStockInfo(billOfQuantity);
+        return billOfQuantityService.update(billOfQuantity);
     }
 
     /**
