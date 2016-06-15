@@ -18,7 +18,11 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             {field:'id', visible:false, enableCellEdit:false},
             {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'25%'},
             {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'10%'},
-            {field:'polUnitCost', displayName:'Cost',enableCellEdit:false, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'polUnitCost', displayName:'Cost',enableCellEdit:true, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum,
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            },
             {field:'polQtyOrdered', displayName:'Qty Ordered',enableCellEdit:true, width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
@@ -53,8 +57,35 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             if (colDef.name == 'polQtyOrdered') {
                 $scope.polQtyOrderedBeforeEditting = rowEntity.polQtyOrdered;
             }
+            if (colDef.name == 'polUnitCost') {
+                $scope.polUnitCostBeforeEditting = rowEntity.polUnitCost;
+            }
+        })
+
+        gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef){
+            if (colDef.name == 'polQtyOrdered') {
+                if (rowEntity.polCreationType.displayName=='AUTO') {
+                    if (rowEntity.polQtyOrdered < getLinkeBoqQtyBalanceTotal(rowEntity)) {
+                        baseDataService.displayMessage('Warning!!','You can not decrease quantity for auto created item.');
+                        rowEntity.polQtyOrdered = $scope.polQtyOrderedBeforeEditting;
+                        return;
+                    }
+                }
+                //update the total value of the line
+                updatePurchaseLineValueOrdered(rowEntity);
+            }
+            if (colDef.name == 'polUnitCost') {
+                if (rowEntity.polUnitCost > rowEntity.purchaseItem.price) {
+                    baseDataService.displayMessage('Warning!!','The new price is more than item original price which is: ' + rowEntity.purchaseItem.price);
+                    rowEntity.polUnitCost = $scope.polUnitCostBeforeEditting;
+                    return;
+                }
+                //update the total value of the line
+                updatePurchaseLineValueOrdered(rowEntity);
+            }
         })
     };
+    /*
     $scope.$on('uiGridEventEndCellEdit', function (event) {
         var purchaseLine = event.targetScope.row.entity;
         cellData = event.targetScope.row.entity[event.targetScope.col.field];
@@ -68,7 +99,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         //update the total value of the line
         updatePurchaseLineValueOrdered(purchaseLine);
     })
-
+    */
     initPageData();
     function initPageData() {
         $scope.disablePage = false;

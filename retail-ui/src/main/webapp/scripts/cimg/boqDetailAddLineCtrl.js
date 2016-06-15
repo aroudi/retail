@@ -86,7 +86,9 @@ cimgApp.controller('boqDetailAddLineCtrl', function($scope, $timeout,ngDialog, u
                 'changeComment' : $scope.boqDetail.changeComment,
                 'qtyBalance' :  $scope.boqDetail.qtyBalance,
                 'bqdCreationType' :  $scope.boqDetail.bqdCreationType,
-                'bqdStatus' :  $scope.boqDetail.bqdStatus
+                'bqdStatus' :  $scope.boqDetail.bqdStatus,
+                'qtyPurchased' : 0.00,
+                'qtyReceived' : 0.00
             }
             $scope.confirm(boqDetailObject);
         }
