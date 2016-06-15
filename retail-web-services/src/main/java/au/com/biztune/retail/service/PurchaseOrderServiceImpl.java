@@ -68,6 +68,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 purchaseOrderHeader.setPohConfirmDate(currentDate);
                 purchaseOrderHeader.setPohApproved(true);
             }
+            purchaseOrderHeader.setPohExpDelivery(DateUtil.stringToDate(purchaseOrderHeader.getPohExpDeliveryStr(), "yyyy-MM-dd"));
+
             if (isNew) {
                 final ConfigCategory creationType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_CREATION_TYPE, IdBConstant.POH_CREATION_TYPE_MANUAL);
                 purchaseOrderHeader.setPohCreationType(creationType);
@@ -374,7 +376,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
      */
     public PurchaseOrderHeader getPurchaseOrderHeaderWhole(long pohId) {
         try {
-            return purchaseOrderDao.getPurchaseOrderWholePerPohId(pohId);
+            final PurchaseOrderHeader purchaseOrderHeader = purchaseOrderDao.getPurchaseOrderWholePerPohId(pohId);
+            purchaseOrderHeader.setPohExpDeliveryStr(DateUtil.dateToString(purchaseOrderHeader.getPohExpDelivery(), "yyyy-MM-dd"));
+            return purchaseOrderHeader;
+
         } catch (Exception e) {
             logger.error("Exception in getting purchase order header per pohId:", e);
             return null;

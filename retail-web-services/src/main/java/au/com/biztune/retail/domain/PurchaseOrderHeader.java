@@ -37,6 +37,8 @@ public class PurchaseOrderHeader {
     private ConfigCategory pohCreationType;
     private List<PurchaseLine> lines;
     private List<PoDelNoteLink> linkedDelNotes;
+    private Timestamp pohExpDelivery;
+    private String pohExpDeliveryStr;
 
 
     /**
@@ -293,5 +295,21 @@ public class PurchaseOrderHeader {
 
     public void setLinkedDelNotes(List<PoDelNoteLink> linkedDelNotes) {
         this.linkedDelNotes = linkedDelNotes;
+    }
+
+    public Timestamp getPohExpDelivery() {
+        return pohExpDelivery;
+    }
+
+    public void setPohExpDelivery(Timestamp pohExpDelivery) {
+        this.pohExpDelivery = pohExpDelivery;
+    }
+
+    public String getPohExpDeliveryStr() {
+        return pohExpDeliveryStr;
+    }
+
+    public void setPohExpDeliveryStr(String pohExpDeliveryStr) {
+        this.pohExpDeliveryStr = pohExpDeliveryStr;
     }
 }

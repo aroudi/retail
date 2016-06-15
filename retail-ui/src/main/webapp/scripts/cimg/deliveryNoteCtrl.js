@@ -16,19 +16,20 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             {field:'dlnlCaseSize.unomDesc', displayName:'Case Size', enableCellEdit:false, width:'10%'},
             {field:'dlnlUnitCost', displayName:'Case Cost',enableCellEdit:true, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             //polQtyOrdered
-            {field:'dlnlQty', displayName:'Del Qty',enableCellEdit:true, width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+            {field:'polQty', displayName:'Qty purchased',enableCellEdit:false, width:'8%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'dlnlQty', displayName:'Del Qty',enableCellEdit:true, width:'7%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
             //{field:'rcvdCaseSize.unomDesc', displayName:'Recd Case Size', enableCellEdit:false, width:'8%'},
-            {field:'rcvdQty', displayName:'Rec Qty',enableCellEdit:true, width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+            {field:'rcvdQty', displayName:'Rec Qty',enableCellEdit:true, width:'7%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
             {field:'totalCost', displayName:'Total Cost',enableCellEdit:false, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'dlnlDiscrepancy', displayName:'Discrepancy',enableCellEdit:false, type:'boolean', width:'10%',cellFilter:'booleanFilter',
+            {field:'dlnlDiscrepancy', displayName:'Discrepancy',enableCellEdit:false, type:'boolean', width:'8%',cellFilter:'booleanFilter',
                 cellClass:
                     function(grid, row, col, rowRenderIndex, colRenderIndex) {
                         if (grid.getCellValue(row, col) === true) {
@@ -151,8 +152,8 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             'rcvdCaseSize' : purchaseOrderLine.unitOfMeasure,
             'rcvdProductSize' :  $scope.unomContents,
             'rcvdQty' :  purchaseOrderLine.polQtyOrdered - purchaseOrderLine.polQtyReceived,
-            'dlnlDiscrepancy' : false
-
+            'dlnlDiscrepancy' : false,
+            'polQty' : purchaseOrderLine.polQtyOrdered
         }
         return deliveryNoteLineObject;
     }

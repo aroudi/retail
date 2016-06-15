@@ -1,5 +1,6 @@
 // Maven Repo - Local File System
-project.ext["depsDir"] = 'file://V:/repository'
+//project.ext["depsDir"] = 'file://V:/repository'
+project.ext["depsDir"] = 'file://D:/mavenrepo/repository'
 
 subprojects {
     apply plugin: 'checkstyle'

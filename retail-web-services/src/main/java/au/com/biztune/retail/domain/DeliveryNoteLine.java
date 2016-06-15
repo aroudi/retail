@@ -21,6 +21,7 @@ public class DeliveryNoteLine {
     private int dlnlQtyRegected;
     private ConfigCategory dlnlStatus;
     private boolean dlnlDiscrepancy;
+    private double polQty;
 
     public long getId() {
         return id;
@@ -156,5 +157,13 @@ public class DeliveryNoteLine {
 
     public void setDlnlDiscrepancy(boolean dlnlDiscrepancy) {
         this.dlnlDiscrepancy = dlnlDiscrepancy;
+    }
+
+    public double getPolQty() {
+        return polQty;
+    }
+
+    public void setPolQty(double polQty) {
+        this.polQty = polQty;
     }
 }

@@ -20,6 +20,7 @@
         <result column="POH_QTY_ORDERED" property="pohQtyOrdered" />
         <result column="DELN_TOTAL_QTY" property="delnTotalQty" />
         <result column="DELN_TOTAL_LINES" property="delnTotalLines" />
+        <result column="DELN_COMMENT" property="delnComment" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
@@ -40,6 +41,7 @@
         <result column="POH_QTY_ORDERED" property="pohQtyOrdered" />
         <result column="DELN_TOTAL_QTY" property="delnTotalQty" />
         <result column="DELN_TOTAL_LINES" property="delnTotalLines" />
+        <result column="DELN_COMMENT" property="delnComment" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="legalTender" column="LEGT_ID" select="au.com.biztune.retail.dao.LegalTenderDao.getLegalTenderById" />
@@ -57,6 +59,7 @@
         <result column="DLNL_QTY_REJECTED" property="dlnlQtyRegected" />
         <result column="DLNL_DISCREPANCY" property="dlnlDiscrepancy" />
         <result column="DLNL_QTY" property="dlnlQty" />
+        <result column="POL_QTY" property="polQty" />
         <association property="purchaseItem" column="SPRC_ID" select="au.com.biztune.retail.dao.SuppProdPriceDao.getProductPurchaseItemPerSprcId" />
         <association property="dlnlCaseSize" column="DLNL_CASE_SIZE" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="dlnlProductSize" column="DLNL_PRODUCT_SIZE" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
@@ -83,7 +86,8 @@
         ${alias}.DELN_TOTAL_LINES,
         ${alias}.DELN_TYPE,
         ${alias}.DELN_STATUS,
-        ${alias}.LEGT_ID
+        ${alias}.LEGT_ID,
+        ${alias}.DELN_COMMENT
     </sql>
 
     <sql id="deliveryNoteLineColumns">
@@ -103,7 +107,8 @@
         ${alias}.TOTAL_COST,
         ${alias}.DLNL_QTY_REJECTED,
         ${alias}.DLNL_STATUS,
-        ${alias}.DLNL_DISCREPANCY
+        ${alias}.DLNL_DISCREPANCY,
+        ${alias}.POL_QTY
     </sql>
 
     <insert id="insertDeliveryNoteHeader" parameterType="DeliveryNoteHeader" useGeneratedKeys="true" keyProperty="id" keyColumn="DELN_ID">
@@ -125,7 +130,8 @@
             DELN_TOTAL_LINES,
             DELN_TYPE,
             DELN_STATUS,
-            LEGT_ID
+            LEGT_ID,
+            DELN_COMMENT
         ) VALUES (
         #{orguId}
         <if test="delnNoteNumber != null">
@@ -230,6 +236,12 @@
         <if test="legalTender == null">
             ,null
         </if>
+        <if test="delnComment != null">
+            ,#{delnComment}
+        </if>
+        <if test="delnComment == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -287,6 +299,9 @@
         <if test="legalTender != null">
             ,LEGT_ID = #{legalTender.id}
         </if>
+        <if test="delnComment != null">
+            ,DELN_COMMENT = #{delnComment}
+        </if>
         WHERE DELN_ID = #{id}
     </update>
 
@@ -308,7 +323,8 @@
             TOTAL_COST,
             DLNL_QTY_REJECTED,
             DLNL_STATUS,
-            DLNL_DISCREPANCY
+            DLNL_DISCREPANCY,
+            POL_QTY
         ) VALUES (
         #{delnId}
         <if test="polId != null">
@@ -415,6 +431,12 @@
         <if test="dlnlDiscrepancy == null">
             ,null
         </if>
+        <if test="polQty != null">
+            ,#{polQty}
+        </if>
+        <if test="polQty == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -479,6 +501,9 @@
 
         <if test="dlnlDiscrepancy != null">
             ,DLNL_DISCREPANCY = #{dlnlDiscrepancy}
+        </if>
+        <if test="polQty != null">
+            ,POL_QTY = #{polQty}
         </if>
         WHERE DLNL_ID = #{id}
     </update>

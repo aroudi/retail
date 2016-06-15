@@ -22,6 +22,7 @@
         <result column="POH_DELV_MOBILE" property="delvMobile" />
         <result column="POH_DELV_DATE" property="pohDelvDate" />
         <result column="POH_EXP_TRANSMIT" property="pohExpTransmit" />
+        <result column="POH_EXP_DELIVERY" property="pohExpDelivery" />
         <result column="POH_ACT_TRANSMIT" property="pohActTransmit" />
         <result column="POH_CONFIRM_DATE" property="pohConfirmDate" />
         <result column="POH_VALUE_GROSS" property="pohValueGross" />
@@ -51,6 +52,7 @@
         <result column="POH_DELV_MOBILE" property="delvMobile" />
         <result column="POH_DELV_DATE" property="pohDelvDate" />
         <result column="POH_EXP_TRANSMIT" property="pohExpTransmit" />
+        <result column="POH_EXP_DELIVERY" property="pohExpDelivery" />
         <result column="POH_ACT_TRANSMIT" property="pohActTransmit" />
         <result column="POH_CONFIRM_DATE" property="pohConfirmDate" />
         <result column="POH_VALUE_GROSS" property="pohValueGross" />
@@ -117,7 +119,8 @@
         ${alias}.POH_TOTAL_LINES,
         ${alias}.POH_TYPE,
         ${alias}.POH_STATUS,
-        ${alias}.POH_CREATION_TYPE
+        ${alias}.POH_CREATION_TYPE,
+        ${alias}.POH_EXP_DELIVERY
     </sql>
 
     <sql id="purchaseLineColumns">
@@ -177,7 +180,8 @@
          POH_TOTAL_LINES,
          POH_TYPE,
          POH_STATUS,
-         POH_CREATION_TYPE
+         POH_CREATION_TYPE,
+         POH_EXP_DELIVERY
         ) VALUES (
         #{orgUnit.id},
         #{pohOrderNumber}
@@ -347,6 +351,12 @@
         <if test="pohCreationType == null">
             ,null
         </if>
+        <if test="pohExpDelivery != null">
+            ,#{pohExpDelivery}
+        </if>
+        <if test="pohExpDelivery == null">
+            ,null
+        </if>
 
         )
     </insert>
@@ -422,6 +432,9 @@
         </if>
         <if test="pohCreationType != null">
             ,POH_CREATION_TYPE = #{pohCreationType.id}
+        </if>
+        <if test="pohExpDelivery != null">
+            ,POH_EXP_DELIVERY = #{pohExpDelivery}
         </if>
         WHERE POH_ID = #{id}
     </update>

@@ -105,7 +105,8 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         $scope.disablePage = false;
         if ( baseDataService.getIsPageNew()) {
             $scope.purchaseOrderHeader = {};
-            $scope.purchaseOrderHeader.pohCreatedDate = new Date().getTime();
+            //$scope.purchaseOrderHeader.pohCreatedDate = new Date().getTime();
+            $scope.purchaseOrderHeader.pohExpDeliveryStr = new Date().getTime();
             $scope.purchaseOrderHeader.id = -1;
             $scope.pageIsNew = true;
         } else {
@@ -116,6 +117,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             } else {
                 $scope.disablePage = false;
             }
+            $scope.purchaseOrderHeader.pohExpDeliveryStr = new Date($scope.purchaseOrderHeader.pohExpDeliveryStr);
             for (i=0; i<$scope.gridOptions.data.length; i++) {
                 displayLinkedBoqs($scope.gridOptions.data[i])
             }
