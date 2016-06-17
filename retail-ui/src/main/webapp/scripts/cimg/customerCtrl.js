@@ -49,6 +49,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog, UserService
             $scope.customer.customerType='Individual';
         } else {
             $scope.customer = angular.copy(baseDataService.getRow());
+            $scope.gridOptions.data = $scope.customer.contacts;
             baseDataService.setIsPageNew(true);
             baseDataService.setRow({});
         }

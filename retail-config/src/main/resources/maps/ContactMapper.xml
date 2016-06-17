@@ -142,7 +142,7 @@
             ,null
         </if>
         <if test="contactType != null">
-            ,#{contactType}
+            ,#{contactType.id}
         </if>
         <if test="contactType == null">
             ,null
@@ -208,7 +208,7 @@
             ,Middle_Name = #{middleName}
         </if>
         <if test="contactType != null">
-            ,CONTACT_TYPE = #{contactType}
+            ,CONTACT_TYPE = #{contactType.id}
         </if>
        WHERE
           CONTACT_ID = #{id}
