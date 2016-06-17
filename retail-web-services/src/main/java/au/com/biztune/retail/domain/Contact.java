@@ -5,6 +5,10 @@ package au.com.biztune.retail.domain;
  */
 public class Contact {
     private long id;
+    private String title;
+    private String firstName;
+    private String surName;
+    private String middleName;
     private String country;
     private String state;
     private String postCode;
@@ -15,6 +19,7 @@ public class Contact {
     private String phone;
     private String fax;
     private String webSite;
+    private ConfigCategory contactType;
 
     public long getId() {
         return id;
@@ -102,5 +107,45 @@ public class Contact {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getSurName() {
+        return surName;
+    }
+
+    public void setSurName(String surName) {
+        this.surName = surName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public ConfigCategory getContactType() {
+        return contactType;
+    }
+
+    public void setContactType(ConfigCategory contactType) {
+        this.contactType = contactType;
     }
 }

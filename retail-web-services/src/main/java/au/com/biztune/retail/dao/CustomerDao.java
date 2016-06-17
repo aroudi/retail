@@ -1,6 +1,7 @@
 package au.com.biztune.retail.dao;
 
 import au.com.biztune.retail.domain.Customer;
+import au.com.biztune.retail.domain.CustomerContact;
 
 import java.util.List;
 
@@ -47,4 +48,30 @@ public interface CustomerDao {
      * @return Customer
      */
     Customer getCustomerByCompanyName(String name);
+
+    /**
+     * get all customer contacts per customerId.
+     * @param id id
+     * @return List of CustomerContact
+     */
+    List<CustomerContact> getAllContactsPerCustomerId(long id);
+
+    /**
+     * insert customerContact.
+     * @param customerContact customerContact
+     */
+    void insertCustomerContact(CustomerContact customerContact);
+
+    /**
+     * delete customer contact by id.
+     * @param id id
+     */
+    void deleteCustomerContactById(long id);
+
+    /**
+     * delete customer contact by id.
+     * @param contactList contactList
+     */
+    void deleteCustomerContactWhereIdNotIn(List contactList);
+
 }

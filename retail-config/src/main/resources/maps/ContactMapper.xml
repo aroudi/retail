@@ -16,10 +16,20 @@
         <result column="PHONE" property="phone" />
         <result column="FAX" property="fax" />
         <result column="WEB_SITE" property="webSite" />
+        <result column="Title" property="title" />
+        <result column="First_Name" property="firstName" />
+        <result column="Sur_Name" property="surName" />
+        <result column="Middle_Name" property="middleName" />
+        <association property="contactType" column="CONTACT_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+
     </resultMap>
 
     <sql id="contactColumns">
         ${alias}.CONTACT_ID,
+        ${alias}.Title,
+        ${alias}.First_Name,
+        ${alias}.Sur_Name,
+        ${alias}.Middle_Name,
         ${alias}.COUNTRY,
         ${alias}.STATE,
         ${alias}.POST_CODE,
@@ -29,7 +39,8 @@
         ${alias}.MOBILE,
         ${alias}.PHONE,
         ${alias}.FAX,
-        ${alias}.WEB_SITE
+        ${alias}.WEB_SITE,
+        ${alias}.CONTACT_TYPE
     </sql>
 
 
@@ -44,7 +55,12 @@
         MOBILE,
         PHONE,
         FAX,
-        WEB_SITE
+        WEB_SITE,
+        TITLE,
+        First_Name,
+        Sur_Name,
+        Middle_Name,
+        CONTACT_TYPE
         ) VALUES (
         #{postCode}
         <if test="address1 != null">
@@ -101,6 +117,36 @@
         <if test="webSite == null">
             ,null
         </if>
+        <if test="title != null">
+            ,#{title}
+        </if>
+        <if test="title == null">
+            ,null
+        </if>
+        <if test="firstName != null">
+            ,#{firstName}
+        </if>
+        <if test="firstName == null">
+            ,null
+        </if>
+        <if test="surName != null">
+            ,#{surName}
+        </if>
+        <if test="surName == null">
+            ,null
+        </if>
+        <if test="middleName != null">
+            ,#{middleName}
+        </if>
+        <if test="middleName == null">
+            ,null
+        </if>
+        <if test="contactType != null">
+            ,#{contactType}
+        </if>
+        <if test="contactType == null">
+            ,null
+        </if>
         )
     </insert>
     <select id="getContactById" resultMap="contactMap" >
@@ -149,8 +195,33 @@
         <if test="webSite != null">
             ,WEB_SITE = #{webSite}
         </if>
+        <if test="title != null">
+            ,Title = #{title}
+        </if>
+        <if test="firstName != null">
+            ,First_Name = #{firstName}
+        </if>
+        <if test="surName != null">
+            ,Sur_Name = #{surName}
+        </if>
+        <if test="middleName != null">
+            ,Middle_Name = #{middleName}
+        </if>
+        <if test="contactType != null">
+            ,CONTACT_TYPE = #{contactType}
+        </if>
        WHERE
           CONTACT_ID = #{id}
     </update>
+
+    <delete id="deleteContactWhereIdNotIn" >
+        DELETE
+        From CONTACT
+        WHERE CONTACT_ID NOT IN
+        <foreach collection="list" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
 
 </mapper>

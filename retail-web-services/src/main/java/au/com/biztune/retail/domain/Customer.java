@@ -3,6 +3,7 @@ package au.com.biztune.retail.domain;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 /**
  * Created by arash on 22/02/2016.
@@ -28,6 +29,7 @@ public class Customer {
     private String fax;
     private String dateOfBirthStr;
     private CustomerGrade grade;
+    private ArrayList<Contact> contacts;
 
     public long getId() {
         return id;
@@ -179,5 +181,13 @@ public class Customer {
 
     public void setAddress2(String address2) {
         this.address2 = address2;
+    }
+
+    public ArrayList<Contact> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(ArrayList<Contact> contacts) {
+        this.contacts = contacts;
     }
 }

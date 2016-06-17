@@ -40,6 +40,7 @@
         <typeAlias type="au.com.biztune.retail.domain.DeliveryNoteHeader" alias="DeliveryNoteHeader" />
         <typeAlias type="au.com.biztune.retail.domain.DeliveryNoteLine" alias="DeliveryNoteLine" />
         <typeAlias type="au.com.biztune.retail.domain.PoDelNoteLink" alias="PoDelNoteLink" />
+        <typeAlias type="au.com.biztune.retail.domain.CustomerContact" alias="CustomerContact" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />

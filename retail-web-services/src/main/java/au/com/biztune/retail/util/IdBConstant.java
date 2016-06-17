@@ -290,4 +290,22 @@ public interface IdBConstant {
      */
     String GRN_PREFIX = "GRN-";
 
+    /**
+     * CONTACT TYPE.
+     */
+    String TYPE_CONTACT_TYPE = "CONTACT_TYPE";
+    /**
+     * CONTACT TYPE CONTACT PERSON.
+     */
+    String CONTACT_TYPE_CONTACT_PERSON = "CONTACT_TYPE_CONTACT_PERSON";
+
+    /**
+     * CONTACT TYPE account manager.
+     */
+    String CONTACT_TYPE_ACCOUNT = "CONTACT_TYPE_ACCOUNT";
+
+    /**
+     * CONTACT TYPE project manager.
+     */
+    String CONTACT_TYPE_PM = "CONTACT_TYPE_PM";
 }

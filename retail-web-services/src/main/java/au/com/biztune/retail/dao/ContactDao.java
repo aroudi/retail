@@ -2,6 +2,8 @@ package au.com.biztune.retail.dao;
 
 import au.com.biztune.retail.domain.Contact;
 
+import java.util.List;
+
 /**
  * Created by akhoshraft on 29/02/2016.
  */
@@ -30,4 +32,9 @@ public interface ContactDao {
      */
     void delete(long contactId);
 
+    /**
+     * remove contact.
+     * @param contactIds contactIds
+     */
+    void deleteContactWhereIdNotIn(List contactIds);
 }

@@ -1,11 +1,10 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.ConfigCategoryDao;
+import au.com.biztune.retail.dao.ContactDao;
 import au.com.biztune.retail.dao.CustomerDao;
 import au.com.biztune.retail.dao.CustomerGradeDao;
-import au.com.biztune.retail.domain.ConfigCategory;
-import au.com.biztune.retail.domain.Customer;
-import au.com.biztune.retail.domain.CustomerGrade;
+import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.util.IdBConstant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +32,11 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private ConfigCategoryDao configCategoryDao;
+
+    @Autowired
+    private ContactDao contactDao;
+
+
     /**
      * return all customers.
      * @return list of Customer
@@ -77,6 +82,30 @@ public class CustomerServiceImpl implements CustomerService {
                 customerDao.insert(customer);
             } else {
                 customerDao.update(customer);
+            }
+            //update contact persons
+            final ArrayList<Long> contactList = new ArrayList<Long>();
+            for (Contact contact : customer.getContacts()) {
+                if (contact == null ) {
+                    continue;
+                }
+                    //if contact is new
+                if (contact.getId() < 0) {
+                    contactDao.insert(contact);
+                    CustomerContact customerContact = new CustomerContact();
+                    customerContact.setContact(contact);
+                    customerContact.setCustomerId(customer);
+                    customerDao.insertCustomerContact(customerContact);
+                // update existing one
+                } else {
+                    contactDao.update(customerContact.getContact());
+                }
+                contactList.add(customerContact.getContact().getId());
+            }
+            //delete contacts
+            if (contactList.size() > 0) {
+                contactDao.deleteContactWhereIdNotIn(contactList);
+                customerDao.deleteCustomerContactWhereIdNotIn(contactList);
             }
             return response;
         } catch (Exception e) {

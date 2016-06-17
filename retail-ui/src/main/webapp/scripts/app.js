@@ -102,7 +102,8 @@ var type_constant = {
     'BOQ_LINE_STATUS_VOID' : 'categories/BOQ_LINE_STATUS/BOQ_LINE_STATUS_VOID',
     'BOQ_LINE_STATUS_PENDING' : 'categories/BOQ_LINE_STATUS/BOQ_LINE_STATUS_PENDING',
     'POH_STATUS_URI' : 'categories/POH_STATUS',
-    'DLV_NOTE_STATUS_URI' : 'categories/DLV_NOTE_STATUS'
+    'DLV_NOTE_STATUS_URI' : 'categories/DLV_NOTE_STATUS',
+    'CONTACT_TYPE_URI' : 'categories/CONTACT_TYPE'
 }
 
 angular.forEach(config_data, function(key, value) {

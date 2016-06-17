@@ -25,6 +25,29 @@
         <association property="customerStatus" column="CUSTOMER_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
+    <resultMap id="customerMapWhole" type="Customer" >
+        <id column="customer_id" property="id" />
+        <result column="First_Name" property="firstName" />
+        <result column="Sur_Name" property="surName" />
+        <result column="Middle_Name" property="middleName" />
+        <result column="Company_Name" property="companyName" />
+        <result column="Date_Of_Birth" property="dateOfBirth" />
+        <result column="Address" property="address" />
+        <result column="Address2" property="address2" />
+        <result column="E_Mail" property="email" />
+        <result column="Mobile" property="mobile" />
+        <result column="Phone" property="phone" />
+        <result column="Web_Site" property="webSite" />
+        <result column="Code" property="code" />
+        <result column="Title" property="title" />
+        <result column="Fax" property="fax" />
+        <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
+        <association property="customerType" column="Customer_Type" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="customerStatus" column="CUSTOMER_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <collection property="contacts" javaType="ArrayList" column="customer_id" ofType="Contact" select="getAllContactsPerCustomerId"/>
+    </resultMap>
+
+
     <sql id="customerColumns">
         ${alias}.CUSTOMER_ID,
         ${alias}.Customer_Type,
@@ -51,6 +74,14 @@
         ${alias}.DESCRIPTION,
         ${alias}.RATE
     </sql>
+
+    <select id="getAllContactsPerCustomerId" resultMap="au.com.biztune.retail.dao.ContactDao.contactMap" >
+        SELECT
+        <include refid="au.com.biztune.retail.dao.ContactDao.contactColumns"><property name="alias" value="contact"/></include>
+        FROM
+        CUSTOMER_CONTACT cust_contact inner join contact contact on (cust_contact.contact_id = contact.contact_id)
+        WHERE cust_contact.CUSTOMER_ID = #{value}
+    </select>
 
     <select id="getAllCustomers" resultMap="customerMap" >
         SELECT
@@ -86,7 +117,7 @@
         c.Company_Name = #{value}
     </select>
 
-    <select id="getCustomerById" resultMap="customerMap" >
+    <select id="getCustomerById" resultMap="customerMapWhole" >
         SELECT
             <include refid="customerColumns"><property name="alias" value="c"/></include>,
             <include refid="gradeColumns"><property name="alias" value="g"/></include>
@@ -215,13 +246,35 @@
         <if test="grade == null">
             ,null
         </if>
-        <!--
-        GO
-        UPDATE Sequence SET NEXT_VAL = (select SEQUENCE.next_val + 1 from sequence where seq_name='CUSTOMER_SEQ') WHERE SEQ_NAME='CUSTOMER_SEQ'
-        GO
-        -->
         )
     </insert>
+
+
+    <insert id="insertCustomerContact" parameterType="CustomerContact" useGeneratedKeys="true" keyProperty="id" keyColumn="CUST_CONTACT_ID">
+        INSERT INTO CUSTOMER_CONTACT(
+        CUSTOMER_ID,
+        CONTACT_ID
+        ) VALUES (
+        #{customerId},
+        #{contact.id}
+        )
+    </insert>
+
+    <delete id="deleteCustomerContactById" >
+        DELETE
+        From CUSTOMER_CONTACT
+        WHERE
+        CUST_CONTACT_ID = #{value}
+    </delete>
+    <delete id="deleteCustomerContactWhereIdNotIn" >
+        DELETE from
+        CUSTOMER_CONTACT
+        WHERE CONTACT_ID not in
+        <foreach collection="list" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
 
     <update id="update" parameterType="Customer" >
         UPDATE CUSTOMER SET
