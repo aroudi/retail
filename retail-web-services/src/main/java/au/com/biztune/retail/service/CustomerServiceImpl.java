@@ -86,21 +86,21 @@ public class CustomerServiceImpl implements CustomerService {
             //update contact persons
             final ArrayList<Long> contactList = new ArrayList<Long>();
             for (Contact contact : customer.getContacts()) {
-                if (contact == null ) {
+                if (contact == null) {
                     continue;
                 }
                     //if contact is new
                 if (contact.getId() < 0) {
                     contactDao.insert(contact);
-                    CustomerContact customerContact = new CustomerContact();
+                    final CustomerContact customerContact = new CustomerContact();
                     customerContact.setContact(contact);
-                    customerContact.setCustomerId(customer);
+                    customerContact.setCustomerId(customer.getId());
                     customerDao.insertCustomerContact(customerContact);
                 // update existing one
                 } else {
-                    contactDao.update(customerContact.getContact());
+                    contactDao.update(contact);
                 }
-                contactList.add(customerContact.getContact().getId());
+                contactList.add(contact.getId());
             }
             //delete contacts
             if (contactList.size() > 0) {
