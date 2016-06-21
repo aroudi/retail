@@ -73,4 +73,10 @@ public interface DeliveryNoteDao {
      * @param deliveryNoteLines deliveryNoteLines
      */
     void deleteDeliveryNoteLineWhereIdNotIn(long deliveryNoteId, List deliveryNoteLines);
+
+    /**
+     * delete deliveryNoteLine perId.
+     * @param dlnlId dlnlId
+     */
+    void deleteDeliveryNoteLinePerId(long dlnlId);
 }

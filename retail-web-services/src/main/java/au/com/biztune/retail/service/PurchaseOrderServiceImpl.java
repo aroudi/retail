@@ -86,8 +86,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             } else {
                 purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
             }
-            final List<Long> updatedLines = new ArrayList<Long>();
             for (PurchaseLine purchaseLine : purchaseOrderHeader.getLines()) {
+                if (purchaseLine.isDeleted()) {
+                    if (purchaseLine.getId() >= 0) {
+                        purchaseOrderDao.deletePurchaseLinePerId(purchaseLine.getId());
+                    }
+                    continue;
+                }
                 //if line id is less than 0; the line is new then insert it
                 if (purchaseLine.getId() < 0) {
                     purchaseLine.setPohOrderNumber(pohNumber);
@@ -96,10 +101,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 } else {
                     purchaseOrderDao.updatePurchaseLine(purchaseLine);
                 }
-                updatedLines.add(purchaseLine.getId());
             }
-           //delete from db, removed lines.
-            purchaseOrderDao.deletePurchaseLineWhereIdNotIn(purchaseOrderHeader.getId(), updatedLines);
             //include the purchase order number in the response
             response.setInfo(purchaseOrderHeader.getPohOrderNumber());
             return response;

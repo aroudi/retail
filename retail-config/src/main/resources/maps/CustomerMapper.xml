@@ -269,8 +269,10 @@
     <delete id="deleteCustomerContactWhereIdNotIn" >
         DELETE from
         CUSTOMER_CONTACT
-        WHERE CONTACT_ID not in
-        <foreach collection="list" item="item" index="index"
+        WHERE
+        CUSTOMER_ID = #{param1}
+        AND CONTACT_ID not in
+        <foreach collection="param2" item="item" index="index"
                  open ="(" separator="," close=")">
             #{item}
         </foreach>

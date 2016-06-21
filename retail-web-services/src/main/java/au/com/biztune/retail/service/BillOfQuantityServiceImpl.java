@@ -62,6 +62,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     private PurchaseOrderService purchaseOrderService;
     @Autowired
     private PurchaseOrderDao purchaseOrderDao;
+    @Autowired
+    private ContactDao contactDao;
     /**
      * upload Bill Of Quantity.
      * @param uploadedInputStream uploadedInputStream
@@ -387,17 +389,25 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             }
             customer.setAddress(client.getAdd1());
             customer.setCompanyName(client.getClientName());
+            customerDao.insert(customer);
+            //insert conftact info
             try {
                 if (client.getContactName() != null) {
                     final String[] splited = client.getContactName().split("\\s+");
-                    customer.setFirstName(splited[0]);
-                    customer.setSurName(splited[1]);
+                    final Contact contact = new Contact();
+                    contact.setFirstName(splited[0]);
+                    contact.setSurName(splited[1]);
+                    final ConfigCategory  contactType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_CONTACT_TYPE, IdBConstant.CONTACT_TYPE_CONTACT_PERSON);
+                    contact.setContactType(contactType);
+                    contactDao.insert(contact);
+                    final CustomerContact customerContact = new CustomerContact();
+                    customerContact.setCustomerId(customer.getId());
+                    customerContact.setContact(contact);
+                    customerDao.insertCustomerContact(customerContact);
                 }
-
             } catch (Exception e) {
                 logger.error("Error in splitting the customer name:", e);
             }
-            customerDao.insert(customer);
         } else {
             //customer.setCustomerType(IdBConstant.CUSTOMER_TYPE_COMPANY);
             customer.setAddress(client.getAdd1());

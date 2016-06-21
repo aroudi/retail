@@ -84,6 +84,9 @@ public class TransactionServiceImpl implements TransactionService {
                     if (txnDetailForm == null) {
                         continue;
                     }
+                    if (txnDetailForm.isDeleted()) {
+                        continue;
+                    }
                     txnDetail = new TxnDetail();
                     txnDetail.setOrguId(sessionState.getStore().getOrgUnit().getId());
                     txnDetail.setStoreId(sessionState.getStore().getId());
@@ -173,6 +176,9 @@ public class TransactionServiceImpl implements TransactionService {
             TxnDetail txnDetail = null;
             for (TxnDetailForm txnDetailForm: txnHeaderForm.getTxnDetailFormList()) {
                 if (txnDetailForm == null) {
+                    continue;
+                }
+                if (txnDetailForm.isDeleted()) {
                     continue;
                 }
                 txnDetail = new TxnDetail();

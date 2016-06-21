@@ -22,7 +22,8 @@ public class DeliveryNoteLine {
     private ConfigCategory dlnlStatus;
     private boolean dlnlDiscrepancy;
     private double polQty;
-
+    private String dlnlComment;
+    private boolean deleted;
     public long getId() {
         return id;
     }
@@ -165,5 +166,21 @@ public class DeliveryNoteLine {
 
     public void setPolQty(double polQty) {
         this.polQty = polQty;
+    }
+
+    public String getDlnlComment() {
+        return dlnlComment;
+    }
+
+    public void setDlnlComment(String dlnlComment) {
+        this.dlnlComment = dlnlComment;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

@@ -104,8 +104,8 @@ public class CustomerServiceImpl implements CustomerService {
             }
             //delete contacts
             if (contactList.size() > 0) {
-                contactDao.deleteContactWhereIdNotIn(contactList);
-                customerDao.deleteCustomerContactWhereIdNotIn(contactList);
+                //contactDao.deleteContactWhereIdNotIn(contactList);
+                customerDao.deleteCustomerContactWhereIdNotIn(customer.getId(), contactList);
             }
             return response;
         } catch (Exception e) {

@@ -322,4 +322,11 @@
         BOQ_ID = #{value}
     </delete>
 
+    <delete id="deleteBoqDetailPerId" >
+        DELETE
+        From BOQ_DETAIL
+        WHERE
+        BOQ_DETAIL_ID = #{value}
+    </delete>
+
 </mapper>

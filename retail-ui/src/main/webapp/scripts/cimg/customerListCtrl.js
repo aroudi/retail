@@ -6,39 +6,28 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout,baseDat
         enableFiltering: true,
         columnDefs: [
             {field:'customerId', visible:false, enableCellEdit:false},
-            {field:'customerType', displayName:'Type',enableCellEdit:false, width:'8%', cellFilter:'configCategoryFilter',
+            {field:'customerType', displayName:'Type',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }
             },
-            {field:'code', displayName:'ABN', enableCellEdit:false, width:'7%'},
-            {field:'firstName', displayName:'First Name',enableCellEdit:false, width:'10%',
-                cellTooltip: function(row,col) {
-                    return row.entity.firstName
-                }
-            },
-            {field:'surName', displayName:'Sur Name',enableCellEdit:false, width:'10%',
-                cellTooltip: function(row,col) {
-                    return row.entity.surName
-                }
-            },
-            {field:'companyName', displayName:'Company Name',enableCellEdit:false, width:'10%',
+            {field:'code', displayName:'ABN', enableCellEdit:false, width:'10%'},
+            {field:'companyName', displayName:'Company Name',enableCellEdit:false, width:'35%',
                 cellTooltip: function(row,col) {
                     return row.entity.companyName
                 }
             },
-            {field:'mobile', enableCellEdit:false, width:'10%'},
             {field:'address', enableCellEdit:false , width:'30%',
                 cellTooltip: function(row,col) {
                     return row.entity.address
                 }
             },
-            {field:'customerStatus', displayName:'status',enableCellEdit:false, width:'7%', cellFilter:'configCategoryFilter',
+            {field:'customerStatus', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }
             },
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editCustomer(row)"></i></a>', width:'10%' }
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editCustomer(row)"></i></a>', width:'5%' }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;

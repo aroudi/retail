@@ -26,6 +26,7 @@ public class BoqDetail {
     private String comment;
     private String changeComment;
     private List<PoBoqLink> linkedPurchaseOrders;
+    private boolean deleted;
 
     public long getId() {
         return id;
@@ -185,5 +186,13 @@ public class BoqDetail {
 
     public void setItemValue(double itemValue) {
         this.itemValue = itemValue;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

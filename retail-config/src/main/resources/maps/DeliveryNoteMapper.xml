@@ -60,6 +60,7 @@
         <result column="DLNL_DISCREPANCY" property="dlnlDiscrepancy" />
         <result column="DLNL_QTY" property="dlnlQty" />
         <result column="POL_QTY" property="polQty" />
+        <result column="DLNL_COMMENT" property="dlnlComment" />
         <association property="purchaseItem" column="SPRC_ID" select="au.com.biztune.retail.dao.SuppProdPriceDao.getProductPurchaseItemPerSprcId" />
         <association property="dlnlCaseSize" column="DLNL_CASE_SIZE" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="dlnlProductSize" column="DLNL_PRODUCT_SIZE" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
@@ -108,7 +109,8 @@
         ${alias}.DLNL_QTY_REJECTED,
         ${alias}.DLNL_STATUS,
         ${alias}.DLNL_DISCREPANCY,
-        ${alias}.POL_QTY
+        ${alias}.POL_QTY,
+        ${alias}.DLNL_COMMENT
     </sql>
 
     <insert id="insertDeliveryNoteHeader" parameterType="DeliveryNoteHeader" useGeneratedKeys="true" keyProperty="id" keyColumn="DELN_ID">
@@ -324,7 +326,8 @@
             DLNL_QTY_REJECTED,
             DLNL_STATUS,
             DLNL_DISCREPANCY,
-            POL_QTY
+            POL_QTY,
+            DLNL_COMMENT
         ) VALUES (
         #{delnId}
         <if test="polId != null">
@@ -437,6 +440,12 @@
         <if test="polQty == null">
             ,null
         </if>
+        <if test="dlnlComment != null">
+            ,#{dlnlComment}
+        </if>
+        <if test="dlnlComment == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -505,6 +514,9 @@
         <if test="polQty != null">
             ,POL_QTY = #{polQty}
         </if>
+        <if test="dlnlComment != null">
+            ,DLNL_COMMENT = #{dlnlComment}
+        </if>
         WHERE DLNL_ID = #{id}
     </update>
 
@@ -552,6 +564,12 @@
                  open ="(" separator="," close=")">
             #{item}
         </foreach>
+    </delete>
+
+    <delete id="deleteDeliveryNoteLinePerId" >
+        DELETE from
+        DELIVERY_NOTE_LINE
+        where DLNL_ID = #{value}
     </delete>
 
 </mapper>

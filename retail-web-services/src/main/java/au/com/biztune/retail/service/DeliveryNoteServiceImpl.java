@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -71,9 +70,14 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             } else {
                 deliveryNoteDao.updateDeliveryNoteHeader(deliveryNoteHeader);
             }
-            final List<Long> updatedLines = new ArrayList<Long>();
             for (DeliveryNoteLine deliveryNoteLine : deliveryNoteHeader.getLines()) {
                 //if line id is less than 0; the line is new then insert it
+                if (deliveryNoteLine.isDeleted()) {
+                    if (deliveryNoteLine.getId() >= 0) {
+                        deliveryNoteDao.deleteDeliveryNoteLinePerId(deliveryNoteLine.getId());
+                    }
+                    continue;
+                }
                 if (deliveryNoteLine.getId() < 0) {
                     deliveryNoteLine.setDelnGrn(grnNumber);
                     deliveryNoteLine.setDelnId(deliveryNoteHeader.getId());
@@ -81,13 +85,8 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 } else {
                     deliveryNoteDao.updateDeliveryNoteLine(deliveryNoteLine);
                 }
-                updatedLines.add(deliveryNoteLine.getId());
             }
-           //delete from db, removed lines.
-            deliveryNoteDao.deleteDeliveryNoteLineWhereIdNotIn(deliveryNoteHeader.getId(), updatedLines);
-            //update the linked purchase order and its items.
             updateLinkedPurchaseOrder(deliveryNoteHeader);
-            //include the GRN number in the response
             response.setInfo(deliveryNoteHeader.getDelnGrn());
             return response;
         } catch (Exception e) {

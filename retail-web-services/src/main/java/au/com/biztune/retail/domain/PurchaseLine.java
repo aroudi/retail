@@ -36,6 +36,7 @@ public class PurchaseLine {
     private ConfigCategory polStatus;
     private UnitOfMeasure unomContents;
     private List<PoBoqLink> poBoqLinks;
+    private boolean deleted;
 
     /**
      * add poBoqLink to list.
@@ -271,5 +272,13 @@ public class PurchaseLine {
 
     public void setPolStatus(ConfigCategory polStatus) {
         this.polStatus = polStatus;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

@@ -7,7 +7,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog, UserService
         enableFiltering: true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'contactType', displayName:'Type',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+            {field:'contactType', displayName:'Type',enableCellEdit:false, width:'15%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }
@@ -23,9 +23,9 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog, UserService
                     return row.entity.surName
                 }
             },
-            {field:'mobile', enableCellEdit:false, width:'20%'},
+            {field:'mobile', enableCellEdit:false, width:'10%'},
             {field:'email', enableCellEdit:false, width:'20%'},
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editContact(row)"></i></a><a href=""><i tooltip="Remove" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeContact(row)"></i></a>', width:'10%' }
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editContact(row)"></i></a><a href=""><i tooltip="Remove" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeContact(row)"></i></a>', width:'5%' }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -144,7 +144,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog, UserService
             alert('item is undefined');
             return;
         }
-        var rowIndex = baseDataService.getArrIndexOf($scope.txnDetailList.data, row.entity);
+        var rowIndex = baseDataService.getArrIndexOf($scope.gridOptions.data, row.entity);
         if (rowIndex>-1) {
             $scope.gridOptions.data.splice(rowIndex,1);
         }

@@ -814,6 +814,10 @@
             #{item}
         </foreach>
     </delete>
+    <delete id="deletePurchaseLinePerId" >
+        DELETE from
+        PURCHASE_LINE where POL_ID = #{value}
+    </delete>
 
 
 </mapper>

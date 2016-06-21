@@ -90,4 +90,10 @@ public interface PurchaseOrderDao {
      * @return Purchase Order Line
      */
     PurchaseLine getPurchaseLinePerId(long polId);
+
+    /**
+     * delete purchase order line per id.
+     * @param polId polId
+     */
+    void deletePurchaseLinePerId(long polId);
 }

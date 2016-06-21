@@ -13,23 +13,23 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             {field:'id', visible:false, enableCellEdit:false},
             {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'35%'},
             //{field:'dlnlProductSize.unomDesc', displayName:'Product Size', enableCellEdit:false, width:'8%'},
-            {field:'dlnlCaseSize.unomDesc', displayName:'Case Size', enableCellEdit:false, width:'10%'},
-            {field:'dlnlUnitCost', displayName:'Case Cost',enableCellEdit:true, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'dlnlCaseSize.unomDesc', displayName:'Case Size', enableCellEdit:false, width:'7%'},
+            {field:'dlnlUnitCost', displayName:'Case Cost',enableCellEdit:true, width:'8%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             //polQtyOrdered
-            {field:'polQty', displayName:'Qty purchased',enableCellEdit:false, width:'8%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'dlnlQty', displayName:'Del Qty',enableCellEdit:true, width:'7%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+            {field:'polQty', displayName:'Purchased',enableCellEdit:false, width:'6%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'dlnlQty', displayName:'Del Qty',enableCellEdit:true, width:'5%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
             //{field:'rcvdCaseSize.unomDesc', displayName:'Recd Case Size', enableCellEdit:false, width:'8%'},
-            {field:'rcvdQty', displayName:'Rec Qty',enableCellEdit:true, width:'7%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+            {field:'rcvdQty', displayName:'Rec Qty',enableCellEdit:true, width:'5%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
-            {field:'totalCost', displayName:'Total Cost',enableCellEdit:false, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'dlnlDiscrepancy', displayName:'Discrepancy',enableCellEdit:false, type:'boolean', width:'8%',cellFilter:'booleanFilter',
+            {field:'totalCost', displayName:'Total Cost',enableCellEdit:false, width:'8%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'dlnlDiscrepancy', displayName:'Discrepancy',enableCellEdit:false, type:'boolean', width:'6%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-model="row.entity.dlnlDiscrepancy">',
                 cellClass:
                     function(grid, row, col, rowRenderIndex, colRenderIndex) {
                         if (grid.getCellValue(row, col) === true) {
@@ -38,6 +38,11 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
                             return 'green'
                         }
                     }
+            },
+            {field:'dlnlComment', displayName:'Comment',enableCellEdit:true, width:'15%',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
             },
             {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeItem(row)" ng-disabled="disablePage"></i></a>', width: '5%'}
         ]
@@ -206,10 +211,8 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         if (!confirm('Are you sure you want to delete this item?')) {
             return;
         }
-        var rowIndex = baseDataService.getArrIndexOf($scope.deliveryNoteHeader.lines, row.entity);
-        if (rowIndex>-1) {
-            $scope.deliveryNoteHeader.lines.splice(rowIndex,1);
-        }
+        row.entity.deleted = true;
+        $scope.gridApi.core.setRowInvisible(row);
     }
 
     $scope.searchSupplier = function () {

@@ -65,4 +65,10 @@ public interface BoqDetailDao {
      * @param boqDetail boqDetail
      */
     void updateQtyReceived(BoqDetail boqDetail);
+
+    /**
+     * delete BoqDetail per lineid.
+     * @param boqLineId boqLineId
+     */
+    void deleteBoqDetailPerId(long boqLineId);
 }

@@ -70,8 +70,9 @@ public interface CustomerDao {
 
     /**
      * delete customer contact by id.
+     * @param customerId customerId
      * @param contactList contactList
      */
-    void deleteCustomerContactWhereIdNotIn(List contactList);
+    void deleteCustomerContactWhereIdNotIn(long customerId, List contactList);
 
 }

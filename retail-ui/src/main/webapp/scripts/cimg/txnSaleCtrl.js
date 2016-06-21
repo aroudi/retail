@@ -72,7 +72,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
         $scope.txnDetailList.noUnselect = true;
         //
         $scope.txnDetailList.onRegisterApi = function (gridApi) {
-            $scope.gridApi = gridApi;
+            $scope.txnDetailGridApi = gridApi;
             gridApi.selection.on.rowSelectionChanged($scope, function (row) {
                 $scope.selectedTxnDetailRow = row.entity;
             });
@@ -115,7 +115,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
 
         //
         $scope.txnMediaList.onRegisterApi = function (gridApi) {
-            $scope.gridApi = gridApi;
+            $scope.txnMediaGridApi = gridApi;
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 $scope.selectedTxnMediaRow = row.entity;
             });
@@ -182,7 +182,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
             'unitOfMeasure' : {},
             'txdePriceOveriden' : false,
             'txdeLineRefund' : false,
-            'txdeItemVoid' : false
+            'txdeItemVoid' : false,
+            'deleted' : false
         }
         return txnDetailObject;
     }
@@ -285,7 +286,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
         var valueNett = 0.00;
         var valueTax = 0.00;
         for (var i = 0; i < txnDetailList.length; i++) {
-            if (!txnDetailList[i].txdeItemVoid) {
+            if (!txnDetailList[i].txdeItemVoid && !txnDetailList[i].deleted ) {
                 valueNett = valueNett + txnDetailList[i].txdeValueNet*txnDetailList[i].txdeQuantitySold ;
                 valueGross = valueGross + txnDetailList[i].txdeValueGross*txnDetailList[i].txdeQuantitySold;
                 valueTax = valueTax + txnDetailList[i].txdeTax*txnDetailList[i].txdeValueLine*txnDetailList[i].txdeQuantitySold;
@@ -343,10 +344,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
             alert('item is undefined');
             return;
         }
-        var rowIndex = getArrIndexOf($scope.txnDetailList.data, row.entity);
-        if (rowIndex>-1) {
-            $scope.txnDetailList.data.splice(rowIndex,1);
-        }
+
+        row.entity.deleted = true;
+        $scope.txnDetailGridApi.core.setRowInvisible(row);
         totalTransaction();
     }
 });

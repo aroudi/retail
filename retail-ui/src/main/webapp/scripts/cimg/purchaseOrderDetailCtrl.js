@@ -294,13 +294,14 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         if (row.entity.polCreationType.displayName=='AUTO') {
             return;
         }
+        if ($scope.purchaseOrderHeader.pohStatus.categoryCode != 'POH_STATUS_IN_PROGRESS' && row.entity.id>=0) {
+            return;
+        }
         if (!confirm('Are you sure you want to delete this item?')) {
             return;
         }
-        var rowIndex = baseDataService.getArrIndexOf($scope.purchaseOrderHeader.lines, row.entity);
-        if (rowIndex>-1) {
-            $scope.purchaseOrderHeader.lines.splice(rowIndex,1);
-        }
+        row.entity.deleted = true;
+        $scope.gridApi.core.setRowInvisible(row);
     }
 
     $scope.searchSupplier = function () {
