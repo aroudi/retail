@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.UserDao">
+    <!-- result maps -->
+    <resultMap id="AppUserMap" type="AppUser" >
+        <id column="USR_ID" property="id" />
+        <result column="USR_NAME" property="usrName" />
+        <result column="USR_PASS" property="usrPass" />
+        <result column="USR_FIRST_NAME" property="usrFirstName" />
+        <result column="USR_SUR_NAME" property="usrSurName" />
+        <result column="USR_ACTIVE" property="usrActive" />
+        <result column="USR_DELETED" property="usrDeleted" />
+        <result column="USR_LOGED_ON" property="usrLogedOn" />
+        <collection property="appRoles" javaType="ArrayList" column="USR_ID" ofType="AppRole" select="getUserdRolesPerUserId"/>
+        <collection property="accessPoints" javaType="ArrayList" column="USR_ID" ofType="AccessPoint" select="getUserAccesspointsByUserId"/>
+    </resultMap>
+
+    <resultMap id="AppRoleMap" type="AppRole" >
+        <id column="ROLE_ID" property="id" />
+        <result column="ROLE_CODE" property="roleCode" />
+        <result column="ROLE_NAME" property="roleName" />
+        <result column="ROLE_DELETED" property="roleDeleted" />
+        <result column="ROLE_DESC" property="roleDesc" />
+        <collection property="accessPoints" javaType="ArrayList" column="ROLE_ID" ofType="AccessPoint" select="getRoleAccesspointsByRoleId"/>
+    </resultMap>
+
+    <resultMap id="AccessPointMap" type="AccessPoint" >
+        <id column="ACPT_ID" property="id" />
+        <result column="ACPT_NAME" property="acptName" />
+        <result column="ACPT_TOKEN" property="acptToken" />
+        <result column="ACPT_HELP_URL" property="acptHelpUrl" />
+        <result column="ACPT_DESC" property="acptDesc" />
+    </resultMap>
+
+    <sql id="appUserColumns">
+        ${alias}.USR_ID,
+        ${alias}.USR_NAME,
+        ${alias}.USR_PASS,
+        ${alias}.USR_FIRST_NAME,
+        ${alias}.USR_SUR_NAME,
+        ${alias}.USR_ACTIVE,
+        ${alias}.USR_DELETED,
+        ${alias}.USR_LOGED_ON
+    </sql>
+
+    <sql id="appRoleColumns">
+        ${alias}.ROLE_ID,
+        ${alias}.ROLE_CODE,
+        ${alias}.ROLE_NAME,
+        ${alias}.ROLE_DESC
+    </sql>
+    <sql id="accessPointColumns">
+        ${alias}.ACPT_ID,
+        ${alias}.ACPT_NAME,
+        ${alias}.ACPT_TOKEN,
+        ${alias}.ACPT_HELP_URL,
+        ${alias}.ACPT_DESC
+    </sql>
+
+    <!-- user management -->
+    <insert id="insertAppUser" parameterType="AppUser" useGeneratedKeys="true" keyProperty="id" keyColumn="USR_ID">
+        INSERT INTO APP_USER(
+         USR_NAME,
+         USR_PASS,
+         USR_FIRST_NAME,
+         USR_SUR_NAME
+        ) VALUES (
+        #{usrName},
+        #{usrPass}
+        <if test="usrFirstName != null">
+            ,#{usrFirstName}
+        </if>
+        <if test="usrFirstName == null">
+            ,null
+        </if>
+        <if test="usrSurName != null">
+            ,#{usrSurName}
+        </if>
+        <if test="usrSurName == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <update id="updateUserProfilePerId" parameterType="AppUser" >
+        UPDATE APP_USER SET
+          USR_FIRST_NAME = #{usrFirstName},
+          USR_SUR_NAME = #{usrSurName},
+          USR_PASS = #{usrPass},
+          USR_ACTIVE = #{usrActive}
+        WHERE USR_ID = #{id}
+    </update>
+
+    <update id="changePasswordPerUserId" parameterType="AppUser" >
+        UPDATE APP_USER SET
+        USR_PASS = #{usrPass} WHERE USR_ID = #{id}
+    </update>
+
+    <update id="deleteUserById" >
+        UPDATE APP_USER SET
+        USR_DELETED = 1 WHERE USR_ID = #{value}
+    </update>
+
+    <update id="activeUserById" >
+        UPDATE APP_USER SET
+        USR_ACTIVE = 1 WHERE USR_ID = #{value}
+    </update>
+
+    <update id="deActiveUserById" >
+        UPDATE APP_USER SET
+        USR_ACTIVE = 0 WHERE USR_ID = #{value}
+    </update>
+
+    <select id="login" resultMap="appUserMap" >
+        SELECT
+        <include refid="appUserColumns"><property name="alias" value="user"/></include>
+        FROM
+              APP_USER user
+        WHERE
+          user.USR_NAME=#{param1}
+          and user.USR_PASS = #{param2}
+    </select>
+
+    <select id="getUserById" resultMap="appUserMap" >
+        SELECT
+        <include refid="appUserColumns"><property name="alias" value="user"/></include>
+        FROM
+        APP_USER user
+        WHERE
+        user.USR_ID=#{value}
+    </select>
+
+    <select id="getUserByUserName" resultMap="appUserMap" >
+        SELECT
+        <include refid="appUserColumns"><property name="alias" value="user"/></include>
+        FROM
+        APP_USER user
+        WHERE
+        user.USR_NAME=#{value}
+    </select>
+
+    <select id="getValidUsers" resultMap="appUserMap" >
+        SELECT
+        <include refid="appUserColumns"><property name="alias" value="user"/></include>
+        FROM
+        APP_USER user
+        WHERE
+        user.USR_DELETED == 0
+    </select>
+
+    <!-- role management -->
+    <insert id="insertAppRole" parameterType="AppRole" useGeneratedKeys="true" keyProperty="id" keyColumn="ROLE_ID">
+        INSERT INTO APP_ROLE(
+        ROLE_NAME,
+        ROLE_CODE,
+        ROLE_DESC
+        ) VALUES (
+        #{roleName}
+        <if test="roleCode != null">
+            ,#{roleCode}
+        </if>
+        <if test="roleCode == null">
+            ,null
+        </if>
+        <if test="roleDesc != null">
+            ,#{roleDesc}
+        </if>
+        <if test="roleDesc == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <update id="updateRolePerId" parameterType="AppRole" >
+        UPDATE APP_ROLE SET
+        ROLE_NAME = #{roleName}
+        <if test="roleCode != null">
+            ,ROLE_CODE = #{roleCode}
+        </if>
+        <if test="roleDesc != null">
+            ,ROLE_DESC = #{roleDesc}
+        </if>
+        WHERE ROLE_ID = #{id}
+    </update>
+    <update id="deleteRoleById" >
+        UPDATE APP_ROLE SET
+        ROLE_DELETED = 1 WHERE ROLE_ID = #{value}
+    </update>
+
+    <select id="getRoleById" resultMap="appRoleMap" >
+        SELECT
+        <include refid="appRoleColumns"><property name="alias" value="role"/></include>
+        FROM
+        APP_ROLE role
+        WHERE
+        role.ROLE_ID=#{value}
+    </select>
+
+    <select id="getValidRoles" resultMap="appRoleMap" >
+        SELECT
+        <include refid="appRoleColumns"><property name="alias" value="role"/></include>
+        FROM
+        APP_ROLE role
+        WHERE
+        role.ROLE_DELETED = 0
+    </select>
+
+    <select id="getUserdRolesPerUserId" resultMap="appRoleMap" >
+        SELECT
+        <include refid="appRoleColumns"><property name="alias" value="role"/></include>
+        FROM
+        APP_ROLE role INNER JOIN APP_USER_ROLE aur ON (role.ROLE_ID = aur.ROLE_ID)
+        WHERE
+        aur.USR_ID = #{value} and role.ROLE_DELETED = 0
+    </select>
+
+    <!-- Access Point management -->
+    <insert id="insertAccessPoint" parameterType="AccessPoint" useGeneratedKeys="true" keyProperty="id" keyColumn="ACPT_ID">
+        INSERT INTO ACCESS_POINT(
+        ACPT_NAME,
+        ACPT_TOKEN,
+        ACPT_HELP_URL,
+        ACPT_DESC
+        ) VALUES (
+        #{acptName},
+        #{acptToken}
+        <if test="acptHelpUrl != null">
+            ,#{acptHelpUrl}
+        </if>
+        <if test="acptHelpUrl == null">
+            ,null
+        </if>
+        <if test="acptDesc != null">
+            ,#{acptDesc}
+        </if>
+        <if test="acptDesc == null">
+            ,null
+        </if>
+        )
+    </insert>
+    <update id="updateAccessPointPerId" parameterType="AccessPoint" >
+        UPDATE ACCESS_POINT SET
+        ACPT_NAME = #{acptName}
+        <if test="acptToken != null">
+            ,ACPT_TOKEN = #{acptToken}
+        </if>
+        <if test="acptHelpUrl != null">
+            ,ACPT_HELP_URL = #{acptHelpUrl}
+        </if>
+        <if test="acptDesc != null">
+            ,ACPT_DESC = #{acptDesc}
+        </if>
+        WHERE ACPT_ID = #{id}
+    </update>
+
+    <select id="getAccesspointById" resultMap="AccessPointMap" >
+        SELECT
+        <include refid="accessPointColumns"><property name="alias" value="ap"/></include>
+        FROM
+        ACCESS_POINT ap
+        WHERE
+        ap.ACPT_ID=#{value}
+    </select>
+
+    <select id="getUserAccesspointsByUserId" resultMap="AccessPointMap" >
+        SELECT
+        <include refid="accessPointColumns"><property name="alias" value="ap"/></include>
+        FROM
+        ACCESS_POINT ap INNER JOIN USER_ACCESS ua ON(ap.ACPT_ID = ua.ACPT_ID)
+        WHERE
+        ua.USR_ID=#{value}
+    </select>
+
+    <select id="getRoleAccesspointsByRoleId" resultMap="AccessPointMap" >
+        SELECT
+        <include refid="accessPointColumns"><property name="alias" value="ap"/></include>
+        FROM
+        ACCESS_POINT ap INNER JOIN ROLE_ACCESS ra ON(ap.ACPT_ID = ra.ACPT_ID)
+        WHERE
+        ra.ROLE_ID=#{value}
+    </select>
+
+    <!-- User Role -->
+    <insert id="insertUserRoleLink" parameterType="AppUserRole" useGeneratedKeys="true" keyProperty="id" keyColumn="OP_ROLE_ID">
+        INSERT INTO APP_USER_ROLE(
+        USR_ID,
+        ROLE_ID
+        ) VALUES (
+        #{usrId},
+        #{roleId}
+        )
+    </insert>
+
+    <delete id="deleteUserRoleLinkByUserId" >
+        DELETE
+        From APP_USER_ROLE
+        WHERE
+        USR_ID = #{value}
+    </delete>
+
+    <delete id="deleteUserRoleLinkByRoleId" >
+        DELETE
+        From APP_USER_ROLE
+        WHERE
+        ROLE_ID = #{value}
+    </delete>
+
+    <!-- User Access -->
+    <insert id="insertUserAccessLink" parameterType="UserAccess" useGeneratedKeys="true" keyProperty="id" keyColumn="USR_ACS_ID">
+        INSERT INTO USER_ACCESS(
+        USR_ID,
+        ACPT_ID
+        ) VALUES (
+        #{usrId},
+        #{acptId}
+        )
+    </insert>
+
+    <delete id="deleteUserAccessLinkByUserId" >
+        DELETE
+        From USER_ACCESS
+        WHERE
+        USR_ID = #{value}
+    </delete>
+
+    <!-- Role Access -->
+    <insert id="insertRoleAccessLink" parameterType="RoleAccess" useGeneratedKeys="true" keyProperty="id" keyColumn="ROLE_ACS_ID">
+        INSERT INTO ROLE_ACCESS(
+        ROLE_ID,
+        ACPT_ID
+        ) VALUES (
+        #{roleId},
+        #{acptId}
+        )
+    </insert>
+
+    <delete id="deleteRoleAccessLinkByRoleId" >
+        DELETE
+        From ROLE_ACCESS
+        WHERE
+        ROLE_ID = #{value}
+    </delete>
+
+</mapper>

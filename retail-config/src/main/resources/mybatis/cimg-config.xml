@@ -41,6 +41,12 @@
         <typeAlias type="au.com.biztune.retail.domain.DeliveryNoteLine" alias="DeliveryNoteLine" />
         <typeAlias type="au.com.biztune.retail.domain.PoDelNoteLink" alias="PoDelNoteLink" />
         <typeAlias type="au.com.biztune.retail.domain.CustomerContact" alias="CustomerContact" />
+        <typeAlias type="au.com.biztune.retail.domain.AppUser" alias="AppUser" />
+        <typeAlias type="au.com.biztune.retail.domain.AppRole" alias="AppRole" />
+        <typeAlias type="au.com.biztune.retail.domain.AccessPoint" alias="AccessPoint" />
+        <typeAlias type="au.com.biztune.retail.domain.AppUserRole" alias="AppUserRole" />
+        <typeAlias type="au.com.biztune.retail.domain.UserAccess" alias="UserAccess" />
+        <typeAlias type="au.com.biztune.retail.domain.RoleAccess" alias="RoleAccess" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />
