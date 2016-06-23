@@ -82,7 +82,13 @@ var service_uri = {
     'POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI' : 'purchaseOrder/header/search/orguIdSupIdStatusId/',
     'DEL_NOTE_SAVE_URI' : 'deliveryNote/add',
     'DEL_NOTE_GET_ALL_URI' : 'deliveryNote/header/all',
-    'DEL_NOTE_GET_URI' : 'deliveryNote/header/getWhole/'
+    'DEL_NOTE_GET_URI' : 'deliveryNote/header/getWhole/',
+    'USER_ALL_URI' : 'user/allValid',
+    'USER_ADD_URI' : 'user/add',
+    'USER_ACTIVATE_URI' : 'user/activate/',
+    'USER_DEACTIVATE_URI' : 'user/deActivate/',
+    'USER_DELETE_URI' : 'user/delete/'
+
 }
 
 var response_status = {
