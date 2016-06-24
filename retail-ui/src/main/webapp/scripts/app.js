@@ -83,11 +83,15 @@ var service_uri = {
     'DEL_NOTE_SAVE_URI' : 'deliveryNote/add',
     'DEL_NOTE_GET_ALL_URI' : 'deliveryNote/header/all',
     'DEL_NOTE_GET_URI' : 'deliveryNote/header/getWhole/',
-    'USER_ALL_URI' : 'user/allValid',
-    'USER_ADD_URI' : 'user/add',
-    'USER_ACTIVATE_URI' : 'user/activate/',
-    'USER_DEACTIVATE_URI' : 'user/deActivate/',
-    'USER_DELETE_URI' : 'user/delete/'
+    'USER_ALL_URI' : 'user/allValidUser',
+    'USER_ADD_URI' : 'user/addUser',
+    'USER_ACTIVATE_URI' : 'user/activateUser/',
+    'USER_DEACTIVATE_URI' : 'user/deActivateUser/',
+    'USER_DELETE_URI' : 'user/deleteUser/',
+    'ACCESSPOINT_ALL_URI' : 'user/allAccessPoint',
+    'ROLE_ALL_URI' : 'user/allValidRole',
+    'ROLE_ADD_URI' : 'user/addRole',
+    'ROLE_DELETE_URI' : 'user/deleteRole/'
 
 }
 

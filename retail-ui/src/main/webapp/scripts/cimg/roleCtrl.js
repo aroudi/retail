@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, baseDataService, SUCCESS, FAILURE, USER_ADD_URI) {
+cimgApp.controller('roleCtrl', function($scope, $state,ngDialog, UserService, baseDataService, SUCCESS, FAILURE, ROLE_ADD_URI) {
     //set default data on the page
     $scope.accessPoints = {
         enableFiltering: true,
@@ -24,7 +24,6 @@ cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, ba
     $scope.accessPoints.enableRowSelection = true;
     $scope.accessPoints.multiSelect = false;
     $scope.accessPoints.noUnselect= true;
-
     //
     $scope.accessPoints.onRegisterApi = function (gridApi) {
         $scope.accessPointsGridApi = gridApi;
@@ -33,55 +32,62 @@ cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, ba
         });
     };
 
-    $scope.appRoles = {
+    $scope.appUsers = {
         enableFiltering: true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'roleCode', displayName:'Code',enableCellEdit:false, width:'30%'},
-            {field:'roleName', displayName:'Role Name',enableCellEdit:false, width:'30%',
+            {field:'usrName', displayName:'User Name', enableCellEdit:false, width:'20%'},
+            {field:'usrFirstName', displayName:'First Name',enableCellEdit:false, width:'30%',
                 cellTooltip: function(row,col) {
-                    return row.entity.roleName
+                    return row.entity.usrFirstName
                 }
             },
-            {field:'roleDesc', displayName:'Description',enableCellEdit:false, width:'30%',
+            {field:'usrSurName', enableCellEdit:false , width:'35%',
                 cellTooltip: function(row,col) {
-                    return row.entity.roleDesc
+                    return row.entity.usrSurName
                 }
             },
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Remove" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeAccessPoint(row)"></i></a>', width:'5%' }
+            {field:'usrActive', displayName:'Active',enableCellEdit:false, width:'5%', cellFilter:'booleanFilter',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    if (grid.getCellValue(row, col) === 'Yes') {
+                        return 'green';
+                    } else if (grid.getCellValue(row, col) === 'No') {
+                        return 'red'
+                    }
+                }
+            }
         ]
     }
-    $scope.appRoles.enableRowSelection = true;
-    $scope.appRoles.multiSelect = false;
-    $scope.appRoles.noUnselect= true;
+    $scope.appUsers.enableRowSelection = true;
+    $scope.appUsers.multiSelect = false;
+    $scope.appUsers.noUnselect= true;
 
     //
-    $scope.appRoles.onRegisterApi = function (gridApi) {
-        $scope.appRolesGridApi = gridApi;
+    $scope.appUsers.onRegisterApi = function (gridApi) {
+        $scope.appUsersGridApi = gridApi;
         gridApi.selection.on.rowSelectionChanged($scope, function(row) {
             //baseDataService.setRow(row.entity);
         });
     };
 
 
+
     initPageData();
     function initPageData() {
         if ( baseDataService.getIsPageNew()) {
-            $scope.appUser = {};
+            $scope.appRole = {};
             $scope.pageIsNew = true;
-            $scope.retryPassword='';
         } else {
             $scope.pageIsNew = false;
-            $scope.appUser = angular.copy(baseDataService.getRow());
-            $scope.accessPoints.data = $scope.appUser.accessPoints;
-            $scope.appRoles.data = $scope.appUser.appRoles;
+            $scope.appRole = angular.copy(baseDataService.getRow());
+            $scope.accessPoints.data = $scope.appRole.accessPoints;
             baseDataService.setIsPageNew(true);
             baseDataService.setRow({});
         }
    }
 
     //create new user
-    $scope.createUser = function () {
+    $scope.createRole = function () {
 
         /*
         var userId = UserService.getUserId();
@@ -92,21 +98,14 @@ cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, ba
         */
 
         //$scope.facility.lastModifiedBy = userId;
-        if ($scope.pageIsNew) {
-            if ($scope.retryPassword != $scope.appUser.usrPass) {
-                baseDataService.displayMessage('Warning', 'Password and Retry does not match ');
-                return
-            }
-        }
-        $scope.appUser.accessPoints = $scope.accessPoints.data;
-        $scope.appUser.appRoles = $scope.appRoles.data;
-        var rowObject = $scope.appUser;
-        baseDataService.addRow(rowObject, USER_ADD_URI).then(function(response) {
+        $scope.appRole.accessPoints = $scope.accessPoints.data;
+        var rowObject = $scope.appRole;
+        baseDataService.addRow(rowObject, ROLE_ADD_URI).then(function(response) {
             addResponse = response.data;
             if (addResponse.status == SUCCESS ) {
                 $state.go('dashboard.listUser');
             } else {
-                baseDataService.displayMessage('Warning', 'Not able to save user. ' + addResponse.message);
+                alert('Not able to save role. ' + addResponse.message);
             }
         });
         return;
@@ -135,17 +134,18 @@ cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, ba
         );
     }
 
-    $scope.addRole = function () {
+
+    $scope.addUser = function () {
         ngDialog.openConfirm({
-            template:'views/pages/roleSearch.html',
-            controller:'roleSearchCtrl',
+            template:'views/pages/userSearch.html',
+            controller:'userSearchCtrl',
             className: 'ngdialog-theme-default',
             closeByDocument:false
-        }).then (function (roleList){
-                if (roleList != undefined) {
-                    for (i=0; i<roleList.length; i++) {
-                        var role = roleList[i];
-                        $scope.appRoles.data.push(role);
+        }).then (function (userList){
+                if (userList != undefined) {
+                    for (i=0; i<userList.length; i++) {
+                        var user = userList[i];
+                        $scope.appUsers.data.push(user);
                     }
                 }
             }, function(reason) {
@@ -154,28 +154,30 @@ cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, ba
         );
     }
 
+
+
     $scope.removeAccessPoint = function(row) {
         if (!confirm('Are you sure you want to delete this access point?')) {
             return;
         }
         if (row == undefined || row.entity == undefined) {
-            baseDataService.displayMessage('Warning', 'item is undefined!!!');
+            alert('item is undefined');
             return;
         }
         row.entity.deleted = true;
         $scope.accessPointsGridApi.core.setRowInvisible(row);
     }
 
-    $scope.removeRole = function(row) {
-        if (!confirm('Are you sure you want to delete this role?')) {
+    $scope.removeUser = function(row) {
+        if (!confirm('Are you sure you want to delete this user?')) {
             return;
         }
         if (row == undefined || row.entity == undefined) {
-            baseDataService.displayMessage('Warning', 'item is undefined!!!');
+            alert('item is undefined');
             return;
         }
-        row.entity.roleDeleted = true;
-        $scope.appRolesGridApi.core.setRowInvisible(row);
+        row.entity.usrDeleted = true;
+        $scope.appUsersGridApi.core.setRowInvisible(row);
     }
 
 });

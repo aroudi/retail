@@ -99,6 +99,21 @@ public interface UserDao {
     AppRole getRoleById(long roleId);
 
     /**
+     * get role by NAME.
+     * @param name name
+     * @return AppRole
+     */
+    AppRole getRoleByName(String name);
+
+    /**
+     * get role by NAME.
+     * @param code code
+     * @return AppRole
+     */
+    AppRole getRoleByCode(String code);
+
+
+    /**
      * get valid roles.
      * @return AppRole
      */
@@ -109,8 +124,14 @@ public interface UserDao {
      * @param userId userId
      * @return AppRoles
      */
-    List<AppRole> getUserdRolesPerUserId(long userId);
+    List<AppRole> getUserRolesPerUserId(long userId);
 
+    /**
+     * get Role users per roleId.
+     * @param roleId roleId
+     * @return List of Users
+     */
+    List<AppUser> getRoleUsersPerRoleId(long roleId);
     /**
      * insert Access Point.
      * @param accessPoint accessPoint
@@ -184,4 +205,16 @@ public interface UserDao {
      * @param roleId roleId
      */
     void deleteRoleAccessLinkByRoleId(long roleId);
+
+    /**
+     * get all access ponts.
+     * @return List of AccessPoints
+     */
+    List<AccessPoint> getAllAccesspoints();
+
+    /**
+     * delete role user link by roleId.
+     * @param roleId roleId
+     */
+    void deleteRoleUserLinkByRoleId(long roleId);
 }

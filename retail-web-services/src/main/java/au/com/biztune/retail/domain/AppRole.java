@@ -12,6 +12,7 @@ public class AppRole {
     private String roleDesc;
     private boolean roleDeleted;
     private List<AccessPoint> accessPoints;
+    private List<AppUser> appUsers;
 
     public long getId() {
         return id;
@@ -59,5 +60,13 @@ public class AppRole {
 
     public void setRoleDeleted(boolean roleDeleted) {
         this.roleDeleted = roleDeleted;
+    }
+
+    public List<AppUser> getAppUsers() {
+        return appUsers;
+    }
+
+    public void setAppUsers(List<AppUser> appUsers) {
+        this.appUsers = appUsers;
     }
 }

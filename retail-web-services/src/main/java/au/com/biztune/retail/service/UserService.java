@@ -1,5 +1,7 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.domain.AccessPoint;
+import au.com.biztune.retail.domain.AppRole;
 import au.com.biztune.retail.domain.AppUser;
 import au.com.biztune.retail.response.CommonResponse;
 
@@ -38,5 +40,37 @@ public interface UserService {
      * @param userId userId
      * @return AppUser
      */
-    AppUser getUseById(long userId);
+    AppUser getUserById(long userId);
+
+    /**
+     * add/edit role.
+     * @param appRole appRole
+     * @return CommonResponse
+     */
+    CommonResponse addRole(AppRole appRole);
+    /**
+     * delete role by id.
+     * @param roleId roleId
+     * @return CommonResponse
+     */
+    CommonResponse deleteRole(long roleId);
+
+    /**
+     * get all valid roles - role not deleted.
+     * @return List of AppRole
+     */
+    List<AppRole> getAllValidRoles();
+
+    /**
+     * get role by id.
+     * @param roleId roleId
+     * @return AppRole
+     */
+    AppRole getRoleById(long roleId);
+
+    /**
+     * get all valid roles - role not deleted.
+     * @return List of Access Point
+     */
+    List<AccessPoint> getAllAccessPoints();
 }

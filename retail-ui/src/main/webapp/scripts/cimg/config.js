@@ -177,6 +177,30 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/generalList.html',
             access: "user"
         })
+        .state('dashboard.addUser',{
+            url:'/addUser',
+            controller: 'userCtrl',
+            templateUrl:'views/pages/user.html',
+            access: "user"
+        })
+        .state('dashboard.listUser',{
+            url:'/listUser',
+            controller: 'userListCtrl',
+            templateUrl:'views/pages/userList.html',
+            access: "user"
+        })
+        .state('dashboard.addRole',{
+            url:'/addRole',
+            controller: 'roleCtrl',
+            templateUrl:'views/pages/role.html',
+            access: "user"
+        })
+        .state('dashboard.listRole',{
+            url:'/listRole',
+            controller: 'roleListCtrl',
+            templateUrl:'views/pages/roleList.html',
+            access: "user"
+        })
         .state('dashboard.login',{
             url:'/login',
             controller: 'loginController',

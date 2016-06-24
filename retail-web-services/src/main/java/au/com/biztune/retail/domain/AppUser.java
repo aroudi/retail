@@ -12,7 +12,7 @@ public class AppUser {
     private String usrFirstName;
     private String usrSurName;
     private String usrActive;
-    private String usrDeleted;
+    private boolean usrDeleted;
     private String usrLogedOn;
     private List<AccessPoint> accessPoints;
     private List<AppRole> appRoles;
@@ -65,14 +65,6 @@ public class AppUser {
         this.usrActive = usrActive;
     }
 
-    public String getUsrDeleted() {
-        return usrDeleted;
-    }
-
-    public void setUsrDeleted(String usrDeleted) {
-        this.usrDeleted = usrDeleted;
-    }
-
     public String getUsrLogedOn() {
         return usrLogedOn;
     }
@@ -95,5 +87,13 @@ public class AppUser {
 
     public void setAppRoles(List<AppRole> appRoles) {
         this.appRoles = appRoles;
+    }
+
+    public boolean isUsrDeleted() {
+        return usrDeleted;
+    }
+
+    public void setUsrDeleted(boolean usrDeleted) {
+        this.usrDeleted = usrDeleted;
     }
 }

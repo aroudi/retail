@@ -9,6 +9,7 @@ public class AccessPoint {
     private String acptToken;
     private String acptHelpUrl;
     private String acptDesc;
+    private boolean deleted;
 
     public long getId() {
         return id;
@@ -48,5 +49,13 @@ public class AccessPoint {
 
     public void setAcptDesc(String acptDesc) {
         this.acptDesc = acptDesc;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }
