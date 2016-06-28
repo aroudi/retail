@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="au.com.biztune.retail.dao.UserDao">
     <!-- result maps -->
-    <resultMap id="AppUserMap" type="AppUser" >
+    <resultMap id="appUserMap" type="AppUser" >
         <id column="USR_ID" property="id" />
         <result column="USR_NAME" property="usrName" />
         <result column="USR_PASS" property="usrPass" />
@@ -17,7 +17,7 @@
         <collection property="accessPoints" javaType="ArrayList" column="USR_ID" ofType="AccessPoint" select="getUserAccesspointsByUserId"/>
     </resultMap>
 
-    <resultMap id="AppRoleMap" type="AppRole" >
+    <resultMap id="appRoleMap" type="AppRole" >
         <id column="ROLE_ID" property="id" />
         <result column="ROLE_CODE" property="roleCode" />
         <result column="ROLE_NAME" property="roleName" />
@@ -26,7 +26,7 @@
         <collection property="accessPoints" javaType="ArrayList" column="ROLE_ID" ofType="AccessPoint" select="getRoleAccesspointsByRoleId"/>
     </resultMap>
 
-    <resultMap id="AccessPointMap" type="AccessPoint" >
+    <resultMap id="accessPointMap" type="AccessPoint" >
         <id column="ACPT_ID" property="id" />
         <result column="ACPT_NAME" property="acptName" />
         <result column="ACPT_TOKEN" property="acptToken" />
@@ -115,39 +115,39 @@
 
     <select id="login" resultMap="appUserMap" >
         SELECT
-        <include refid="appUserColumns"><property name="alias" value="user"/></include>
+        <include refid="appUserColumns"><property name="alias" value="usr"/></include>
         FROM
-              APP_USER user
+              APP_USER usr
         WHERE
-          user.USR_NAME=#{param1}
-          and user.USR_PASS = #{param2}
+          usr.USR_NAME=#{param1}
+          and usr.USR_PASS = #{param2}
     </select>
 
     <select id="getUserById" resultMap="appUserMap" >
         SELECT
-        <include refid="appUserColumns"><property name="alias" value="user"/></include>
+        <include refid="appUserColumns"><property name="alias" value="usr"/></include>
         FROM
-        APP_USER user
+        APP_USER usr
         WHERE
-        user.USR_ID=#{value}
+        usr.USR_ID=#{value}
     </select>
 
     <select id="getUserByUserName" resultMap="appUserMap" >
         SELECT
-        <include refid="appUserColumns"><property name="alias" value="user"/></include>
+        <include refid="appUserColumns"><property name="alias" value="usr"/></include>
         FROM
-        APP_USER user
+        APP_USER usr
         WHERE
-        user.USR_NAME=#{value}
+        usr.USR_NAME=#{value}
     </select>
 
     <select id="getValidUsers" resultMap="appUserMap" >
         SELECT
-        <include refid="appUserColumns"><property name="alias" value="user"/></include>
+        <include refid="appUserColumns"><property name="alias" value="usr"/></include>
         FROM
-        APP_USER user
+        APP_USER usr
         WHERE
-        user.USR_DELETED == 0
+        usr.USR_DELETED = 0
     </select>
 
     <!-- role management -->
@@ -234,13 +234,13 @@
         aur.USR_ID = #{value} and role.ROLE_DELETED = 0
     </select>
 
-    <select id="getRoleUsersPerRoleId" resultMap="appRoleMap" >
+    <select id="getRoleUsersPerRoleId" resultMap="appUserMap" >
         SELECT
-        <include refid="appRoleColumns"><property name="alias" value="role"/></include>
+        <include refid="appUserColumns"><property name="alias" value="usr"/></include>
         FROM
-        APP_ROLE role INNER JOIN APP_USER_ROLE aur ON (role.ROLE_ID = aur.ROLE_ID)
+        APP_USER usr INNER JOIN APP_USER_ROLE aur ON (usr.USR_ID = aur.USR_ID)
         WHERE
-        aur.USR_ID = #{value} and role.ROLE_DELETED = 0
+        aur.ROLE_ID = #{value} and usr.USR_DELETED = 0
     </select>
 
     <!-- Access Point management -->
@@ -282,7 +282,7 @@
         WHERE ACPT_ID = #{id}
     </update>
 
-    <select id="getAccesspointById" resultMap="AccessPointMap" >
+    <select id="getAccesspointById" resultMap="accessPointMap" >
         SELECT
         <include refid="accessPointColumns"><property name="alias" value="ap"/></include>
         FROM
@@ -291,7 +291,7 @@
         ap.ACPT_ID=#{value}
     </select>
 
-    <select id="getUserAccesspointsByUserId" resultMap="AccessPointMap" >
+    <select id="getUserAccesspointsByUserId" resultMap="accessPointMap" >
         SELECT
         <include refid="accessPointColumns"><property name="alias" value="ap"/></include>
         FROM
@@ -300,7 +300,7 @@
         ua.USR_ID=#{value}
     </select>
 
-    <select id="getRoleAccesspointsByRoleId" resultMap="AccessPointMap" >
+    <select id="getRoleAccesspointsByRoleId" resultMap="accessPointMap" >
         SELECT
         <include refid="accessPointColumns"><property name="alias" value="ap"/></include>
         FROM
@@ -310,7 +310,7 @@
     </select>
 
 
-    <select id="getAllAccesspoints" resultMap="AccessPointMap" >
+    <select id="getAllAccesspoints" resultMap="accessPointMap" >
         SELECT
         <include refid="accessPointColumns"><property name="alias" value="ap"/></include>
         FROM

@@ -33,21 +33,21 @@ var cimgApp = angular
   ]);
 
 //SIT
-
+/*
 var config_data = {
     'SERVER' : '10.0.0.17',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
-
+*/
 //DEV
-/*
+
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
-*/
+
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -85,12 +85,14 @@ var service_uri = {
     'DEL_NOTE_GET_URI' : 'deliveryNote/header/getWhole/',
     'USER_ALL_URI' : 'user/allValidUser',
     'USER_ADD_URI' : 'user/addUser',
+    'USER_GET_URI' : 'user/getUser/',
     'USER_ACTIVATE_URI' : 'user/activateUser/',
     'USER_DEACTIVATE_URI' : 'user/deActivateUser/',
     'USER_DELETE_URI' : 'user/deleteUser/',
-    'ACCESSPOINT_ALL_URI' : 'user/allAccessPoint',
+    'ACCESSPOINT_ALL_URI' : 'user/allAccessPoints',
     'ROLE_ALL_URI' : 'user/allValidRole',
     'ROLE_ADD_URI' : 'user/addRole',
+    'ROLE_GET_URI' : 'user/getRole/',
     'ROLE_DELETE_URI' : 'user/deleteRole/'
 
 }

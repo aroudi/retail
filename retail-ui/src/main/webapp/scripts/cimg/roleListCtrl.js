@@ -44,7 +44,7 @@ cimgApp.controller('roleListCtrl', function($scope, $state, $timeout,baseDataSer
             alert('row is undefined');
             return;
         }
-        var roleGetURI = ROLE_GET_URI + '/' + row.entity.id;
+        var roleGetURI = ROLE_GET_URI  + row.entity.id;
         baseDataService.getBaseData(roleGetURI).then(function(response){
             baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);

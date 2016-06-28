@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 @Component
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private UserDao userDao;

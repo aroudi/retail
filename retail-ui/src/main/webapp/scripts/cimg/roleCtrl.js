@@ -42,7 +42,7 @@ cimgApp.controller('roleCtrl', function($scope, $state,ngDialog, UserService, ba
                     return row.entity.usrFirstName
                 }
             },
-            {field:'usrSurName', enableCellEdit:false , width:'35%',
+            {field:'usrSurName',displayName:'Sur Name', enableCellEdit:false , width:'35%',
                 cellTooltip: function(row,col) {
                     return row.entity.usrSurName
                 }
@@ -55,7 +55,9 @@ cimgApp.controller('roleCtrl', function($scope, $state,ngDialog, UserService, ba
                         return 'red'
                     }
                 }
-            }
+            },
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Remove" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeUser(row)"></i></a>', width:'5%' }
+
         ]
     }
     $scope.appUsers.enableRowSelection = true;
@@ -81,6 +83,7 @@ cimgApp.controller('roleCtrl', function($scope, $state,ngDialog, UserService, ba
             $scope.pageIsNew = false;
             $scope.appRole = angular.copy(baseDataService.getRow());
             $scope.accessPoints.data = $scope.appRole.accessPoints;
+            $scope.appUsers.data = $scope.appRole.appUsers;
             baseDataService.setIsPageNew(true);
             baseDataService.setRow({});
         }
@@ -99,11 +102,12 @@ cimgApp.controller('roleCtrl', function($scope, $state,ngDialog, UserService, ba
 
         //$scope.facility.lastModifiedBy = userId;
         $scope.appRole.accessPoints = $scope.accessPoints.data;
+        $scope.appRole.appUsers = $scope.appUsers.data;
         var rowObject = $scope.appRole;
         baseDataService.addRow(rowObject, ROLE_ADD_URI).then(function(response) {
             addResponse = response.data;
             if (addResponse.status == SUCCESS ) {
-                $state.go('dashboard.listUser');
+                $state.go('dashboard.listRole');
             } else {
                 alert('Not able to save role. ' + addResponse.message);
             }

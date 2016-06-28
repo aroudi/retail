@@ -72,5 +72,6 @@
         <mapper resource="maps/PoBoqLinkMapper.xml" />
         <mapper resource="maps/DeliveryNoteMapper.xml" />
         <mapper resource="maps/PoDelNoteLinkMapper.xml" />
+        <mapper resource="maps/UserMapper.xml" />
     </mappers>
 </configuration>

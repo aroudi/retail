@@ -386,3 +386,24 @@ GO
 
 INSERT INTO CONFIG_CATEGORY(CONFIG_TYPE_ID, CATEGORY_CODE, DISPLAY_NAME, DESCRIPTION, COLOR) VALUES ((SELECT CONFIG_TYPE_ID FROM CONFIG_TYPE WHERE CONFIG_CODE='CONTACT_TYPE'),'CONTACT_TYPE_PM', 'PROJECT MANAGER', 'PROJECT MANAGER','blue');
 GO
+
+
+--user access
+
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Add Customer', 'createCustomer', 'Add new customer');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('List Customers', 'listCustomer', 'View customer list');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Add Supplier', 'createSupplier', 'Add new supplier');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('List Suppliers', 'listSupplier', 'View supplier list');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Add Product', 'createProduct', 'Add new product');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('List products', 'listProduct', 'View product list');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Import BOQ', 'uploadFile', 'Import BOQ');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('List BOQs', 'boqList', 'View BOQ list');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Create Purchase Order', 'purchaseOrderDetail', 'Create Purchase Order');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('List Purchase Orders', 'purchaseOrderList', 'View purchase order list');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Create Good Received', 'deliveryNote', 'View Good Received list');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Create Sale Transaction', 'createSaleTransaction', 'Create Sale Transaction');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('List Sale Transaction', 'listSaleTransaction', 'View sale transaction list');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Add User', 'addUser', 'Add new user');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('List Users', 'listUser', 'View user list');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Add Role', 'addRole', 'Add new role');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('List Roles', 'listRole', 'View role list');

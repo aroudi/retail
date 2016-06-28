@@ -117,6 +117,24 @@
                 </ul>
             </li>
 
+            <li ng-class="{active: collapseVar==8}">{{dropDown}}
+                <a href="" ng-click="check(8)"><i class="fa fa-comments fa-fw"></i> User Management<span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=8">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.addUser">Create User</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.listUser">User List</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.addRole">Create Role</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.listRole">Role List</a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </div>
     <!-- /.sidebar-collapse -->

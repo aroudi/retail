@@ -53,7 +53,7 @@ cimgApp.controller('userListCtrl', function($scope, $state, $timeout,baseDataSer
             alert('row is undefined');
             return;
         }
-        var userGetURI = USER_GET_URI + '/' + row.entity.id;
+        var userGetURI = USER_GET_URI  + row.entity.id;
         baseDataService.getBaseData(userGetURI).then(function(response){
             baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
