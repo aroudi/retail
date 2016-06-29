@@ -280,5 +280,20 @@ public class UserServiceImpl implements UserService {
             return null;
         }
     }
+
+    /**
+     * login to the system and return user with all its access rights.
+     * @param userName userName
+     * @param password password
+     * @return appUser
+     */
+    public AppUser doLogin (String userName, String password) {
+        try {
+            return userDao.doLogin(userName, password);
+        } catch (Exception e) {
+            logger.error("Exception in login user: ", e);
+            return null;
+        }
+    }
 }
 

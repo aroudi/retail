@@ -217,4 +217,12 @@ public interface UserDao {
      * @param roleId roleId
      */
     void deleteRoleUserLinkByRoleId(long roleId);
+
+    /**
+     * login to the system.
+     * @param userName userName
+     * @param password password
+     * @return User Object
+     */
+    AppUser doLogin(String userName, String password);
 }

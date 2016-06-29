@@ -7,7 +7,7 @@
     <resultMap id="appUserMap" type="AppUser" >
         <id column="USR_ID" property="id" />
         <result column="USR_NAME" property="usrName" />
-        <result column="USR_PASS" property="usrPass" />
+        <!--result column="USR_PASS" property="usrPass" /-->
         <result column="USR_FIRST_NAME" property="usrFirstName" />
         <result column="USR_SUR_NAME" property="usrSurName" />
         <result column="USR_ACTIVE" property="usrActive" />
@@ -37,7 +37,6 @@
     <sql id="appUserColumns">
         ${alias}.USR_ID,
         ${alias}.USR_NAME,
-        ${alias}.USR_PASS,
         ${alias}.USR_FIRST_NAME,
         ${alias}.USR_SUR_NAME,
         ${alias}.USR_ACTIVE,
@@ -139,6 +138,15 @@
         APP_USER usr
         WHERE
         usr.USR_NAME=#{value}
+    </select>
+
+    <select id="doLogin" resultMap="appUserMap" >
+        SELECT
+        <include refid="appUserColumns"><property name="alias" value="usr"/></include>
+        FROM
+        APP_USER usr
+        WHERE
+        usr.USR_NAME=#{param1} and usr.USR_PASS=#{param2} and usr.USR_DELETED != 1
     </select>
 
     <select id="getValidUsers" resultMap="appUserMap" >

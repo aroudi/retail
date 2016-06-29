@@ -223,11 +223,11 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
     });
 });
      **/
-} ]).run(['$rootScope','AccessChecker',function ($rootScope, AccessChecker, UserService, $http, $location) {
+} ]).run(['$rootScope','AccessChecker2',function ($rootScope, AccessChecker2) {
 
     $rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
         $rootScope.previouseState = from.name;
-        //AccessChecker.checkAcess(to.access);
+        AccessChecker2.checkAcess(to.name);
     });
 
 }]);

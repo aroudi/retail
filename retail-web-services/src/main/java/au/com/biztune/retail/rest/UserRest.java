@@ -1,6 +1,7 @@
 package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.*;
+import au.com.biztune.retail.form.LoginForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.service.UserService;
 import org.slf4j.Logger;
@@ -173,4 +174,22 @@ public class UserRest {
             return null;
         }
     }
+    /**
+     * check user login credentials.
+     * @param loginForm loginForm
+     * @return StaffUserModel
+     */
+    @Path("/login")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public AppUser logon (LoginForm loginForm) {
+        try {
+            return userService.doLogin (loginForm.getUserName(), loginForm.getPassword());
+        } catch (Exception e) {
+            logger.error ("UserLoginService: Error in user logon: ", e);
+            return null;
+        }
+    }
+
 }

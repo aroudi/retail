@@ -29,7 +29,8 @@ var cimgApp = angular
     'ui.grid.rowEdit',
     'ui.grid.cellNav',
     'ui.grid.resizeColumns',
-    'ngMessages'
+    'ngMessages',
+     'ngStorage'
   ]);
 
 //SIT
@@ -93,8 +94,8 @@ var service_uri = {
     'ROLE_ALL_URI' : 'user/allValidRole',
     'ROLE_ADD_URI' : 'user/addRole',
     'ROLE_GET_URI' : 'user/getRole/',
-    'ROLE_DELETE_URI' : 'user/deleteRole/'
-
+    'ROLE_DELETE_URI' : 'user/deleteRole/',
+    'LOGIN_URI' : 'user/login'
 }
 
 var response_status = {
@@ -466,19 +467,6 @@ cimgApp.service('incidentService', function ($location, $http, configService) {
 });
 
 
-cimgApp.service('UserInfo', function () {
-    /*userType must be user,admin or reader*/
-    var message;
-    return {
-        getMessage: function () {
-            return message;
-        },
-        setMessage: function (msg) {
-            message = msg;
-        }
-    };
-});
-
 cimgApp.service('purchaseOrderService', function () {
     /*userType must be user,admin or reader*/
     var sourceOfData = 'Manual';
@@ -499,12 +487,12 @@ cimgApp.service('purchaseOrderService', function () {
     };
 });
 
-cimgApp.service('UserService', function ($window, $location,$http) {
+cimgApp.service('UserService', function ($location,$http,$sessionStorage) {
+    var message;
     return {
-        setUser: function (credentials, token, userId) {
-            $window.sessionStorage.userType = credentials;
-            $window.sessionStorage.userName = token;
-            $window.sessionStorage.userId = userId;
+        setUser: function (user) {
+            $sessionStorage.user = user;
+            //$window.$sessionStorage.addItem('user', user);
         },
         doLoggin: function (params, url) {
             var promise = $http({
@@ -517,29 +505,49 @@ cimgApp.service('UserService', function ($window, $location,$http) {
             });
             return promise;
         },
-        getUserId: function(){
-            return $window.sessionStorage.userId;
+        getUser: function(){
+            return $sessionStorage.user;
+            //return $window.$sessionStorage.getItem('user');
         },
-        getUserName: function(){
-            return $window.sessionStorage.userName;
+        getMessage: function () {
+            return message;
+        },
+        setMessage: function (msg) {
+            message = msg;
+        },
+        getUserAccess: function () {
+            //return $window.$sessionStorage.getItem('userAccess');
+            return $sessionStorage.userAccess;
+        },
+        setUserAccess: function (userAccess) {
+            //$window.$sessionStorage.addItem('userAccess', userAccess);
+            $sessionStorage.userAccess = userAccess;
         }
     };
 });
 
-cimgApp.service('AccessChecker', function ($state, $window, UserService, UserInfo) {
+cimgApp.service('AccessChecker2', function ($state, $rootScope, UserService, baseDataService) {
     /*userType must be user,admin or reader*/
     return {
-        checkAcess: function (level) {
-
-            if (level == 'user' && $window.sessionStorage.userType == 'reader') {
-                //$location.path('/login');
-                UserInfo.setMessage('Access Denied. Please login as a CIU operator')
-                $state.go('dashboard.login');
-            } else if (level == 'admin' && $window.sessionStorage.userType != 'admin') {
-                //$location.path('/login');
-                UserInfo.setMessage('Access Denied. Please login as Admin')
+        checkAcess: function (accessName) {
+            if (accessName == 'dashboard.login') {
+                return;
+            }
+            var userAccessList = UserService.getUserAccess();
+            if (userAccessList == undefined || userAccessList == null) {
                 $state.go('dashboard.login');
             }
+            var token = '';
+            for (var i= 0; i<userAccessList.length; i++) {
+               token = 'dashboard.' + userAccessList[i];
+               if(token == accessName) {
+                   //let proceed.
+                   return;
+               }
+            }
+            //user dont have access. display message and return to the previouse state
+            baseDataService.displayMessage("Warning", "Access Denied!!")
+            $state.go($rootScope.previouseState);
         }
     };
 });

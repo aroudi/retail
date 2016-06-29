@@ -73,4 +73,12 @@ public interface UserService {
      * @return List of Access Point
      */
     List<AccessPoint> getAllAccessPoints();
+
+    /**
+     * login to the system and return user with all its access rights.
+     * @param userName userName
+     * @param password password
+     * @return appUser
+     */
+    AppUser doLogin (String userName, String password);
 }
