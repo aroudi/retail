@@ -10,7 +10,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-
 /**
  * Created by arash on 23/03/2016.
  */
@@ -28,6 +27,7 @@ public class TestProduct {
     private static PriceDao priceDao = null;
     private static BillOfQuantityUploader billOfQuantityUploader = null;
     private static BillOfQuantityServiceImpl billOfQuantityServiceImpl = null;
+    private static PurchaseOrderDao purchaseOrderDao = null;
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("retail-web-services-Context.xml");
         productDao = context.getBean(ProductDao.class);
@@ -42,6 +42,7 @@ public class TestProduct {
         priceDao = context.getBean(PriceDao.class);
         billOfQuantityUploader = context.getBean(BillOfQuantityUploader.class);
         billOfQuantityServiceImpl = context.getBean(BillOfQuantityServiceImpl.class);
+        purchaseOrderDao = context.getBean(PurchaseOrderDao.class);
 
 
         //insertProduct("sku001","refrence001","prodName-lock","Lock","prodDesc-Lock description",false,"JOMON-BRAND", "prodClass", "LIVE","GST", "supp01","CatalogueNo009","parNo001","each",1,"AUD",100.00, 10.00, 1000,"A","SELL_PRICE",0.30,130.00,false,"each",1);

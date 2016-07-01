@@ -51,6 +51,9 @@ dependencies {
     //compile group:'com.googlecode.utterlyidle', name:'utterlyidle', version:'742'
     //sql server
     runtime group:'com.microsoft.sqlserver', name:'sqljdbc4', version: '4.0'
+    //jasper reports
+    compile group:'com.lowagie', name:'itext', version: '2.1.7'
+    compile group:'net.sf.jasperreports', name:'jasperreports', version: '5.0.1'
 
 
 }

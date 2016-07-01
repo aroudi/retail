@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
+	<property name="ireport.zoom" value="1.3310000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from purchase_order_header]]>
+	</queryString>
+	<field name="pohOrderNumber" class="java.lang.String"/>
+	<field name="supplier" class="au.com.biztune.retail.domain.Supplier">
+		<fieldDescription><![CDATA[supplier]]></fieldDescription>
+	</field>
+	<field name="pohCreatedDate" class="java.sql.Timestamp"/>
+	<field name="pohLastDelvDate" class="java.sql.Timestamp"/>
+	<field name="pohExpTransmit" class="java.lang.Double"/>
+	<field name="pohValueGross" class="java.lang.Double"/>
+	<field name="pohValueNett" class="java.lang.Double"/>
+	<field name="pohTotalQty" class="java.lang.Double"/>
+	<field name="lines" class="java.util.List"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="159" splitType="Stretch">
+			<staticText>
+				<reportElement x="172" y="0" width="262" height="46" uuid="371cdd93-3faa-44ab-bbc2-e305fb273faf"/>
+				<textElement>
+					<font size="36"/>
+				</textElement>
+				<text><![CDATA[Purchase Order]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="76" width="100" height="20" uuid="10d9aa5a-6740-4f54-994d-6b454160b053"/>
+				<text><![CDATA[Order No]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="101" y="76" width="100" height="20" uuid="6a110809-4516-43d6-a921-9c8ea8879604"/>
+				<textFieldExpression><![CDATA[$F{pohOrderNumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="355" y="76" width="100" height="20" uuid="cfde9512-91ad-4a73-bd17-4712de0fd222"/>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="455" y="76" width="100" height="20" uuid="653f6cfe-7288-47cb-b824-48c6bdf7c6c0"/>
+				<textFieldExpression><![CDATA[$F{pohCreatedDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="97" width="100" height="20" uuid="5be207ba-922b-4096-90f0-bf00f38ba3cd"/>
+				<text><![CDATA[Supplier]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="101" y="96" width="53" height="20" uuid="0198e6c3-9414-49a7-9923-9ea3b5f0eb06"/>
+				<textFieldExpression><![CDATA[$F{supplier}.getSupplierName()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="227" y="96" width="21" height="20" uuid="350af58f-e443-4589-8e20-bdfb86e4e4d5"/>
+				<text><![CDATA[Qty]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="248" y="96" width="77" height="20" uuid="9398db24-cd93-4f3b-8400-6c2a0992a340"/>
+				<textFieldExpression><![CDATA[$F{pohTotalQty}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="357" y="96" width="89" height="20" uuid="a5163f7d-cee4-4456-bc15-100df520b4fb"/>
+				<text><![CDATA[Value Net:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="445" y="97" width="100" height="20" uuid="de29e842-4a89-4636-9891-9b6e5cf18888"/>
+				<textFieldExpression><![CDATA[$F{pohValueNett}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="265" splitType="Stretch">
+			<subreport>
+				<reportElement x="134" y="0" width="272" height="157" uuid="3141b3cf-f686-4318-a72a-aa51bccee833"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
+                      ($F{lines})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "purchase_line.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
