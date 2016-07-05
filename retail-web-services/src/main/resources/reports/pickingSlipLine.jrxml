@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchase_line" pageWidth="500" pageHeight="720" columnWidth="500" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="3877cb5b-9ab6-4d4d-85f1-104db4a4e5a0">
+	<property name="ireport.zoom" value="1.4641000000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="unitOfMeasure" class="au.com.biztune.retail.domain.UnitOfMeasure">
+		<fieldDescription><![CDATA[unitOfMeasure]]></fieldDescription>
+	</field>
+	<field name="product" class="au.com.biztune.retail.domain.Product">
+		<fieldDescription><![CDATA[product]]></fieldDescription>
+	</field>
+	<field name="supplier" class="au.com.biztune.retail.domain.Supplier">
+		<fieldDescription><![CDATA[supplier]]></fieldDescription>
+	</field>
+	<field name="qtyOnStock" class="java.lang.Double"/>
+	<field name="qtyBalance" class="java.lang.Double"/>
+	<field name="quantity" class="java.lang.Double"/>
+	<field name="comment" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="4" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="5" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="28" splitType="Stretch">
+			<staticText>
+				<reportElement x="138" y="0" width="113" height="20" uuid="20865499-025c-41af-a732-334f8f6896e2"/>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Part No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="253" y="0" width="27" height="20" uuid="28b2fa4b-b751-4742-9fd5-da5829bdfbe0"/>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Size]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="288" y="0" width="22" height="20" uuid="5829bccb-db88-45fe-af29-b3f4d9fe9968"/>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qty]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="365" y="0" width="53" height="20" uuid="50285ddb-bd42-48a6-940f-738486f3d361"/>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Balance]]></text>
+			</staticText>
+			<line>
+				<reportElement x="1" y="21" width="492" height="1" uuid="b22075e6-cc95-4c50-9c07-5c4c6bc11917"/>
+			</line>
+			<staticText>
+				<reportElement x="6" y="0" width="133" height="20" uuid="85d204a9-89e9-4681-b694-ed79f90bb496"/>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Supplier]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="319" y="0" width="46" height="20" uuid="27de64bb-47e4-495b-bd02-6018465554ca"/>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Stock]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="431" y="0" width="62" height="20" uuid="98188a8f-d7db-4f40-bfbb-b1becfd7e177"/>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Location]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="29" splitType="Stretch">
+			<line>
+				<reportElement mode="Opaque" x="6" y="23" width="492" height="1" uuid="af4e9b8c-e319-44da-ae87-2fff70f14f25"/>
+			</line>
+			<textField>
+				<reportElement x="6" y="0" width="132" height="20" uuid="bd1f39da-dd0a-444a-ab45-d984b081deeb"/>
+				<textFieldExpression><![CDATA[$F{supplier}.getSupplierName()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="138" y="0" width="113" height="20" uuid="573839a9-9877-4e22-a124-72924f9f61bc"/>
+				<textFieldExpression><![CDATA[$F{product}.getProdSku()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="256" y="0" width="26" height="20" uuid="3ba5fae1-7fa7-4cff-8cb0-062b2a1bf14a"/>
+				<textFieldExpression><![CDATA[$F{unitOfMeasure}.getUnomCode()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="290" y="0" width="22" height="20" uuid="7503a6e5-ab8d-4ded-b109-ceecefb9d6b6"/>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="319" y="0" width="36" height="20" uuid="9c20515a-89e7-4496-b6f6-c92ab50d444a"/>
+				<textFieldExpression><![CDATA[($F{qtyOnStock})!= 0 ? $F{qtyOnStock}:""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="365" y="0" width="46" height="20" uuid="c5550925-3e70-45b7-b634-6fc3e37a0486"/>
+				<textFieldExpression><![CDATA[$F{qtyBalance}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="418" y="0" width="75" height="20" uuid="7f463f61-cb6f-405d-9be4-4647bb03b3d5"/>
+				<textFieldExpression><![CDATA[($F{comment}!=null)?$F{comment}:""]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="3" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

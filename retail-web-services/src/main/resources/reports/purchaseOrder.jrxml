@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
+	<property name="ireport.zoom" value="1.3310000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
+	</parameter>
+	<field name="pohOrderNumber" class="java.lang.String"/>
+	<field name="supplier" class="au.com.biztune.retail.domain.Supplier">
+		<fieldDescription><![CDATA[supplier]]></fieldDescription>
+	</field>
+	<field name="pohCreatedDate" class="java.sql.Timestamp"/>
+	<field name="pohLastDelvDate" class="java.sql.Timestamp"/>
+	<field name="pohExpTransmit" class="java.lang.Double"/>
+	<field name="pohValueGross" class="java.lang.Double"/>
+	<field name="pohValueNett" class="java.lang.Double"/>
+	<field name="pohTotalQty" class="java.lang.Double"/>
+	<field name="lines" class="java.util.List"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="168" splitType="Stretch">
+			<staticText>
+				<reportElement x="154" y="23" width="262" height="46" uuid="371cdd93-3faa-44ab-bbc2-e305fb273faf"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif" size="22" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Purchase Order]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="13" y="97" width="59" height="20" uuid="10d9aa5a-6740-4f54-994d-6b454160b053"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Order No:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="77" y="97" width="100" height="20" uuid="6a110809-4516-43d6-a921-9c8ea8879604"/>
+				<textFieldExpression><![CDATA[$F{pohOrderNumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="316" y="97" width="92" height="20" uuid="cfde9512-91ad-4a73-bd17-4712de0fd222"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Creation Date :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="408" y="97" width="136" height="20" uuid="653f6cfe-7288-47cb-b824-48c6bdf7c6c0"/>
+				<textFieldExpression><![CDATA[$F{pohCreatedDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="13" y="118" width="59" height="20" uuid="5be207ba-922b-4096-90f0-bf00f38ba3cd"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Supplier :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="77" y="118" width="53" height="20" uuid="0198e6c3-9414-49a7-9923-9ea3b5f0eb06"/>
+				<textFieldExpression><![CDATA[$F{supplier}.getSupplierName()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="316" y="118" width="119" height="20" uuid="a5163f7d-cee4-4456-bc15-100df520b4fb"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Expected Delivery:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="437" y="118" width="107" height="20" uuid="de29e842-4a89-4636-9891-9b6e5cf18888"/>
+				<textFieldExpression><![CDATA[$F{pohValueNett}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="11" y="154" width="533" height="1" uuid="4a493c18-4501-41ad-8ef2-8ee6ad9c6bcc"/>
+			</line>
+			<image>
+				<reportElement x="7" y="8" width="165" height="46" uuid="98363b9b-8e6d-4825-bc7d-926feeb5d3a8"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "logo.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="260" splitType="Stretch">
+			<subreport>
+				<reportElement x="11" y="12" width="533" height="237" uuid="3141b3cf-f686-4318-a72a-aa51bccee833"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
+                      ($F{lines})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "purchaseLine.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="41" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="64" splitType="Stretch">
+			<staticText>
+				<reportElement x="11" y="13" width="151" height="16" uuid="b568ab6b-9d22-41b1-8c8b-51162e99edec"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Jomon Architectural Hardware]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="29" width="180" height="15" uuid="1e14c108-956d-4d59-9f72-144dbe9b2d33"/>
+				<text><![CDATA[32 Spencer St, Five Dock NSW 2046]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="447" y="41" width="100" height="20" uuid="08e6cd97-fdfa-4560-bf9d-7b5cb99417d0"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="407" y="41" width="40" height="20" uuid="50dfc2d8-de6c-4a97-8b06-6966d931fdff"/>
+				<text><![CDATA[Page:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="44" width="203" height="17" uuid="fabb39e3-fbd3-4eef-b2cb-1a53b930918d"/>
+				<text><![CDATA[PH: +61 2  9747 0088     FAX: +61 2 9747 4488]]></text>
+			</staticText>
+			<line>
+				<reportElement x="11" y="3" width="533" height="1" uuid="490b788b-6083-49c3-b44a-1e14987a8328"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

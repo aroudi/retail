@@ -68,6 +68,7 @@ var service_uri = {
     'BOQ_GET_ALL_URI' : 'billOfQuantity/header/getAll',
     'BOQ_GET_URI' : 'billOfQuantity/header/get/',
     'UPDATE_BOQ_STOCK_URI'  : 'billOfQuantity/updateStockQty',
+    'BOQ_EXPORT_PICKING_SLIP_PDF' : 'billOfQuantity/pickingSlip/exportPdf/',
     'MEDIA_TYPE_ALL_URI' : 'paymentMedia/getAllMediaTypes',
     'PAYMENT_MEDIA_OF_TYPE_URI' : 'paymentMedia/getOfMediatype/',
     'PRODUCT_SALE_ITEM_ALL_URI' : 'product/allProductSaleItem',
@@ -77,6 +78,7 @@ var service_uri = {
     'CREATE_PO_FROM_BOQ_URI' : 'billOfQuantity/generatePurchaseOrder',
     'POH_GET_ALL_URI' : 'purchaseOrder/header/all',
     'POH_GET_URI' : 'purchaseOrder/header/getWhole/',
+    'POH_EXPORT_PDF' : 'purchaseOrder/exportPdf/',
     'GET_PURCHASE_ITEMS_PER_SUPPLIER_URI' : 'purchaseOrder/detail/getPurchaseItems/',
     'POH_SAVE_URI' : 'purchaseOrder/add',
     'POH_UPDATE_LINKED_BOQS_URI' : 'purchaseOrder/updateLinkedBoqs',
@@ -186,6 +188,18 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
             var promise = $http({
                 url: serviceUrl ,
                 method: 'GET'
+            }).success(function (data) {
+                return data;
+            }).error(function (data) {
+            });
+            return promise;
+        },
+        getStreamData: function (baseDataURI) {
+            var serviceUrl = configService.getAddress() + baseDataURI;
+            var promise = $http({
+                url: serviceUrl ,
+                method: 'GET',
+                responseType: 'arraybuffer'
             }).success(function (data) {
                 return data;
             }).error(function (data) {

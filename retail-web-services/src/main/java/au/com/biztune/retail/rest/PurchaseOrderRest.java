@@ -1,6 +1,7 @@
 // Sydney Trains 2015
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.report.PurchaseOrderRptMgr;
 import au.com.biztune.retail.domain.ProductPurchaseItem;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.response.CommonResponse;
@@ -10,10 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.util.List;
 
 /**
@@ -31,6 +29,8 @@ public class PurchaseOrderRest {
     @Autowired
     private PurchaseOrderService purchaseOrderService;
 
+    @Autowired
+    private PurchaseOrderRptMgr purchaseOrderRptMgr;
     /**
      * Returns list of customers.
      * @return list of Customer
@@ -115,6 +115,20 @@ public class PurchaseOrderRest {
             logger.error ("Error in retrieving purchase order header List :", e);
             return null;
         }
+    }
+
+    /**
+     * export purchase order as PDF.
+     * @param pohId pohId
+     * @return Stream output.
+     */
+    @Path("/exportPdf/{pohId}")
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response exportPurchaseOrderToPdf(@PathParam("pohId") long pohId) {
+        final StreamingOutput streamingOutput = purchaseOrderRptMgr.createPurchaseOrderPdfStream(pohId);
+        //purchaseOrderRptMgr.createPurchaseOrderPdfFile(pohId);
+        return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = PurchaseOrder" + pohId + ".pdf").build();
     }
 
 }

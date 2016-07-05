@@ -87,7 +87,6 @@
         UPDATE APP_USER SET
           USR_FIRST_NAME = #{usrFirstName},
           USR_SUR_NAME = #{usrSurName},
-          USR_PASS = #{usrPass},
           USR_ACTIVE = #{usrActive}
         WHERE USR_ID = #{id}
     </update>

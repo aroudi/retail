@@ -65,6 +65,7 @@
                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                         <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
                         <button type="button" class="btn btn-success" ng-click="updateBoqStock()">Submit</button>
+                        <button type="button" class="btn btn-success" ng-show="billOfQuantity.boqStatus.categoryCode=='BOQ_STATUS_NEW'" ng-click="exportToPdf()">Picking Slip</button>
                     </div>
                     <div class="row">
                         &nbsp;

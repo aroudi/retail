@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE,  PRODUCT_GET_URI, UPDATE_BOQ_STOCK_URI, POH_GET_URI) {
+cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE,  PRODUCT_GET_URI, UPDATE_BOQ_STOCK_URI, POH_GET_URI, BOQ_EXPORT_PICKING_SLIP_PDF) {
 
     var rowtpl='<div ng-class="{\'red\':row.entity.bqdStatus.categoryCode==\'BOQ_LINE_STATUS_VOID\'}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
     $scope.gridOptions = {
@@ -19,7 +19,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'supplier.supplierName', displayName:'Supplier', enableCellEdit:false, width:'10%'},
-            {field:'product.prodSku', displayName:'SKU',enableCellEdit:false, width:'14%',
+            {field:'product.prodSku', displayName:'SKU',enableCellEdit:false, width:'15%',
                 cellTooltip: function(row,col) {
                     return row.entity.product.prodName
                 }
@@ -27,10 +27,10 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'5%'},
             {field:'cost', displayName:'Cost',enableCellEdit:false, width:'5%', cellFilter: 'currency', footerCellFilter: 'currency'},
             {field:'quantity', displayName:'Qty',enableCellEdit:false, width:'5%',type: 'number'},
-            {field:'itemValue', displayName:'Total', enableCellEdit:false, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency'},
+            {field:'itemValue', displayName:'Total', enableCellEdit:false, width:'5%', cellFilter: 'currency', footerCellFilter: 'currency'},
             {field:'qtyOnStock', displayName:'Stock', width:'5%', type: 'number', enableCellEdit:true, cellClass:"blue"},
-            {field:'comment', displayName:'Location', width:'7%', enableCellEdit:true, cellClass:"blue"},
-            {field:'qtyBalance', displayName:'Balance', enableCellEdit:false, width:'6%', type: 'number'},
+            {field:'comment', displayName:'Location', width:'5%', enableCellEdit:true, cellClass:"blue"},
+            {field:'qtyBalance', displayName:'Balance', enableCellEdit:false, width:'5%', type: 'number'},
             {field:'linkedPurchaseOrders', displayName:'Purchase Order',enableCellEdit:false, width:'9%', cellFilter:'poBoqLinkOrderNumberFilter',
                 cellTemplate:'<a href="" ng-click="grid.appScope.viewPohDetail(row)">{{grid.appScope.getPoBoqLinkOrderNo(row)}}</a>'
             },
@@ -235,4 +235,18 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             }
         );
     };
+    $scope.exportToPdf = function() {
+        var hiddenElement = document.createElement('a');
+        var exportUrl = BOQ_EXPORT_PICKING_SLIP_PDF + $scope.billOfQuantity.id;
+        baseDataService.getStreamData(exportUrl).then(function(response){
+            var blob = new Blob([response.data], {'type': 'application/pdf'});
+            //saveAs (blob , outPutFile);
+            hiddenElement.href = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
+            //hiddenElement.target ='_blank';
+            hiddenElement.download = 'pickingSlip.pdf';
+            hiddenElement.click();
+        });
+
+    }
+
 });

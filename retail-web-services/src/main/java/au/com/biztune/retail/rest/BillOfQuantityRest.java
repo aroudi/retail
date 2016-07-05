@@ -5,6 +5,7 @@ package au.com.biztune.retail.rest;
 import au.com.biztune.retail.domain.BillOfQuantity;
 import au.com.biztune.retail.domain.BoqDetail;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
+import au.com.biztune.retail.report.BillOfQuantityRptMgr;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.service.BillOfQuantityService;
 import com.sun.jersey.multipart.FormDataParam;
@@ -14,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.io.InputStream;
 import java.util.List;
 
@@ -38,6 +36,8 @@ public class BillOfQuantityRest {
     @Autowired
     private BillOfQuantityService billOfQuantityService;
 
+    @Autowired
+    private BillOfQuantityRptMgr billOfQuantityRptMgr;
     /**
      * upload bill of quantity.
      * @param uploadedInputStream uploadedInputStream
@@ -110,5 +110,18 @@ public class BillOfQuantityRest {
     @Produces(MediaType.APPLICATION_JSON)
     public List<PurchaseOrderHeader> generatePurchaseOrderFromBoqs (List<BillOfQuantity> billOfQuantityList) {
         return billOfQuantityService.createPurchaseOrderFromBillOfQuantities(billOfQuantityList);
+    }
+
+    /**
+     * export purchase order as PDF.
+     * @param boqId boqId
+     * @return Stream output.
+     */
+    @Path("/pickingSlip/exportPdf/{boqId}")
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response exportBoqToPdf(@PathParam("boqId") long boqId) {
+        final StreamingOutput streamingOutput = billOfQuantityRptMgr.createPickingSlipPdfStream(boqId);
+        return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = PickingSlip" + boqId + ".pdf").build();
     }
 }

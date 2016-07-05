@@ -19,6 +19,7 @@
     <context:component-scan base-package="au.com.biztune.retail" />
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <import resource="classpath:application-context-dao.xml"/>
+    <import resource="classpath:application-context-report.xml"/>
     <bean id="transactionManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
