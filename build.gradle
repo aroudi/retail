@@ -1,6 +1,6 @@
 // Maven Repo - Local File System
-//project.ext["depsDir"] = 'file://V:/repository'
-project.ext["depsDir"] = 'file://D:/mavenrepo/repository'
+project.ext["depsDir"] = 'file://V:/repository'
+//project.ext["depsDir"] = 'file://D:/mavenrepo/repository'
 
 subprojects {
     apply plugin: 'checkstyle'
@@ -20,7 +20,8 @@ subprojects {
 		
 		projectVersion = '0.0.1-SNAPSHOT'
 		commonsDbcp2Version = '2.0.1'
-		springVersion = '3.2.2.RELEASE'
+		springVersion = '4.3.1.RELEASE'
+        springSecurityVersion = '4.1.1.RELEASE'
 		jerseyVersion = '1.17'
 		checkstyleVersion = '6.3'
 		jdependVersion = '2.9.1'
@@ -30,6 +31,7 @@ subprojects {
 		findbugsVersion = '3.0.0'
         guavaVersion = '18.0'
         slf4jVersion = '1.7.10'
+        jerseyGlassfishVer ='2.23.1'
 		
 	}	
     sourceSets.test.output.resourcesDir = sourceSets.test.output.classesDir

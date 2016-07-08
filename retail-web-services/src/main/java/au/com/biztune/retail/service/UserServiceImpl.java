@@ -3,13 +3,17 @@ package au.com.biztune.retail.service;
 import au.com.biztune.retail.dao.UserDao;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.IdBConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by arash on 22/06/2016.
@@ -20,7 +24,8 @@ public class UserServiceImpl implements UserService {
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private UserDao userDao;
-
+    @Autowired
+    private SessionState sessionState;
     /**
      * add/edit user.
      * @param appUser appUser
@@ -282,18 +287,34 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * login to the system and return user with all its access rights.
+     * login to the system and return user with all its access rights. we also need to generate token and add it to the session.
      * @param userName userName
      * @param password password
      * @return appUser
      */
     public AppUser doLogin (String userName, String password) {
         try {
-            return userDao.doLogin(userName, password);
+            String token = null;
+            final AppUser appUser = userDao.doLogin(userName, password);
+            if (appUser != null) {
+                token = generateToken();
+                appUser.setToken(token);
+                sessionState.addToken(token, appUser);
+            }
+            return appUser;
         } catch (Exception e) {
             logger.error("Exception in login user: ", e);
             return null;
         }
+    }
+
+    /**
+     * generate randowm token for user.
+     * @return String token.
+     */
+    private String generateToken() {
+        final Random random = new SecureRandom();
+        return new BigInteger(130, random).toString(32);
     }
 }
 

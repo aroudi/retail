@@ -16,6 +16,7 @@ public class AppUser {
     private String usrLogedOn;
     private List<AccessPoint> accessPoints;
     private List<AppRole> appRoles;
+    private String token;
 
     public long getId() {
         return id;
@@ -95,5 +96,13 @@ public class AppUser {
 
     public void setUsrDeleted(boolean usrDeleted) {
         this.usrDeleted = usrDeleted;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

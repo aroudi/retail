@@ -8,7 +8,7 @@ import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.report.BillOfQuantityRptMgr;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.service.BillOfQuantityService;
-import com.sun.jersey.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
