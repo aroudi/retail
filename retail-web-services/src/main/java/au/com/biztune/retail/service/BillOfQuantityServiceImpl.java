@@ -301,25 +301,24 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             valueGross = valueGross + importedProduct.getCost() * importedProduct.getQty();
             totalQty = totalQty + importedProduct.getQty();
         }
-
-        au.com.biztune.retail.domain.BillOfQuantity billOfQuantity = billOfQuantityDao.getBillOfQuantityByName(header.getName());
-        if (billOfQuantity == null) {
-            billOfQuantity = new au.com.biztune.retail.domain.BillOfQuantity();
-            billOfQuantity.setProject(project);
-            billOfQuantity.setBoqName(header.getName());
-            billOfQuantity.setDateCreated(new java.sql.Timestamp(new Date().getTime()));
-            billOfQuantity.setNote(header.getNote());
-            billOfQuantity.setOrderNo(header.getOrderNumber());
-            billOfQuantity.setOrguId(sessionState.getOrgUnit().getId());
-            final ConfigCategory staus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_NEW);
-            if (staus != null) {
-                billOfQuantity.setBoqStatus(staus);
-            }
-            billOfQuantity.setBoqValueGross(valueGross);
-            billOfQuantity.setBoqTotalQty(totalQty);
-            billOfQuantity.setBoqTotalLines(lines);
-            billOfQuantityDao.insert(billOfQuantity);
+        //TODO: we need to search if BOQ Header is already exists.
+        au.com.biztune.retail.domain.BillOfQuantity billOfQuantity;
+        //= billOfQuantityDao.getBillOfQuantityByName(header.getName());
+        billOfQuantity = new au.com.biztune.retail.domain.BillOfQuantity();
+        billOfQuantity.setProject(project);
+        billOfQuantity.setBoqName(header.getName());
+        billOfQuantity.setDateCreated(new java.sql.Timestamp(new Date().getTime()));
+        billOfQuantity.setNote(header.getNote());
+        billOfQuantity.setOrderNo(header.getOrderNumber());
+        billOfQuantity.setOrguId(sessionState.getOrgUnit().getId());
+        final ConfigCategory staus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_NEW);
+        if (staus != null) {
+            billOfQuantity.setBoqStatus(staus);
         }
+        billOfQuantity.setBoqValueGross(valueGross);
+        billOfQuantity.setBoqTotalQty(totalQty);
+        billOfQuantity.setBoqTotalLines(lines);
+        billOfQuantityDao.insert(billOfQuantity);
         return billOfQuantity;
     }
 
