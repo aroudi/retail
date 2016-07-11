@@ -5,6 +5,7 @@ import au.com.biztune.retail.report.PurchaseOrderRptMgr;
 import au.com.biztune.retail.domain.ProductPurchaseItem;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.PurchaseOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class PurchaseOrderRest {
      * Returns list of customers.
      * @return list of Customer
      */
-
+    @Secured
     @Path("/header/all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -53,6 +54,7 @@ public class PurchaseOrderRest {
      * @param id id.
      * @return PurchaseOrderHeader
      */
+    @Secured
     @GET
     @Path("/header/getWhole/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -65,6 +67,7 @@ public class PurchaseOrderRest {
      * @param suppId suppId.
      * @return List of ProductPurchaseItem
      */
+    @Secured
     @GET
     @Path("/detail/getPurchaseItems/{suppId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -77,6 +80,7 @@ public class PurchaseOrderRest {
      * @param purchaseOrderHeader purchaseOrderHeader
      * @return CommonResponse
      */
+    @Secured
     @Path("/add")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -91,6 +95,7 @@ public class PurchaseOrderRest {
      * @param purchaseOrderHeader purchaseOrderHeader
      * @return CommonResponse
      */
+    @Secured
     @Path("/updateLinkedBoqs")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -105,6 +110,7 @@ public class PurchaseOrderRest {
      * @return list of confirmed purchase order header
      */
 
+    @Secured
     @Path("/header/search/orguIdSupIdStatusId/{suppId}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -122,6 +128,7 @@ public class PurchaseOrderRest {
      * @param pohId pohId
      * @return Stream output.
      */
+    @Secured
     @Path("/exportPdf/{pohId}")
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)

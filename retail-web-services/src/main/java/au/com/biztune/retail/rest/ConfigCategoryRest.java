@@ -3,6 +3,7 @@
 package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.ConfigCategory;
+import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.ConfigCategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ public class ConfigCategoryRest {
      * @param typeName typeName
      * @return List of categories
      */
+    @Secured
     @GET
     @Path("/{typeName}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -53,6 +55,7 @@ public class ConfigCategoryRest {
      * @param code code
      * @return ConfigCategory
      */
+    @Secured
     @GET
     @Path("/{typeName}/{code}")
     @Produces(MediaType.APPLICATION_JSON)

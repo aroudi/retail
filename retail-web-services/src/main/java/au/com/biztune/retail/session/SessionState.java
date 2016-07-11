@@ -18,6 +18,7 @@ public class SessionState {
     private Store store;
     private HashMap<String, AppUser> tokens;
     private final Logger logger = LoggerFactory.getLogger(SessionState.class);
+    private AppUser appUser;
 
     /**
      * add token to the session.
@@ -75,5 +76,13 @@ public class SessionState {
 
     public void setTokens(HashMap<String, AppUser> tokens) {
         this.tokens = tokens;
+    }
+
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
     }
 }

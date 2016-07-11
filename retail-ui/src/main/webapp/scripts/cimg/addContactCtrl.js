@@ -21,7 +21,7 @@ cimgApp.controller('addContactCtrl', function($scope, baseDataService, contactOb
         }
     }
     $scope.cancel = function() {
-        contactObject = $scope.boqDetailBackup;
+        contactObject = $scope.contactBackup;
         $scope.closeThisDialog('button');
     }
 });

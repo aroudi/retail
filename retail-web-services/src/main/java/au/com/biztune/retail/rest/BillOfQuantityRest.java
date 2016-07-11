@@ -7,6 +7,7 @@ import au.com.biztune.retail.domain.BoqDetail;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.report.BillOfQuantityRptMgr;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.BillOfQuantityService;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -43,6 +44,7 @@ public class BillOfQuantityRest {
      * @param uploadedInputStream uploadedInputStream
      * @return CommonResponse
      */
+    @Secured
     @POST
     @Path("/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -55,6 +57,7 @@ public class BillOfQuantityRest {
      * @param id id.
      * @return List of BoqDetail
      */
+    @Secured
     @GET
     @Path("/detail/getPerBoqId/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -67,6 +70,7 @@ public class BillOfQuantityRest {
      * @param id id.
      * @return Bill Of Quantity
      */
+    @Secured
     @GET
     @Path("/header/get/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -79,6 +83,7 @@ public class BillOfQuantityRest {
      * get List of BillOfQuantity .
      * @return List of
      */
+    @Secured
     @GET
     @Path("/header/getAll")
     @Produces(MediaType.APPLICATION_JSON)
@@ -91,6 +96,7 @@ public class BillOfQuantityRest {
      * @param billOfQuantity billOfQuantity
      * @return CommonResponse
      */
+    @Secured
     @Path("/updateStockQty")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -104,6 +110,7 @@ public class BillOfQuantityRest {
      * @param billOfQuantityList billOfQuantityList
      * @return list of created PurchaseOrderHeader
      */
+    @Secured
     @Path("/generatePurchaseOrder")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -117,6 +124,7 @@ public class BillOfQuantityRest {
      * @param boqId boqId
      * @return Stream output.
      */
+    @Secured
     @Path("/pickingSlip/exportPdf/{boqId}")
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)

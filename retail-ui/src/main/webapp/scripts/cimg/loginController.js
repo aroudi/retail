@@ -2,7 +2,7 @@
  * Created by arash on 13/11/2015.
  */
 
-cimgApp.controller('loginController', function($scope, UserService, $state, LOGIN_URI, baseDataService) {
+cimgApp.controller('loginController', function($http, $scope, UserService, $state, LOGIN_URI, baseDataService) {
     $scope.message = "";
     /*
      if ($window.sessionStorage.userInfo !=undefined ){
@@ -20,6 +20,9 @@ cimgApp.controller('loginController', function($scope, UserService, $state, LOGI
             var userInfo = response.data;
             if (userInfo != undefined && userInfo != null )
             {
+                var token = userInfo.token;
+                //set token to http header
+                $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
                 UserService.setUser(userInfo);
                 UserService.setMessage('');
                 UserService.setUserAccess(extractUserAccess(userInfo));

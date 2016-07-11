@@ -36,7 +36,7 @@ dependencies {
 
     compile group:'org.glassfish.jersey.media', name:'jersey-media-json-jackson', version: jerseyGlassfishVer
     compile group:'org.glassfish.jersey.media', name:'jersey-media-multipart', version: jerseyGlassfishVer
-    compile group:'org.glassfish.jersey.media', name:'jersey-media-moxy', version: jerseyGlassfishVer
+    //compile group:'org.glassfish.jersey.media', name:'jersey-media-moxy', version: jerseyGlassfishVer
 
     compile group:'org.glassfish.jersey.ext', name:'jersey-spring3', version: jerseyGlassfishVer
 

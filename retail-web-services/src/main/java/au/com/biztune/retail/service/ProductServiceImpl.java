@@ -218,6 +218,9 @@ public class ProductServiceImpl implements ProductService {
     private void createSuppProdPrice(ProductForm productForm, Product product) {
         if (productForm.getSuppProdPrices() != null && productForm.getSuppProdPrices().size() > 0) {
             for (SuppProdPrice suppProdPrice : productForm.getSuppProdPrices()) {
+                if (suppProdPrice.isDeleted()) {
+                    continue;
+                }
                 if (suppProdPrice.getId() > 0) {
                     suppProdPriceDao.updateValues(suppProdPrice);
                 } else {

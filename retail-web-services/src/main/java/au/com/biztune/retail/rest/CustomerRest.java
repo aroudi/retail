@@ -3,6 +3,7 @@ package au.com.biztune.retail.rest;
 import au.com.biztune.retail.domain.Customer;
 import au.com.biztune.retail.domain.CustomerGrade;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ public class CustomerRest {
      * @return list of Customer
      */
 
+    @Secured
     @Path("/all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -53,6 +55,7 @@ public class CustomerRest {
      * @return list of CustomerCrade
      */
 
+    @Secured
     @Path("/allGrades")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -70,6 +73,7 @@ public class CustomerRest {
      * @param customer customer
      * @return CommonResponse
      */
+    @Secured
     @Path("/add")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -83,6 +87,7 @@ public class CustomerRest {
      * @param id id.
      * @return Customer
      */
+    @Secured
     @GET
     @Path("/get/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -95,6 +100,7 @@ public class CustomerRest {
      * @param code code.
      * @return Customer
      */
+    @Secured
     @GET
     @Path("/getByCode/{code}")
     @Produces(MediaType.APPLICATION_JSON)

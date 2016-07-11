@@ -2,6 +2,7 @@ package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.Supplier;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.SupplierService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class SupplierRest {
      * Returns list of suppliers.
      * @return list of Supplier
      */
-
+    @Secured
     @Path("/all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -52,6 +53,7 @@ public class SupplierRest {
      * @param supplier supplier
      * @return CommonResponse
      */
+    @Secured
     @Path("/add")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -65,6 +67,7 @@ public class SupplierRest {
      * @param id id.
      * @return Supplier
      */
+    @Secured
     @GET
     @Path("/get/{id}")
     @Produces(MediaType.APPLICATION_JSON)

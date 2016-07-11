@@ -3,6 +3,7 @@ package au.com.biztune.retail.rest;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.LoginForm;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ public class UserRest {
      * Returns list of customers.
      * @return list of Customer
      */
+    @Secured
     @Path("/allValidUser")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -52,6 +54,7 @@ public class UserRest {
      * @param user user
      * @return CommonResponse
      */
+    @Secured
     @Path("/addUser")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -65,6 +68,7 @@ public class UserRest {
      * @param id id.
      * @return Common Response
      */
+    @Secured
     @GET
     @Path("/activate/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -77,6 +81,7 @@ public class UserRest {
      * @param id id.
      * @return Common Response
      */
+    @Secured
     @GET
     @Path("/deActivate/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -89,6 +94,7 @@ public class UserRest {
      * @param id id.
      * @return AppUser
      */
+    @Secured
     @GET
     @Path("/getUser/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -101,6 +107,7 @@ public class UserRest {
      * @param id id.
      * @return Common Response
      */
+    @Secured
     @GET
     @Path("/deleteUser/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -113,6 +120,7 @@ public class UserRest {
      * @param role role
      * @return CommonResponse
      */
+    @Secured
     @Path("/addRole")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -125,6 +133,7 @@ public class UserRest {
      * Returns list of roles.
      * @return list of roles
      */
+    @Secured
     @Path("/allValidRole")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -142,6 +151,7 @@ public class UserRest {
      * @param id id.
      * @return AppRole
      */
+    @Secured
     @GET
     @Path("/getRole/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -153,6 +163,7 @@ public class UserRest {
      * @param id id.
      * @return Common Response
      */
+    @Secured
     @GET
     @Path("/deleteRole/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -163,6 +174,7 @@ public class UserRest {
      * Returns list of Access Point.
      * @return list of Access Point
      */
+    @Secured
     @Path("/allAccessPoints")
     @GET
     @Produces(MediaType.APPLICATION_JSON)

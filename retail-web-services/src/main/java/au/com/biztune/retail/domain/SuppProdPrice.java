@@ -35,6 +35,7 @@ public class SuppProdPrice {
     @JsonIgnore
     private double sprcMinOrdVal;
     private Supplier supplier;
+    private boolean deleted;
 
     public long getId() {
         return id;
@@ -186,5 +187,13 @@ public class SuppProdPrice {
 
     public void setUnitOfMeasureContent(UnitOfMeasure unitOfMeasureContent) {
         this.unitOfMeasureContent = unitOfMeasureContent;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

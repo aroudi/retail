@@ -2,6 +2,7 @@
 
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.UnitOfMeasureService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ public class UnitOfMeasureRest {
      * Get All Unit Of Measures as JSON.
      * @return List of categories
      */
+    @Secured
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)

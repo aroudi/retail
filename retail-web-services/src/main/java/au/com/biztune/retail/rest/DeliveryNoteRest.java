@@ -3,6 +3,7 @@ package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.DeliveryNoteHeader;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.DeliveryNoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class DeliveryNoteRest {
      * Returns list of Delivery Notes.
      * @return list of DeliveryNoteHeader
      */
-
+    @Secured
     @Path("/header/all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -53,6 +54,7 @@ public class DeliveryNoteRest {
      * @param id id.
      * @return List of DeliveryNoteHeader
      */
+    @Secured
     @GET
     @Path("/header/getWhole/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -65,6 +67,7 @@ public class DeliveryNoteRest {
      * @param deliveryNoteHeader deliveryNoteHeader
      * @return CommonResponse
      */
+    @Secured
     @Path("/add")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

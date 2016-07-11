@@ -3,6 +3,7 @@ package au.com.biztune.retail.rest;
 import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.form.TxnHeaderForm;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class TransactionRest {
      * Returns list of sale transactions.
      * @return list of sale transactions
      */
-
+    @Secured
     @Path("/all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -53,6 +54,7 @@ public class TransactionRest {
      * @param txnHeaderForm transaction Header
      * @return CommonResponse
      */
+    @Secured
     @Path("/add")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -70,6 +72,7 @@ public class TransactionRest {
      * @param id id.
      * @return TxnHeaderForm
      */
+    @Secured
     @GET
     @Path("/get/{id}")
     @Produces(MediaType.APPLICATION_JSON)

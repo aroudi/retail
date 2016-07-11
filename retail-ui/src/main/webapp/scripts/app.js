@@ -149,7 +149,7 @@ cimgApp.service('configService', function (SERVER,PORT,WEBAPP) {
 
 });
 
-cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog, configService) {
+cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog, configService, UserService) {
 
     var row;
     var rowId;

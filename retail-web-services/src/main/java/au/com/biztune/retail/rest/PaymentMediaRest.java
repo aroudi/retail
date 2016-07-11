@@ -2,6 +2,7 @@
 
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.PaymentMediaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ public class PaymentMediaRest {
      * Get All Unit Of Measures as JSON.
      * @return List of categories
      */
+    @Secured
     @GET
     @Path("/getAllMediaTypes")
     @Produces(MediaType.APPLICATION_JSON)
@@ -51,6 +53,7 @@ public class PaymentMediaRest {
      * @param typeId typeId
      * @return List of PaymentMedia
      */
+    @Secured
     @GET
     @Path("/getOfMediatype/{typeId}")
     @Produces(MediaType.APPLICATION_JSON)
