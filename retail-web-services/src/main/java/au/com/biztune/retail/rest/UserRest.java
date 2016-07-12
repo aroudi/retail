@@ -11,10 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.core.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -28,6 +27,9 @@ public class UserRest {
     private UriInfo uriInfo;
     @Context
     private Request request;
+
+    @Context
+    private SecurityContext securityContext;
 
     @Autowired
     private UserService userService;
@@ -204,4 +206,23 @@ public class UserRest {
         }
     }
 
+    /**
+     * Logout from the system.
+     */
+    @Secured
+    @Path("/logout")
+    @GET
+    public void setLogger() {
+        try {
+            final Principal principal = securityContext.getUserPrincipal();
+            if (principal instanceof AppUser) {
+                logger.info("logout 1");
+                final AppUser appUser = (AppUser) principal;
+                logger.info("logout 2");
+                userService.logOut(appUser.getToken());
+            }
+        } catch (Exception e) {
+            logger.error ("Error in retrieving Access Point List :", e);
+        }
+    }
 }

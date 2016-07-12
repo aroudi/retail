@@ -81,4 +81,11 @@ public interface UserService {
      * @return appUser
      */
     AppUser doLogin (String userName, String password);
+
+    /**
+     * logout user from the system. remove the token.
+     * @param token token
+     */
+    void logOut(String token);
+
 }

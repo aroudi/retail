@@ -206,6 +206,10 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             controller: 'loginController',
             templateUrl:'views/pages/login.html'
         })
+        .state('dashboard.logout',{
+            url:'/logout',
+            controller: 'logoutController'
+        })
         .state('dashboard.blank',{
             templateUrl:'views/pages/blank.html',
             url:'/blank'

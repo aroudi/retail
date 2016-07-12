@@ -26,7 +26,7 @@ cimgApp.controller('loginController', function($http, $scope, UserService, $stat
                 UserService.setUser(userInfo);
                 UserService.setMessage('');
                 UserService.setUserAccess(extractUserAccess(userInfo));
-                $state.go('dashboard.listSaleTransaction');
+                $state.go('dashboard.uploadFile');
             } else
             {
                 UserService.setMessage('Login Failed');

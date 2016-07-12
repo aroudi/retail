@@ -14,8 +14,10 @@ import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+import java.security.Principal;
 
 /**
  * Created by arash on 8/07/2016.
@@ -50,7 +52,28 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 //throw new NotAuthorizedException("Not Authorized");
                 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             }
-            sessionState.setAppUser(appUser);
+            requestContext.setSecurityContext(new SecurityContext() {
+                @Override
+                public Principal getUserPrincipal() {
+                    return appUser;
+                }
+
+                @Override
+                public boolean isUserInRole(String role) {
+                    return true;
+                }
+
+                @Override
+                public boolean isSecure() {
+                    return false;
+                }
+
+                @Override
+                public String getAuthenticationScheme() {
+                    return null;
+                }
+            });
+            //sessionState.setAppUser(appUser);
         } catch (Exception e) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }

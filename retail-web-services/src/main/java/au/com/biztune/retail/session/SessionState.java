@@ -40,6 +40,23 @@ public class SessionState {
     }
 
     /**
+     * remove token and its associated users from tokens.
+     * @param key key
+     */
+    public void removeToken(String key) {
+        try {
+            if (tokens == null) {
+                return;
+            }
+            if (tokens.containsKey(key)) {
+                tokens.remove(key);
+                logger.info("token" + key + "removed");
+            }
+        } catch (Exception e) {
+            logger.error("Exception in removing token.", e);
+        }
+    }
+    /**
      * Return User from token.
      * @param key key
      * @return AppUser

@@ -1,11 +1,12 @@
 package au.com.biztune.retail.domain;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
  * Created by arash on 22/06/2016.
  */
-public class AppUser {
+public class AppUser implements Principal {
     private long id;
     private String usrName;
     private String usrPass;
@@ -18,6 +19,13 @@ public class AppUser {
     private List<AppRole> appRoles;
     private String token;
 
+    /**
+     * get User Name.
+     * @return String.
+     */
+    public String getName() {
+        return usrName;
+    }
     public long getId() {
         return id;
     }

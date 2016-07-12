@@ -97,7 +97,8 @@ var service_uri = {
     'ROLE_ADD_URI' : 'user/addRole',
     'ROLE_GET_URI' : 'user/getRole/',
     'ROLE_DELETE_URI' : 'user/deleteRole/',
-    'LOGIN_URI' : 'user/login'
+    'LOGIN_URI' : 'user/login',
+    'LOGOUT_URI' : 'user/logout'
 }
 
 var response_status = {
@@ -508,6 +509,10 @@ cimgApp.service('UserService', function ($location,$http,$sessionStorage) {
             $sessionStorage.user = user;
             //$window.$sessionStorage.addItem('user', user);
         },
+        removeUser: function() {
+            delete $sessionStorage.user;
+            delete $sessionStorage.userAccess;
+        },
         doLoggin: function (params, url) {
             var promise = $http({
                 url: url,
@@ -544,11 +549,12 @@ cimgApp.service('AccessChecker2', function ($state, $rootScope, UserService, bas
     /*userType must be user,admin or reader*/
     return {
         checkAcess: function (accessName) {
-            if (accessName == 'dashboard.login') {
+            if (accessName == 'dashboard.login' || accessName == 'dashboard.logout') {
                 return;
             }
             var userAccessList = UserService.getUserAccess();
-            if (userAccessList == undefined || userAccessList == null) {
+            var user = UserService.getUser();
+            if (user == undefined || user == null || userAccessList == undefined || userAccessList == null) {
                 $state.go('dashboard.login');
             }
             var token = '';
