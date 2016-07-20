@@ -89,6 +89,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             return response;
 
         } catch (Exception e) {
+            logger.error("Exception in importing BOQ:", e);
             response.setStatus(IdBConstant.RESULT_FAILURE);
             response.setMessage(response.getMessage());
             return response;
@@ -226,7 +227,9 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 suppProdPrice.setUnitOfMeasureContent(unitOfMeasure);
                 suppProdPrice.setUnomQty(1);
                 suppProdPrice.setLegalTender(legalTender);
-                suppProdPrice.setPrice(importedProduct.getCost());
+                if (importedProduct.getCost() != null) {
+                    suppProdPrice.setPrice(importedProduct.getCost());
+                }
                 suppProdPrice.setSprcCreated(currentTime);
                 suppProdPrice.setSprcModified(currentTime);
                 suppProdPrice.setProdId(product.getId());
@@ -262,10 +265,18 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             }
             final BoqDetail boqDetail = new BoqDetail();
             boqDetail.setBillOfQuantity(billOfQuantity);
-            boqDetail.setCost(importedProduct.getCost());
+            if (importedProduct.getCost() != null) {
+                boqDetail.setCost(importedProduct.getCost());
+            } else {
+                boqDetail.setCost(0.0);
+            }
             boqDetail.setProdIsNew(prodIsNew);
             boqDetail.setProduct(product);
-            boqDetail.setQuantity(importedProduct.getQty());
+            if (importedProduct.getQty() != null) {
+                boqDetail.setQuantity(importedProduct.getQty());
+            } else {
+                boqDetail.setQuantity(0);
+            }
             boqDetail.setSellPrice(importedProduct.getSellPrice());
             boqDetail.setUnitOfMeasure(unitOfMeasure);
             boqDetail.setSupplier(supplier);
@@ -297,6 +308,9 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
         int lines = 0;
         double totalQty = 0;
         for (BillOfQuantity.BillOfQuantities.Product importedProduct: products.getProduct()) {
+            if (importedProduct == null || importedProduct.getCost() == null || importedProduct.getQty() == null) {
+                continue;
+            }
             lines++;
             valueGross = valueGross + importedProduct.getCost() * importedProduct.getQty();
             totalQty = totalQty + importedProduct.getQty();
