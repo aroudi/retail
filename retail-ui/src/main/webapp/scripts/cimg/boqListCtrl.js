@@ -12,9 +12,9 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
         enableSorting:true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'boqName', displayName:'BOQ',enableCellEdit:false, width:'5%',
+            {field:'project.projectCode', displayName:'Project No',enableCellEdit:false, width:'10%',
                 cellTooltip: function(row,col) {
-                    return row.entity.boqName
+                    return row.entity.project.projectCode
                 }
             },
             {field:'project.customer.companyName', displayName:'Client',enableCellEdit:false, width:'20%',
@@ -22,7 +22,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
                     return row.entity.project.customer.companyName
                 }
             },
-            {field:'orderNo', displayName:'Order No',enableCellEdit:false, width:'10%'},
+            {field:'orderNo', displayName:'Client Order',enableCellEdit:false, width:'10%'},
             {field:'project.projectName',displayName:'Project', enableCellEdit:false, width:'30%',
                 cellTooltip: function(row,col) {
                     return row.entity.project.projectName
@@ -33,10 +33,10 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
                     return row.entity.project.referenceNo
                 }
             },
-            {field:'dateCreated', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\'' },
+            {field:'dateCreated', displayName:'Created',enableCellEdit:false, width:'8%', cellFilter:'date:\'yyyy-MM-dd HH:mm\'' },
             //{field:'boqValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             //{field:'boqValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'boqStatus', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+            {field:'boqStatus', displayName:'status',enableCellEdit:false, width:'7%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                    return grid.getCellValue(row, col).color
                 }
@@ -75,7 +75,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
         }
         var boqGetURI = BOQ_GET_URI +  row.entity.id;
         baseDataService.getBaseData(boqGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.viewBoqDetail');

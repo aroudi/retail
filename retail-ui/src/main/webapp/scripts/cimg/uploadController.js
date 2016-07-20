@@ -12,26 +12,31 @@ cimgApp.controller('UploadController', function($scope, $state,uiGridConstants, 
         enableSorting:true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'boqName', displayName:'Header Name',enableCellEdit:false, width:'10%',
+            {field:'project.projectCode', displayName:'Project No',enableCellEdit:false, width:'10%',
                 cellTooltip: function(row,col) {
-                    return row.entity.boqName
+                    return row.entity.project.projectCode
                 }
             },
-            {field:'referenceCode', displayName:'Reference',enableCellEdit:false, width:'10%',
+            {field:'project.customer.companyName', displayName:'Client',enableCellEdit:false, width:'20%',
                 cellTooltip: function(row,col) {
-                    return row.entity.referenceCode
+                    return row.entity.project.customer.companyName
                 }
             },
-            {field:'orderNo', displayName:'Order No',enableCellEdit:false, width:'10%'},
+            {field:'orderNo', displayName:'Client Order',enableCellEdit:false, width:'10%'},
             {field:'project.projectName',displayName:'Project', enableCellEdit:false, width:'30%',
                 cellTooltip: function(row,col) {
                     return row.entity.project.projectName
                 }
             },
-            {field:'dateCreated', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\'' },
-            {field:'boqValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'boqValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'boqStatus', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+            {field:'project.referenceNo', displayName:'Project Ref.',enableCellEdit:false, width:'10%',
+                cellTooltip: function(row,col) {
+                    return row.entity.project.referenceNo
+                }
+            },
+            {field:'dateCreated', displayName:'Created',enableCellEdit:false, width:'8%', cellFilter:'date:\'yyyy-MM-dd HH:mm\'' },
+            //{field:'boqValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            //{field:'boqValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'boqStatus', displayName:'status',enableCellEdit:false, width:'7%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }
