@@ -235,6 +235,35 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             }
         );
     };
+
+    $scope.addItemFromPurchaseOrder = function () {
+        ngDialog.openConfirm({
+            template:'views/pages/purchaseOrderDetailSearch.html',
+            controller:'purchaseOrderDetailSearchCtrl',
+            className: 'ngdialog-theme-plain',
+            closeByDocument:false
+            //resolve: {supplier: function(){return $scope.purchaseOrderHeader.supplier}}
+        }).then (function (selectedItem){
+                if (selectedItem != undefined) {
+                    if (selectedItem.linkedPurchaseOrders != undefined && selectedItem.linkedPurchaseOrders.length > 0) {
+                        for (i =0; i<selectedItem.linkedPurchaseOrders.length; i++) {
+                            selectedItem.linkedPurchaseOrders[i].boqId = $scope.billOfQuantity.id;
+                            selectedItem.linkedPurchaseOrders[i].boqName = $scope.billOfQuantity.boqName;
+                            selectedItem.linkedPurchaseOrders[i].projectId = $scope.billOfQuantity.project.id;
+                            selectedItem.linkedPurchaseOrders[i].projectId = $scope.billOfQuantity.project.id;
+                            selectedItem.linkedPurchaseOrders[i].projectCode = $scope.billOfQuantity.project.projectCode;
+                        }
+                    }
+                    displayLinkedPurchaseOrders(selectedItem);
+                    $scope.gridOptions.data.push(selectedItem);
+                    $scope.billOfQuantity.boqValueGross = $scope.billOfQuantity.boqValueGross + selectedItem.itemValue;
+                }
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    };
+
     $scope.exportToPdf = function() {
         var hiddenElement = document.createElement('a');
         var exportUrl = BOQ_EXPORT_PICKING_SLIP_PDF + $scope.billOfQuantity.id;

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI) {
+cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI) {
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -116,7 +116,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             controller:'purchaseOrderSearchCtrl',
             className: 'ngdialog-theme-default',
             closeByDocument:false,
-            resolve: {supplier: function(){return $scope.deliveryNoteHeader.supplier}}
+            resolve: {searchUrl: function(){return POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI + $scope.deliveryNoteHeader.supplier.id}}
         }).then (function (selectedItem){
                 if (selectedItem != undefined) {
                     var purchaseOrderHeader = selectedItem;

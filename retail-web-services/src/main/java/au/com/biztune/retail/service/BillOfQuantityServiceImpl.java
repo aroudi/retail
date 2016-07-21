@@ -64,6 +64,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     private PurchaseOrderDao purchaseOrderDao;
     @Autowired
     private ContactDao contactDao;
+    @Autowired
+    private PoBoqLinkDao poBoqLinkDao;
     /**
      * upload Bill Of Quantity.
      * @param uploadedInputStream uploadedInputStream
@@ -505,10 +507,22 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 } else {
                     boqDetail.setBillOfQuantity(billOfQuantity);
                     boqDetailDao.insert(boqDetail);
+                    //if a line from purchase order had been added, then handle it here
+                    if (boqDetail.getLinkedPurchaseOrders() != null && boqDetail.getLinkedPurchaseOrders().size() > 0) {
+                        for (PoBoqLink poBoqLink : boqDetail.getLinkedPurchaseOrders()) {
+                            if (poBoqLink == null) {
+                                continue;
+                            }
+                            poBoqLink.setBoqDetailId(boqDetail.getId());
+                            poBoqLink.setBoqId(billOfQuantity.getId());
+                            poBoqLinkDao.insert(poBoqLink);
+                        }
+                    }
                 }
             }
             //update boq header
             billOfQuantityDao.updatePerId(billOfQuantity);
+
             return response;
         } catch (Exception e) {
             logger.error("Exception in updating bill of quantity:", e);
@@ -545,8 +559,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             //iterate the boqDetailList and group them per supplier.
             final HashMap<Long, List<BoqDetail>> supplierBoqDetailMap = new HashMap<Long, List<BoqDetail>>();
             for (BoqDetail boqDetail: boqDetailList) {
-                //don't include voided items.
-                if (boqDetail.getBqdStatus().getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_VOID)) {
+                //only generate for pending items.
+                if (!boqDetail.getBqdStatus().getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_PENDING)) {
                     continue;
                 }
                 final Long key = boqDetail.getSupplier().getId();

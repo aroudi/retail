@@ -138,4 +138,20 @@ public class PurchaseOrderRest {
         return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = PurchaseOrder" + pohId + ".pdf").build();
     }
 
+    /**
+     * Returns list of purchase order header not fully received or cancelled. we need this for replacing a BOQ line with line from purchase order
+     * @return list of purchase order headers
+     */
+    @Secured
+    @Path("/header/getAllNotFullyReceived")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PurchaseOrderHeader> getAllPurchaseOrderNotFullyReceived() {
+        try {
+            return purchaseOrderService.getAllPurchaseOrderHeaderNotFullyReceived();
+        } catch (Exception e) {
+            logger.error ("Error in retrieving purchase order header List :", e);
+            return null;
+        }
+    }
 }

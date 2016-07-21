@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderSearchCtrl', function($scope, $state, $timeout, uiGridConstants, baseDataService, supplier, SUCCESS, FAILURE, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, POH_GET_URI) {
+cimgApp.controller('purchaseOrderSearchCtrl', function($scope, $state, $timeout, uiGridConstants, baseDataService, searchUrl, SUCCESS, FAILURE, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, POH_GET_URI) {
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -41,7 +41,7 @@ cimgApp.controller('purchaseOrderSearchCtrl', function($scope, $state, $timeout,
     };
     getAllConfirmedPurchaseOrders();
     function getAllConfirmedPurchaseOrders() {
-        baseDataService.getBaseData(POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI + supplier.id).then(function(response){
+        baseDataService.getBaseData(searchUrl).then(function(response){
             var data = angular.copy(response.data);
             $scope.gridOptions.data = data;
         });

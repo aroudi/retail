@@ -81,6 +81,7 @@ var service_uri = {
     'POH_SAVE_URI' : 'purchaseOrder/add',
     'POH_UPDATE_LINKED_BOQS_URI' : 'purchaseOrder/updateLinkedBoqs',
     'POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI' : 'purchaseOrder/header/search/orguIdSupIdStatusId/',
+    'POH_GET_ALL_POH_NOT_FULLY_RECEIVED_URI':'purchaseOrder/header/getAllNotFullyReceived',
     'DEL_NOTE_SAVE_URI' : 'deliveryNote/add',
     'DEL_NOTE_GET_ALL_URI' : 'deliveryNote/header/all',
     'DEL_NOTE_GET_URI' : 'deliveryNote/header/getWhole/',
@@ -115,6 +116,7 @@ var type_constant = {
     'POH_STATUS_IN_PROGRESS' : 'categories/POH_STATUS/POH_STATUS_IN_PROGRESS',
     'BOQ_LINE_STATUS_VOID' : 'categories/BOQ_LINE_STATUS/BOQ_LINE_STATUS_VOID',
     'BOQ_LINE_STATUS_PENDING' : 'categories/BOQ_LINE_STATUS/BOQ_LINE_STATUS_PENDING',
+    'BOQ_LINE_STATUS_PO_CREATED' : 'categories/BOQ_LINE_STATUS/BOQ_LINE_STATUS_PO_CREATED',
     'POH_STATUS_URI' : 'categories/POH_STATUS',
     'DLV_NOTE_STATUS_URI' : 'categories/DLV_NOTE_STATUS',
     'CONTACT_TYPE_URI' : 'categories/CONTACT_TYPE'

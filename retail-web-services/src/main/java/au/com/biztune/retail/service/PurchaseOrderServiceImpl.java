@@ -423,4 +423,29 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             return null;
         }
     }
+    /**
+     * get all purchase Order Header per orguid and status.
+     * @return List of PurchaseOrderHeader
+     */
+    public List<PurchaseOrderHeader> getAllPurchaseOrderHeaderNotFullyReceived() {
+        try {
+            final List<Long> statusIds = new ArrayList<Long>();
+            ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_IN_PROGRESS);
+            if (status != null) {
+                statusIds.add(status.getId());
+            }
+            status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_CONFIRMED);
+            if (status != null) {
+                statusIds.add(status.getId());
+            }
+            status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_PARTIAL_REC);
+            if (status != null) {
+                statusIds.add(status.getId());
+            }
+            return purchaseOrderDao.getAllPurchaseOrderHeaderNotFullyReceived(sessionState.getOrgUnit().getId(), statusIds);
+        } catch (Exception e) {
+            logger.error("Exception in getting purchase order header list:", e);
+            return null;
+        }
+    }
 }

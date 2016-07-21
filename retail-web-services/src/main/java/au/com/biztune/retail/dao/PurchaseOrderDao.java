@@ -96,4 +96,12 @@ public interface PurchaseOrderDao {
      * @param polId polId
      */
     void deletePurchaseLinePerId(long polId);
+
+    /**
+     * get all purchase order headers per orguId and status.
+     * @param orguId orguId
+     * @param statusIds statusIds
+     * @return List of purchase order header
+     */
+    List<PurchaseOrderHeader> getAllPurchaseOrderHeaderNotFullyReceived(long orguId, List statusIds);
 }

@@ -781,6 +781,18 @@
         </foreach>
     </select>
 
+    <select id="getAllPurchaseOrderHeaderNotFullyReceived" resultMap="purchaseOrderHeaderLiteMap" >
+        SELECT
+        <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>
+        FROM
+        PURCHASE_ORDER_HEADER poh INNER JOIN CONFIG_CATEGORY cc on (poh.POH_STATUS = cc.CATEGORY_ID)
+        WHERE poh.ORGU_ID=#{param1}  and cc.CATEGORY_ID in
+        <foreach collection="param2" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
     <select id="getPurchaseOrderHeaderPerOrderNo" resultMap="purchaseOrderHeaderLiteMap" >
         SELECT
         <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>

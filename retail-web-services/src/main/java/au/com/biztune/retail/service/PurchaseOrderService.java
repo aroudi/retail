@@ -63,4 +63,11 @@ public interface PurchaseOrderService {
      * @return Response
      */
     CommonResponse updateLinkedBqos(PurchaseOrderHeader purchaseOrderHeader);
+
+    /**
+     * get all purchase Order Header per orguid and status.
+     * @return List of PurchaseOrderHeader
+     */
+    List<PurchaseOrderHeader> getAllPurchaseOrderHeaderNotFullyReceived();
+
 }
