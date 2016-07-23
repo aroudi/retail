@@ -47,4 +47,10 @@ public interface PoBoqLinkDao {
      * @param poBoqLink poBoqLink
      */
     void updateQtyReceived(PoBoqLink poBoqLink);
+
+    /**
+     * delete poBoqLink per boqDetailId.
+     * @param boqDetailId boqDetailId
+     */
+    void deletePoBoqLinkPerBoqDetailId(long boqDetailId);
 }

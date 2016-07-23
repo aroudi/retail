@@ -45,7 +45,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
                     return grid.getCellValue(row, col).color
                 }
             },
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit Product" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a><a href=""><i tooltip="void item" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-show="row.entity.bqdStatus.categoryCode == \'BOQ_LINE_STATUS_PENDING\'" ng-click="grid.appScope.voidItem(row)"></i></a>', width:'5%' }
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="void item" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-show="grid.appScope.showVoidButton(row.entity)" ng-click="grid.appScope.voidItem(row)"></i></a><a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)" ng-show="row.entity.id < 0 "></i></a>', width:'10%' }
 
         ]
     }
@@ -277,5 +277,28 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
         });
 
     }
-
+    $scope.removeItem = function(row) {
+        if (row == undefined || row.entity == undefined) {
+            alert('item is undefined');
+            return;
+        }
+        if (!confirm('Are you sure you want to delete this item?')) {
+            return;
+        }
+        row.entity.deleted = true;
+        $scope.gridApi.core.setRowInvisible(row);
+    }
+    $scope.showVoidButton = function(item) {
+        //BOQ_LINE_STATUS_PO_CREATED
+        if (item.id < 0) {
+            return false;
+        }
+        if ( (item.bqdCreationType.categoryCode == 'POH_CREATION_TYPE_MANUAL')&&(item.bqdStatus.categoryCode == 'BOQ_LINE_STATUS_PENDING' || item.bqdStatus.categoryCode == 'BOQ_LINE_STATUS_PO_CREATED')) {
+            return true;
+        }
+        if ( (item.bqdCreationType.categoryCode == 'POH_CREATION_TYPE_AUTO')&&(item.bqdStatus.categoryCode == 'BOQ_LINE_STATUS_PENDING') ) {
+            return true;
+        }
+        return false;
+    }
 });

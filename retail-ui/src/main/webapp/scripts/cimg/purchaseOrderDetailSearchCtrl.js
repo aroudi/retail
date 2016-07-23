@@ -5,6 +5,7 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
 
     initPageData();
     function initPageData() {
+        $scope.enableSubmit = false;
         $scope.purchaseOrderHeader = {};
         $scope.boqDetail = {};
         $scope.boqDetail.quantity = 0.0;
@@ -43,7 +44,7 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
                 }
             },
             {field:'polValueOrdered', displayName:'Value',enableCellEdit:false, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'polQtyReceived', displayName:'Qty Received', enableCellEdit:false,width:'8%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'calculateQtyAssigned()', displayName:'Balance', enableCellEdit:false,width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'polCreationType', displayName:'Type',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
@@ -70,8 +71,10 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
             if (quantityCanBeAssignedFromPO > 0) {
                 $scope.boqDetail.quantity = quantityCanBeAssignedFromPO;
                 $scope.boqDetail.qtyBalance =quantityCanBeAssignedFromPO;
+                $scope.enableSubmit = true;
             } else {
                 baseDataService.displayMessage('Invalid Quantity', 'Quantity is invalid')
+                $scope.enableSubmit = false;
             }
 
         });
@@ -134,6 +137,18 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
                     var purchaseOrderHeader = selectedItem;
                     $scope.purchaseOrderHeader = angular.copy(purchaseOrderHeader);
                     $scope.gridOptions.data = $scope.purchaseOrderHeader.lines;
+                    angular.forEach($scope.gridOptions.data,function(row){
+                        row.calculateQtyAssigned = function() {
+                            var qty = this.polQtyOrdered;
+                            if (this.poBoqLinks == undefined || this.poBoqLinks.length < 1) {
+                                return qty;
+                            }
+                            for (i=0; i < this.poBoqLinks.length; i++) {
+                                qty = qty - this.poBoqLinks[i].boqQtyTotal;
+                            }
+                            return qty;
+                        }
+                    });
                     $scope.purchaseOrderHeader.pohExpDeliveryStr = new Date($scope.purchaseOrderHeader.pohExpDeliveryStr);
                     for (i=0; i<$scope.gridOptions.data.length; i++) {
                         displayLinkedBoqs($scope.gridOptions.data[i])

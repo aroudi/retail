@@ -45,30 +45,6 @@
                         </div>
                     </div>
                     <div class="row">
-                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                        <button type="button" class="btn btn-primary" ng-click="cancel()">Cancel</button>
-                        <button type="button" class="btn btn-success" ng-click="submit()" ng-disabled="selectedOption == undefined">Submit</button>
-                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    </div>
-                    <div class="row">
-                        &nbsp; &nbsp;
-                    </div>
-                    <div class="row">
-                        <div class="panel  panel-info">
-                            <div class="panel-heading">
-                                Lines:
-                            </div>
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div id="pohDetailList" ui-grid ="gridOptions"  class="grid" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-cellNav ui-grid-expandable  style="height:600px"  ></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
                         <div class="panel  panel-info">
                             <div class="panel-heading">
                                 BOQ Detail:
@@ -112,8 +88,29 @@
                             </div>
                         </div>
                     </div>
-
-
+                    <div class="row">
+                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                        <button type="button" class="btn btn-primary" ng-click="cancel()">Cancel</button>
+                        <button type="button" class="btn btn-success" ng-click="submit()" ng-disabled="!enableSubmit">Submit</button>
+                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    </div>
+                    <div class="row">
+                        &nbsp; &nbsp;
+                    </div>
+                    <div class="row">
+                        <div class="panel  panel-info">
+                            <div class="panel-heading">
+                                Lines:
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div id="pohDetailList" ui-grid ="gridOptions"  class="grid" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-cellNav ui-grid-expandable  style="height:400px"  ></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

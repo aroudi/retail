@@ -502,6 +502,23 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             }
             // update bill of quantity details for current items. add new items
             for (BoqDetail boqDetail: billOfQuantity.getLines()) {
+                if (boqDetail.isDeleted()) {
+                    continue;
+                }
+                //if line has been voided AND IS MANUALLY CREATED, delete linked purchase orders lines and delete line itself.
+                if (boqDetail.getBqdStatus().getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_VOID)
+                        && boqDetail.getBqdCreationType().getCategoryCode().equals(IdBConstant.POH_CREATION_TYPE_MANUAL))
+                {
+                    if (boqDetail.getLinkedPurchaseOrders() != null && boqDetail.getLinkedPurchaseOrders().size() > 0) {
+                        for (PoBoqLink poBoqLink : boqDetail.getLinkedPurchaseOrders()) {
+                            if (poBoqLink == null) {
+                                continue;
+                            }
+                            poBoqLinkDao.deletePoBoqLinkPerBoqDetailId(poBoqLink.getBoqDetailId());
+                        }
+                    }
+                    boqDetailDao.deleteBoqDetailPerId(boqDetail.getId());
+                }
                 if (boqDetail.getId() >= 0) {
                     boqDetailDao.updateBoqLine(boqDetail);
                 } else {

@@ -146,4 +146,12 @@
           SET PO_QTY_RECEIVED = #{poQtyReceived}, BOQ_QTY_BALANCE=#{boqQtyBalance}, BPQL_STATUS=#{status.id}
           WHERE PBQL_ID = #{id}
     </update>
+
+    <delete id="deletePoBoqLinkPerBoqDetailId" >
+        DELETE
+        From PO_BOQ_LINK
+        WHERE
+        BOQ_DETAIL_ID = #{value}
+    </delete>
+
 </mapper>
