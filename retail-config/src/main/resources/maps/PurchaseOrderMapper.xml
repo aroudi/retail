@@ -71,6 +71,7 @@
         <result column="POL_PRICE" property="polPrice" />
         <result column="POL_SPECIAL_BUY" property="polSpecialBuy" />
         <result column="POL_QTY_ORDERED" property="polQtyOrdered" />
+        <result column="POL_QTY_RESERVED" property="polQtyReserved" />
         <result column="POL_QTY_CANCELLED" property="polQtyCancelled" />
         <result column="POL_QTY_RECEIVED" property="polQtyReceived" />
         <result column="POL_QTY_INVOICED" property="polQtyInvoiced" />
@@ -135,6 +136,7 @@
         ${alias}.TXLV_ID,
         ${alias}.UNOM_ID,
         ${alias}.POL_QTY_ORDERED,
+        ${alias}.POL_QTY_RESERVED,
         ${alias}.POL_QTY_CANCELLED,
         ${alias}.POL_QTY_RECEIVED,
         ${alias}.POL_QTY_INVOICED,
@@ -452,6 +454,7 @@
         TXLV_ID,
         UNOM_ID,
         POL_QTY_ORDERED,
+        POL_QTY_RESERVED,
         POL_QTY_CANCELLED,
         POL_QTY_RECEIVED,
         POL_QTY_INVOICED,
@@ -530,6 +533,12 @@
             ,#{polQtyOrdered}
         </if>
         <if test="polQtyOrdered == null">
+            ,null
+        </if>
+        <if test="polQtyReserved != null">
+            ,#{polQtyReserved}
+        </if>
+        <if test="polQtyReserved == null">
             ,null
         </if>
 
@@ -683,6 +692,10 @@
             ,POL_QTY_ORDERED = #{polQtyOrdered}
         </if>
 
+        <if test="polQtyReserved != null">
+            ,POL_QTY_RESERVED = #{polQtyReserved}
+        </if>
+
         <if test="polQtyCancelled != null">
             ,POL_QTY_CANCELLED = #{polQtyCancelled}
         </if>
@@ -742,6 +755,12 @@
         <if test="polStatus != null">
             ,POL_STATUS = #{polStatus.id}
         </if>
+        WHERE POL_ID = #{id}
+    </update>
+
+    <update id="updatePurchaseLineReserveQty" parameterType="PurchaseLine" >
+        UPDATE PURCHASE_LINE SET
+            POL_QTY_RESERVED = #{polQtyReserved}
         WHERE POL_ID = #{id}
     </update>
 

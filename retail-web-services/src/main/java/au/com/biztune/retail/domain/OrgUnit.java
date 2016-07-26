@@ -9,6 +9,7 @@ public class OrgUnit {
     private String orguDesc;
     private String orguCode;
     private PriceBand priceBand;
+    private StockLocation stockLocation;
 
     public long getId() {
         return id;
@@ -48,5 +49,13 @@ public class OrgUnit {
 
     public void setPriceBand(PriceBand priceBand) {
         this.priceBand = priceBand;
+    }
+
+    public StockLocation getStockLocation() {
+        return stockLocation;
+    }
+
+    public void setStockLocation(StockLocation stockLocation) {
+        this.stockLocation = stockLocation;
     }
 }

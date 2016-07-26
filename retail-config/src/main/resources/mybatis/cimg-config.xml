@@ -47,6 +47,9 @@
         <typeAlias type="au.com.biztune.retail.domain.AppUserRole" alias="AppUserRole" />
         <typeAlias type="au.com.biztune.retail.domain.UserAccess" alias="UserAccess" />
         <typeAlias type="au.com.biztune.retail.domain.RoleAccess" alias="RoleAccess" />
+        <typeAlias type="au.com.biztune.retail.domain.StockLocation" alias="StockLocation" />
+        <typeAlias type="au.com.biztune.retail.domain.Stock" alias="Stock" />
+        <typeAlias type="au.com.biztune.retail.domain.StockEvent" alias="StockEvent" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />
@@ -73,5 +76,6 @@
         <mapper resource="maps/DeliveryNoteMapper.xml" />
         <mapper resource="maps/PoDelNoteLinkMapper.xml" />
         <mapper resource="maps/UserMapper.xml" />
+        <mapper resource="maps/StockMapper.xml" />
     </mappers>
 </configuration>

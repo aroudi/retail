@@ -37,6 +37,7 @@ public class PurchaseLine {
     private UnitOfMeasure unomContents;
     private List<PoBoqLink> poBoqLinks;
     private boolean deleted;
+    private double polQtyReserved;
 
     /**
      * add poBoqLink to list.
@@ -280,5 +281,13 @@ public class PurchaseLine {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public double getPolQtyReserved() {
+        return polQtyReserved;
+    }
+
+    public void setPolQtyReserved(double polQtyReserved) {
+        this.polQtyReserved = polQtyReserved;
     }
 }

@@ -104,4 +104,10 @@ public interface PurchaseOrderDao {
      * @return List of purchase order header
      */
     List<PurchaseOrderHeader> getAllPurchaseOrderHeaderNotFullyReceived(long orguId, List statusIds);
+
+    /**
+     * update purchase line reserved qty.
+     * @param purchaseLine purchaseLine
+     */
+    void updatePurchaseLineReserveQty(PurchaseLine purchaseLine);
 }

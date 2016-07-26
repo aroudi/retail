@@ -53,17 +53,8 @@
     <suppress checks="." files="[/\\]google[/\\]"/>
     <suppress checks="." files="[/\\]resources[/\\]"/>
     <suppress checks="." files="[/\\]csv[/\\]"/>
-    <suppress checks="." files="au[\\/]gov[\\/]nsw[\\/]railcorp[\\/]cimg[\\/]userstore[\\/]"/>
-    <suppress checks="." files="_1_0[\\/]response[\\/]asynchronous[\\/]ctip[\\/]railcorp[\\/]nsw[\\/]gov[\\/]au[\\/]"/>
-    <suppress checks="." files="au[\\/]com[\\/]breakpoint[\\/]"/>
-    <suppress checks="." files="com[\\/]jeppesen[\\/]"/>
-    <suppress checks="." files="com[\\/]soprano[\\/]"/>
-    <suppress checks="." files="com[\\/]sopranoonline[\\/]"/>
-    <suppress checks="." files="com[\\/]staterail[\\/]"/>
-    <suppress checks="." files="com[\\/]staterail[\\/]mesgen[\\/]"/>
-    <suppress checks="." files="com[\\/]staterail[\\/]tlsotr[\\/]"/>
-    <suppress checks="." files="com[\\/]staterail[\\/]util[\\/]"/>
-    <suppress checks="." files="com[\\/]staterail[\\/]webservices[\\/]"/>
+    <suppress checks="." files="au[\\/]com[\\/]biztune[\\/]retail[\\/]util[\\/]"/>
+
 
     <!-- End of generated various folders -->
 

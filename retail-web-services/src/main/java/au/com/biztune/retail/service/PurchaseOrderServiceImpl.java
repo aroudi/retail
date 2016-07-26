@@ -281,6 +281,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             purchaseLine.setPolSpecialBuy(false);
             purchaseLine.setUnitOfMeasure(productPurchaseItem.getUnitOfMeasure());
             purchaseLine.setPolQtyOrdered(boqDetail.getQtyBalance());
+            purchaseLine.setPolQtyReserved(boqDetail.getQtyBalance());
             purchaseLine.setPolValueOrdered(purchaseLine.getPolUnitCost() * purchaseLine.getPolQtyOrdered());
             if (productPurchaseItem.getUnitOfMeasureContent() != null) {
                 purchaseLine.setUnomContents(productPurchaseItem.getUnitOfMeasureContent());
@@ -300,6 +301,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 for (PurchaseLine pl: purchaseOrderHeader.getLines()) {
                     if (pl.getPurchaseItem().getProdId() == purchaseLine.getPurchaseItem().getProdId()) {
                         pl.setPolQtyOrdered(pl.getPolQtyOrdered() + purchaseLine.getPolQtyOrdered());
+                        pl.setPolQtyReserved(pl.getPolQtyReserved() + purchaseLine.getPolQtyReserved());
                         pl.setPolValueOrdered(pl.getPolValueOrdered() + purchaseLine.getPolValueOrdered());
                         //pl.getPoBoqLinks().addAll(purchaseLine.getPoBoqLinks());
                         purchaseOrderDao.updatePurchaseLine(pl);

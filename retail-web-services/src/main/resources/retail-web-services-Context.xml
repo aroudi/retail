@@ -34,6 +34,10 @@
             </set>
         </property>
     </bean>
+    <!-- queue manager -->
+    <bean id="asynchQueueManager" class="au.com.biztune.retail.util.queuemanager.QueueManager">
+    </bean>
+
     <cache:annotation-driven />
 </beans>
 

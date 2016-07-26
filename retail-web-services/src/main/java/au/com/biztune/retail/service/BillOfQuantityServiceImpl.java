@@ -14,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.SecurityContext;
 import java.io.InputStream;
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,6 +69,11 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     private ContactDao contactDao;
     @Autowired
     private PoBoqLinkDao poBoqLinkDao;
+    @Autowired
+    private StockService stockService;
+    @Context
+    private SecurityContext securityContext;
+
     /**
      * upload Bill Of Quantity.
      * @param uploadedInputStream uploadedInputStream
@@ -494,7 +502,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
         final CommonResponse response = new CommonResponse();
         try {
             response.setStatus(IdBConstant.RESULT_SUCCESS);
-
+            BoqDetail boqDetailBeforeUpdate = null;
             if (billOfQuantity == null) {
                 response.setStatus(IdBConstant.RESULT_FAILURE);
                 response.setMessage("bill of quantity object is null");
@@ -502,6 +510,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             }
             // update bill of quantity details for current items. add new items
             for (BoqDetail boqDetail: billOfQuantity.getLines()) {
+                boqDetailBeforeUpdate = boqDetailDao.getBoqDetailById(boqDetail.getId());
                 if (boqDetail.isDeleted()) {
                     continue;
                 }
@@ -536,6 +545,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                         }
                     }
                 }
+                //update stock quantity.
+                updateStockQuantity(billOfQuantity, boqDetail, boqDetailBeforeUpdate);
             }
             //update boq header
             billOfQuantityDao.updatePerId(billOfQuantity);
@@ -637,4 +648,57 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
         }
     }
 
+    /**
+     * update stock qty.
+     * @param boqDetailNew boqDetailNew
+     * @param  boqDetailOld boqDetailOld
+     * @param  boqHeader boqHeader
+     */
+    public void updateStockQuantity(au.com.biztune.retail.domain.BillOfQuantity boqHeader, BoqDetail boqDetailNew, BoqDetail boqDetailOld) {
+        try {
+            //get current user from security context.
+            final Principal principal = securityContext.getUserPrincipal();
+            AppUser appUser = null;
+            if (principal instanceof AppUser) {
+                appUser = (AppUser) principal;
+            }
+
+            String txnType = null;
+            double quantity = 0;
+            if (boqDetailOld == null && boqDetailNew.getQtyOnStock() > 0) {
+                txnType = IdBConstant.TXN_TYPE_GOODS_RESERVE;
+                quantity = boqDetailNew.getQtyOnStock();
+            } else if (boqDetailNew.getBqdStatus().getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_VOID)) {
+                txnType = IdBConstant.TXN_TYPE_GOODS_CANCEL_RESERVE;
+                quantity = boqDetailOld.getQtyOnStock();
+            } else if (boqDetailNew.getQtyOnStock() > boqDetailOld.getQtyOnStock()) {
+                txnType = IdBConstant.TXN_TYPE_GOODS_RESERVE;
+                quantity = boqDetailNew.getQtyOnStock() - boqDetailOld.getQtyOnStock();
+            } else if (boqDetailNew.getQtyOnStock() < boqDetailOld.getQtyOnStock()) {
+                txnType = IdBConstant.TXN_TYPE_GOODS_CANCEL_RESERVE;
+                quantity = boqDetailOld.getQtyOnStock() - boqDetailNew.getQtyOnStock();
+            } else {
+                //on stock qty has not changed. no need to proceed.
+                return;
+            }
+            final Timestamp currentTime = new Timestamp(new Date().getTime());
+            final StockEvent stockEvent = new StockEvent();
+            stockEvent.setTxnTypeConst(txnType);
+            stockEvent.setStckQty(quantity);
+            stockEvent.setUnomId(boqDetailNew.getUnitOfMeasure().getId());
+            stockEvent.setSupplierId(boqDetailNew.getSupplier().getId());
+            stockEvent.setCostPrice(boqDetailNew.getCost());
+            stockEvent.setProdId(boqDetailNew.getProduct().getId());
+            stockEvent.setSellPrice(boqDetailNew.getSellPrice());
+            stockEvent.setStckEvntDate(currentTime);
+            stockEvent.setTxnDate(boqHeader.getBoqLastModifiedDate());
+            stockEvent.setTxnHeader(boqHeader.getId());
+            stockEvent.setTxnLine(boqDetailNew.getId());
+            stockEvent.setUserId(appUser.getId());
+            stockEvent.setTxnNumber(boqHeader.getProject().getProjectCode());
+            stockService.pushStockEvent(stockEvent);
+        } catch (Exception e) {
+            logger.error("Exception in creating stock event:", e);
+        }
+    }
 }

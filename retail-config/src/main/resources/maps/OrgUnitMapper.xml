@@ -10,6 +10,7 @@
         <result column="ORGU_NAME" property="orguName" />
         <result column="ORGU_DESC" property="orguDesc" />
         <association property="priceBand" column="ORGU_ID" select="au.com.biztune.retail.dao.PriceBandDao.getActivePriceBandPerOrgUnitId" />
+        <association property="stockLocation" column="ORGU_ID" select="au.com.biztune.retail.dao.StockDao.getStockLocationPerOrguId" />
     </resultMap>
 
     <resultMap id="storeMap" type="Store" >

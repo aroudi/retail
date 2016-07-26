@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.StockDao">
+    <!-- result maps -->
+    <resultMap id="stockMap" type="Stock" >
+        <id column="STCK_ID" property="id" />
+        <result column="SUPPLIER_ID" property="supplierId" />
+        <result column="PROD_ID" property="prodId" />
+        <result column="PRGP_ID" property="prgpId" />
+        <result column="SELC_ID" property="selcId" />
+        <result column="ORGU_ID_LOCATION" property="orguIdLocation" />
+        <result column="STCK_QTY" property="stckQty" />
+        <result column="UNOM_ID" property="unomId" />
+        <result column="STCK_COND" property="stckCond" />
+        <result column="STCK_CAT" property="stckCat" />
+        <result column="STCK_LOCN_ID" property="stckLocnId" />
+        <result column="ORGU_ID_RESPBILITY" property="orguIdRespbility" />
+        <result column="STCK_VALUE" property="stckValue" />
+        <result column="STCK_LAST_VERIFIED" property="stckLastVerified" />
+    </resultMap>
+
+    <resultMap id="stockEventMap" type="StockEvent" >
+        <id column="STCK_EVNT_ID" property="id" />
+        <result column="STCK_ID" property="stckId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="USR_ID" property="userId" />
+        <result column="SUPPLIER_ID" property="supplierId" />
+        <result column="UNOM_ID" property="unomId" />
+        <result column="PROD_ID" property="prodId" />
+        <result column="PRGP_ID" property="prgpId" />
+        <result column="SELC_ID" property="selcId" />
+        <result column="STCK_EVNT_DATE" property="stckEvntDate" />
+        <result column="TXN_DATE" property="txnDate" />
+        <result column="TXN_TYPE" property="txnType" />
+        <result column="TXN_HEADER" property="txnHeader" />
+        <result column="TXN_LINE" property="txnLine" />
+        <result column="TXN_NUMBER" property="txnNumber" />
+        <result column="STCK_LOCN_ID" property="stckLocId" />
+        <result column="STCK_QTY" property="stckQty" />
+        <result column="SELL_PRICE" property="sellPrice" />
+        <result column="COST_PRICE" property="costPrice" />
+        <result column="STCK_COND" property="stckCond" />
+        <result column="STCK_CAT" property="stckCat" />
+    </resultMap>
+
+    <resultMap id="stockLocationMap" type="StockLocation" >
+        <id column="STCK_LOCN_ID" property="id" />
+        <result column="STCK_LOCN_CODE" property="stckLocnCode" />
+        <result column="STCK_LOCN_NAME" property="stckLocnName" />
+        <result column="STCK_LOCN_ADDRESS" property="stckLocnAddress" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+    </resultMap>
+
+    <sql id="stockColumns">
+        ${alias}.STCK_ID,
+        ${alias}.SUPPLIER_ID,
+        ${alias}.PROD_ID,
+        ${alias}.PRGP_ID,
+        ${alias}.SELC_ID,
+        ${alias}.ORGU_ID_LOCATION,
+        ${alias}.STCK_QTY,
+        ${alias}.UNOM_ID,
+        ${alias}.STCK_COND,
+        ${alias}.STCK_CAT,
+        ${alias}.STCK_LOCN_ID,
+        ${alias}.ORGU_ID_RESPBILITY,
+        ${alias}.STCK_VALUE,
+        ${alias}.STCK_LAST_VERIFIED,
+        ${alias}.LEGT_ID
+    </sql>
+
+    <sql id="stockEventColumns">
+        ${alias}.STCK_EVNT_ID,
+        ${alias}.STCK_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.USR_ID,
+        ${alias}.SUPPLIER_ID,
+        ${alias}.UNOM_ID,
+        ${alias}.PROD_ID,
+        ${alias}.PRGP_ID,
+        ${alias}.SELC_ID,
+        ${alias}.STCK_EVNT_DATE,
+        ${alias}.TXN_DATE,
+        ${alias}.TXN_TYPE,
+        ${alias}.TXN_HEADER,
+        ${alias}.TXN_LINE,
+        ${alias}.TXN_NUMBER,
+        ${alias}.STCK_LOCN_ID,
+        ${alias}.STCK_QTY,
+        ${alias}.SELL_PRICE,
+        ${alias}.COST_PRICE,
+        ${alias}.STCK_COND,
+        ${alias}.STCK_CAT
+    </sql>
+
+    <sql id="stockLocationColumns">
+        ${alias}.STCK_LOCN_ID,
+        ${alias}.STCK_LOCN_CODE,
+        ${alias}.STCK_LOCN_NAME,
+        ${alias}.STCK_LOCN_ADDRESS,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID
+    </sql>
+
+    <insert id="insertStock" parameterType="Stock" useGeneratedKeys="true" keyProperty="id" keyColumn="STCK_ID">
+        INSERT INTO STOCK(
+        PROD_ID,
+        SUPPLIER_ID,
+        PRGP_ID,
+        SELC_ID,
+        ORGU_ID_LOCATION,
+        STCK_QTY,
+        UNOM_ID,
+        STCK_COND,
+        STCK_CAT,
+        STCK_LOCN_ID,
+        ORGU_ID_RESPBILITY,
+        STCK_VALUE,
+        STCK_LAST_VERIFIED
+        ) VALUES (
+        #{prodId}
+        <if test="supplierId != null">
+            ,#{supplierId}
+        </if>
+        <if test="supplierId == null">
+            ,null
+        </if>
+
+        <if test="prgpId != null">
+            ,#{prgpId}
+        </if>
+        <if test="prgpId == null">
+            ,null
+        </if>
+
+        <if test="selcId != null">
+            ,#{selcId}
+        </if>
+        <if test="selcId == null">
+            ,null
+        </if>
+
+        <if test="orguIdLocation != null">
+            ,#{orguIdLocation}
+        </if>
+        <if test="orguIdLocation == null">
+            ,null
+        </if>
+
+        <if test="stckQty != null">
+            ,#{stckQty}
+        </if>
+        <if test="stckQty == null">
+            ,null
+        </if>
+
+        <if test="unomId != null">
+            ,#{unomId}
+        </if>
+        <if test="unomId == null">
+            ,null
+        </if>
+
+        <if test="stckCond != null">
+            ,#{stckCond}
+        </if>
+        <if test="stckCond == null">
+            ,null
+        </if>
+
+        <if test="stckCat != null">
+            ,#{stckCat}
+        </if>
+        <if test="stckCat == null">
+            ,null
+        </if>
+
+        <if test="stckLocnId != null">
+            ,#{stckLocnId}
+        </if>
+        <if test="stckLocnId == null">
+            ,null
+        </if>
+
+        <if test="orguIdRespbility != null">
+            ,#{orguIdRespbility}
+        </if>
+        <if test="orguIdRespbility == null">
+            ,null
+        </if>
+
+        <if test="stckValue != null">
+            ,#{stckValue}
+        </if>
+        <if test="stckValue == null">
+            ,null
+        </if>
+
+        <if test="stckLastVerified != null">
+            ,#{stckLastVerified}
+        </if>
+        <if test="stckLastVerified == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+
+    <insert id="insertStockEvent" parameterType="StockEvent" useGeneratedKeys="true" keyProperty="id" keyColumn="STCK_EVNT_ID">
+        INSERT INTO STOCK(
+            STCK_ID,
+            ORGU_ID,
+            USR_ID,
+            PROD_ID,
+            STORE_ID,
+            SUPPLIER_ID,
+            UNOM_ID,
+            PRGP_ID,
+            SELC_ID,
+            STCK_EVNT_DATE,
+            TXN_DATE,
+            TXN_TYPE,
+            TXN_HEADER,
+            TXN_LINE,
+            TXN_NUMBER,
+            STCK_LOCN_ID,
+            STCK_QTY,
+            SELL_PRICE,
+            COST_PRICE,
+            STCK_COND,
+            STCK_CAT
+        ) VALUES (
+        #{stckId},
+        #{orguId},
+        #{usrId},
+        #{prodId}
+        <if test="storeId != null">
+            ,#{storeId}
+        </if>
+        <if test="storeId == null">
+            ,null
+        </if>
+        <if test="supplierId != null">
+            ,#{supplierId}
+        </if>
+        <if test="supplierId == null">
+            ,null
+        </if>
+        <if test="unomId != null">
+            ,#{unomId}
+        </if>
+        <if test="unomId == null">
+            ,null
+        </if>
+
+        <if test="prgpId != null">
+            ,#{prgpId}
+        </if>
+        <if test="prgpId == null">
+            ,null
+        </if>
+
+        <if test="selcId != null">
+            ,#{selcId}
+        </if>
+        <if test="selcId == null">
+            ,null
+        </if>
+
+        <if test="stckEvntDate != null">
+            ,#{stckEvntDate}
+        </if>
+        <if test="stckEvntDate == null">
+            ,null
+        </if>
+
+        <if test="txnDate != null">
+            ,#{txnDate}
+        </if>
+        <if test="txnDate == null">
+            ,null
+        </if>
+
+        <if test="txnType != null">
+            ,#{txnType}
+        </if>
+        <if test="txnType == null">
+            ,null
+        </if>
+
+        <if test="txnHeader != null">
+            ,#{txnHeader}
+        </if>
+        <if test="txnHeader == null">
+            ,null
+        </if>
+
+        <if test="txnLine != null">
+            ,#{txnLine}
+        </if>
+        <if test="txnLine == null">
+            ,null
+        </if>
+
+        <if test="txnNumber != null">
+            ,#{txnNumber}
+        </if>
+        <if test="txnNumber == null">
+            ,null
+        </if>
+
+        <if test="stckLocId != null">
+            ,#{stckLocId}
+        </if>
+        <if test="stckLocId == null">
+            ,null
+        </if>
+
+        <if test="stckQty != null">
+            ,#{stckQty}
+        </if>
+        <if test="stckQty == null">
+            ,null
+        </if>
+        <if test="sellPrice != null">
+            ,#{sellPrice}
+        </if>
+        <if test="sellPrice == null">
+            ,null
+        </if>
+
+        <if test="costPrice != null">
+            ,#{costPrice}
+        </if>
+        <if test="costPrice == null">
+            ,null
+        </if>
+
+        <if test="stckCond != null">
+            ,#{stckCond}
+        </if>
+        <if test="stckCond == null">
+            ,null
+        </if>
+
+        <if test="stckCat != null">
+            ,#{stckCat}
+        </if>
+        <if test="stckCat == null">
+            ,null
+        </if>
+        )
+    </insert>
+    <select id="checkStockForProduct" resultMap="stockMap" >
+        SELECT
+        <include refid="stockColumns"><property name="alias" value="stock"/></include>
+        FROM
+              STOCK stock
+        WHERE
+        stock.PROD_ID = #{param1}
+        AND stock.ORGU_ID_LOCATION = #{param2}
+        AND stock.STCK_COND = #{param3}
+        AND stock.STCK_CAT = #{param4}
+        AND stock.STCK_LOCN_ID = #{param5}
+    </select>
+
+    <update id="updateStockQty" parameterType="Stock" >
+        UPDATE STOCK SET
+          STCK_QTY = #{stockQty}
+        WHERE
+          STCK_ID = #{id}
+    </update>
+
+    <select id="getStockLocationPerOrguId" resultMap="stockLocationMap" >
+        SELECT
+        <include refid="stockLocationColumns"><property name="alias" value="stckLcn"/></include>
+        FROM
+        STOCK_LOCATION stckLcn
+        WHERE
+        stckLcn.ORGU_ID = #{value}
+    </select>
+
+</mapper>
