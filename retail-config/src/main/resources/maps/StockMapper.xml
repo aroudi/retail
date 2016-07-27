@@ -212,7 +212,7 @@
 
 
     <insert id="insertStockEvent" parameterType="StockEvent" useGeneratedKeys="true" keyProperty="id" keyColumn="STCK_EVNT_ID">
-        INSERT INTO STOCK(
+        INSERT INTO STOCK_EVENT(
             STCK_ID,
             ORGU_ID,
             USR_ID,
@@ -237,7 +237,7 @@
         ) VALUES (
         #{stckId},
         #{orguId},
-        #{usrId},
+        #{userId},
         #{prodId}
         <if test="storeId != null">
             ,#{storeId}
@@ -369,9 +369,23 @@
         AND stock.STCK_LOCN_ID = #{param5}
     </select>
 
+    <select id="getProductSaleablePristineStockQty" resultType="double" >
+        SELECT
+          STCK_QTY
+        FROM
+        STOCK stock
+                    INNER JOIN CONFIG_CATEGORY cc1 on (stock.STCK_COND = cc1.category_id)
+                    INNER JOIN CONFIG_CATEGORY cc2 on (stock.STCK_CAT = cc2.category_id)
+        WHERE
+        stock.PROD_ID = #{prodId}
+        AND stock.ORGU_ID_LOCATION = #{orguId}
+        AND cc1.CATEGORY_CODE = 'STOCK_CONDITION_PRISTINE'
+        AND cc2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE'
+    </select>
+
     <update id="updateStockQty" parameterType="Stock" >
         UPDATE STOCK SET
-          STCK_QTY = #{stockQty}
+          STCK_QTY = #{stckQty}
         WHERE
           STCK_ID = #{id}
     </update>

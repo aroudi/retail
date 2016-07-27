@@ -13,10 +13,12 @@ import au.com.biztune.retail.util.queuemanager.QueueManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by arash on 25/07/2016.
  */
+@Component
 public class StockServiceImpl implements StockService {
     private final Logger logger = LoggerFactory.getLogger(StockServiceImpl.class);
     @Autowired
@@ -79,6 +81,9 @@ public class StockServiceImpl implements StockService {
             //indicate stock category from txnType.
             ConfigCategory stockCategory = null;
             ConfigCategory stockCondition = null;
+            ConfigCategory txnType = null;
+            txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, stockEvent.getTxnTypeConst());
+            stockEvent.setTxnType(txnType.getId());
             //TODO: for timebeing we consider all goods as pristine. we need to decide the stock condition per reason code.
             stockCondition = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CONDITION, IdBConstant.STOCK_CONDITION_PRISTINE);
             stockEvent.setStckCond(stockCondition.getId());
@@ -89,6 +94,7 @@ public class StockServiceImpl implements StockService {
                     stockEvent.setStckCat(stockCategory.getId());
                     updateStockQty(stockEvent);
                     break;
+                //todo: TXN_TYPE_GOODS_IN_TRANSIT in stock figures need more analysis
                 case IdBConstant.TXN_TYPE_GOODS_IN_TRANSIT :
                     //add to TRANSIT category
                     stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_IN_TRANSIT);
@@ -108,13 +114,15 @@ public class StockServiceImpl implements StockService {
                     break;
                 case IdBConstant.TXN_TYPE_GOODS_CANCEL_RESERVE :
                     //return to saleable category
+                    final double quantity = stockEvent.getStckQty();
                     stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_RESERVED);
                     stockEvent.setStckCat(stockCategory.getId());
-                    stockEvent.setStckQty(-stockEvent.getStckQty());
+                    stockEvent.setStckQty(-quantity);
                     updateStockQty(stockEvent);
                     //
                     stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_SALEABLE);
                     stockEvent.setStckCat(stockCategory.getId());
+                    stockEvent.setStckQty(quantity);
                     updateStockQty(stockEvent);
                     break;
                 case IdBConstant.TXN_TYPE_SALE :

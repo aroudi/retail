@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 import java.io.InputStream;
 import java.security.Principal;
@@ -71,7 +70,6 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     private PoBoqLinkDao poBoqLinkDao;
     @Autowired
     private StockService stockService;
-    @Context
     private SecurityContext securityContext;
 
     /**
@@ -496,9 +494,11 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     /**
      * update bill of quantity on stock information.
      * @param billOfQuantity billOfQuantity
+     * @param securityContext securityContext
      * @return Response
      */
-    public CommonResponse update(au.com.biztune.retail.domain.BillOfQuantity billOfQuantity) {
+    public CommonResponse update(au.com.biztune.retail.domain.BillOfQuantity billOfQuantity, SecurityContext securityContext) {
+        this.securityContext = securityContext;
         final CommonResponse response = new CommonResponse();
         try {
             response.setStatus(IdBConstant.RESULT_SUCCESS);
@@ -696,6 +696,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             stockEvent.setTxnLine(boqDetailNew.getId());
             stockEvent.setUserId(appUser.getId());
             stockEvent.setTxnNumber(boqHeader.getProject().getProjectCode());
+            stockEvent.setOrguId(sessionState.getOrgUnit().getId());
             stockService.pushStockEvent(stockEvent);
         } catch (Exception e) {
             logger.error("Exception in creating stock event:", e);

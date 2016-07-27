@@ -21,14 +21,18 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             {field:'supplier.supplierName', displayName:'Supplier', enableCellEdit:false, width:'10%'},
             {field:'product.prodSku', displayName:'SKU',enableCellEdit:false, width:'15%',
                 cellTooltip: function(row,col) {
-                    return row.entity.product.prodName
+                    return row.entity.product.prodName + "\n" + "Available in stock: " + row.entity.product.stockQty
                 }
             },
             {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'5%'},
             {field:'cost', displayName:'Cost',enableCellEdit:false, width:'5%', cellFilter: 'currency', footerCellFilter: 'currency'},
             {field:'quantity', displayName:'Qty',enableCellEdit:false, width:'5%',type: 'number'},
             {field:'itemValue', displayName:'Total', enableCellEdit:false, width:'5%', cellFilter: 'currency', footerCellFilter: 'currency'},
-            {field:'qtyOnStock', displayName:'Stock', width:'5%', type: 'number', enableCellEdit:true, cellClass:"blue"},
+            {field:'qtyOnStock', displayName:'Stock', width:'5%', type: 'number', enableCellEdit:true, cellClass:"blue",
+                cellTooltip: function(row,col) {
+                    return 'Avialable Qty: ' + row.entity.product.stockQty
+                }
+            },
             {field:'comment', displayName:'Location', width:'5%', enableCellEdit:true, cellClass:"blue"},
             {field:'qtyBalance', displayName:'Balance', enableCellEdit:false, width:'5%', type: 'number'},
             {field:'linkedPurchaseOrders', displayName:'Purchase Order',enableCellEdit:false, width:'9%', cellFilter:'poBoqLinkOrderNumberFilter',

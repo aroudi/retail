@@ -42,4 +42,12 @@ public interface StockDao {
      * @return Stock Location
      */
     StockLocation getStockLocationPerOrguId(long orguId);
+
+    /**
+     * get saleable and pristine qty for product.
+     * @param prodId prodId
+     * @param orguId orguId
+     * @return stock qty.
+     */
+    double getProductSaleablePristineStockQty(long prodId, long orguId);
 }

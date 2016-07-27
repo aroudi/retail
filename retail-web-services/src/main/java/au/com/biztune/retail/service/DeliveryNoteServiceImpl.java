@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.sql.Timestamp;
@@ -42,14 +41,15 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
     private PoBoqLinkDao poBoqLinkDao;
     @Autowired
     private StockService stockService;
-    @Context
     private SecurityContext securityContext;
     /**
      * save DeliveryNote into database.
      * @param deliveryNoteHeader deliveryNoteHeader
+     * @param securityContext securityContext
      * @return response
      */
-    public CommonResponse saveDeliveryNote(DeliveryNoteHeader deliveryNoteHeader) {
+    public CommonResponse saveDeliveryNote(DeliveryNoteHeader deliveryNoteHeader, SecurityContext securityContext) {
+        this.securityContext = securityContext;
         final CommonResponse response = new CommonResponse();
         try {
             response.setStatus(IdBConstant.RESULT_SUCCESS);
@@ -285,47 +285,17 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 appUser = (AppUser) principal;
             }
 
-            String txnType = null;
-            double quantity = 0;
             if (deliveryNoteHeader == null || linkedPurchaseLine == null || deliveryNoteLine == null) {
                 return;
             }
-            double qtyReserved = 0;
-            if (linkedPurchaseLine.getPolQtyReserved() <= 0) {
-                txnType = IdBConstant.TXN_TYPE_GOODS_IN;
-                quantity = deliveryNoteLine.getRcvdQty();
-            } else if (deliveryNoteLine.getRcvdQty() <= linkedPurchaseLine.getPolQtyReserved()) {
-                txnType = IdBConstant.TXN_TYPE_GOODS_RESERVE;
-                quantity = deliveryNoteLine.getRcvdQty();
-                qtyReserved = quantity;
-            } else if (deliveryNoteLine.getRcvdQty() > linkedPurchaseLine.getPolQtyReserved()) {
-                txnType = IdBConstant.TXN_TYPE_GOODS_RESERVE;
-                quantity = linkedPurchaseLine.getPolQtyReserved();
-                qtyReserved = quantity;
-                final Timestamp currentTime = new Timestamp(new Date().getTime());
-                final StockEvent stockEvent = new StockEvent();
-                stockEvent.setTxnTypeConst(txnType);
-                stockEvent.setStckQty(quantity);
-                stockEvent.setUnomId(deliveryNoteLine.getRcvdCaseSize().getId());
-                //stockEvent.setSupplierId(deliveryNoteLine.getPurchaseItem());
-                stockEvent.setCostPrice(deliveryNoteLine.getDlnlUnitCost());
-                stockEvent.setProdId(deliveryNoteLine.getPurchaseItem().getProdId());
-                stockEvent.setSellPrice(deliveryNoteLine.getPurchaseItem().getPrice());
-                stockEvent.setStckEvntDate(currentTime);
-                stockEvent.setTxnDate(deliveryNoteHeader.getDelnCreatedDate());
-                stockEvent.setTxnHeader(deliveryNoteHeader.getId());
-                stockEvent.setTxnLine(deliveryNoteLine.getId());
-                stockEvent.setUserId(appUser.getId());
-                stockEvent.setTxnNumber(deliveryNoteHeader.getDelnGrn());
-                stockService.pushStockEvent(stockEvent);
-                //new request for rest
-                txnType = IdBConstant.TXN_TYPE_GOODS_IN;
-                quantity = deliveryNoteLine.getRcvdQty() - linkedPurchaseLine.getPolQtyReserved();
-            } else {
-                return;
-            }
-            final Timestamp currentTime = new Timestamp(new Date().getTime());
-            final StockEvent stockEvent = new StockEvent();
+            String txnType = null;
+            double quantity = 0;
+
+            //First of all, goods need to transfer to the saleable stocks.
+            txnType = IdBConstant.TXN_TYPE_GOODS_IN;
+            quantity = deliveryNoteLine.getRcvdQty();
+            Timestamp currentTime = new Timestamp(new Date().getTime());
+            StockEvent stockEvent = new StockEvent();
             stockEvent.setTxnTypeConst(txnType);
             stockEvent.setStckQty(quantity);
             stockEvent.setUnomId(deliveryNoteLine.getRcvdCaseSize().getId());
@@ -339,9 +309,38 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             stockEvent.setTxnLine(deliveryNoteLine.getId());
             stockEvent.setUserId(appUser.getId());
             stockEvent.setTxnNumber(deliveryNoteHeader.getDelnGrn());
+            stockEvent.setOrguId(sessionState.getOrgUnit().getId());
+            logger.info("stock event type =" + stockEvent.getTxnTypeConst() + "qty =" + stockEvent.getStckQty() + " pushed to the queue");
             stockService.pushStockEvent(stockEvent);
+
+            //now move from saleable stock to reserve stock for items has been reserved by BOQs.
+            txnType = IdBConstant.TXN_TYPE_GOODS_RESERVE;
+            if (deliveryNoteLine.getRcvdQty() <= linkedPurchaseLine.getPolQtyReserved()) {
+                quantity = deliveryNoteLine.getRcvdQty();
+            } else if (deliveryNoteLine.getRcvdQty() > linkedPurchaseLine.getPolQtyReserved()) {
+                quantity = linkedPurchaseLine.getPolQtyReserved();
+            }
+            currentTime = new Timestamp(new Date().getTime());
+            stockEvent = new StockEvent();
+            stockEvent.setTxnTypeConst(txnType);
+            stockEvent.setStckQty(quantity);
+            stockEvent.setUnomId(deliveryNoteLine.getRcvdCaseSize().getId());
+            //stockEvent.setSupplierId(deliveryNoteLine.getPurchaseItem());
+            stockEvent.setCostPrice(deliveryNoteLine.getDlnlUnitCost());
+            stockEvent.setProdId(deliveryNoteLine.getPurchaseItem().getProdId());
+            stockEvent.setSellPrice(deliveryNoteLine.getPurchaseItem().getPrice());
+            stockEvent.setStckEvntDate(currentTime);
+            stockEvent.setTxnDate(deliveryNoteHeader.getDelnCreatedDate());
+            stockEvent.setTxnHeader(deliveryNoteHeader.getId());
+            stockEvent.setTxnLine(deliveryNoteLine.getId());
+            stockEvent.setUserId(appUser.getId());
+            stockEvent.setTxnNumber(deliveryNoteHeader.getDelnGrn());
+            stockEvent.setOrguId(sessionState.getOrgUnit().getId());
+            logger.info("stock event type =" + stockEvent.getTxnTypeConst() + "qty =" + stockEvent.getStckQty() + " pushed to the queue");
+            stockService.pushStockEvent(stockEvent);
+            logger.info("after pushed to the queue");
             //update reserved qty on purchase order
-            linkedPurchaseLine.setPolQtyReserved(qtyReserved);
+            linkedPurchaseLine.setPolQtyReserved(linkedPurchaseLine.getPolQtyReserved() - quantity);
             purchaseOrderDao.updatePurchaseLineReserveQty(linkedPurchaseLine);
         } catch (Exception e) {
             logger.error("Exception in creating stock event:", e);

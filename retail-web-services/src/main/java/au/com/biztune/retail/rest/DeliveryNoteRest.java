@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.util.List;
 
 /**
@@ -32,6 +29,8 @@ public class DeliveryNoteRest {
     @Autowired
     private DeliveryNoteService deliveryNoteService;
 
+    @Context
+    private SecurityContext securityContext;
     /**
      * Returns list of Delivery Notes.
      * @return list of DeliveryNoteHeader
@@ -73,6 +72,6 @@ public class DeliveryNoteRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResponse addDeliveryNote (DeliveryNoteHeader deliveryNoteHeader) {
-        return deliveryNoteService.saveDeliveryNote(deliveryNoteHeader);
+        return deliveryNoteService.saveDeliveryNote(deliveryNoteHeader, securityContext);
     }
 }

@@ -39,6 +39,10 @@ public class BillOfQuantityRest {
 
     @Autowired
     private BillOfQuantityRptMgr billOfQuantityRptMgr;
+
+    @Context
+    private SecurityContext securityContext;
+
     /**
      * upload bill of quantity.
      * @param uploadedInputStream uploadedInputStream
@@ -102,7 +106,7 @@ public class BillOfQuantityRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResponse updateBoqStockQty (BillOfQuantity billOfQuantity) {
-        return billOfQuantityService.update(billOfQuantity);
+        return billOfQuantityService.update(billOfQuantity, securityContext);
     }
 
     /**

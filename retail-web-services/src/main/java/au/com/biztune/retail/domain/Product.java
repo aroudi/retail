@@ -28,6 +28,7 @@ public class Product {
     private ProdOrguLink prodOrguLink;
     private List<Price> priceList;
     private List<SuppProdPrice> suppProdPriceList;
+    private double stockQty;
 
     public long getId() {
         return id;
@@ -195,5 +196,13 @@ public class Product {
 
     public void setSuppProdPriceList(List<SuppProdPrice> suppProdPriceList) {
         this.suppProdPriceList = suppProdPriceList;
+    }
+
+    public double getStockQty() {
+        return stockQty;
+    }
+
+    public void setStockQty(double stockQty) {
+        this.stockQty = stockQty;
     }
 }

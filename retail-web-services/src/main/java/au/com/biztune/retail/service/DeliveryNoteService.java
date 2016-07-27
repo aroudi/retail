@@ -3,6 +3,7 @@ package au.com.biztune.retail.service;
 import au.com.biztune.retail.domain.DeliveryNoteHeader;
 import au.com.biztune.retail.response.CommonResponse;
 
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 /**
@@ -12,9 +13,10 @@ public interface DeliveryNoteService {
     /**
      * save DeliveryNote into database.
      * @param deliveryNoteHeader deliveryNoteHeader
+     * @param securityContext securityContext
      * @return response
      */
-    CommonResponse saveDeliveryNote(DeliveryNoteHeader deliveryNoteHeader);
+    CommonResponse saveDeliveryNote(DeliveryNoteHeader deliveryNoteHeader, SecurityContext securityContext);
     /**
      * get all delivery note headers.
      * @return List of DeliveryNoteHeader

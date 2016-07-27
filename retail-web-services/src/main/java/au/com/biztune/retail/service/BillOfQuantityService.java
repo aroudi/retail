@@ -4,6 +4,7 @@ import au.com.biztune.retail.domain.BoqDetail;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.response.CommonResponse;
 
+import javax.ws.rs.core.SecurityContext;
 import java.io.InputStream;
 import java.util.List;
 
@@ -41,9 +42,10 @@ public interface BillOfQuantityService {
     /**
      * update bill of quantity on stock information.
      * @param billOfQuantity billOfQuantity
+     * @param securityContext securityContext
      * @return Response
      */
-    CommonResponse update(au.com.biztune.retail.domain.BillOfQuantity billOfQuantity);
+    CommonResponse update(au.com.biztune.retail.domain.BillOfQuantity billOfQuantity, SecurityContext securityContext);
 
     /**
      * generate Purchase orders from bill of quantities.
