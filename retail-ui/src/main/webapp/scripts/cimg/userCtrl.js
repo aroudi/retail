@@ -94,7 +94,7 @@ cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, ba
         //$scope.facility.lastModifiedBy = userId;
         if ($scope.pageIsNew) {
             if ($scope.retryPassword != $scope.appUser.usrPass) {
-                baseDataService.displayMessage('Warning', 'Password and Retry does not match ');
+                baseDataService.displayMessage('info','Warning', 'Password and Retry does not match ');
                 return
             }
         }
@@ -106,7 +106,7 @@ cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, ba
             if (addResponse.status == SUCCESS ) {
                 $state.go('dashboard.listUser');
             } else {
-                baseDataService.displayMessage('Warning', 'Not able to save user. ' + addResponse.message);
+                baseDataService.displayMessage('info','Warning', 'Not able to save user. ' + addResponse.message);
             }
         });
         return;
@@ -159,7 +159,7 @@ cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, ba
             return;
         }
         if (row == undefined || row.entity == undefined) {
-            baseDataService.displayMessage('Warning', 'item is undefined!!!');
+            baseDataService.displayMessage('info','Warning', 'item is undefined!!!');
             return;
         }
         row.entity.deleted = true;
@@ -171,7 +171,7 @@ cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, ba
             return;
         }
         if (row == undefined || row.entity == undefined) {
-            baseDataService.displayMessage('Warning', 'item is undefined!!!');
+            baseDataService.displayMessage('info','Warning', 'item is undefined!!!');
             return;
         }
         row.entity.roleDeleted = true;

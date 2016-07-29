@@ -73,7 +73,7 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
                 $scope.boqDetail.qtyBalance =quantityCanBeAssignedFromPO;
                 $scope.enableSubmit = true;
             } else {
-                baseDataService.displayMessage('Invalid Quantity', 'Quantity is invalid')
+                baseDataService.displayMessage('info','Invalid Quantity', 'Quantity is invalid')
                 $scope.enableSubmit = false;
             }
 
@@ -209,7 +209,7 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
                 boqDetailObject.linkedPurchaseOrders = poBoqLinks;
                 $scope.confirm(boqDetailObject);
             } else {
-                baseDataService.displayMessage('Invalid Quantity', 'Quantity is invalid')
+                baseDataService.displayMessage('info','Invalid Quantity', 'Quantity is invalid')
             }
         }
     }

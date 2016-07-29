@@ -21,13 +21,14 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseData
                     return row.entity.prodName
                 }
             },
-            {field:'prodDesc', displayName:'Description',enableCellEdit:false, width:'20%',
+            {field:'prodDesc', displayName:'Description',enableCellEdit:false, width:'25%',
                 cellTooltip: function(row,col) {
                     return row.entity.prodDesc
                 }
             },
-            {field:'prodBrand', displayName:'Brand',enableCellEdit:false, width:'10%'},
-            {field:'prodClass', displayName:'Class',enableCellEdit:false, width:'10%'},
+            {field:'stockQty', displayName:'Available Qty',enableCellEdit:false, width:'10%'},
+            {field:'reservedQty', displayName:'Reserved Qty',enableCellEdit:false, width:'10%'},
+            //{field:'prodClass', displayName:'Class',enableCellEdit:false, width:'10%'},
             {field:'prodOrguLink.status.displayName', displayName:'Status',enableCellEdit:false, width:'10%',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     if (grid.getCellValue(row, col) === 'IMPORTED') {
@@ -37,7 +38,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseData
                     }
                 }
             },
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a>', width:'10%' }
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a>', width:'5%' }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;

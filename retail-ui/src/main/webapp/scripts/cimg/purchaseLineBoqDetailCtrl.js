@@ -60,7 +60,7 @@ cimgApp.controller('purchaseLineBoqDetailCtrl', function($scope, $state, $timeou
         cellData = event.targetScope.row.entity[event.targetScope.col.field];
         //check if entered amound for BOQ qty received is grater than BOQ Total qty
         if (cellData > linkedBoqLine.boqQtyTotal) {
-            baseDataService.displayMessage('Warning!!','Entered amound is greater than Total required!!!!');
+            baseDataService.displayMessage('info','Warning!!','Entered amound is greater than Total required!!!!');
             linkedBoqLine.poQtyReceived = $scope.poQtyReceivedBeforeEditting;
             return;
         }
@@ -70,7 +70,7 @@ cimgApp.controller('purchaseLineBoqDetailCtrl', function($scope, $state, $timeou
             totalBoqLinkedReceived = totalBoqLinkedReceived + $scope.gridOptions.data[i].poQtyReceived ;
         }
         if (totalBoqLinkedReceived > $scope.purchaseLine.polQtyReceived ) {
-            baseDataService.displayMessage('Warning!!','Total Qty received for BOQ is grater than purchase line qty recived!!!!');
+            baseDataService.displayMessage('info','Warning!!','Total Qty received for BOQ is grater than purchase line qty recived!!!!');
             linkedBoqLine.poQtyReceived = $scope.poQtyReceivedBeforeEditting;
             return;
         }

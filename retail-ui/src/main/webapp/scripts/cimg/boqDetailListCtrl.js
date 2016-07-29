@@ -75,15 +75,25 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
         cellData = event.targetScope.row.entity[event.targetScope.col.field];
         //txnDetail.txdeQuantitySold = cellData;
         if (boqDetail.bqdStatus.displayName!='PENDING') {
-            baseDataService.displayMessage('Warning!!','You can only change the value on PENDING status');
+            baseDataService.displayMessage('info','Warning!!','You can only change the value on PENDING status');
             boqDetail.qtyOnStock = $scope.qtyOnStockBeforeEditting;
             return;
         }
         if (boqDetail.qtyOnStock > boqDetail.quantity) {
-            baseDataService.displayMessage('Warning!!','Invalid number');
+            baseDataService.displayMessage('info','Warning!!','Invalid number');
             boqDetail.qtyOnStock = $scope.qtyOnStockBeforeEditting;
             //event.targetScope.col.field.value = $scope.qtyOnStockBeforeEditting;
             return;
+        }
+        if (boqDetail.qtyOnStock > boqDetail.product.stockQty) {
+            baseDataService.displayMessage('yesNo','Warning!!','Qty entered is bigger than stock availability. \nDo you wish to continue ... ?').then(function(result){
+                console.log('result :', result);
+                if (!result) {
+                    boqDetail.qtyOnStock = $scope.qtyOnStockBeforeEditting;
+                    //event.targetScope.col.field.value = $scope.qtyOnStockBeforeEditting;
+                    return;
+                }
+            });
         }
         boqDetail.qtyBalance = boqDetail.quantity - (boqDetail.qtyOnStock + boqDetail.qtyPurchased);
     })

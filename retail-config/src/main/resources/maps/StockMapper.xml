@@ -383,6 +383,20 @@
         AND cc2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE'
     </select>
 
+    <select id="getProductReservedPristineStockQty" resultType="double" >
+        SELECT
+        STCK_QTY
+        FROM
+        STOCK stock
+        INNER JOIN CONFIG_CATEGORY cc1 on (stock.STCK_COND = cc1.category_id)
+        INNER JOIN CONFIG_CATEGORY cc2 on (stock.STCK_CAT = cc2.category_id)
+        WHERE
+        stock.PROD_ID = #{prodId}
+        AND stock.ORGU_ID_LOCATION = #{orguId}
+        AND cc1.CATEGORY_CODE = 'STOCK_CONDITION_PRISTINE'
+        AND cc2.CATEGORY_CODE = 'STOCK_CATEGORY_RESERVED'
+    </select>
+
     <update id="updateStockQty" parameterType="Stock" >
         UPDATE STOCK SET
           STCK_QTY = #{stckQty}

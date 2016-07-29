@@ -1,8 +1,15 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF) {
+cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED) {
     var rowtpl='<div ng-class="{\'brown\':row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\'}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
+    $scope.enableChangeStatus = function() {
+        if ($scope.purchaseOrderHeader.pohStatus.categoryCode == 'POH_STATUS_IN_PROGRESS') {
+            return true;
+        } else {
+            return false;
+        }
+    }
     $scope.gridOptions = {
         enableFiltering: true,
         showGridFooter: true,
@@ -66,7 +73,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             if (colDef.name == 'polQtyOrdered') {
                 if (rowEntity.polCreationType.displayName=='AUTO') {
                     if (rowEntity.polQtyOrdered < getLinkeBoqQtyBalanceTotal(rowEntity)) {
-                        baseDataService.displayMessage('Warning!!','You can not decrease quantity for auto created item.');
+                        baseDataService.displayMessage('info','Warning!!','You can not decrease quantity for auto created item.');
                         rowEntity.polQtyOrdered = $scope.polQtyOrderedBeforeEditting;
                         return;
                     }
@@ -76,7 +83,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             }
             if (colDef.name == 'polUnitCost') {
                 if (rowEntity.polUnitCost > rowEntity.purchaseItem.price) {
-                    baseDataService.displayMessage('Warning!!','The new price is more than item original price which is: ' + rowEntity.purchaseItem.price);
+                    baseDataService.displayMessage('info','Warning!!','The new price is more than item original price which is: ' + rowEntity.purchaseItem.price);
                     rowEntity.polUnitCost = $scope.polUnitCostBeforeEditting;
                     return;
                 }
@@ -102,9 +109,43 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
     */
     initPageData();
     function initPageData() {
+        $scope.posIsCancessled = false;
+        $scope.posIsConfirmed = false;
+        baseDataService.getBaseData(POL_CREATION_TYPE_MANUAL).then(function(response){
+            var data = angular.copy(response.data);
+            $scope.polCreationTypeManual = data;
+        });
+        baseDataService.getBaseData(POH_STATUS_IN_PROGRESS).then(function(response){
+            var data = angular.copy(response.data);
+            $scope.statusOnProgress = data;
+        });
+        baseDataService.getBaseData(POH_STATUS_CONFIRMED).then(function(response){
+            var data = angular.copy(response.data);
+            $scope.statusConfirmed = data;
+        });
+        baseDataService.getBaseData(POH_STATUS_CANCELLED).then(function(response){
+            var data = angular.copy(response.data);
+            $scope.statusCancelled = data;
+        });
+        baseDataService.getBaseData(POH_STATUS_URI).then(function(response){
+            $scope.pohStatusSet = response.data;
+            /*
+             $scope.pohStatusSet = [];
+             var arr = response.data;
+             //we shouldn't display PARTIAL REC and GOOD RECEIVED
+             for (i=0; i< arr.length; i++) {
+             if (arr[i].displayName !='PARTIAL REC' && arr[i].displayName !='GOOD RECEIVED' ) {
+             $scope.pohStatusSet.push(arr[i]);
+             }
+             }
+             */
+            $scope.purchaseOrderHeader.pohStatus = baseDataService.populateSelectList($scope.purchaseOrderHeader.pohStatus,$scope.pohStatusSet);
+            managePoStatusDisplay();
+        });
         $scope.disablePage = false;
         if ( baseDataService.getIsPageNew()) {
             $scope.purchaseOrderHeader = {};
+            $scope.purchaseOrderHeader.pohStatus = $scope.statusOnProgress;
             //$scope.purchaseOrderHeader.pohCreatedDate = new Date().getTime();
             $scope.purchaseOrderHeader.pohExpDeliveryStr = new Date().getTime();
             $scope.purchaseOrderHeader.id = -1;
@@ -112,7 +153,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         } else {
             $scope.purchaseOrderHeader = angular.copy(baseDataService.getRow());
             $scope.gridOptions.data = $scope.purchaseOrderHeader.lines;
-            if ($scope.purchaseOrderHeader.pohStatus.categoryCode == 'POH_STATUS_PARTIAL_REC' || $scope.purchaseOrderHeader.pohStatus.categoryCode == 'POH_STATUS_GOOD_RECEIVED') {
+            if (!$scope.enableChangeStatus()) {
                 $scope.disablePage = true;
             } else {
                 $scope.disablePage = false;
@@ -125,28 +166,6 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             baseDataService.setIsPageNew(true);
             $scope.pageIsNew = false;
         }
-        baseDataService.getBaseData(POL_CREATION_TYPE_MANUAL).then(function(response){
-            var data = angular.copy(response.data);
-            $scope.polCreationTypeManual = data;
-        });
-        baseDataService.getBaseData(POH_STATUS_IN_PROGRESS).then(function(response){
-            var data = angular.copy(response.data);
-            $scope.statusOnProgress = data;
-        });
-        baseDataService.getBaseData(POH_STATUS_URI).then(function(response){
-            $scope.pohStatusSet = response.data;
-            /*
-            $scope.pohStatusSet = [];
-            var arr = response.data;
-            //we shouldn't display PARTIAL REC and GOOD RECEIVED
-            for (i=0; i< arr.length; i++) {
-                if (arr[i].displayName !='PARTIAL REC' && arr[i].displayName !='GOOD RECEIVED' ) {
-                    $scope.pohStatusSet.push(arr[i]);
-                }
-            }
-            */
-            $scope.purchaseOrderHeader.pohStatus = baseDataService.populateSelectList($scope.purchaseOrderHeader.pohStatus,$scope.pohStatusSet);
-        });
 
     }
 
@@ -229,6 +248,12 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
          }
          */
 
+        //CHECK STATUS
+        if ($scope.poIsConfirmed) {
+            $scope.purchaseOrderHeader.pohStatus = $scope.statusConfirmed;
+        }else if ($scope.poIsCancelled) {
+            $scope.purchaseOrderHeader.pohStatus = $scope.statusCancelled;
+        }
         //$scope.facility.lastModifiedBy = userId;
         var rowObject = $scope.purchaseOrderHeader;
         if ($scope.pageIsNew) {
@@ -245,7 +270,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             addResponse = response.data;
             if (addResponse.status == SUCCESS ) {
                 if ($scope.pageIsNew) {
-                    baseDataService.displayMessage("Order Number", "Purhcase order saved with number: " + addResponse.info);
+                    baseDataService.displayMessage("info","Order Number", "Purhcase order saved with number: " + addResponse.info);
                 }
                 $state.go('dashboard.purchaseOrderList');
             } else {
@@ -279,7 +304,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             if (addResponse.status == SUCCESS ) {
                 $state.go('dashboard.purchaseOrderList');
             } else {
-                baseDataService.displayMessage("Error in saving data", addResponse.message);
+                baseDataService.displayMessage("info","Error in saving data", addResponse.message);
             }
         });
         return;
@@ -394,4 +419,17 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         });
 
     }
+    function managePoStatusDisplay(){
+        if ($scope.purchaseOrderHeader.pohStatus.categoryCode == 'POH_STATUS_CONFIRMED') {
+            $scope.poIsConfirmed = true;
+            $scope.poIsCancelled = false;
+        }
+        if ($scope.purchaseOrderHeader.pohStatus.categoryCode == 'POH_STATUS_CANCELLED') {
+            $scope.poIsConfirmed = false;
+            $scope.poIsCancelled = true;
+        }
+
+    }
+
+
 });

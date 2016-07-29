@@ -37,11 +37,41 @@
                             <div class="col-lg-3">
                                 <div class="form-group">
                                     <label>Status:</label>
-                                    <select class="form-control" data-ng-model="purchaseOrderHeader.pohStatus"
+                                    <select class="form-control" data-ng-model="purchaseOrderHeader.pohStatus" ng-disabled="true"
                                             ng-options="type.displayName for type in pohStatusSet"  ng-disabled="disablePage==true">
                                     </select>
                                 </div >
                             </div >
+                        </div>
+                    </div>
+                    <div class="row" ng-show="enableChangeStatus()">
+                        <div class="col-lg-4" >
+                            <label>Confirm Purchase Order</label>
+                            <div class="form-group">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" data-ng-model="poIsConfirmed" ng-disabled="poIsCancelled || purchaseOrderHeader.pohStatus.configCode == 'POH_STATUS_CANCELLED' || purchaseOrderHeader.pohStatus.configCode == 'POH_STATUS_CONFIRMED' ">
+                                    <div class="alert alert-success" ng-show="poIsConfirmed">
+                                        CONFIRMED
+                                    </div>
+                                    <div class="alert alert-info" ng-show="!poIsConfirmed">
+                                        {{purchaseOrderHeader.pohStatus.displayName}}
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <label>Cancel Purchase Order</label>
+                            <div class="form-group">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" data-ng-model="poIsCancelled" ng-disabled="poIsConfirmed || purchaseOrderHeader.pohStatus.configCode == 'POH_STATUS_CANCELLED' || purchaseOrderHeader.pohStatus.configCode == 'POH_STATUS_CONFIRMED'">
+                                    <div class="alert alert-danger" ng-show="poIsCancelled">
+                                        CANCELLED
+                                    </div>
+                                    <div class="alert alert-info" ng-show="!poIsCancelled">
+                                        {{purchaseOrderHeader.pohStatus.displayName}}
+                                    </div>
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <div class="row">

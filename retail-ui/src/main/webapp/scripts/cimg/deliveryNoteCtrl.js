@@ -173,7 +173,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
 
 
         if ($scope.disablePage) {
-            baseDataService.displayMessage("Warning", "You can not submit an already confirmed delivery note!!!! ");
+            baseDataService.displayMessage("info","Warning", "You can not submit an already confirmed delivery note!!!! ");
             return;
         }
         /*
@@ -193,7 +193,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             addResponse = response.data;
             if (addResponse.status == SUCCESS ) {
                 if ($scope.pageIsNew) {
-                    baseDataService.displayMessage("GRN Number", "Delivery Note saved with GRN: " + addResponse.info);
+                    baseDataService.displayMessage("info","GRN Number", "Delivery Note saved with GRN: " + addResponse.info);
                 }
                 $state.go('dashboard.deliveryNoteList');
             } else {

@@ -114,6 +114,8 @@ var type_constant = {
     'POL_CREATION_TYPE_MANUAL' : 'categories/POH_CREATION_TYPE/POH_CREATION_TYPE_MANUAL',
     'POL_CREATION_TYPE_AUTO' : 'categories/POH_CREATION_TYPE/POH_CREATION_TYPE_AUTO',
     'POH_STATUS_IN_PROGRESS' : 'categories/POH_STATUS/POH_STATUS_IN_PROGRESS',
+    'POH_STATUS_CONFIRMED' : 'categories/POH_STATUS/POH_STATUS_CONFIRMED',
+    'POH_STATUS_CANCELLED' : 'categories/POH_STATUS/POH_STATUS_CANCELLED',
     'BOQ_LINE_STATUS_VOID' : 'categories/BOQ_LINE_STATUS/BOQ_LINE_STATUS_VOID',
     'BOQ_LINE_STATUS_PENDING' : 'categories/BOQ_LINE_STATUS/BOQ_LINE_STATUS_PENDING',
     'BOQ_LINE_STATUS_PO_CREATED' : 'categories/BOQ_LINE_STATUS/BOQ_LINE_STATUS_PO_CREATED',
@@ -291,14 +293,15 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
 
             return new Date(strDate[2],strDate[1]-1,strDate[0],strDate[3],strDate[4]);
         },
-        displayMessage : function (heading,mBody) {
-
+        displayMessage : function (type, heading,mBody) {
+            var result = false;
             var myMessage = {
                 'title': heading,
                 'body' : mBody,
-                 'type': 'info'
+                 'type': type,
+                 'action':''
             }
-            ngDialog.openConfirm({
+            var promise = ngDialog.openConfirm({
                 template:'views/pages/messageDialog.html',
                 controller:'messageDialogCtrl',
                 className: 'ngdialog-theme-plain custom-width',
@@ -306,9 +309,16 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
                 resolve: {message: function(){return myMessage}}
             }).then (function (msg){
                     if (msg != undefined) {
+                        console.log('message action:', msg.action);
+                        if (msg.action =='yes') {
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
                 }, function(reason) {
                     console.log('Modal promise rejected. Reason:', reason);
+                    return false
                 }
             );
             /*
@@ -318,6 +328,7 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
                 plain: true
             });
             */
+            return promise;
         },
         getArrIndexOf: function (arr,item) {
         if (arr == undefined || item== undefined)
@@ -566,7 +577,7 @@ cimgApp.service('AccessChecker2', function ($state, $rootScope, UserService, bas
                }
             }
             //user dont have access. display message and return to the previouse state
-            baseDataService.displayMessage("Warning", "Access Denied!!")
+            baseDataService.displayMessage("info","Warning", "Access Denied!!")
             $state.go($rootScope.previouseState);
         }
     };
