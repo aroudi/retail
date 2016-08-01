@@ -20,6 +20,7 @@
         <result column="Code" property="code" />
         <result column="Title" property="title" />
         <result column="Fax" property="fax" />
+        <result column="Comment" property="comment" />
         <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
         <association property="customerType" column="Customer_Type" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="customerStatus" column="CUSTOMER_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -41,6 +42,7 @@
         <result column="Code" property="code" />
         <result column="Title" property="title" />
         <result column="Fax" property="fax" />
+        <result column="Comment" property="comment" />
         <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
         <association property="customerType" column="Customer_Type" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="customerStatus" column="CUSTOMER_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -65,6 +67,7 @@
         ${alias}.Web_Site,
         ${alias}.Code,
         ${alias}.Title,
+        ${alias}.Comment,
         ${alias}.Fax
     </sql>
     <sql id="gradeColumns">
@@ -147,6 +150,7 @@
         Code,
         Title,
         Fax,
+        Comment,
         grade_Id
         ) VALUES (
         #{customerType.id}
@@ -240,6 +244,12 @@
         <if test="fax == null">
             ,null
         </if>
+        <if test="comment != null">
+            ,#{comment}
+        </if>
+        <if test="comment == null">
+            ,null
+        </if>
         <if test="grade != null">
             ,#{grade.id}
         </if>
@@ -322,6 +332,9 @@
             </if>
             <if test="fax != null">
                 ,Fax = #{fax}
+            </if>
+            <if test="comment != null">
+                ,Comment = #{comment}
             </if>
             <if test="grade != null">
                 ,grade_Id = #{grade.id}

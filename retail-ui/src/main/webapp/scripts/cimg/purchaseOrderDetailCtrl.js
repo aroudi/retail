@@ -360,12 +360,12 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                 {name:"boqId", field:"boqId", visible:false},
                 {name:"projectId", field:"projectId", visible:false},
                 {name:"boqDetailId", field:"boqDetailId", visible:false},
-                {name:"boqName", field:"boqName", displayName:"BOQ Name", width:'25%',
+                {name:"projectName", field:"projectName", displayName:"Project", width:'25%',
                     cellTooltip: function(row,col) {
-                        return row.entity.boqName
+                        return row.entity.projectName
                     }
                 },
-                {name:"projectCode", field:"projectCode", displayName:"Project Code", width:'25%',
+                {name:"projectCode", field:"projectCode", displayName:"Project No", width:'25%',
                     cellTooltip: function(row,col) {
                         return row.entity.projectCode
                     }

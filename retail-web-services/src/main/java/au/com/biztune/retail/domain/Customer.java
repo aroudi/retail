@@ -28,6 +28,7 @@ public class Customer {
     private String code;
     private String title;
     private String fax;
+    private String comment;
     private String dateOfBirthStr;
     private CustomerGrade grade;
     private ArrayList<Contact> contacts;
@@ -190,5 +191,13 @@ public class Customer {
 
     public void setContacts(ArrayList<Contact> contacts) {
         this.contacts = contacts;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

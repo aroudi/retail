@@ -9,7 +9,7 @@
                     <div class="col-lg-12">
                         <form role="form" name="mainForm">
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-2">
                                     <div class="form-group">
                                         <label>Customer Type</label>
                                         <select class="form-control" data-ng-model="customer.customerType"
@@ -17,13 +17,27 @@
                                         </select>
                                     </div >
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-2">
                                     <div class="form-group">
                                         <label>Grade:</label>
                                         <select class="form-control" data-ng-model="customer.grade"
                                                 ng-options="type.gradeName for type in gradeSet" >
                                         </select>
                                     </div >
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label>Status:</label>
+                                        <select class="form-control" data-ng-model="customer.customerStatus"
+                                                ng-options="type.displayName for type in customerStatusSet" >
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="form-group">
+                                        <label>Comment:</label>
+                                        <input class="form-control" data-ng-model="customer.comment">
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">

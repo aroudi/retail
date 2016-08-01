@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('customerCtrl', function($scope, $state,ngDialog, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI) {
+cimgApp.controller('customerCtrl', function($scope, $state,ngDialog, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI) {
     //set default data on the page
     $scope.gridOptions = {
         enableFiltering: true,
@@ -60,6 +60,10 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog, UserService
         baseDataService.getBaseData(CUSTOMER_TYPE_URI).then(function(response){
             $scope.customerTypeSet = response.data;
             $scope.customer.customerType = baseDataService.populateSelectList($scope.customer.customerType,$scope.customerTypeSet);
+        });
+        baseDataService.getBaseData(CUSTOMER_STATUS_URI).then(function(response){
+            $scope.customerStatusSet = response.data;
+            $scope.customer.customerStatus = baseDataService.populateSelectList($scope.customer.customerStatus, $scope.customerStatusSet);
         });
     }
 

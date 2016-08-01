@@ -108,6 +108,7 @@ var response_status = {
 var type_constant = {
     'SUPPLIER_TYPE_URI' : 'categories/SUPPLIER_TYPE',
     'CUSTOMER_TYPE_URI' : 'categories/CUSTOMER_TYPE',
+    'CUSTOMER_STATUS_URI' : 'categories/CUSTOMER_STATUS',
     'SUPPLIER_STATUS_URI' : 'categories/SUPPLIER_STATUS',
     'PRODUCT_STATUS_URI' : 'categories/PRODUCT_STATUS',
     'PRODUCT_TYPE_URI' : 'categories/PRODUCT_TYPE',

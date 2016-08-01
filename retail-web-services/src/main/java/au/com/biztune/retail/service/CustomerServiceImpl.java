@@ -66,10 +66,12 @@ public class CustomerServiceImpl implements CustomerService {
                 return response;
             }
             final boolean isNew = customer.getId() > 0 ? false : true;
+            /*
             final ConfigCategory customerStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_CUSTOMER_STATUS, IdBConstant.CUSTOMER_STATUS_CONFIRMED);
             if (customerStatus != null) {
                 customer.setCustomerStatus(customerStatus);
             }
+            */
             if (isNew) {
                 //check if customer code is already in there
                 final Customer customer1 = customerDao.getCustomerByCode(customer.getCode());

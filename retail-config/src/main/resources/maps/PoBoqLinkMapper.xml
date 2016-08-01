@@ -18,6 +18,7 @@
         <result column="PO_QTY_RECEIVED" property="poQtyReceived" />
         <result column="BOQ_QTY_BALANCE" property="boqQtyBalance" />
         <association property="status" column="BPQL_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="projectName" column="PROJECT_ID" select="getProjectNameByProjectId" />
     </resultMap>
 
     <sql id="poBoqLinkColumns">
@@ -153,5 +154,8 @@
         WHERE
         BOQ_DETAIL_ID = #{value}
     </delete>
+    <select id="getProjectNameByProjectId" resultType="String" >
+        select PROJECT_NAME FROM PROJECT WHERE PROJECT_ID = #{value}
+    </select>
 
 </mapper>

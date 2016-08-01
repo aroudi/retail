@@ -38,6 +38,7 @@ CREATE TABLE [dbo].[Customer](
 	[Title] [varchar](10) NULL,
 	[Fax] [varchar](20) NULL,
 	[Grade_Id] [int] NULL,
+	[COMMENT] [varchar](1000) NULL,
   [CUSTOMER_STATUS] DECIMAL(31,0)
 
 ) ON [PRIMARY]

@@ -53,4 +53,11 @@ public interface PoBoqLinkDao {
      * @param boqDetailId boqDetailId
      */
     void deletePoBoqLinkPerBoqDetailId(long boqDetailId);
+
+    /**
+     * get project name by project id.
+     * @param projectId projectId
+     * @return Project Name
+     */
+    String getProjectNameByProjectId(long projectId);
 }
