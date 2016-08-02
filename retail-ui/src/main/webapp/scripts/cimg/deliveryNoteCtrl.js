@@ -17,17 +17,13 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             {field:'dlnlUnitCost', displayName:'Case Cost',enableCellEdit:true, width:'8%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             //polQtyOrdered
             {field:'polQty', displayName:'Purchased',enableCellEdit:false, width:'6%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'dlnlQty', displayName:'Del Qty',enableCellEdit:true, width:'5%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
-                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
-                    return 'editModeColor'
-                }
-            },
             //{field:'rcvdCaseSize.unomDesc', displayName:'Recd Case Size', enableCellEdit:false, width:'8%'},
             {field:'rcvdQty', displayName:'Rec Qty',enableCellEdit:true, width:'5%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
+            {field:'backOrder()', displayName:'Back Order',enableCellEdit:false, width:'5%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'totalCost', displayName:'Total Cost',enableCellEdit:false, width:'8%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'dlnlDiscrepancy', displayName:'Discrepancy',enableCellEdit:false, type:'boolean', width:'6%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-model="row.entity.dlnlDiscrepancy">',
                 cellClass:
@@ -90,6 +86,11 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         } else {
             $scope.deliveryNoteHeader = angular.copy(baseDataService.getRow());
             $scope.gridOptions.data = $scope.deliveryNoteHeader.lines;
+            angular.forEach($scope.gridOptions.data,function(row){
+                row.backOrder = function() {
+                    return this.polQty - this.rcvdQty;
+                }
+            });
             $scope.deliveryNoteHeader.deliveryDate = new Date($scope.deliveryNoteHeader.deliveryDate);
             baseDataService.setRow({});
             baseDataService.setIsPageNew(true);
@@ -134,8 +135,12 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         for (var i = 0; i < purchaseOrder.lines.length; i++) {
             var createdLine = createDeliveryNoteLine(purchaseOrder.lines[i]);
             updateLineTotalCost(createdLine);
+            createdLine.backOrder = function() {
+                return this.polQty - this.rcvdQty;
+            }
             $scope.gridOptions.data.push(createdLine);
         }
+
     }
 
     function createDeliveryNoteLine (purchaseOrderLine) {
