@@ -4,6 +4,7 @@ import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.form.TxnHeaderForm;
 import au.com.biztune.retail.response.CommonResponse;
 
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 /**
@@ -13,9 +14,10 @@ public interface TransactionService {
     /**
      * submit a transaction and save it into database.
      * @param  txnHeaderForm txnHeaderForm
+     * @param  securityContext securityContext
      * @return CommonResponse
      */
-    CommonResponse addTransaction(TxnHeaderForm txnHeaderForm);
+    CommonResponse addTransaction(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
     /**
      * get all transaction of store.
      * @return List of TxnHeader
@@ -31,7 +33,8 @@ public interface TransactionService {
     /**
      * update Transaction.
      * @param txnHeaderForm txnHeaderForm
+     * @param securityContext securityContext
      * @return Response.
      */
-    CommonResponse updateTransaction(TxnHeaderForm txnHeaderForm);
+    CommonResponse updateTransaction(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
 }

@@ -169,7 +169,10 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/createSaleTransaction',
             controller: 'txnSaleCtrl',
             templateUrl:'views/pages/txnSale.html',
-            access: "user"
+            access: "user",
+            params: {
+                txnType:null
+            }
         })
         .state('dashboard.listSaleTransaction',{
             url:'/listSaleTransaction',

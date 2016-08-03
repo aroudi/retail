@@ -240,14 +240,6 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
     }
     $scope.savePurchaseOrder = function () {
 
-        /*
-         var userId = UserService.getUserId();
-         if (userId == undefined || userId == 0) {
-         alert('you need to login first');
-         $state.go('dashboard.login');
-         }
-         */
-
         //CHECK STATUS
         if ($scope.poIsConfirmed) {
             $scope.purchaseOrderHeader.pohStatus = $scope.statusConfirmed;

@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.util.List;
 
 /**
@@ -31,6 +28,9 @@ public class TransactionRest {
 
     @Autowired
     private TransactionService transactionService;
+
+    @Context
+    private SecurityContext securityContext;
 
     /**
      * Returns list of sale transactions.
@@ -61,9 +61,9 @@ public class TransactionRest {
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResponse addTransaction (TxnHeaderForm txnHeaderForm) {
         if (txnHeaderForm.getId() < 0) {
-            return transactionService.addTransaction(txnHeaderForm);
+            return transactionService.addTransaction(txnHeaderForm, securityContext);
         } else {
-            return transactionService.updateTransaction(txnHeaderForm);
+            return transactionService.updateTransaction(txnHeaderForm, securityContext);
         }
     }
 

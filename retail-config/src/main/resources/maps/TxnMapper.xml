@@ -354,6 +354,15 @@
         <if test="txhdCollectDate != null">
             ,TXHD_COLLECT_DATE = #{txhdCollectDate}
         </if>
+        <if test="txhdOrigTxnNr != null">
+            ,TXHD_ORIG_TXN_NR = #{txhdOrigTxnNr}
+        </if>
+        <if test="txhdTxnNr != null">
+            ,TXHD_TXN_NR = #{txhdTxnNr}
+        </if>
+        <if test="txhdOperator != null">
+            ,TXHD_OPERATOR = #{txhdOperator}
+        </if>
         WHERE TXHD_ID = #{id}
     </update>
 
@@ -720,5 +729,11 @@
         TXN_HEADER txhd
         WHERE txhd.TXHD_ID = #{value}
     </select>
+
+    <update id="assigneTxnNumber" parameterType="TxnHeader" >
+        UPDATE TXN_HEADER
+          SET TXHD_TXN_NR = #{txhdTxnNr}
+        WHERE TXHD_ID = #{id}
+    </update>
 
 </mapper>

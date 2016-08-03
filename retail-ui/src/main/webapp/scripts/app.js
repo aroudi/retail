@@ -122,7 +122,11 @@ var type_constant = {
     'BOQ_LINE_STATUS_PO_CREATED' : 'categories/BOQ_LINE_STATUS/BOQ_LINE_STATUS_PO_CREATED',
     'POH_STATUS_URI' : 'categories/POH_STATUS',
     'DLV_NOTE_STATUS_URI' : 'categories/DLV_NOTE_STATUS',
-    'CONTACT_TYPE_URI' : 'categories/CONTACT_TYPE'
+    'CONTACT_TYPE_URI' : 'categories/CONTACT_TYPE',
+    'TXN_TYPE_QUOTE' : 'categories/TXN_TYPE/TXN_TYPE_QUOTE',
+    'TXN_TYPE_SALE' : 'categories/TXN_TYPE/TXN_TYPE_SALE',
+    'TXN_STATE_DRAFT' : 'categories/TXN_STATE/TXN_STATE_DRAFT',
+    'TXN_STATE_FINAL' : 'categories/TXN_STATE/TXN_STATE_FINAL'
 }
 
 angular.forEach(config_data, function(key, value) {

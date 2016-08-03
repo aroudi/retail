@@ -89,4 +89,10 @@ public interface TxnDao {
      * @return TxnHeader
      */
     TxnHeader getTxnHeaderPerTxhdId(long txhdId);
+
+    /**
+     * assigne txnNumber.
+     * @param txnHeader txnHeader
+     */
+    void assigneTxnNumber(TxnHeader txnHeader);
 }

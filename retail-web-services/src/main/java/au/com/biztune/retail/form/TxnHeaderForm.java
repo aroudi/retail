@@ -9,8 +9,8 @@ import java.util.List;
  */
 public class TxnHeaderForm {
     private long id;
-    private int txhdTxnNr;
-    private int txhdOrigTxnNr;
+    private String txhdTxnNr;
+    private String txhdOrigTxnNr;
     private double txhdValueGross;
     private double txhdValueNett;
     private double txhdValueDue;
@@ -22,28 +22,15 @@ public class TxnHeaderForm {
     private List<TxnMediaForm> txnMediaFormList;
     private boolean txhdVoided;
     private Store store;
+    private ConfigCategory txhdTxnType;
+    private ConfigCategory txhdState;
+    private boolean convertedToTxnSale;
     public long getId() {
         return id;
     }
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public int getTxhdTxnNr() {
-        return txhdTxnNr;
-    }
-
-    public void setTxhdTxnNr(int txhdTxnNr) {
-        this.txhdTxnNr = txhdTxnNr;
-    }
-
-    public int getTxhdOrigTxnNr() {
-        return txhdOrigTxnNr;
-    }
-
-    public void setTxhdOrigTxnNr(int txhdOrigTxnNr) {
-        this.txhdOrigTxnNr = txhdOrigTxnNr;
     }
 
     public double getTxhdValueGross() {
@@ -132,5 +119,45 @@ public class TxnHeaderForm {
 
     public void setStore(Store store) {
         this.store = store;
+    }
+
+    public String getTxhdTxnNr() {
+        return txhdTxnNr;
+    }
+
+    public void setTxhdTxnNr(String txhdTxnNr) {
+        this.txhdTxnNr = txhdTxnNr;
+    }
+
+    public String getTxhdOrigTxnNr() {
+        return txhdOrigTxnNr;
+    }
+
+    public void setTxhdOrigTxnNr(String txhdOrigTxnNr) {
+        this.txhdOrigTxnNr = txhdOrigTxnNr;
+    }
+
+    public ConfigCategory getTxhdTxnType() {
+        return txhdTxnType;
+    }
+
+    public void setTxhdTxnType(ConfigCategory txhdTxnType) {
+        this.txhdTxnType = txhdTxnType;
+    }
+
+    public ConfigCategory getTxhdState() {
+        return txhdState;
+    }
+
+    public void setTxhdState(ConfigCategory txhdState) {
+        this.txhdState = txhdState;
+    }
+
+    public boolean isConvertedToTxnSale() {
+        return convertedToTxnSale;
+    }
+
+    public void setConvertedToTxnSale(boolean convertedToTxnSale) {
+        this.convertedToTxnSale = convertedToTxnSale;
     }
 }

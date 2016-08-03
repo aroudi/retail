@@ -10,10 +10,10 @@ public class TxnHeader {
     private long id;
     private OrgUnit orgUnit;
     private Store store;
-    private int txhdTxnNr;
+    private String txhdTxnNr;
     private ConfigCategory txhdState;
     private OrgUnit orgUnitOriginal;
-    private int txhdOrigTxnNr;
+    private String txhdOrigTxnNr;
     private Timestamp txhdTradingDate;
     private ConfigCategory txhdTxnType;
     private long txhdOperator;
@@ -58,14 +58,6 @@ public class TxnHeader {
         this.store = store;
     }
 
-    public int getTxhdTxnNr() {
-        return txhdTxnNr;
-    }
-
-    public void setTxhdTxnNr(int txhdTxnNr) {
-        this.txhdTxnNr = txhdTxnNr;
-    }
-
     public ConfigCategory getTxhdState() {
         return txhdState;
     }
@@ -80,14 +72,6 @@ public class TxnHeader {
 
     public void setOrgUnitOriginal(OrgUnit orgUnitOriginal) {
         this.orgUnitOriginal = orgUnitOriginal;
-    }
-
-    public int getTxhdOrigTxnNr() {
-        return txhdOrigTxnNr;
-    }
-
-    public void setTxhdOrigTxnNr(int txhdOrigTxnNr) {
-        this.txhdOrigTxnNr = txhdOrigTxnNr;
     }
 
     public Timestamp getTxhdTradingDate() {
@@ -240,5 +224,21 @@ public class TxnHeader {
 
     public void setTxnMedias(List<TxnMedia> txnMedias) {
         this.txnMedias = txnMedias;
+    }
+
+    public String getTxhdTxnNr() {
+        return txhdTxnNr;
+    }
+
+    public void setTxhdTxnNr(String txhdTxnNr) {
+        this.txhdTxnNr = txhdTxnNr;
+    }
+
+    public void setTxhdOrigTxnNr(String txhdOrigTxnNr) {
+        this.txhdOrigTxnNr = txhdOrigTxnNr;
+    }
+
+    public String getTxhdOrigTxnNr() {
+        return txhdOrigTxnNr;
     }
 }

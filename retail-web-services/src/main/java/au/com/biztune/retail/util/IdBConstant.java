@@ -389,4 +389,15 @@ public interface IdBConstant {
     String CLIENT_STATUS_ACTIVE = "CLIENT_STATUS_ACTIVE";
     String CLIENT_STATUS_IN_ACTIVE = "CLIENT_STATUS_IN_ACTIVE";
     String CLIENT_STATUS_ON_HOLD = "CLIENT_STATUS_ON_HOLD";
+
+    /**
+     * Transaction Number Prefix
+     */
+    String TXN_NUMBER_PREFIX = "TXN-";
+
+    /**
+     * Transaction Number Prefix
+     */
+    String QUOTE_NUMBER_PREFIX = "QUOTE-";
+
 }

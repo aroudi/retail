@@ -1,8 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI) {
-
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_STATE_FINAL, TXN_STATE_DRAFT) {
 
     $scope.isPageNew = baseDataService.getIsPageNew();
     initPageData();
@@ -11,6 +10,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
 
     function initPageData() {
         if ( baseDataService.getIsPageNew()) {
+            //get txn_type from state params.
+            $scope.txnType = $stateParams.txnType;
             $scope.txnHeaderForm = {};
             $scope.txnHeaderForm.id = -1;
         } else {
@@ -19,7 +20,23 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
             baseDataService.setRow({});
             baseDataService.setIsPageNew(true);
         }
-
+        $scope.txnHeaderForm.convertedToTxnSale = false;
+        if ($scope.isPageNew) {
+            baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){
+                if ($scope.txnType == 'quote') {
+                    $scope.txnHeaderForm.txhdTxnType = response.data;
+                }
+            });
+            baseDataService.getBaseData(TXN_TYPE_SALE).then(function(response){
+                if ($scope.txnType == 'txnSale') {
+                    $scope.txnHeaderForm.txhdTxnType = response.data;
+                }
+            });
+        }
+        //DEFUALT STATE IS FINAL.
+        baseDataService.getBaseData(TXN_STATE_FINAL).then(function(response){
+                $scope.txnHeaderForm.txhdState = response.data;
+        });
         baseDataService.getBaseData(MEDIA_TYPE_ALL_URI).then(function(response){
             $scope.mediaTypeSet = response.data;
             $scope.mediaType = baseDataService.populateSelectList($scope.mediaType,$scope.mediaTypeSet);
@@ -82,6 +99,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
             cellData = event.targetScope.row.entity[event.targetScope.col.field];
             //txnDetail.txdeQuantitySold = cellData;
             txnDetail.txdePriceSold = txnDetail.txdeQuantitySold * txnDetail.txdeValueNet;
+            totalTransaction();
         })
         if (!$scope.isPageNew ) {
             $scope.txnDetailList.data = angular.copy($scope.txnHeaderForm.txnDetailFormList);
@@ -253,13 +271,6 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
 
     $scope.createTransactionSale = function () {
 
-        /*
-         var userId = UserService.getUserId();
-         if (userId == undefined || userId == 0) {
-         alert('you need to login first');
-         $state.go('dashboard.login');
-         }
-         */
 
         $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
@@ -268,6 +279,15 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
         baseDataService.addRow(rowObject, TXN_ADD_URI).then(function(response) {
             addResponse = response.data;
             if (addResponse.status == SUCCESS ) {
+                if ($scope.isPageNew && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' ) {
+                    baseDataService.displayMessage("info","Quote Number", "Quote saved with number: " + addResponse.info);
+                }
+                if ($scope.isPageNew && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE' ) {
+                    baseDataService.displayMessage("info","Txn Number", "Sale transaction saved with number: " + addResponse.info);
+                }
+                if (!$scope.isPageNew && $scope.txnHeaderForm.convertedToTxnSale) {
+                    baseDataService.displayMessage("info","Txn Number", "Sale transaction saved with number: " + addResponse.info);
+                }
                 $state.go('dashboard.listSaleTransaction');
             } else {
                 alert('Not able to save Transaction. ' + addResponse.message);
@@ -348,5 +368,23 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout,baseDataServ
         row.entity.deleted = true;
         $scope.txnDetailGridApi.core.setRowInvisible(row);
         totalTransaction();
+    }
+    $scope.createTransactionSaleDraft = function() {
+        baseDataService.getBaseData(TXN_STATE_DRAFT).then(function(response){
+            $scope.txnHeaderForm.txhdState = response.data;
+            $scope.createTransactionSale();
+        });
+    }
+
+    $scope.convertToSaleTxn = function() {
+        if ($scope.txnHeaderForm.convertedToTxnSale) {
+            baseDataService.getBaseData(TXN_TYPE_SALE).then(function(response){
+                $scope.txnHeaderForm.txhdTxnType = response.data;
+            });
+        } else {
+            baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){
+                $scope.txnHeaderForm.txhdTxnType = response.data;
+            });
+        }
     }
 });
