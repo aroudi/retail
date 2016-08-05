@@ -39,6 +39,8 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private ConfigCategoryDao configCategoryDao;
 
+    @Autowired
+    private StockService stockService;
     private SecurityContext securityContext;
     /**
      * submit a transaction and save it into database.
@@ -122,6 +124,11 @@ public class TransactionServiceImpl implements TransactionService {
                         txnDetail.setTxdeDetailType(txntLineType);
                     }
                     txnDao.insertTxnDetail(txnDetail);
+                    if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)
+                            && txnHeader.getTxhdState().getCategoryCode().equals(IdBConstant.TXN_STATE_FINAL))
+                    {
+                        updateStockQuantity(txnHeader, txnDetail);
+                    }
                 }
                 //save txn media
                 TxnMedia txnMedia = null;
@@ -182,6 +189,7 @@ public class TransactionServiceImpl implements TransactionService {
             }
             */
             txnHeader.setTxhdState(txnHeaderForm.getTxhdState());
+            txnHeader.setTxhdTxnType(txnHeaderForm.getTxhdTxnType());
             txnHeader.setTxhdVoided(txnHeaderForm.isTxhdVoided());
             txnHeader.setTxhdValueGross(txnHeaderForm.getTxhdValueGross());
             txnHeader.setTxhdValueNett(txnHeaderForm.getTxhdValueNett());
@@ -244,6 +252,11 @@ public class TransactionServiceImpl implements TransactionService {
                 } else {
                     txnDetail.setId(txnDetailForm.getId());
                     txnDao.updateTxnDetail(txnDetail);
+                }
+                if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)
+                        && txnHeader.getTxhdState().getCategoryCode().equals(IdBConstant.TXN_STATE_FINAL))
+                {
+                    updateStockQuantity(txnHeader, txnDetail);
                 }
             }
             //save txn media
@@ -380,6 +393,48 @@ public class TransactionServiceImpl implements TransactionService {
     public String generateTxnNumber(long txnId, String preFix) {
         final Timestamp currentDate = new Timestamp(new Date().getTime());
         return preFix + DateUtil.dateToString(currentDate, "yyyy-MM-dd") + "-" + txnId;
+    }
+
+    /**
+     * update stock quantity.
+     * @param txnHeader txnHeader
+     * @param txnDetail txnDetail
+     */
+    public void updateStockQuantity(TxnHeader txnHeader, TxnDetail txnDetail) {
+        try {
+            //get current user from security context.
+            final Principal principal = securityContext.getUserPrincipal();
+            AppUser appUser = null;
+            if (principal instanceof AppUser) {
+                appUser = (AppUser) principal;
+            }
+
+            String txnType = null;
+            if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_QUOTE)) {
+                txnType = IdBConstant.TXN_TYPE_QUOTE;
+            } else if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
+                txnType = IdBConstant.TXN_TYPE_SALE;
+            }
+            final Timestamp currentTime = new Timestamp(new Date().getTime());
+            final StockEvent stockEvent = new StockEvent();
+            stockEvent.setTxnTypeConst(txnType);
+            stockEvent.setStckQty(txnDetail.getTxdeQuantitySold());
+            stockEvent.setUnomId(txnDetail.getUnitOfMeasure().getId());
+            //stockEvent.setSupplierId();
+            stockEvent.setCostPrice(txnDetail.getTxdeValueLine());
+            stockEvent.setProdId(txnDetail.getProduct().getId());
+            stockEvent.setSellPrice(txnDetail.getTxdeValueNet());
+            stockEvent.setStckEvntDate(currentTime);
+            stockEvent.setTxnDate(txnHeader.getTxhdTradingDate());
+            stockEvent.setTxnHeader(txnHeader.getId());
+            stockEvent.setTxnLine(txnDetail.getId());
+            stockEvent.setUserId(appUser.getId());
+            stockEvent.setTxnNumber(txnHeader.getTxhdTxnNr());
+            stockEvent.setOrguId(sessionState.getOrgUnit().getId());
+            stockService.pushStockEvent(stockEvent);
+        } catch (Exception e) {
+            logger.error("Exception in creating stock event:", e);
+        }
     }
 
 }

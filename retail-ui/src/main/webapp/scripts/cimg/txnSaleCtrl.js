@@ -32,11 +32,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     $scope.txnHeaderForm.txhdTxnType = response.data;
                 }
             });
-        }
-        //DEFUALT STATE IS FINAL.
-        baseDataService.getBaseData(TXN_STATE_FINAL).then(function(response){
+            //DEFUALT STATE IS DRAFT.
+            baseDataService.getBaseData(TXN_STATE_DRAFT).then(function(response){
                 $scope.txnHeaderForm.txhdState = response.data;
-        });
+            });
+        }
         baseDataService.getBaseData(MEDIA_TYPE_ALL_URI).then(function(response){
             $scope.mediaTypeSet = response.data;
             $scope.mediaType = baseDataService.populateSelectList($scope.mediaType,$scope.mediaTypeSet);
@@ -75,12 +75,12 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false, width: '5%'},
                 {field: 'txdeValueLine', displayName: 'Cost', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 {field: 'txdeValueProfit', displayName: 'Profit', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
-                {field: 'txdeValueGross', displayName: 'Gross Value', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
+                {field: 'txdeValueGross', displayName: 'Gross Value', cellFilter: 'currency', width: '8%'},
                 {field: 'txdeTax', displayName: 'Tax', enableCellEdit: false, width: '5%'},
                 {field: 'txdeValueNet', displayName: 'Nett Value', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', width: '5%'},
                 {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'},
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="row.entity.id > 0" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="grid.appScope.isTxnLineVoidable()" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
 
             ]
         }
@@ -98,6 +98,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             var txnDetail = event.targetScope.row.entity;
             cellData = event.targetScope.row.entity[event.targetScope.col.field];
             //txnDetail.txdeQuantitySold = cellData;
+            txnDetail.txdeValueNet =  (txnDetail.txdeValueGross * txnDetail.txdeTax)*1 + txnDetail.txdeValueGross*1;
+            //alert('gross =' + txnDetail.txdeValueGross + ' --tax rate = '  + txnDetail.txdeTax + ' -- net value = ' + txnDetail.txdeValueNet );
             txnDetail.txdePriceSold = txnDetail.txdeQuantitySold * txnDetail.txdeValueNet;
             totalTransaction();
         })
@@ -123,7 +125,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     }
                 },
                 {field:'txmdAmountLocal', displayName:'Amount', visible:true, cellFilter:'currency', footerCellFilter:'currency', /*aggregationType: uiGridConstants.aggregationTypes.sum, */ enableCellEdit:false, width: '40%'},
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="row.entity.id > 0" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>', width: '10%'}
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTxnLineVoidable()" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>', width: '10%'}
 
             ]
         }
@@ -210,8 +212,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         txnDetail.txdeValueLine = txnDetail.product.sellPrice.prcePrice;
         txnDetail.txdeProfitMargin = getProfitMargin();
         txnDetail.txdeValueProfit =  txnDetail.txdeValueLine*txnDetail.txdeProfitMargin;
-        txnDetail.txdeValueGross =  txnDetail.txdeValueProfit + txnDetail.txdeValueLine;
-        txnDetail.txdeValueNet =  (txnDetail.txdeValueGross * txnDetail.txdeTax) + txnDetail.txdeValueGross;
+        txnDetail.txdeValueGross =  txnDetail.txdeValueProfit*1 + txnDetail.txdeValueLine*1;
+        txnDetail.txdeValueNet =  (txnDetail.txdeValueGross * txnDetail.txdeTax)*1 + txnDetail.txdeValueGross*1;
         txnDetail.txdeQuantitySold =  1;
         txnDetail.txdePriceSold =  txnDetail.txdeQuantitySold * txnDetail.txdeValueNet; 
     }
@@ -223,7 +225,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         var taxRules = product.prodOrguLink.taxRules;
         var taxValue = 0.00;
         for (var i = 0; i < taxRules.length; i++) {
-            taxValue = taxValue + taxRules[i].taxLegVariance.txlvRate;
+            taxValue = taxValue*1 + taxRules[i].taxLegVariance.txlvRate*1;
         }
         return taxValue;
     }
@@ -307,9 +309,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         var valueTax = 0.00;
         for (var i = 0; i < txnDetailList.length; i++) {
             if (!txnDetailList[i].txdeItemVoid && !txnDetailList[i].deleted ) {
-                valueNett = valueNett + txnDetailList[i].txdeValueNet*txnDetailList[i].txdeQuantitySold ;
-                valueGross = valueGross + txnDetailList[i].txdeValueGross*txnDetailList[i].txdeQuantitySold;
-                valueTax = valueTax + txnDetailList[i].txdeTax*txnDetailList[i].txdeValueLine*txnDetailList[i].txdeQuantitySold;
+                valueNett = valueNett*1 + txnDetailList[i].txdeValueNet*txnDetailList[i].txdeQuantitySold*1 ;
+                valueGross = valueGross*1 + txnDetailList[i].txdeValueGross*txnDetailList[i].txdeQuantitySold*1;
+                valueTax = valueTax*1 + txnDetailList[i].txdeTax*txnDetailList[i].txdeValueLine*txnDetailList[i].txdeQuantitySold*1;
             }
         }
         $scope.txnHeaderForm.txhdValueNett = valueNett;
@@ -325,7 +327,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         var total = 0.00;
         for (var i = 0; i < txnMediaList.length; i++) {
             if (!txnMediaList[i].txmdVoided) {
-                total = total + txnMediaList[i].txmdAmountLocal*1;
+                total = total*1 + txnMediaList[i].txmdAmountLocal*1;
             }
         }
         return total;
@@ -376,15 +378,34 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         });
     }
 
+    $scope.submitTransaction = function() {
+        baseDataService.getBaseData(TXN_STATE_FINAL).then(function(response){
+            $scope.txnHeaderForm.txhdState = response.data;
+            $scope.createTransactionSale();
+        });
+    }
+
     $scope.convertToSaleTxn = function() {
+        //when converting to txn_sale, we need to change the state to draft.
         if ($scope.txnHeaderForm.convertedToTxnSale) {
             baseDataService.getBaseData(TXN_TYPE_SALE).then(function(response){
                 $scope.txnHeaderForm.txhdTxnType = response.data;
+            });
+            baseDataService.getBaseData(TXN_STATE_DRAFT).then(function(response){
+                $scope.txnHeaderForm.txhdState = response.data;
             });
         } else {
             baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){
                 $scope.txnHeaderForm.txhdTxnType = response.data;
             });
         }
+    }
+
+    $scope.isTxnLineVoidable = function () {
+        console.log('txn_state_code = ' + $scope.txnHeaderForm.txhdState.categoryCode);
+        if ($scope.txnHeaderForm.txhdState.categoryCode != 'TXN_STATE_FINAL') {
+            return true;
+        }
+        return false;
     }
 });

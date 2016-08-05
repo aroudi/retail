@@ -70,7 +70,7 @@
                                         </div>
                                         <div class="panel-body">
                                             <div class="row">
-                                                <div ui-grid="txnDetailList" ui-grid-edit ui-grid-row-edit ui-grid-cellNav class="grid"></div>
+                                                <div ui-grid="txnDetailList" ui-grid-edit ui-grid-row-edit ui-grid-cellNav style="height:400px;" class="grid"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -170,8 +170,8 @@
                             <div class="row">
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                 <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                                <button type="button" class="btn btn-success" ng-click="createTransactionSale()">Submit</button>
-                                <button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="isPageNew">Save draft</button>
+                                <button type="button" class="btn btn-success" ng-click="submitTransaction()" ng-disabled="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_FINAL'">Submit</button>
+                                <button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT'">Save draft</button>
                             </div>
                         </form>
                     </div>
