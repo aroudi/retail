@@ -213,6 +213,14 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/logout',
             controller: 'logoutController'
         })
+
+        .state('dashboard.pdfViewer',{
+            url:'/pdfViewer',
+            controller: 'pdfViewerCtrl',
+            templateUrl:'views/pages/pdfViewer.html',
+            access: "user"
+        })
+
         .state('dashboard.blank',{
             templateUrl:'views/pages/blank.html',
             url:'/blank'

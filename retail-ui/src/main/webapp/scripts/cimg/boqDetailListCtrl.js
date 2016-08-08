@@ -283,11 +283,19 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
         var exportUrl = BOQ_EXPORT_PICKING_SLIP_PDF + $scope.billOfQuantity.id;
         baseDataService.getStreamData(exportUrl).then(function(response){
             var blob = new Blob([response.data], {'type': 'application/pdf'});
-            //saveAs (blob , outPutFile);
-            hiddenElement.href = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
-            //hiddenElement.target ='_blank';
-            hiddenElement.download = 'pickingSlip.pdf';
-            hiddenElement.click();
+            var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
+            ngDialog.openConfirm({
+                template:'views/pages/pdfViewer.html',
+                controller:'pdfViewerCtrl',
+                className: 'ngdialog-theme-default',
+                closeByDocument:false,
+                resolve: {pdfContent: function(){return myPdfContent}}
+            }).then (function (){
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                }
+            );
+
         });
 
     }

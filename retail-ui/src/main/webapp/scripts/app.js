@@ -30,7 +30,9 @@ var cimgApp = angular
     'ui.grid.cellNav',
     'ui.grid.resizeColumns',
     'ngMessages',
-     'ngStorage'
+    'ngStorage',
+    'ngSanitize',
+    'pdfjsViewer'
   ]);
 
 //SIT
@@ -163,7 +165,7 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
     var rowId;
     var isPageNew = true;
     var rowSelected = false;
-
+    var pdfFile;
     return {
 
         setRow: function (myRow) {
@@ -344,6 +346,12 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
             }
         }
         return -1;
+    },
+    setPdfContent: function (pdfContent) {
+        pdfFile = pdfContent;
+    },
+    getPdfContent: function () {
+        return pdfFile;
     }
 
 
@@ -773,3 +781,9 @@ cimgApp.filter('poBoqLinkOrderNumberFilter', function() {
         return linkedPurchaseOrders[0].pohOrderNumber;
     };
 });
+
+app.filter('trusted', ['$sce', function ($sce) {
+    return function(url) {
+        return $sce.trustAsResourceUrl(url);
+    };
+}]);
