@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_STATE_FINAL, TXN_STATE_DRAFT) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF) {
 
     $scope.isPageNew = baseDataService.getIsPageNew();
     initPageData();
@@ -407,5 +407,25 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             return true;
         }
         return false;
+    }
+    $scope.exportToPdf = function() {
+        var exportUrl = TXN_EXPORT_PDF + $scope.txnHeaderForm.id;
+        baseDataService.getStreamData(exportUrl).then(function(response){
+            var blob = new Blob([response.data], {'type': 'application/pdf'});
+            var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
+            ngDialog.openConfirm({
+                template:'views/pages/pdfViewer.html',
+                controller:'pdfViewerCtrl',
+                className: 'ngdialog-theme-default',
+                closeByDocument:false,
+                resolve: {pdfContent: function(){return myPdfContent}}
+            }).then (function (){
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                }
+            );
+
+        });
+
     }
 });

@@ -75,6 +75,7 @@ var service_uri = {
     'TXN_ALL_URI' : 'transaction/all',
     'TXN_ADD_URI' : 'transaction/add',
     'TXN_GET_URI' : 'transaction/get/',
+    'TXN_EXPORT_PDF' : 'transaction/exportPdf/',
     'CREATE_PO_FROM_BOQ_URI' : 'billOfQuantity/generatePurchaseOrder',
     'POH_GET_ALL_URI' : 'purchaseOrder/header/all',
     'POH_GET_URI' : 'purchaseOrder/header/getWhole/',

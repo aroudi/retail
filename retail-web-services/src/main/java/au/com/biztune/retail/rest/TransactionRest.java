@@ -2,6 +2,7 @@ package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.form.TxnHeaderForm;
+import au.com.biztune.retail.report.TransactionRptMgr;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.TransactionService;
@@ -28,7 +29,8 @@ public class TransactionRest {
 
     @Autowired
     private TransactionService transactionService;
-
+    @Autowired
+    private TransactionRptMgr transactionRptMgr;
     @Context
     private SecurityContext securityContext;
 
@@ -80,4 +82,17 @@ public class TransactionRest {
         return transactionService.getTxnHeaderPerId(id);
     }
 
+    /**
+     * export Transaction as PDF.
+     * @param txhdId txhdId
+     * @return Stream output.
+     */
+    @Secured
+    @Path("/exportPdf/{txhdId}")
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response exportTransactionToPdf(@PathParam("txhdId") long txhdId) {
+        final StreamingOutput streamingOutput = transactionRptMgr.createTransactionPdfStream(txhdId);
+        return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = transaction" + txhdId + ".pdf").build();
+    }
 }

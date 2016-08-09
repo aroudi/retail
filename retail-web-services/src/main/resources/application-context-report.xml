@@ -15,4 +15,11 @@
         <property name="reportDetailFileName" value="pickingSlipLine" />
     </bean>
 
+    <bean id="TransactionRptMgr" class="au.com.biztune.retail.report.TransactionRptMgr">
+        <property name="reportPath" value="classpath:reports" />
+        <property name="reportHeaderFileName" value="txnHeader" />
+        <property name="reportTxnLineFileName" value="txnLine" />
+        <property name="reportTxnMediaFileName" value="txnMedia" />
+    </bean>
+
 </beans>

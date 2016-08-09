@@ -3,14 +3,6 @@
  */
 cimgApp.controller('pdfViewerCtrl', function($scope, $state, $sce, pdfContent) {
 
-    $scope.onInit=function() {
-
-    }
-
-    $scope.onPageLoad = function() {
-
-    }
-
     $scope.cancel = function() {
         $scope.closeThisDialog('button');
     }
