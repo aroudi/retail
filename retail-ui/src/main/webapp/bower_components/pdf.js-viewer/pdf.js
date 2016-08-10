@@ -10988,6 +10988,11 @@ Preferences._readFromStorage = function (prefObj) {
   function renderProgress() {
     var progressContainer = document.getElementById('mozPrintCallback-shim');
     if (canvases && canvases.length) {
+
+
+
+
+      /*
       var progress = Math.round(100 * index / canvases.length);
       var progressBar = progressContainer.querySelector('progress');
       var progressPerc = progressContainer.querySelector('.relative-progress');
@@ -10995,6 +11000,9 @@ Preferences._readFromStorage = function (prefObj) {
       progressPerc.textContent = progress + '%';
       progressContainer.removeAttribute('hidden');
       progressContainer.onclick = abort;
+      */
+      progressContainer.setAttribute('hidden', '');
+
     } else {
       progressContainer.setAttribute('hidden', '');
     }
