@@ -6,8 +6,8 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state, $timeout,baseData
         enableFiltering: true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'10%'},
-            {field:'txhdTxnNr', enableCellEdit:false, width:'10%'},
+            {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'35%'},
+            {field:'txhdTxnNr', displayName:'Number',enableCellEdit:false, width:'15%'},
             {field:'txhdState.displayName', displayName:'State', enableCellEdit:false, width:'10%',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     if (grid.getCellValue(row, col) === 'DRAFT') {
@@ -22,8 +22,8 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state, $timeout,baseData
                 }
             },
             {field:'txhdTxnType.displayName' , displayName:'Type', enableCellEdit:false, width:'10%'},
-            {field:'txhdValueGross', displayName:'Total',enableCellEdit:false, width:'20%', cellFilter:'currency'},
-            {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'20%', cellFilter:'currency'},
+            {field:'txhdValueGross', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
+            {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'},
             {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>', width:'10%' }
         ]
     }

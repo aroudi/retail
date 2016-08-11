@@ -62,7 +62,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             rowTemplate : rowtpl,
             columnDefs: [
                 {field: 'id', visible: false, enableCellEdit: false},
-                {field: 'product.prodSku', displayName: 'SKU', enableCellEdit: false, width: '5%',
+                {field: 'product.prodSku', displayName: 'SKU', enableCellEdit: false, width: '10%',
                     cellTooltip: function(row,col) {
                         return row.entity.product.prodSku
                     }
@@ -73,12 +73,12 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     }
                 },
                 {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false, width: '5%'},
-                {field: 'txdeValueLine', displayName: 'Cost', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
-                {field: 'txdeValueProfit', displayName: 'Profit', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
-                {field: 'txdeValueGross', displayName: 'Gross Value', cellFilter: 'currency', width: '8%'},
-                {field: 'txdeTax', displayName: 'Tax', enableCellEdit: false, width: '5%'},
-                {field: 'txdeValueNet', displayName: 'Nett Value', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
-                {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', width: '5%'},
+                //{field: 'txdeValueLine', displayName: 'Cost', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
+                //{field: 'txdeValueProfit', displayName: 'Profit', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
+                {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency', width: '10%'},
+                {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', width: '7%'},
+                {field: 'calculatedLineValue', displayName: 'Aomount', enableCellEdit: false, cellFilter: 'currency', width: '10%'},
+                {field: 'calculatedLineTax', displayName: 'Tax', enableCellEdit: false, width: '10%'},
                 {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'},
                 {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="grid.appScope.isTxnLineVoidable()" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
 
@@ -101,6 +101,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             txnDetail.txdeValueNet =  (txnDetail.txdeValueGross * txnDetail.txdeTax)*1 + txnDetail.txdeValueGross*1;
             //alert('gross =' + txnDetail.txdeValueGross + ' --tax rate = '  + txnDetail.txdeTax + ' -- net value = ' + txnDetail.txdeValueNet );
             txnDetail.txdePriceSold = txnDetail.txdeQuantitySold * txnDetail.txdeValueNet;
+            txnDetail.calculatedLineValue = txnDetail.txdeValueGross * txnDetail.txdeQuantitySold;
+            txnDetail.calculatedLineTax = txnDetail.calculatedLineValue * txnDetail.txdeTax;
             totalTransaction();
         })
         if (!$scope.isPageNew ) {
@@ -215,7 +217,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         txnDetail.txdeValueGross =  txnDetail.txdeValueProfit*1 + txnDetail.txdeValueLine*1;
         txnDetail.txdeValueNet =  (txnDetail.txdeValueGross * txnDetail.txdeTax)*1 + txnDetail.txdeValueGross*1;
         txnDetail.txdeQuantitySold =  1;
-        txnDetail.txdePriceSold =  txnDetail.txdeQuantitySold * txnDetail.txdeValueNet; 
+        txnDetail.txdePriceSold =  txnDetail.txdeQuantitySold * txnDetail.txdeValueNet;
+        txnDetail.calculatedLineValue = txnDetail.txdeValueGross * txnDetail.txdeQuantitySold;
+        txnDetail.calculatedLineTax = txnDetail.calculatedLineValue * txnDetail.txdeTax;
+
     }
 
     function calculateTaxRate (product) {
@@ -413,6 +418,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         baseDataService.getStreamData(exportUrl).then(function(response){
             var blob = new Blob([response.data], {'type': 'application/pdf'});
             var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
+            baseDataService.setPdfContent(myPdfContent);
+            $state.go('dashboard.pdfViewer');
+
             ngDialog.openConfirm({
                 template:'views/pages/pdfViewer.html',
                 controller:'pdfViewerCtrl',

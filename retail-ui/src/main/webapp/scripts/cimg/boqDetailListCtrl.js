@@ -284,6 +284,9 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
         baseDataService.getStreamData(exportUrl).then(function(response){
             var blob = new Blob([response.data], {'type': 'application/pdf'});
             var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
+            baseDataService.setPdfContent(myPdfContent);
+            $state.go('dashboard.pdfViewer');
+            /*
             ngDialog.openConfirm({
                 template:'views/pages/pdfViewer.html',
                 controller:'pdfViewerCtrl',
@@ -295,6 +298,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
                     console.log('Modal promise rejected. Reason:', reason);
                 }
             );
+            */
 
         });
 

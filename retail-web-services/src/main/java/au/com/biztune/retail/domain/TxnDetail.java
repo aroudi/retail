@@ -229,4 +229,5 @@ public class TxnDetail {
     public void setTxdeReturnStoreId(long txdeReturnStoreId) {
         this.txdeReturnStoreId = txdeReturnStoreId;
     }
+
 }

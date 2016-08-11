@@ -356,6 +356,8 @@ public class TransactionServiceImpl implements TransactionService {
                     txnDetailForm.setTxdeLineRefund(txnDetail.isTxdeLineRefund());
                     txnDetailForm.setTxdeItemVoid(txnDetail.isTxdeItemVoid());
                     txnDetailForm.setTxdeDetailType(txnDetail.getTxdeDetailType());
+                    txnDetailForm.setCalculatedLineValue(txnDetailForm.getTxdeQuantitySold() * txnDetailForm.getTxdeValueGross());
+                    txnDetailForm.setCalculatedLineTax(txnDetailForm.getTxdeTax() * txnDetailForm.getCalculatedLineValue());
                     txnDetailFormList.add(txnDetailForm);
                 }
                 txnHeaderForm.setTxnDetailFormList(txnDetailFormList);

@@ -404,10 +404,16 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         baseDataService.getStreamData(exportUrl).then(function(response){
             var blob = new Blob([response.data], {'type': 'application/pdf'});
             //saveAs (blob , outPutFile);
+            var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
+            baseDataService.setPdfContent(myPdfContent);
+            $state.go('dashboard.pdfViewer');
+
+            /*
             hiddenElement.href = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
             //hiddenElement.target ='_blank';
             hiddenElement.download = 'purchaseOrder.pdf';
             hiddenElement.click();
+            */
         });
 
     }

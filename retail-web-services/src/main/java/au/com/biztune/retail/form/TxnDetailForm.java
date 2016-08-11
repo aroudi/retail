@@ -26,6 +26,8 @@ public class TxnDetailForm {
     private ConfigCategory txdeDetailType;
     private long orguId;
     private boolean deleted;
+    private double calculatedLineValue;
+    private double calculatedLineTax;
 
     public long getId() {
         return id;
@@ -161,5 +163,21 @@ public class TxnDetailForm {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public double getCalculatedLineValue() {
+        return calculatedLineValue;
+    }
+
+    public void setCalculatedLineValue(double calculatedLineValue) {
+        this.calculatedLineValue = calculatedLineValue;
+    }
+
+    public double getCalculatedLineTax() {
+        return calculatedLineTax;
+    }
+
+    public void setCalculatedLineTax(double calculatedLineTax) {
+        this.calculatedLineTax = calculatedLineTax;
     }
 }
