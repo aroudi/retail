@@ -127,7 +127,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     }
                 },
                 {field:'txmdAmountLocal', displayName:'Amount', visible:true, cellFilter:'currency', footerCellFilter:'currency', /*aggregationType: uiGridConstants.aggregationTypes.sum, */ enableCellEdit:false, width: '40%'},
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTxnLineVoidable()" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>', width: '10%'}
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTxnLineVoidable()" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>', width: '10%'}
 
             ]
         }
@@ -257,13 +257,27 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         $scope.txnMediaList.data.push(txnMedia);
         totalTransaction();
     };
-    $scope.removeTxnMedia= function () {
+    $scope.removeTxnMedia= function (row) {
+
+        if (!confirm('Are you sure you want to delete this item?')) {
+            return;
+        }
+        if (row == undefined || row.entity == undefined) {
+            alert('item is undefined');
+            return;
+        }
+
+        row.entity.deleted = true;
+        $scope.txnMediaGridApi.core.setRowInvisible(row);
+        totalTransaction();
+        /*
         var selectedRow = $scope.selectedTxnMediaRow;
         rowIndex = getArrIndexOf($scope.txnMediaList.data, selectedRow);
         if (rowIndex>-1) {
             $scope.txnMediaList.data.splice(rowIndex,1);
         }
         totalTransaction();
+        */
     };
     function getArrIndexOf(arr,item) {
         if (arr == undefined || item== undefined)
@@ -331,7 +345,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         var txnMediaList =  $scope.txnMediaList.data;
         var total = 0.00;
         for (var i = 0; i < txnMediaList.length; i++) {
-            if (!txnMediaList[i].txmdVoided) {
+            if (!txnMediaList[i].txmdVoided && !txnMediaList[i].deleted) {
                 total = total*1 + txnMediaList[i].txmdAmountLocal*1;
             }
         }
@@ -407,8 +421,13 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     }
 
     $scope.isTxnLineVoidable = function () {
-        console.log('txn_state_code = ' + $scope.txnHeaderForm.txhdState.categoryCode);
         if ($scope.txnHeaderForm.txhdState.categoryCode != 'TXN_STATE_FINAL') {
+            return true;
+        }
+        return false;
+    }
+    $scope.isTxnSaleAndFinal = function () {
+        if ($scope.txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_FINAL' && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
             return true;
         }
         return false;
@@ -420,7 +439,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
             baseDataService.setPdfContent(myPdfContent);
             $state.go('dashboard.pdfViewer');
-
+            /*
             ngDialog.openConfirm({
                 template:'views/pages/pdfViewer.html',
                 controller:'pdfViewerCtrl',
@@ -432,7 +451,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     console.log('Modal promise rejected. Reason:', reason);
                 }
             );
-
+            */
         });
 
     }

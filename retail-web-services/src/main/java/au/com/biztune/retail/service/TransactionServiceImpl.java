@@ -136,6 +136,9 @@ public class TransactionServiceImpl implements TransactionService {
                     if (txnMediaForm == null) {
                         continue;
                     }
+                    if (txnMediaForm.isDeleted()) {
+                        continue;
+                    }
                     txnMedia = new TxnMedia();
                     txnMedia.setOrguId(sessionState.getStore().getOrgUnit().getId());
                     txnMedia.setStoreId(sessionState.getStore().getId());
@@ -263,6 +266,9 @@ public class TransactionServiceImpl implements TransactionService {
             TxnMedia txnMedia = null;
             for (TxnMediaForm txnMediaForm : txnHeaderForm.getTxnMediaFormList()) {
                 if (txnMediaForm == null) {
+                    continue;
+                }
+                if (txnMediaForm.isDeleted()) {
                     continue;
                 }
                 txnMedia = new TxnMedia();

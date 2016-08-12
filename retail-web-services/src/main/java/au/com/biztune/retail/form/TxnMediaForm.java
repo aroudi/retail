@@ -13,7 +13,7 @@ public class TxnMediaForm {
     private double txmdAmountLocal;
     private boolean txmdVoided;
     private long orguId;
-
+    private boolean deleted;
     public long getId() {
         return id;
     }
@@ -60,5 +60,13 @@ public class TxnMediaForm {
 
     public void setOrguId(long orguId) {
         this.orguId = orguId;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

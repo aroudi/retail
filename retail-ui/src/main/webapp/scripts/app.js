@@ -783,8 +783,37 @@ cimgApp.filter('poBoqLinkOrderNumberFilter', function() {
     };
 });
 
-app.filter('trusted', ['$sce', function ($sce) {
+cimgApp.filter('trusted', ['$sce', function ($sce) {
     return function(url) {
         return $sce.trustAsResourceUrl(url);
     };
 }]);
+
+cimgApp.directive('ngAppMax', function(){
+    return {
+        require: 'ngModel',
+        scope: {
+            ngAppMax: '@',
+            ngModel: '='
+        },
+        link: function(scope, element, attrs, ctrl){
+
+            scope.$watch('ngAppMax', function(newVal){
+                validate(scope.ngModel, newVal, ctrl);
+            });
+
+            scope.$watch('ngModel', function(val){
+                validate(val, scope.ngAppMax);
+            });
+
+            function validate(thisVal, maxVal){
+                if(thisVal > maxVal){
+                    ctrl.$setValidity('range', false);
+                } else {
+                    ctrl.$setValidity('range', true);
+                }
+            }
+
+        }
+    }
+});

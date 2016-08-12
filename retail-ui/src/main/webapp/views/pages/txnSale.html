@@ -28,7 +28,7 @@
                                                         <div class="col-lg-2">
                                                             <div class="form-group">
                                                                 <label>&nbsp;</label>
-                                                                <button type="button" class="btn btn-primary" ng-click="searchCustomer()">Customer</button>
+                                                                <button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchCustomer()">Customer</button>
                                                             </div >
                                                         </div>
                                                     </div >
@@ -66,11 +66,11 @@
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
                                             Products
-                                            <button type="button" class="btn btn-primary" ng-click="searchProduct()">Add Product</button>
+                                            <button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchProduct()">Add Product</button>
                                         </div>
-                                        <div class="panel-body">
+                                        <div class="panel-body" ng-disabled="isTxnSaleAndFinal()">
                                             <div class="row">
-                                                <div ui-grid="txnDetailList" ui-grid-edit ui-grid-row-edit ui-grid-cellNav style="height:400px;" class="grid"></div>
+                                                <div ui-grid="txnDetailList" ui-grid-edit ui-grid-row-edit ui-grid-cellNav style="height:400px;" class="grid" ng-disabled="isTxnSaleAndFinal()"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -104,11 +104,14 @@
                                                                     </div>
                                                                     <div class="row">
                                                                         <label>Amount
+                                                                           <span class="btn btn-warning btn-xs" ng-show="mainForm.paymentAmount.$error.range">
+                                                                                max allowed is ${{txnHeaderForm.txhdValueDue}}
+                                                                           </span>
                                                                            <span class="btn btn-warning btn-xs" ng-show="mainForm.paymentAmount.$error.pattern">
-                                                                                Invalid!
+                                                                                Invalid Amount!!!
                                                                            </span>
                                                                         </label>
-                                                                        <input class="form-control" name="paymentAmount" data-ng-model="paymentAmount" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
+                                                                        <input class="form-control" type="number" min="0" ng-app-max="{{txnHeaderForm.txhdValueDue}}" name="paymentAmount" data-ng-model="paymentAmount" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
                                                                     </div>
                                                                 </div >
                                                             </div>
@@ -123,13 +126,7 @@
                                                                         <tr>
                                                                             <td>
                                                                                 <!--<button type="button" class="btn btn-outline btn-primary" ng-click="addTransposition()">Add</button> -->
-                                                                                <a href=""><i tooltip="Add to the list" tooltip-placement="bottom" class="fa fa-long-arrow-right fa-2x" ng-click="addTxnMedia()" ng-show="!mainForm.paymentAmount.$error.pattern" ></i> </a>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>
-                                                                                <!--<button type="button" class="btn btn-outline btn-primary" ng-click="removeTransposition()">Remove</button> -->
-                                                                                <a href=""><i tooltip="Remove from list" tooltip-placement="bottom" class="fa fa-long-arrow-left fa-2x" ng-click="removeTxnMedia()"></i> </a>
+                                                                                <a href=""><i tooltip="Add to the list" tooltip-placement="bottom" class="fa fa-long-arrow-right fa-4x" ng-click="addTxnMedia()" ng-show="!(mainForm.paymentAmount.$error.range)" ></i> </a>
                                                                             </td>
                                                                         </tr>
                                                                     </table>
@@ -170,7 +167,8 @@
                             <div class="row">
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                 <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                                <button type="button" class="btn btn-success" ng-click="submitTransaction()" ng-disabled="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_FINAL'">Submit</button>
+                                <button type="button" class="btn btn-success" ng-click="submitTransaction()" ng-show="!isTxnSaleAndFinal()">Submit</button>
+                                <button type="button" class="btn btn-success" ng-click="submitTransaction()" ng-show="isTxnSaleAndFinal()">Add Payment</button>
                                 <button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT'">Save draft</button>
                                 <button type="button" class="btn btn-success" ng-click="exportToPdf()">Print</button>
 
