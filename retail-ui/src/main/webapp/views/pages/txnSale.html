@@ -86,9 +86,9 @@
                                         <div class="panel-body">
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <div class="col-lg-8" ng-show="txnHeaderForm.txhdTxnType.categoryCode != 'TXN_TYPE_QUOTE'">
+                                                    <div class="col-lg-9" ng-show="txnHeaderForm.txhdTxnType.categoryCode != 'TXN_TYPE_QUOTE'">
                                                         <div class="col-lg-12">
-                                                            <div class="col-lg-4">
+                                                            <div class="col-lg-3">
                                                                 <div class="form-group">
                                                                     <div class="row">
                                                                         <label>Media Type</label>
@@ -132,12 +132,12 @@
                                                                     </table>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-7">
+                                                            <div class="col-lg-8">
                                                                 <div id="txnMediaGrid" ui-grid ="txnMediaList" class="grid" ui-grid-selection style="height:200px;" ></div>
                                                             </div>
                                                         </div>
                                                     </div >
-                                                    <div class="col-lg-4">
+                                                    <div class="col-lg-3">
                                                         <div class="row">
                                                             <label>Total</label>
                                                             <span>{{txnHeaderForm.txhdValueNett |currency}}</span>
@@ -168,7 +168,7 @@
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                 <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
                                 <button type="button" class="btn btn-success" ng-click="submitTransaction()" ng-show="!isTxnSaleAndFinal()">Submit</button>
-                                <button type="button" class="btn btn-success" ng-click="submitTransaction()" ng-show="isTxnSaleAndFinal()">Add Payment</button>
+                                <button type="button" class="btn btn-success" ng-click="addPayment()" ng-show="isTxnSaleAndFinal()">Add Payment</button>
                                 <button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT'">Save draft</button>
                                 <button type="button" class="btn btn-success" ng-click="exportToPdf()">Print</button>
 

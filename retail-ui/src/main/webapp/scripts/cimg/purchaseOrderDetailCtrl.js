@@ -314,11 +314,14 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         if ($scope.purchaseOrderHeader.pohStatus.categoryCode != 'POH_STATUS_IN_PROGRESS' && row.entity.id>=0) {
             return;
         }
-        if (!confirm('Are you sure you want to delete this item?')) {
-            return;
-        }
-        row.entity.deleted = true;
-        $scope.gridApi.core.setRowInvisible(row);
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this item?').then(function(result){
+            if (result) {
+                row.entity.deleted = true;
+                $scope.gridApi.core.setRowInvisible(row);
+            } else {
+                return;
+            }
+        });
     }
 
     $scope.searchSupplier = function () {

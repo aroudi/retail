@@ -74,6 +74,7 @@ var service_uri = {
     'PRODUCT_SALE_ITEM_ALL_URI' : 'product/allProductSaleItem',
     'TXN_ALL_URI' : 'transaction/all',
     'TXN_ADD_URI' : 'transaction/add',
+    'TXN_ADD_PAYMENT_URI' : 'transaction/addPayment',
     'TXN_GET_URI' : 'transaction/get/',
     'TXN_EXPORT_PDF' : 'transaction/exportPdf/',
     'CREATE_PO_FROM_BOQ_URI' : 'billOfQuantity/generatePurchaseOrder',

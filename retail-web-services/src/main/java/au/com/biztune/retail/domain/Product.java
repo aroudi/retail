@@ -30,6 +30,7 @@ public class Product {
     private List<SuppProdPrice> suppProdPriceList;
     private double stockQty;
     private double reservedQty;
+    private Price sellPrice;
 
     public long getId() {
         return id;
@@ -213,5 +214,13 @@ public class Product {
 
     public void setReservedQty(double reservedQty) {
         this.reservedQty = reservedQty;
+    }
+
+    public Price getSellPrice() {
+        return sellPrice;
+    }
+
+    public void setSellPrice(Price sellPrice) {
+        this.sellPrice = sellPrice;
     }
 }

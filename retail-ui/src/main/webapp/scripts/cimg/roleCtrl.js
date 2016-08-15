@@ -161,27 +161,35 @@ cimgApp.controller('roleCtrl', function($scope, $state,ngDialog, UserService, ba
 
 
     $scope.removeAccessPoint = function(row) {
-        if (!confirm('Are you sure you want to delete this access point?')) {
-            return;
-        }
-        if (row == undefined || row.entity == undefined) {
-            alert('item is undefined');
-            return;
-        }
-        row.entity.deleted = true;
-        $scope.accessPointsGridApi.core.setRowInvisible(row);
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this access point?').then(function(result){
+            if (result) {
+                if (row == undefined || row.entity == undefined) {
+                    alert('item is undefined');
+                    return;
+                }
+                row.entity.deleted = true;
+                $scope.accessPointsGridApi.core.setRowInvisible(row);
+            } else {
+                return;
+            }
+        });
+
     }
 
     $scope.removeUser = function(row) {
-        if (!confirm('Are you sure you want to delete this user?')) {
-            return;
-        }
-        if (row == undefined || row.entity == undefined) {
-            alert('item is undefined');
-            return;
-        }
-        row.entity.usrDeleted = true;
-        $scope.appUsersGridApi.core.setRowInvisible(row);
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this item?').then(function(result){
+            if (result) {
+
+                if (row == undefined || row.entity == undefined) {
+                    alert('item is undefined');
+                    return;
+                }
+                row.entity.usrDeleted = true;
+                $scope.appUsersGridApi.core.setRowInvisible(row);
+            } else {
+                return;
+            }
+        });
     }
 
 });

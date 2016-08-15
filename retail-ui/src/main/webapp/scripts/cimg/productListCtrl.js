@@ -4,6 +4,8 @@
 cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
+        enableColumnResizing: true,
+        enableSorting:true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'prodSku', enableCellEdit:false, width:'10%',
@@ -11,11 +13,13 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseData
                     return row.entity.prodSku
                 }
             },
+            /*
             {field:'reference', enableCellEdit:false, width:'10%',
                 cellTooltip: function(row,col) {
                     return row.entity.reference
                 }
             },
+            */
             {field:'prodName', displayName:'Name',enableCellEdit:false, width:'20%',
                 cellTooltip: function(row,col) {
                     return row.entity.prodName
@@ -28,7 +32,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseData
             },
             {field:'stockQty', displayName:'Available Qty',enableCellEdit:false, width:'10%'},
             {field:'reservedQty', displayName:'Reserved Qty',enableCellEdit:false, width:'10%'},
-            //{field:'prodClass', displayName:'Class',enableCellEdit:false, width:'10%'},
+            {field:'sellPrice.prcePrice', displayName:'Cost',enableCellEdit:false, cellFilter: 'currency', width:'10%'},
             {field:'prodOrguLink.status.displayName', displayName:'Status',enableCellEdit:false, width:'10%',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     if (grid.getCellValue(row, col) === 'IMPORTED') {

@@ -37,4 +37,12 @@ public interface TransactionService {
      * @return Response.
      */
     CommonResponse updateTransaction(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
+
+    /**
+     * add payment.
+     * @param txnHeaderForm txnHeaderForm
+     * @param securityContext securityContext
+     * @return Response.
+     */
+    CommonResponse addPayment(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
 }

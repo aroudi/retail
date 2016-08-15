@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI) {
 
     $scope.isPageNew = baseDataService.getIsPageNew();
     initPageData();
@@ -126,8 +126,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         return row.entity.paymentMedia.paymName
                     }
                 },
-                {field:'txmdAmountLocal', displayName:'Amount', visible:true, cellFilter:'currency', footerCellFilter:'currency', /*aggregationType: uiGridConstants.aggregationTypes.sum, */ enableCellEdit:false, width: '40%'},
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTxnLineVoidable()" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>', width: '10%'}
+                {field:'txmdAmountLocal', displayName:'Amount', visible:true, cellFilter:'currency', footerCellFilter:'currency', /*aggregationType: uiGridConstants.aggregationTypes.sum, */ enableCellEdit:false, width: '35%'},
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTxnLineVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>', width: '10%'}
 
             ]
         }
@@ -236,8 +236,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     }
 
     function getProfitMargin () {
-        if ($scope.customer == undefined || $scope.customer==null) {
-            return 0.10;
+        if ($scope.customer == undefined || $scope.customer==null || $scope.customer.grade == undefined) {
+            return 0.20;
         }
         return $scope.customer.grade.rate;
     }
@@ -258,26 +258,20 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         totalTransaction();
     };
     $scope.removeTxnMedia= function (row) {
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this item??').then(function(result){
+            if (result) {
+                if (row == undefined || row.entity == undefined) {
+                    baseDataService.displayMessage('info','Warning!!','item is undefined');
+                    return;
+                }
+                row.entity.deleted = true;
+                $scope.txnMediaGridApi.core.setRowInvisible(row);
+                totalTransaction();
+            } else {
+                return;
+            }
+        });
 
-        if (!confirm('Are you sure you want to delete this item?')) {
-            return;
-        }
-        if (row == undefined || row.entity == undefined) {
-            alert('item is undefined');
-            return;
-        }
-
-        row.entity.deleted = true;
-        $scope.txnMediaGridApi.core.setRowInvisible(row);
-        totalTransaction();
-        /*
-        var selectedRow = $scope.selectedTxnMediaRow;
-        rowIndex = getArrIndexOf($scope.txnMediaList.data, selectedRow);
-        if (rowIndex>-1) {
-            $scope.txnMediaList.data.splice(rowIndex,1);
-        }
-        totalTransaction();
-        */
     };
     function getArrIndexOf(arr,item) {
         if (arr == undefined || item== undefined)
@@ -353,42 +347,55 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     }
 
     $scope.voidItem = function(row) {
-        if (!confirm('Are you sure you want to void this item?')) {
-            return;
-        }
-        if (row == undefined || row.entity == undefined) {
-            alert('item is undefined');
-            return;
-        }
-        row.entity.txdeItemVoid = true;
-        totalTransaction();
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to void this item??').then(function(result){
+            console.log('result :', result);
+            if (result) {
+                if (row == undefined || row.entity == undefined) {
+                    alert('item is undefined');
+                    return;
+                }
+                row.entity.txdeItemVoid = true;
+                totalTransaction();
+            } else {
+                return;
+            }
+        });
     };
 
     $scope.voidTender = function(row) {
-        if (!confirm('Are you sure you want to void this tender?')) {
-            return;
-        }
-        if (row == undefined || row.entity == undefined) {
-            alert('tender is undefined');
-            return;
-        }
-        row.entity.txmdVoided = true;
-        totalTransaction();
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to void this tender?').then(function(result){
+            console.log('result :', result);
+            if (result) {
+                if (row == undefined || row.entity == undefined) {
+                    alert('tender is undefined');
+                    return;
+                }
+                row.entity.txmdVoided = true;
+                totalTransaction();
+            } else {
+                return;
+            }
+        });
+
     };
 
     /** delete Txn Detail **/
     $scope.removeItem = function(row) {
-        if (!confirm('Are you sure you want to delete this item?')) {
-            return;
-        }
-        if (row == undefined || row.entity == undefined) {
-            alert('item is undefined');
-            return;
-        }
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this item?').then(function(result){
+            console.log('result :', result);
+            if (result) {
+                if (row == undefined || row.entity == undefined) {
+                    alert('item is undefined');
+                    return;
+                }
 
-        row.entity.deleted = true;
-        $scope.txnDetailGridApi.core.setRowInvisible(row);
-        totalTransaction();
+                row.entity.deleted = true;
+                $scope.txnDetailGridApi.core.setRowInvisible(row);
+                totalTransaction();
+            } else {
+                return;
+            }
+        });
     }
     $scope.createTransactionSaleDraft = function() {
         baseDataService.getBaseData(TXN_STATE_DRAFT).then(function(response){
@@ -420,8 +427,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
     }
 
-    $scope.isTxnLineVoidable = function () {
-        if ($scope.txnHeaderForm.txhdState.categoryCode != 'TXN_STATE_FINAL') {
+    $scope.isTxnLineVoidable = function (row) {
+        if ( ($scope.txnHeaderForm.txhdState.categoryCode != 'TXN_STATE_FINAL') && (row.entity.id > 0)) {
             return true;
         }
         return false;
@@ -433,26 +440,31 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         return false;
     }
     $scope.exportToPdf = function() {
+
         var exportUrl = TXN_EXPORT_PDF + $scope.txnHeaderForm.id;
         baseDataService.getStreamData(exportUrl).then(function(response){
             var blob = new Blob([response.data], {'type': 'application/pdf'});
             var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
             baseDataService.setPdfContent(myPdfContent);
             $state.go('dashboard.pdfViewer');
-            /*
-            ngDialog.openConfirm({
-                template:'views/pages/pdfViewer.html',
-                controller:'pdfViewerCtrl',
-                className: 'ngdialog-theme-default',
-                closeByDocument:false,
-                resolve: {pdfContent: function(){return myPdfContent}}
-            }).then (function (){
-                }, function(reason) {
-                    console.log('Modal promise rejected. Reason:', reason);
-                }
-            );
-            */
         });
-
     }
+
+    $scope.addPayment = function () {
+
+        $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
+        $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
+        $scope.txnHeaderForm.customer = $scope.customer;
+        var rowObject = $scope.txnHeaderForm;
+        baseDataService.addRow(rowObject, TXN_ADD_PAYMENT_URI).then(function(response) {
+            var addResponse = response.data;
+            if (addResponse.status == SUCCESS ) {
+                $state.go('dashboard.listSaleTransaction');
+            } else {
+                alert('Not able to save Transaction. ' + addResponse.message);
+            }
+        });
+        return;
+    }
+
 });

@@ -70,6 +70,20 @@ public class TransactionRest {
     }
 
     /**
+     * add payment to transaction.
+     * @param txnHeaderForm transaction Header
+     * @return CommonResponse
+     */
+    @Secured
+    @Path("/addPayment")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse addPayment (TxnHeaderForm txnHeaderForm) {
+        return transactionService.addPayment(txnHeaderForm, securityContext);
+    }
+
+    /**
      * get transaction by Id.
      * @param id id.
      * @return TxnHeaderForm

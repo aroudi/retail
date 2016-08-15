@@ -155,27 +155,33 @@ cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, ba
     }
 
     $scope.removeAccessPoint = function(row) {
-        if (!confirm('Are you sure you want to delete this access point?')) {
-            return;
-        }
-        if (row == undefined || row.entity == undefined) {
-            baseDataService.displayMessage('info','Warning', 'item is undefined!!!');
-            return;
-        }
-        row.entity.deleted = true;
-        $scope.accessPointsGridApi.core.setRowInvisible(row);
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this access point?').then(function(result){
+            if (result) {
+                if (row == undefined || row.entity == undefined) {
+                    baseDataService.displayMessage('info','Warning', 'item is undefined!!!');
+                    return;
+                }
+                row.entity.deleted = true;
+                $scope.accessPointsGridApi.core.setRowInvisible(row);
+            } else {
+                return;
+            }
+        });
     }
 
     $scope.removeRole = function(row) {
-        if (!confirm('Are you sure you want to delete this role?')) {
-            return;
-        }
-        if (row == undefined || row.entity == undefined) {
-            baseDataService.displayMessage('info','Warning', 'item is undefined!!!');
-            return;
-        }
-        row.entity.roleDeleted = true;
-        $scope.appRolesGridApi.core.setRowInvisible(row);
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this role?').then(function(result){
+            if (result) {
+                if (row == undefined || row.entity == undefined) {
+                    baseDataService.displayMessage('info','Warning', 'item is undefined!!!');
+                    return;
+                }
+                row.entity.roleDeleted = true;
+                $scope.appRolesGridApi.core.setRowInvisible(row);
+            } else {
+                return;
+            }
+        });
     }
 
 });

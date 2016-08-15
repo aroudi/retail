@@ -101,7 +101,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
     $scope.$on('uiGridEventStartCellEdit', function (event) {
         var boqDetail = event.targetScope.row.entity;
         $scope.qtyOnStockBeforeEditting = event.targetScope.row.entity[event.targetScope.col.field];
-        alert('before editting value = ' + $scope.qtyOnStockBeforeEditting);
+        //alert('before editting value = ' + $scope.qtyOnStockBeforeEditting);
     })
 
     initPageData();
@@ -116,7 +116,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
 
     $scope.editProduct = function(row) {
         if (row == undefined || row.entity == undefined) {
-            alert('row is undefined');
+            baseDataService.displayMessage('info','Warning!!','row is undefined');
             return;
         }
         var productGetURI = PRODUCT_GET_URI + '/' + row.entity.product.id;
@@ -305,14 +305,17 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
     }
     $scope.removeItem = function(row) {
         if (row == undefined || row.entity == undefined) {
-            alert('item is undefined');
+            baseDataService.displayMessage('info','Warning!!','item is undefined');
             return;
         }
-        if (!confirm('Are you sure you want to delete this item?')) {
-            return;
-        }
-        row.entity.deleted = true;
-        $scope.gridApi.core.setRowInvisible(row);
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this item?').then(function(result){
+            if (result) {
+                row.entity.deleted = true;
+                $scope.gridApi.core.setRowInvisible(row);
+            } else {
+                return;
+            }
+        });
     }
     $scope.showVoidButton = function(item) {
         //BOQ_LINE_STATUS_PO_CREATED

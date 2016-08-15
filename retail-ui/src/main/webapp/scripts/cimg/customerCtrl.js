@@ -141,17 +141,21 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog, UserService
         );
     }
     $scope.removeContact = function(row) {
-        if (!confirm('Are you sure you want to delete this contact?')) {
-            return;
-        }
-        if (row == undefined || row.entity == undefined) {
-            alert('item is undefined');
-            return;
-        }
-        var rowIndex = baseDataService.getArrIndexOf($scope.gridOptions.data, row.entity);
-        if (rowIndex>-1) {
-            $scope.gridOptions.data.splice(rowIndex,1);
-        }
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this contact?').then(function(result){
+            if (result) {
+                if (row == undefined || row.entity == undefined) {
+                    alert('item is undefined');
+                    return;
+                }
+                var rowIndex = baseDataService.getArrIndexOf($scope.gridOptions.data, row.entity);
+                if (rowIndex>-1) {
+                    $scope.gridOptions.data.splice(rowIndex,1);
+                }
+            } else {
+                return;
+            }
+        });
+
     }
 
 });

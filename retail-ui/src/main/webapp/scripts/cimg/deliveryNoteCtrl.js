@@ -213,11 +213,14 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             alert('item is undefined');
             return;
         }
-        if (!confirm('Are you sure you want to delete this item?')) {
-            return;
-        }
-        row.entity.deleted = true;
-        $scope.gridApi.core.setRowInvisible(row);
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this item?').then(function(result){
+            if (result) {
+                row.entity.deleted = true;
+                $scope.gridApi.core.setRowInvisible(row);
+            } else {
+                return;
+            }
+        });
     }
 
     $scope.searchSupplier = function () {

@@ -300,6 +300,92 @@ public class TransactionServiceImpl implements TransactionService {
             return response;
         }
     }
+
+
+    /**
+     * add payment.
+     * @param txnHeaderForm txnHeaderForm
+     * @param securityContext securityContext
+     * @return Response.
+     */
+    public CommonResponse addPayment(TxnHeaderForm txnHeaderForm, SecurityContext securityContext) {
+        this.securityContext = securityContext;
+        final CommonResponse response = new CommonResponse();
+        try {
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+
+            if (txnHeaderForm == null || txnHeaderForm.getTxnDetailFormList() == null || txnHeaderForm.getTxnMediaFormList() == null) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("transaction object or its related objects are null");
+                return response;
+            }
+
+            final Timestamp currentDate = new Timestamp(new Date().getTime());
+            final TxnHeader txnHeader = new TxnHeader();
+            txnHeader.setId(txnHeaderForm.getId());
+            txnHeader.setOrgUnit(txnHeaderForm.getStore().getOrgUnit());
+            txnHeader.setStore(txnHeaderForm.getStore());
+            /*
+            final ConfigCategory txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_DRAFT);
+            if (txnState != null) {
+                txnHeader.setTxhdState(txnState);
+            }
+            */
+            txnHeader.setTxhdValueGross(txnHeaderForm.getTxhdValueGross());
+            txnHeader.setTxhdValueNett(txnHeaderForm.getTxhdValueNett());
+            txnHeader.setTxhdValueDue(txnHeaderForm.getTxhdValueDue());
+            txnHeader.setTxhdValueTax(txnHeaderForm.getTxhdValueTax());
+
+            //save it to database.
+            final Principal principal = securityContext.getUserPrincipal();
+            AppUser appUser = null;
+            if (principal instanceof AppUser) {
+                appUser = (AppUser) principal;
+                txnHeader.setTxhdOperator(appUser.getId());
+            }
+            txnDao.updateTxnHeader(txnHeader);
+
+
+            //save txn media
+            TxnMedia txnMedia = null;
+            for (TxnMediaForm txnMediaForm : txnHeaderForm.getTxnMediaFormList()) {
+                if (txnMediaForm == null) {
+                    continue;
+                }
+                if (txnMediaForm.isDeleted()) {
+                    continue;
+                }
+                txnMedia = new TxnMedia();
+                txnMedia.setOrguId(txnHeaderForm.getStore().getOrgUnit().getId());
+                txnMedia.setStoreId(txnHeaderForm.getStore().getId());
+                txnMedia.setTxhdId(txnHeaderForm.getId());
+                txnMedia.setTxmdVoided(txnMediaForm.isTxmdVoided());
+                txnMedia.setMedtId(txnMediaForm.getPaymentMedia().getMediaType().getId());
+                txnMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
+                final ConfigCategory txntMediaType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_SALE);
+                if (txntMediaType != null) {
+                    txnMedia.setTxmdType(txntMediaType);
+                }
+                txnMedia.setTxmdAmountLocal(txnMediaForm.getTxmdAmountLocal());
+                //insert new txn_media
+                if (txnMediaForm.getId() < 0) {
+                    txnDao.insertTxnMedia(txnMedia);
+                } else if (txnMediaForm.isTxmdVoided()) {
+                    txnMedia.setId(txnMediaForm.getId());
+                    txnDao.voidTxnMedia(txnMedia);
+                }
+            }
+            response.setInfo(txnHeaderForm.getTxhdTxnNr());
+            return response;
+        } catch (Exception e) {
+            logger.error("Exception in saving transaction: ", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Exception in saving Transaction");
+            return response;
+        }
+    }
+
+
     /**
      * get all transaction of store.
      * @return List of TxnHeader
