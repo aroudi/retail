@@ -283,3 +283,5 @@ go
 
 INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('PDF Viewer', 'pdfViewer', 'PDF Viewer');
 INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'pdfViewer' ));
+
+-- up to this point applied to jomon on 17/08/16 11:00
