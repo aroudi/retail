@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.InvoiceDao">
+    <!-- result maps -->
+    <resultMap id="invoiceLightMap" type="TxnHeader" >
+        <id column="TXIV_ID" property="id" />
+        <result column="TXHD_ID" property="parentId" />
+        <result column="TXIV_TXN_NR" property="txhdTxnNr" />
+        <result column="TXHD_TXN_NR" property="txhdOrigTxnNr" />
+        <result column="TXIV_TRADING_DATE" property="txhdTradingDate" />
+        <result column="TXIV_OPERATOR" property="txhdOperator" />
+        <result column="TXIV_VALUE_GROSS" property="txhdValueGross" />
+        <result column="TXIV_VALUE_NETT" property="txhdValueNett" />
+        <result column="TXIV_VALUE_DUE" property="txhdValueDue" />
+        <result column="TXIV_VALUE_CHANGE" property="txhdValueChange" />
+        <result column="TXIV_VAL_ROUNDING" property="txhdValRounding" />
+        <result column="TXIV_VALUE_TAXABLE" property="txhdValueTaxable" />
+        <result column="TXIV_VALUE_TAX" property="txhdValueTax" />
+        <result column="TXIV_RECEIPT_ID" property="txhdReceiptId" />
+        <result column="TXIV_REFUND_EXPIRY" property="txhdRefundExpiry" />
+        <result column="TXIV_COLLECT_DATE" property="txhdCollectDate" />
+        <!--association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" /-->
+    </resultMap>
+
+    <resultMap id="invoiceMap" type="TxnHeader" >
+        <id column="TXIV_ID" property="id" />
+        <result column="TXHD_ID" property="parentId" />
+        <result column="TXIV_TXN_NR" property="txhdTxnNr" />
+        <result column="TXHD_TXN_NR" property="txhdOrigTxnNr" />
+        <result column="TXIV_TRADING_DATE" property="txhdTradingDate" />
+        <result column="TXIV_OPERATOR" property="txhdOperator" />
+        <result column="TXIV_VALUE_GROSS" property="txhdValueGross" />
+        <result column="TXIV_VALUE_NETT" property="txhdValueNett" />
+        <result column="TXIV_VALUE_DUE" property="txhdValueDue" />
+        <result column="TXIV_VALUE_CHANGE" property="txhdValueChange" />
+        <result column="TXIV_VAL_ROUNDING" property="txhdValRounding" />
+        <result column="TXIV_VALUE_TAXABLE" property="txhdValueTaxable" />
+        <result column="TXIV_VALUE_TAX" property="txhdValueTax" />
+        <result column="TXIV_RECEIPT_ID" property="txhdReceiptId" />
+        <result column="TXIV_REFUND_EXPIRY" property="txhdRefundExpiry" />
+        <result column="TXIV_COLLECT_DATE" property="txhdCollectDate" />
+        <!--association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" /-->
+        <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
+        <collection property="txnDetails" javaType="ArrayList" column="TXIV_ID" ofType="TxnDetail" select="getInvoiceDetailPerInvoiceId"/>
+        <collection property="txnMedias" javaType="ArrayList" column="TXIV_ID" ofType="TxnMedia" select="getInvoiceMediaPerInvoiceId"/>
+    </resultMap>
+
+    <resultMap id="invoiceDetailMap" type="TxnDetail" >
+        <id column="TXDE_ID" property="id" />
+        <result column="TXDE_PRICE_OVRIDEN" property="txdePriceOveriden" />
+        <result column="TXDE_VALUE_LINE" property="txdeValueLine" />
+        <result column="TXDE_PROFIT_MARGIN" property="txdeProfitMargin" />
+        <result column="TXDE_VALUE_PROFIT" property="txdeValueProfit" />
+        <result column="TXDE_VALUE_GROSS" property="txdeValueGross" />
+        <result column="TXDE_TAX" property="txdeTax" />
+        <result column="TXDE_VALUE_NET" property="txdeValueNet" />
+        <result column="TXID_QTY_INVOICED" property="txdeQuantitySold" />
+        <result column="TXID_PRICE_SOLD" property="txdePriceSold" />
+        <result column="TXDE_LINE_REFUND" property="txdeLineRefund" />
+        <result column="TXDE_ITEM_VOID" property="txdeItemVoid" />
+        <result column="TXDE_SERIAL_NUMBER" property="txdeSerialNumber" />
+        <result column="TXDE_WAS_SPLIT_PCK" property="txdeWasSplitPck" />
+        <result column="TXDE_DETAIL_LEVEL" property="txdeDetailLevel" />
+        <result column="TXDE_ID" property="txdeParentDetail" />
+        <result column="TXDE_DISC_PRICE" property="txdeDiscPrice" />
+        <association property="product" column="TXDE_PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductSaleItemPerProdId" />
+        <association property="unitOfMeasure" column="TXDE_UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+        <association property="txdeDetailType" column="TXDE_DETAIL_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+    </resultMap>
+
+    <resultMap id="txnMediaMap" type="TxnMedia" >
+        <id column="TXMD_ID" property="id" />
+        <result column="TXMD_AMOUNT_LOCAL" property="txmdAmountLocal" />
+        <result column="TXMD_AMNT_FOREIGN" property="txmdAmntForeign" />
+        <result column="TXMD_PAN" property="txmdPan" />
+        <result column="TXMD_VOIDED" property="txmdVoided" />
+        <association property="paymentMedia" column="PAYM_ID" select="au.com.biztune.retail.dao.PaymentMediaDao.getPaymentMediaPerId" />
+        <association property="txmdType" column="TXMD_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+    </resultMap>
+
+    <sql id="invoiceColumns">
+        ${alias}.TXIV_ID,
+        ${alias}.TXHD_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.TXIV_TXN_NR,
+        ${alias}.TXHD_TXN_NR,
+        ${alias}.TXIV_TRADING_DATE,
+        ${alias}.TXIV_OPERATOR,
+        ${alias}.TXIV_VALUE_GROSS,
+        ${alias}.TXIV_VALUE_NETT,
+        ${alias}.TXIV_VALUE_DUE,
+        ${alias}.TXIV_VALUE_CHANGE,
+        ${alias}.TXIV_VAL_ROUNDING,
+        ${alias}.TXIV_VALUE_TAXABLE,
+        ${alias}.TXIV_VALUE_TAX,
+        ${alias}.TXIV_RECEIPT_ID,
+        ${alias}.CUSTOMER_ID,
+        ${alias}.TXIV_REFUND_EXPIRY,
+        ${alias}.TXIV_COLLECT_DATE
+    </sql>
+
+    <sql id="invoiceDetailColumns">
+        ${alias}.TXID_ID,
+        ${alias}.TXIV_ID,
+        ${alias}.TXDE_ID as PARENT_ID,
+        ${alias}.TXID_QTY_INVOICED,
+        ${alias}.TXID_PRICE_SOLD
+    </sql>
+
+    <sql id="invoiceMediaColumns">
+        ${alias}.TXIM_ID,
+        ${alias}.TXIV_ID,
+        ${alias}.TXMD_ID as PARENT_ID
+    </sql>
+
+
+    <insert id="insertInvoice" parameterType="TxnHeader" useGeneratedKeys="true" keyProperty="id" keyColumn="TXIV_ID">
+        INSERT INTO INOICE(
+        TXHD_ID,
+        ORGU_ID,
+        STORE_ID,
+        TXIV_TXN_NR,
+        TXHD_TXN_NR,
+        TXIV_TRADING_DATE,
+        TXIV_OPERATOR,
+        TXIV_VALUE_GROSS,
+        TXIV_VALUE_NETT,
+        TXIV_VALUE_DUE,
+        TXIV_VALUE_CHANGE,
+        TXIV_VAL_ROUNDING,
+        TXIV_VALUE_TAXABLE,
+        TXIV_VALUE_TAX,
+        TXIV_RECEIPT_ID,
+        CUSTOMER_ID,
+        TXIV_REFUND_EXPIRY,
+        TXIV_COLLECT_DATE
+        ) VALUES (
+        #{parentId},
+        #{orgUnit.id},
+        #{store.id},
+        #{txhdTxnNr}
+        <if test="txhdOrigTxnNr != null">
+            ,#{txhdOrigTxnNr}
+        </if>
+        <if test="txhdOrigTxnNr == null">
+            ,null
+        </if>
+        <if test="txhdTradingDate != null">
+            ,#{txhdTradingDate}
+        </if>
+        <if test="txhdTradingDate == null">
+            ,null
+        </if>
+        <if test="txhdOperator != null">
+            ,#{txhdOperator}
+        </if>
+        <if test="txhdOperator == null">
+            ,null
+        </if>
+        <if test="txhdValueGross != null">
+            ,#{txhdValueGross}
+        </if>
+        <if test="txhdValueGross == null">
+            ,null
+        </if>
+        <if test="txhdValueNett != null">
+            ,#{txhdValueNett}
+        </if>
+        <if test="txhdValueNett == null">
+            ,null
+        </if>
+        <if test="txhdValueDue != null">
+            ,#{txhdValueDue}
+        </if>
+        <if test="txhdValueDue == null">
+            ,null
+        </if>
+
+        <if test="txhdValueChange != null">
+            ,#{txhdValueChange}
+        </if>
+        <if test="txhdValueChange == null">
+            ,null
+        </if>
+        <if test="txhdValRounding != null">
+            ,#{txhdValRounding}
+        </if>
+        <if test="txhdValRounding == null">
+            ,null
+        </if>
+        <if test="txhdValueTaxable != null">
+            ,#{txhdValueTaxable}
+        </if>
+        <if test="txhdValueTaxable == null">
+            ,null
+        </if>
+        <if test="txhdValueTax != null">
+            ,#{txhdValueTax}
+        </if>
+        <if test="txhdValueTax == null">
+            ,null
+        </if>
+        <if test="txhdReceiptId != null">
+            ,#{txhdReceiptId}
+        </if>
+        <if test="txhdReceiptId == null">
+            ,null
+        </if>
+        <if test="customer != null">
+            ,#{customer.id}
+        </if>
+        <if test="customer == null">
+            ,null
+        </if>
+        <if test="txhdRefundExpiry != null">
+            ,#{txhdRefundExpiry}
+        </if>
+        <if test="txhdRefundExpiry == null">
+            ,null
+        </if>
+        <if test="txhdCollectDate != null">
+            ,#{txhdCollectDate}
+        </if>
+        <if test="txhdCollectDate == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <insert id="insertInvoiceDetail" parameterType="TxnDetail" useGeneratedKeys="true" keyProperty="id" keyColumn="TXID_ID">
+        INSERT INTO INVOICE_DETAIL(
+        TXIV_ID,
+        TXDE_ID,
+        ORGU_ID,
+        STORE_ID,
+        TXID_QTY_INVOICED,
+        TXID_PRICE_SOLD
+        ) VALUES (
+        #{txhdId},
+        #{txdeParentDetail},
+        #{orguId},
+        #{storeId}
+        <if test="txdeQuantitySold != null">
+            ,#{txdeQuantitySold}
+        </if>
+        <if test="txdeQuantitySold == null">
+            ,null
+        </if>
+
+        <if test="txdePriceSold != null">
+            ,#{txdePriceSold}
+        </if>
+        <if test="txdePriceSold == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <insert id="insertIncoiceMedia" parameterType="TxnMedia" useGeneratedKeys="true" keyProperty="id" keyColumn="TXIM_ID">
+        INSERT INTO INVOICE_MEDIA(
+        ORGU_ID,
+        STORE_ID,
+        TXIV_ID,
+        TXMD_ID
+        ) VALUES (
+        #{orguId},
+        #{storeId},
+        #{txhdId},
+        #{parentId}
+        )
+    </insert>
+
+    <select id="getInvoiceDetailPerInvoiceId" resultMap="invoiceDetailMap" >
+        SELECT
+          <include refid="au.com.biztune.retail.dao.TxnDao.txnDetailColumns"><property name="alias" value="txde"/></include>,
+          <include refid="invoiceDetailColumns"><property name="alias" value="inde"/></include>
+        FROM
+        INVOICE_DETAIL inde inner join TXN_DETAIL txde on (txde.TXDE_ID = inde.TXDE_ID)
+        WHERE inde.TXIV_ID=#{value}
+    </select>
+
+    <select id="getInvoiceMediaPerInvoiceId" resultMap="invoiceMediaMap" >
+        SELECT
+        <include refid="au.com.biztune.retail.dao.TxnDao.txnMediaColumns"><property name="alias" value="txmd"/></include>,
+        <include refid="invoiceMediaColumns"><property name="alias" value="inme"/></include>
+        FROM
+        INVOICE_MEDIA inme  inner join  TXN_MEDIA txmd on (txmd.txmdId = inme.txmdId)
+        WHERE inme.TXIV_ID=#{value}
+    </select>
+
+    <select id="getInvoiceHeaderPerTxhdId" resultMap="invoiceLightMap" >
+        SELECT
+        <include refid="invoiceColumns"><property name="alias" value="invoice"/></include>
+        FROM
+        INVOICE invoice WHERE invoice.TXHD_ID=#{value}
+    </select>
+
+    <select id="getInvoiceHeaderPerInvoiceId" resultMap="invoiceMap" >
+        SELECT
+        <include refid="invoiceColumns"><property name="alias" value="invoice"/></include>
+        FROM
+        INVOICE invoice WHERE invoice.TXIV_ID=#{value}
+    </select>
+    <update id="assigneInvoiceNumber" parameterType="TxnHeader" >
+        UPDATE INVOICE
+        SET TXIV_TXN_NR = #{txhdTxnNr}
+        WHERE TXIV_ID = #{id}
+    </update>
+
+</mapper>

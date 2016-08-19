@@ -28,6 +28,8 @@ public class TxnDetailForm {
     private boolean deleted;
     private double calculatedLineValue;
     private double calculatedLineTax;
+    //indicate if this item is going to be invoiced or not
+    private boolean invoiced;
 
     public long getId() {
         return id;
@@ -179,5 +181,13 @@ public class TxnDetailForm {
 
     public void setCalculatedLineTax(double calculatedLineTax) {
         this.calculatedLineTax = calculatedLineTax;
+    }
+
+    public boolean isInvoiced() {
+        return invoiced;
+    }
+
+    public void setInvoiced(boolean invoiced) {
+        this.invoiced = invoiced;
     }
 }

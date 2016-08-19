@@ -58,6 +58,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             enableFiltering: true,
             showGridFooter: true,
             showColumnFooter: true,
+            enableRowSelection:true,
             gridFooterTemplate:"<div id=\"currency-default\"> Total:{{grid.appScope.txnHeaderForm.txhdValueNett | currency}}</div>",
             rowTemplate : rowtpl,
             columnDefs: [
@@ -67,7 +68,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         return row.entity.product.prodSku
                     }
                 },
-                {field: 'product.prodName', displayName: 'Name', enableCellEdit: false, width: '30%',
+                {field: 'product.prodName', displayName: 'Name', enableCellEdit: false, width: '20%',
                     cellTooltip: function(row,col) {
                         return row.entity.product.prodName
                     }
@@ -77,8 +78,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 //{field: 'txdeValueProfit', displayName: 'Profit', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency', width: '10%'},
                 {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', width: '7%'},
-                {field: 'calculatedLineValue', displayName: 'Aomount', enableCellEdit: false, cellFilter: 'currency', width: '10%'},
-                {field: 'calculatedLineTax', displayName: 'Tax', enableCellEdit: false, width: '10%'},
+                {field: 'txdeQtyInvoiced', displayName: 'Invoice', type: 'number', width: '7%'},
+                {field: 'txdeQtyBalance', displayName: 'Balance', type: 'number', width: '7%'},
+                {field: 'calculatedLineValue', displayName: 'Aomount', enableCellEdit: false, cellFilter: 'currency', width: '9%'},
+                {field: 'calculatedLineTax', displayName: 'Tax', enableCellEdit: false, width: '7%'},
                 {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'},
                 {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="grid.appScope.isTxnLineVoidable()" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
 

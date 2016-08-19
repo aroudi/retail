@@ -33,6 +33,8 @@ public class TxnHeader {
     private Timestamp txhdCollectDate;
     private List<TxnDetail> txnDetails;
     private List<TxnMedia> txnMedias;
+    //this is used for invoice only. it contains parent sale order id
+    private long parentId;
 
     public long getId() {
         return id;
@@ -240,5 +242,13 @@ public class TxnHeader {
 
     public String getTxhdOrigTxnNr() {
         return txhdOrigTxnNr;
+    }
+
+    public long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
     }
 }

@@ -19,6 +19,8 @@ public class TxnMedia {
     private Timestamp txmdStartDate;
     private Timestamp txmdExpiryDate;
     private boolean txmdVoided;
+    //use only for invoice. populated with media id from txn_media
+    private long parentId;
 
     public long getId() {
         return id;
@@ -122,5 +124,13 @@ public class TxnMedia {
 
     public void setTxmdVoided(boolean txmdVoided) {
         this.txmdVoided = txmdVoided;
+    }
+
+    public long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
     }
 }

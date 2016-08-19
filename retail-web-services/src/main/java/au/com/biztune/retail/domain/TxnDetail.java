@@ -18,6 +18,8 @@ public class TxnDetail {
     private double txdeTax;
     private double txdeValueNet;
     private double txdeQuantitySold;
+    private double txdeQtyInvoiced;
+    private double txdeQtyBalance;
     private double txdePriceSold;
     private boolean txdeLineRefund;
     private boolean txdeItemVoid;
@@ -230,4 +232,19 @@ public class TxnDetail {
         this.txdeReturnStoreId = txdeReturnStoreId;
     }
 
+    public double getTxdeQtyInvoiced() {
+        return txdeQtyInvoiced;
+    }
+
+    public void setTxdeQtyInvoiced(double txdeQtyInvoiced) {
+        this.txdeQtyInvoiced = txdeQtyInvoiced;
+    }
+
+    public double getTxdeQtyBalance() {
+        return txdeQtyBalance;
+    }
+
+    public void setTxdeQtyBalance(double txdeQtyBalance) {
+        this.txdeQtyBalance = txdeQtyBalance;
+    }
 }

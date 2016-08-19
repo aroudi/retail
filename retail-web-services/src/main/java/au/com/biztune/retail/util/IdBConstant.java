@@ -396,6 +396,11 @@ public interface IdBConstant {
     String TXN_NUMBER_PREFIX = "TXN-";
 
     /**
+     * Invoice Prefix
+     */
+    String INVOICE_PREFIX = "INVOICE-";
+
+    /**
      * Transaction Number Prefix
      */
     String QUOTE_NUMBER_PREFIX = "QUOTE-";
