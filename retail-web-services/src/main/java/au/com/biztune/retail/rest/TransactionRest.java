@@ -70,6 +70,20 @@ public class TransactionRest {
     }
 
     /**
+     * crate an Invoice.
+     * @param txnHeaderForm transaction Header
+     * @return CommonResponse
+     */
+    @Secured
+    @Path("/invoice")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse invoice (TxnHeaderForm txnHeaderForm) {
+            return transactionService.createInvoice(txnHeaderForm, securityContext);
+    }
+
+    /**
      * add payment to transaction.
      * @param txnHeaderForm transaction Header
      * @return CommonResponse

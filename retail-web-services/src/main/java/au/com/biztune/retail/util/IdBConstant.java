@@ -81,6 +81,10 @@ public interface IdBConstant {
      */
     String TXN_TYPE_SALE = "TXN_TYPE_SALE";
     /**
+     * TRANSACTION TYPE - INVOICE.
+     */
+    String TXN_TYPE_INVOICE = "TXN_TYPE_INVOICE";
+    /**
      * TRANSACTION TYPE REFUND.
      */
     String TXN_TYPE_REFUND = "TXN_TYPE_REFUND";
@@ -132,6 +136,10 @@ public interface IdBConstant {
      * TRANSACTION MEDIA TYPE - SALE.
      */
     String TXN_MEDIA_TYPE_SALE = "TXN_MEDIA_SALE";
+    /**
+     * TRANSACTION MEDIA TYPE - DEPOSIT.
+     */
+    String TXN_MEDIA_TYPE_DEPOSIT = "TXN_MEDIA_DEPOSIT";
     /**
      * TRANSACTION MEDIA TYPE REFUND.
      */

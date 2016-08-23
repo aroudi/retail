@@ -67,6 +67,8 @@
         <result column="TXDE_TAX" property="txdeTax" />
         <result column="TXDE_VALUE_NET" property="txdeValueNet" />
         <result column="TXDE_QUANTITY_SOLD" property="txdeQuantitySold" />
+        <result column="TXDE_QTY_BALANCE" property="txdeQtyBalance" />
+        <result column="TXDE_QTY_TOTAL_INVOICED" property="txdeQtyTotalInvoiced" />
         <result column="TXDE_PRICE_SOLD" property="txdePriceSold" />
         <result column="TXDE_LINE_REFUND" property="txdeLineRefund" />
         <result column="TXDE_ITEM_VOID" property="txdeItemVoid" />
@@ -129,6 +131,8 @@
         ${alias}.TXDE_TAX,
         ${alias}.TXDE_VALUE_NET,
         ${alias}.TXDE_QUANTITY_SOLD,
+        ${alias}.TXDE_QTY_BALANCE,
+        ${alias}.TXDE_QTY_TOTAL_INVOICED,
         ${alias}.TXDE_PRICE_SOLD,
         ${alias}.TXDE_LINE_REFUND,
         ${alias}.TXDE_ITEM_VOID,
@@ -382,6 +386,8 @@
         TXDE_TAX,
         TXDE_VALUE_NET,
         TXDE_QUANTITY_SOLD,
+        TXDE_QTY_BALANCE,
+        TXDE_QTY_TOTAL_INVOICED,
         TXDE_PRICE_SOLD,
         TXDE_LINE_REFUND,
         TXDE_ITEM_VOID,
@@ -458,6 +464,20 @@
             ,#{txdeQuantitySold}
         </if>
         <if test="txdeQuantitySold == null">
+            ,null
+        </if>
+
+        <if test="txdeQtyBalance != null">
+            ,#{txdeQtyBalance}
+        </if>
+        <if test="txdeQtyBalance == null">
+            ,null
+        </if>
+
+        <if test="txdeQtyTotalInvoiced != null">
+            ,#{txdeQtyTotalInvoiced}
+        </if>
+        <if test="txdeQtyTotalInvoiced == null">
             ,null
         </if>
 
@@ -571,6 +591,12 @@
         </if>
         <if test="txdeQuantitySold != null">
             ,TXDE_QUANTITY_SOLD = #{txdeQuantitySold}
+        </if>
+        <if test="txdeQtyBalance != null">
+            ,TXDE_QTY_BALANCE = #{txdeQtyBalance}
+        </if>
+        <if test="txdeQtyTotalInvoiced != null">
+            ,TXDE_QTY_TOTAL_INVOICED = #{txdeQtyTotalInvoiced}
         </if>
         <if test="txdePriceSold != null">
             ,TXDE_PRICE_SOLD = #{txdePriceSold}
@@ -735,5 +761,24 @@
           SET TXHD_TXN_NR = #{txhdTxnNr}
         WHERE TXHD_ID = #{id}
     </update>
+
+    <update id="updateTxnDetailQtyBalance" parameterType="TxnHeader" >
+        UPDATE TXN_DETAIL
+        SET TXDE_QTY_BALANCE = #{txdeQtyBalance},
+        TXDE_QTY_TOTAL_INVOICED = #{txdeQtyTotalInvoiced}
+        WHERE TXDE_ID = #{id}
+    </update>
+    <update id="updateTxnHeaderTotalValues" parameterType="TxnHeader" >
+        UPDATE TXN_HEADER SET
+            TXHD_VALUE_GROSS = #{txhdValueGross}
+            ,TXHD_VALUE_NETT = #{txhdValueNett}
+            ,TXHD_VALUE_DUE = #{txhdValueDue}
+            ,TXHD_VALUE_TAX = #{txhdValueTax}
+        WHERE TXHD_ID = #{id}
+    </update>
+
+    <select id="getTxnHeaderAmountPaid" resultType="java.lang.Double" >
+        select SUM(txmd_amount_local) from TXN_media where TXHD_ID = #{value} and TXMD_VOIDED = 0
+    </select>
 
 </mapper>

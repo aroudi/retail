@@ -95,4 +95,23 @@ public interface TxnDao {
      * @param txnHeader txnHeader
      */
     void assigneTxnNumber(TxnHeader txnHeader);
+
+    /**
+     * update balance on txn detail.
+     * @param txnDetail txnDetail
+     */
+    void updateTxnDetailQtyBalance(TxnDetail txnDetail);
+
+    /**
+     * update txn header total values.
+     * @param txnHeader txnHeader
+     */
+    void updateTxnHeaderTotalValues(TxnHeader txnHeader);
+
+    /**
+     * get amount paid for transaction sale.
+     * @param txhdId txhdId
+     * @return amount paid
+     */
+    double getTxnHeaderAmountPaid(long txhdId);
 }

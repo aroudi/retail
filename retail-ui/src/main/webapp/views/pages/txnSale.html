@@ -32,6 +32,13 @@
                                                             </div >
                                                         </div>
                                                     </div >
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label>Create Invoice:</label>
+                                                            <input type="checkbox" data-ng-model="isInvoiceMode" ng-click="changeToInvoiceMode()">
+                                                        </div >
+                                                    </div>
+
                                                     <!--
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
@@ -70,7 +77,7 @@
                                         </div>
                                         <div class="panel-body" ng-disabled="isTxnSaleAndFinal()">
                                             <div class="row">
-                                                <div ui-grid="txnDetailList" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-row-edit ui-grid-cellNav style="height:400px;" class="grid" ng-disabled="isTxnSaleAndFinal()"></div>
+                                                <div ui-grid="txnDetailList" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-cellNav style="height:400px;" class="grid" ng-disabled="isTxnSaleAndFinal()"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -170,6 +177,7 @@
                                 <button type="button" class="btn btn-success" ng-click="submitTransaction()" ng-show="!isTxnSaleAndFinal()">Submit</button>
                                 <button type="button" class="btn btn-success" ng-click="addPayment()" ng-show="isTxnSaleAndFinal()">Add Payment</button>
                                 <button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT'">Save draft</button>
+                                <button type="button" class="btn btn-success" ng-click="invoiceTransactionSale()">Invoice</button>
                                 <button type="button" class="btn btn-success" ng-click="exportToPdf()">Print</button>
 
                             </div>

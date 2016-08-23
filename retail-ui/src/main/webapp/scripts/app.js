@@ -36,21 +36,21 @@ var cimgApp = angular
   ]);
 
 //SIT
-
+/*
 var config_data = {
     'SERVER' : '10.0.0.17',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
-
+*/
 //DEV
-/*
+
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
-*/
+
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -76,6 +76,7 @@ var service_uri = {
     'PRODUCT_SALE_ITEM_ALL_URI' : 'product/allProductSaleItem',
     'TXN_ALL_URI' : 'transaction/all',
     'TXN_ADD_URI' : 'transaction/add',
+    'TXN_INVOICE_URI' : 'transaction/invoice',
     'TXN_ADD_PAYMENT_URI' : 'transaction/addPayment',
     'TXN_GET_URI' : 'transaction/get/',
     'TXN_EXPORT_PDF' : 'transaction/exportPdf/',
@@ -132,7 +133,10 @@ var type_constant = {
     'TXN_TYPE_QUOTE' : 'categories/TXN_TYPE/TXN_TYPE_QUOTE',
     'TXN_TYPE_SALE' : 'categories/TXN_TYPE/TXN_TYPE_SALE',
     'TXN_STATE_DRAFT' : 'categories/TXN_STATE/TXN_STATE_DRAFT',
-    'TXN_STATE_FINAL' : 'categories/TXN_STATE/TXN_STATE_FINAL'
+    'TXN_STATE_FINAL' : 'categories/TXN_STATE/TXN_STATE_FINAL',
+    'TXN_MEDIA_SALE' : 'categories/TXN_MEDIA_TYPE/TXN_MEDIA_SALE',
+    'TXN_MEDIA_DEPOSIT' : 'categories/TXN_MEDIA_TYPE/TXN_MEDIA_DEPOSIT'
+
 }
 
 angular.forEach(config_data, function(key, value) {

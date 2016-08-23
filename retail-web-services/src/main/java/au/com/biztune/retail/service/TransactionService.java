@@ -45,4 +45,13 @@ public interface TransactionService {
      * @return Response.
      */
     CommonResponse addPayment(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
+
+    /**
+     * create invoice from transaction.
+     * @param  txnHeaderForm txnHeaderForm
+     * @param  securityContext securityContext
+     * @return CommonResponse
+     */
+    CommonResponse createInvoice(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
+
 }

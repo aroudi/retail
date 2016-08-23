@@ -70,7 +70,7 @@
         <association property="txdeDetailType" column="TXDE_DETAIL_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
-    <resultMap id="txnMediaMap" type="TxnMedia" >
+    <resultMap id="invoiceMediaMap" type="TxnMedia" >
         <id column="TXMD_ID" property="id" />
         <result column="TXMD_AMOUNT_LOCAL" property="txmdAmountLocal" />
         <result column="TXMD_AMNT_FOREIGN" property="txmdAmntForeign" />
@@ -118,7 +118,7 @@
 
 
     <insert id="insertInvoice" parameterType="TxnHeader" useGeneratedKeys="true" keyProperty="id" keyColumn="TXIV_ID">
-        INSERT INTO INOICE(
+        INSERT INTO INVOICE(
         TXHD_ID,
         ORGU_ID,
         STORE_ID,

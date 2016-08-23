@@ -121,6 +121,8 @@ public class TransactionServiceImpl implements TransactionService {
                     txnDetail.setTxdeTax(txnDetailForm.getTxdeTax());
                     txnDetail.setTxdeValueNet(txnDetailForm.getTxdeValueNet());
                     txnDetail.setTxdeQuantitySold(txnDetailForm.getTxdeQuantitySold());
+                    txnDetail.setTxdeQtyBalance(txnDetailForm.getTxdeQtyBalance());
+                    txnDetail.setTxdeQtyTotalInvoiced(txnDetailForm.getTxdeQtyTotalInvoiced() + txnDetailForm.getTxdeQtyInvoiced());
                     txnDetail.setTxdePriceSold(txnDetailForm.getTxdePriceSold());
                     txnDetail.setTxdeLineRefund(txnDetailForm.isTxdeLineRefund());
                     txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
@@ -151,10 +153,13 @@ public class TransactionServiceImpl implements TransactionService {
                     txnMedia.setTxhdId(txnHeader.getId());
                     txnMedia.setMedtId(txnMediaForm.getPaymentMedia().getMediaType().getId());
                     txnMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
+                    /*
                     final ConfigCategory txntMediaType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_SALE);
                     if (txntMediaType != null) {
                         txnMedia.setTxmdType(txntMediaType);
                     }
+                    */
+                    txnMedia.setTxmdType(txnMediaForm.getTxmdType());
                     txnMedia.setTxmdAmountLocal(txnMediaForm.getTxmdAmountLocal());
                     txnDao.insertTxnMedia(txnMedia);
                     txnMediaForm.setId(txnMedia.getId());
@@ -180,6 +185,10 @@ public class TransactionServiceImpl implements TransactionService {
         this.securityContext = securityContext;
         final CommonResponse response = new CommonResponse();
         try {
+            double txhdValueGross = 0.0;
+            double txhdValueNett = 0.0;
+            double txhdValueTax = 0.0;
+            double txhdValuePaid = 0.0;
             response.setStatus(IdBConstant.RESULT_SUCCESS);
 
             if (txnHeaderForm == null || txnHeaderForm.getTxnDetailFormList() == null || txnHeaderForm.getTxnMediaFormList() == null) {
@@ -245,6 +254,8 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeTax(txnDetailForm.getTxdeTax());
                 txnDetail.setTxdeValueNet(txnDetailForm.getTxdeValueNet());
                 txnDetail.setTxdeQuantitySold(txnDetailForm.getTxdeQuantitySold());
+                txnDetail.setTxdeQtyBalance(txnDetailForm.getTxdeQtyBalance());
+                txnDetail.setTxdeQtyTotalInvoiced(txnDetailForm.getTxdeQtyTotalInvoiced() + txnDetailForm.getTxdeQtyInvoiced());
                 txnDetail.setTxdePriceSold(txnDetailForm.getTxdePriceSold());
                 txnDetail.setTxdeLineRefund(txnDetailForm.isTxdeLineRefund());
                 txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
@@ -265,6 +276,9 @@ public class TransactionServiceImpl implements TransactionService {
                     txnDetail.setId(txnDetailForm.getId());
                     txnDao.updateTxnDetail(txnDetail);
                 }
+                txhdValueGross = txhdValueGross + txnDetail.getTxdeValueGross() * txnDetail.getTxdeQuantitySold();
+                txhdValueNett = txhdValueNett + txnDetail.getTxdeValueNet() * txnDetail.getTxdeQuantitySold();
+                txhdValueTax = txhdValueTax + txnDetail.getTxdeTax() * txnDetail.getTxdeValueGross() * txnDetail.getTxdeQuantitySold();;
                 txnDetailForm.setId(txnDetail.getId());
                 if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)
                         && txnHeader.getTxhdState().getCategoryCode().equals(IdBConstant.TXN_STATE_FINAL))
@@ -288,10 +302,13 @@ public class TransactionServiceImpl implements TransactionService {
                 txnMedia.setTxmdVoided(txnMediaForm.isTxmdVoided());
                 txnMedia.setMedtId(txnMediaForm.getPaymentMedia().getMediaType().getId());
                 txnMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
+                /*
                 final ConfigCategory txntMediaType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_SALE);
                 if (txntMediaType != null) {
                     txnMedia.setTxmdType(txntMediaType);
                 }
+                */
+                txnMedia.setTxmdType(txnMediaForm.getTxmdType());
                 txnMedia.setTxmdAmountLocal(txnMediaForm.getTxmdAmountLocal());
                 //insert new txn_media
                 if (txnMediaForm.getId() < 0) {
@@ -302,6 +319,16 @@ public class TransactionServiceImpl implements TransactionService {
                 }
                 txnMediaForm.setId(txnMedia.getId());
             }
+
+            //get amount paid for transaction
+            txhdValuePaid = txnDao.getTxnHeaderAmountPaid(txnHeader.getId());
+            //update txn header total values
+            txnHeader.setTxhdValueGross(txhdValueGross);
+            txnHeader.setTxhdValueNett(txhdValueNett);
+            txnHeader.setTxhdValueTax(txhdValueTax);
+            txnHeader.setTxhdValueDue(txhdValueNett - txhdValuePaid);
+            txnDao.updateTxnHeaderTotalValues(txnHeader);
+
             response.setInfo(txnHeader.getTxhdTxnNr());
             return response;
         } catch (Exception e) {
@@ -373,10 +400,13 @@ public class TransactionServiceImpl implements TransactionService {
                 txnMedia.setTxmdVoided(txnMediaForm.isTxmdVoided());
                 txnMedia.setMedtId(txnMediaForm.getPaymentMedia().getMediaType().getId());
                 txnMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
+                /*
                 final ConfigCategory txntMediaType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_SALE);
                 if (txntMediaType != null) {
                     txnMedia.setTxmdType(txntMediaType);
                 }
+                */
+                txnMedia.setTxmdType(txnMediaForm.getTxmdType());
                 txnMedia.setTxmdAmountLocal(txnMediaForm.getTxmdAmountLocal());
                 //insert new txn_media
                 if (txnMediaForm.getId() < 0) {
@@ -455,6 +485,8 @@ public class TransactionServiceImpl implements TransactionService {
                     txnDetailForm.setTxdeTax(txnDetail.getTxdeTax());
                     txnDetailForm.setTxdeValueNet(txnDetail.getTxdeValueNet());
                     txnDetailForm.setTxdeQuantitySold(txnDetail.getTxdeQuantitySold());
+                    txnDetailForm.setTxdeQtyBalance(txnDetail.getTxdeQtyBalance());
+                    txnDetailForm.setTxdeQtyTotalInvoiced(txnDetail.getTxdeQtyTotalInvoiced());
                     txnDetailForm.setTxdePriceSold(txnDetail.getTxdePriceSold());
                     txnDetailForm.setTxdeLineRefund(txnDetail.isTxdeLineRefund());
                     txnDetailForm.setTxdeItemVoid(txnDetail.isTxdeItemVoid());
@@ -519,6 +551,8 @@ public class TransactionServiceImpl implements TransactionService {
                 txnType = IdBConstant.TXN_TYPE_QUOTE;
             } else if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
                 txnType = IdBConstant.TXN_TYPE_SALE;
+            } else if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
+                txnType = IdBConstant.TXN_TYPE_INVOICE;
             }
             final Timestamp currentTime = new Timestamp(new Date().getTime());
             final StockEvent stockEvent = new StockEvent();
@@ -592,6 +626,7 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.INVOICE_PREFIX));
             invoiceDao.assigneInvoiceNumber(txnHeader);
             TxnDetail txnDetail = null;
+            TxnDetail txnDetailMain = null;
             for (TxnDetailForm txnDetailForm: txnHeaderForm.getTxnDetailFormList()) {
                 if (txnDetailForm == null) {
                     continue;
@@ -615,13 +650,20 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeValueGross(txnDetailForm.getTxdeValueGross());
                 txnDetail.setTxdeTax(txnDetailForm.getTxdeTax());
                 txnDetail.setTxdeValueNet(txnDetailForm.getTxdeValueNet());
-                txnDetail.setTxdeQuantitySold(txnDetailForm.getTxdeQuantitySold());
+                //set quantity to number invoiced
+                txnDetail.setTxdeQuantitySold(txnDetailForm.getTxdeQtyInvoiced());
                 txnDetail.setTxdePriceSold(txnDetailForm.getTxdePriceSold());
                 txnDetail.setTxdeLineRefund(txnDetailForm.isTxdeLineRefund());
                 txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
                 txnDetail.setTxdeParentDetail(txnDetailForm.getId());
                 invoiceDao.insertInvoiceDetail(txnDetail);
                 updateStockQuantity(txnHeader, txnDetail);
+                //update balance on Sale Order
+                txnDetailMain = new TxnDetail();
+                txnDetailMain.setId(txnDetailForm.getId());
+                txnDetailMain.setTxdeQtyBalance(txnDetailForm.getTxdeQtyBalance());
+                txnDetailMain.setTxdeQtyTotalInvoiced(txnDetailForm.getTxdeQtyTotalInvoiced() + txnDetailForm.getTxdeQtyInvoiced());
+                txnDao.updateTxnDetailQtyBalance(txnDetailMain);
             }
             //save txn media
             TxnMedia txnMedia = null;

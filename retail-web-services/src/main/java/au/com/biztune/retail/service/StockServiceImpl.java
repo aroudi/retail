@@ -125,12 +125,20 @@ public class StockServiceImpl implements StockService {
                     stockEvent.setStckQty(quantity);
                     updateStockQty(stockEvent);
                     break;
+                case IdBConstant.TXN_TYPE_INVOICE :
+                    stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_SALEABLE);
+                    stockEvent.setStckQty(-stockEvent.getStckQty());
+                    stockEvent.setStckCat(stockCategory.getId());
+                    updateStockQty(stockEvent);
+                    break;
+                /*TODO: WHAT STOCK TRANSACTION SHOULD BE APPLIED FOR TXN_TYPE_SALE???
                 case IdBConstant.TXN_TYPE_SALE :
                     stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_SALEABLE);
                     stockEvent.setStckQty(-stockEvent.getStckQty());
                     stockEvent.setStckCat(stockCategory.getId());
                     updateStockQty(stockEvent);
                     break;
+                */
                 case IdBConstant.TXN_TYPE_REFUND :
                     //TODO: for txn_refund we need to engage the reason to indicate which stock category should goes in.
                     stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_SALEABLE);

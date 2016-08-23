@@ -77,5 +77,6 @@
         <mapper resource="maps/PoDelNoteLinkMapper.xml" />
         <mapper resource="maps/UserMapper.xml" />
         <mapper resource="maps/StockMapper.xml" />
+        <mapper resource="maps/InvoiceMapper.xml" />
     </mappers>
 </configuration>

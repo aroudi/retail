@@ -19,6 +19,7 @@ public class TxnDetail {
     private double txdeValueNet;
     private double txdeQuantitySold;
     private double txdeQtyInvoiced;
+    private double txdeQtyTotalInvoiced;
     private double txdeQtyBalance;
     private double txdePriceSold;
     private boolean txdeLineRefund;
@@ -246,5 +247,13 @@ public class TxnDetail {
 
     public void setTxdeQtyBalance(double txdeQtyBalance) {
         this.txdeQtyBalance = txdeQtyBalance;
+    }
+
+    public double getTxdeQtyTotalInvoiced() {
+        return txdeQtyTotalInvoiced;
+    }
+
+    public void setTxdeQtyTotalInvoiced(double txdeQtyTotalInvoiced) {
+        this.txdeQtyTotalInvoiced = txdeQtyTotalInvoiced;
     }
 }

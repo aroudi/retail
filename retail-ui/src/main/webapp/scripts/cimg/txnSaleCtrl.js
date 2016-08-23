@@ -1,14 +1,25 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT) {
 
     $scope.isPageNew = baseDataService.getIsPageNew();
+    /*
+          *  by default it is a sale order until user select invoice option on the page.
+          *  this variable indicates display mode which are InvoiceMode and SaleOrderMode
+     */
+    $scope.isInvoiceMode = false;
     initPageData();
     initTxnDetail();
     initTxnMediaList();
 
     function initPageData() {
+        baseDataService.getBaseData(TXN_MEDIA_SALE).then(function(response){
+            $scope.txnMediaTypeSale = response.data;
+        });
+        baseDataService.getBaseData(TXN_MEDIA_DEPOSIT).then(function(response){
+            $scope.txnMediaTypeDeposit = response.data;
+        });
         if ( baseDataService.getIsPageNew()) {
             //get txn_type from state params.
             $scope.txnType = $stateParams.txnType;
@@ -88,23 +99,62 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             ]
         }
         $scope.txnDetailList.enableRowSelection = true;
-        $scope.txnDetailList.multiSelect = false;
-        $scope.txnDetailList.noUnselect = true;
+        $scope.txnDetailList.multiSelect = true;
+        //$scope.txnDetailList.noUnselect = true;
         //
         $scope.txnDetailList.onRegisterApi = function (gridApi) {
             $scope.txnDetailGridApi = gridApi;
             gridApi.selection.on.rowSelectionChanged($scope, function (row) {
-                $scope.selectedTxnDetailRow = row.entity;
+                //$scope.selectedTxnDetailRow = row.entity;
+                if (row.isSelected) {
+                    row.entity.invoiced = true;
+                } else {
+                    row.entity.invoiced = false;
+                }
+                totalTransaction();
             });
+            gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef){
+                console.log('beginCellEdit');
+                if (colDef.name == 'txdeQuantitySold') {
+                    $scope.txdeQuantitySoldBeforeEditting = rowEntity.txdeQuantitySold;
+                }
+                if (colDef.name == 'txdeQtyInvoiced') {
+                    $scope.txdeQtyInvoicedBeforeEditting = rowEntity.txdeQtyInvoiced;
+                }
+            })
         };
+
         $scope.$on('uiGridEventEndCellEdit', function (event) {
             var txnDetail = event.targetScope.row.entity;
-            cellData = event.targetScope.row.entity[event.targetScope.col.field];
-            //txnDetail.txdeQuantitySold = cellData;
+            //cellData = txnDetail[event.targetScope.col.field];
+            //if it has not been invoiced before and total invoiced is undefined:
+            if (txnDetail.txdeQtyTotalInvoiced == undefined) {
+                txnDetail.txdeQtyTotalInvoiced = 0;
+            }
+            var newBalance = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1)
+            if (newBalance < 0) {
+                baseDataService.displayMessage('info','Invalid Qty', 'Invoiced Quantity is higher than total Quantity !!!');
+                if (event.targetScope.col.field == 'txdeQuantitySold') {
+                    txnDetail.txdeQuantitySold = $scope.txdeQuantitySoldBeforeEditting;
+                    txnDetail[event.targetScope.col.field] = $scope.txdeQuantitySoldBeforeEditting;
+                }
+                if (event.targetScope.col.field == 'txdeQtyInvoiced') {
+                    txnDetail.txdeQtyInvoice = $scope.txdeQtyInvoicedBeforeEditting;
+                    txnDetail[event.targetScope.col.field] = $scope.txdeQtyInvoicedBeforeEditting;
+                }
+                return;
+            }
+            //check the mode.
+            var quantity = 0;
+            if ($scope.isInvoiceMode) {
+                quantity = txnDetail.txdeQtyInvoiced;
+            } else {
+                quantity = txnDetail.txdeQuantitySold;
+            }
+            txnDetail.txdeQtyBalance = newBalance;
             txnDetail.txdeValueNet =  (txnDetail.txdeValueGross * txnDetail.txdeTax)*1 + txnDetail.txdeValueGross*1;
-            //alert('gross =' + txnDetail.txdeValueGross + ' --tax rate = '  + txnDetail.txdeTax + ' -- net value = ' + txnDetail.txdeValueNet );
-            txnDetail.txdePriceSold = txnDetail.txdeQuantitySold * txnDetail.txdeValueNet;
-            txnDetail.calculatedLineValue = txnDetail.txdeValueGross * txnDetail.txdeQuantitySold;
+            txnDetail.txdePriceSold = quantity * txnDetail.txdeValueNet;
+            txnDetail.calculatedLineValue = txnDetail.txdeValueGross * quantity;
             txnDetail.calculatedLineTax = txnDetail.calculatedLineValue * txnDetail.txdeTax;
             totalTransaction();
         })
@@ -124,7 +174,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             rowTemplate : tenderTpl,
             columnDefs: [
                 {field:'id', visible:false, enableCellEdit:false},
-                {field:'paymentMedia.paymName',displayName:'Payment Media', visible:true, enableCellEdit:false, width: '50%',
+                {field:'txmdType.displayName',displayName:'Type', visible:true, enableCellEdit:false, width: '10%'},
+                {field:'paymentMedia.paymName',displayName:'Payment Media', visible:true, enableCellEdit:false, width: '45%',
                     cellTooltip: function(row,col) {
                         return row.entity.paymentMedia.paymName
                     }
@@ -181,7 +232,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         var txnDetail = createTxnDetail();
                         txnDetail.product = selectedProduct;
                         txnDetail.unitOfMeasure = txnDetail.product.sellPrice.unitOfMeasure;
-                        evaluatRowItem(txnDetail)
+                        txnDetail.txdeQtyTotalInvoiced =  0;
+                        txnDetail.txdeQuantitySold =  1;
+                        txnDetail.txdeQtyInvoiced =  0;
+                        txnDetail.txdeQtyBalance =  txnDetail.txdeQuantitySold;
+                        evaluatRowItem(txnDetail);
                         $scope.txnDetailList.data.push(txnDetail);
                         totalTransaction();
                     }
@@ -219,9 +274,16 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         txnDetail.txdeValueProfit =  txnDetail.txdeValueLine*txnDetail.txdeProfitMargin;
         txnDetail.txdeValueGross =  txnDetail.txdeValueProfit*1 + txnDetail.txdeValueLine*1;
         txnDetail.txdeValueNet =  (txnDetail.txdeValueGross * txnDetail.txdeTax)*1 + txnDetail.txdeValueGross*1;
-        txnDetail.txdeQuantitySold =  1;
-        txnDetail.txdePriceSold =  txnDetail.txdeQuantitySold * txnDetail.txdeValueNet;
-        txnDetail.calculatedLineValue = txnDetail.txdeValueGross * txnDetail.txdeQuantitySold;
+
+        var quantity = 0;
+        if ($scope.isInvoiceMode) {
+            quantity = txnDetail.txdeQtyInvoiced;
+        } else {
+            quantity = txnDetail.txdeQuantitySold;
+        }
+
+        txnDetail.txdePriceSold =  quantity * txnDetail.txdeValueNet;
+        txnDetail.calculatedLineValue = txnDetail.txdeValueGross * quantity;
         txnDetail.calculatedLineTax = txnDetail.calculatedLineValue * txnDetail.txdeTax;
 
     }
@@ -252,10 +314,19 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         } else {
             rowId = $scope.txnMediaList.data.length - 2000;  //in case of having record, don't mixed up with existing recoreds.
         }
+        var txnMediaType;
+        if ($scope.isInvoiceMode) {
+            txnMediaType = $scope.txnMediaTypeSale;
+        }else {
+            txnMediaType = $scope.txnMediaTypeDeposit;
+        }
         txnMedia = {
             "id" : rowId,
             "paymentMedia":$scope.paymentMedia,
-            "txmdAmountLocal" : $scope.paymentAmount
+            "txmdAmountLocal" : $scope.paymentAmount,
+            "txmdVoided":false,
+            "deleted" : false,
+            "txmdType": txnMediaType
         }
         $scope.txnMediaList.data.push(txnMedia);
         totalTransaction();
@@ -323,11 +394,22 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         var valueGross = 0.00;
         var valueNett = 0.00;
         var valueTax = 0.00;
+        var quantity = 0;
         for (var i = 0; i < txnDetailList.length; i++) {
+            if ($scope.isInvoiceMode) {
+                //check if row has been selected for invoice or not!!!!
+                if (!txnDetailList[i].invoiced) {
+                    continue;
+                }
+                quantity = txnDetailList[i].txdeQtyInvoiced;
+            } else {
+                quantity = txnDetailList[i].txdeQuantitySold;
+            }
+
             if (!txnDetailList[i].txdeItemVoid && !txnDetailList[i].deleted ) {
-                valueNett = valueNett*1 + txnDetailList[i].txdeValueNet*txnDetailList[i].txdeQuantitySold*1 ;
-                valueGross = valueGross*1 + txnDetailList[i].txdeValueGross*txnDetailList[i].txdeQuantitySold*1;
-                valueTax = valueTax*1 + txnDetailList[i].txdeTax*txnDetailList[i].txdeValueLine*txnDetailList[i].txdeQuantitySold*1;
+                valueNett = valueNett*1 + txnDetailList[i].txdeValueNet*quantity*1 ;
+                valueGross = valueGross*1 + txnDetailList[i].txdeValueGross*quantity*1;
+                valueTax = valueTax*1 + txnDetailList[i].txdeTax*txnDetailList[i].txdeValueLine*quantity*1;
             }
         }
         $scope.txnHeaderForm.txhdValueNett = valueNett;
@@ -342,8 +424,16 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         var txnMediaList =  $scope.txnMediaList.data;
         var total = 0.00;
         for (var i = 0; i < txnMediaList.length; i++) {
-            if (!txnMediaList[i].txmdVoided && !txnMediaList[i].deleted) {
-                total = total*1 + txnMediaList[i].txmdAmountLocal*1;
+            if ($scope.isInvoiceMode) {
+                //in invoice mode we only need to calculate new added rows + deposit paid, because the rest are belong to the transaction
+                if ( !(txnMediaList[i].txmdVoided || txnMediaList[i].deleted || txnMediaList[i].id > 0) || (txnMediaList[i].txmdType.categoryCode == 'TXN_MEDIA_DEPOSIT')) {
+                    total = total*1 + txnMediaList[i].txmdAmountLocal*1;
+                }
+
+            } else {
+                if (!txnMediaList[i].txmdVoided && !txnMediaList[i].deleted) {
+                    total = total*1 + txnMediaList[i].txmdAmountLocal*1;
+                }
             }
         }
         return total;
@@ -462,6 +552,62 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         baseDataService.addRow(rowObject, TXN_ADD_PAYMENT_URI).then(function(response) {
             var addResponse = response.data;
             if (addResponse.status == SUCCESS ) {
+                $state.go('dashboard.listSaleTransaction');
+            } else {
+                alert('Not able to save Transaction. ' + addResponse.message);
+            }
+        });
+        return;
+    }
+
+    /**
+     *
+     * @param mode true:invoice false:saleOrder
+     */
+    $scope.changeToInvoiceMode = function() {
+        var mode = $scope.isInvoiceMode;
+
+        //recalculate txnDetail rows.
+        $scope.txnDetailList.data.forEach(function (row){
+            evaluatRowItem(row);
+        })
+
+        if (mode) {
+            //copy existing medias
+            var invoiceMediaList= [];
+            $scope.txnMediaListBackup = angular.copy($scope.txnMediaList.data);
+            $scope.txnMediaList.data.forEach(function (row){
+                //we need to display new added media and also deposit as well.
+                if (row.id < 0 || row.txmdType.categoryCode == 'TXN_MEDIA_DEPOSIT') {
+                    invoiceMediaList.push(row);
+                }
+            })
+            $scope.txnMediaList.data = invoiceMediaList;
+        } else {
+            //copy new added rows to the backup one.
+            $scope.txnMediaList.data.forEach(function (row){
+                //for new added rows
+                if ( !(row.id > 0 || row.deleted)) {
+                    //if row not exists in backup then add it
+                    if (baseDataService.getArrIndexOf($scope.txnMediaListBackup, row)<0) {
+                        $scope.txnMediaListBackup.push(row);
+                    }
+                }
+            })
+            //now set the data to backup
+            $scope.txnMediaList.data = $scope.txnMediaListBackup;
+        }
+        totalTransaction();
+    }
+    $scope.invoiceTransactionSale = function () {
+        $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
+        $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
+        $scope.txnHeaderForm.customer = $scope.customer;
+        var rowObject = $scope.txnHeaderForm;
+        baseDataService.addRow(rowObject, TXN_INVOICE_URI).then(function(response) {
+            addResponse = response.data;
+            if (addResponse.status == SUCCESS ) {
+                baseDataService.displayMessage("info","Invoice Number", "Invoice saved with number: " + addResponse.info);
                 $state.go('dashboard.listSaleTransaction');
             } else {
                 alert('Not able to save Transaction. ' + addResponse.message);

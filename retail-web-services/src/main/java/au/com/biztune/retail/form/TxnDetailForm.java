@@ -20,6 +20,8 @@ public class TxnDetailForm {
     private double txdeTax;
     private double txdeValueNet;
     private double txdeQuantitySold;
+    private double txdeQtyBalance;
+    private double txdeQtyInvoiced;
     private double txdePriceSold;
     private boolean txdeLineRefund;
     private boolean txdeItemVoid;
@@ -30,6 +32,7 @@ public class TxnDetailForm {
     private double calculatedLineTax;
     //indicate if this item is going to be invoiced or not
     private boolean invoiced;
+    private double txdeQtyTotalInvoiced;
 
     public long getId() {
         return id;
@@ -189,5 +192,29 @@ public class TxnDetailForm {
 
     public void setInvoiced(boolean invoiced) {
         this.invoiced = invoiced;
+    }
+
+    public double getTxdeQtyBalance() {
+        return txdeQtyBalance;
+    }
+
+    public void setTxdeQtyBalance(double txdeQtyBalance) {
+        this.txdeQtyBalance = txdeQtyBalance;
+    }
+
+    public double getTxdeQtyInvoiced() {
+        return txdeQtyInvoiced;
+    }
+
+    public void setTxdeQtyInvoiced(double txdeQtyInvoiced) {
+        this.txdeQtyInvoiced = txdeQtyInvoiced;
+    }
+
+    public double getTxdeQtyTotalInvoiced() {
+        return txdeQtyTotalInvoiced;
+    }
+
+    public void setTxdeQtyTotalInvoiced(double txdeQtyTotalInvoiced) {
+        this.txdeQtyTotalInvoiced = txdeQtyTotalInvoiced;
     }
 }
