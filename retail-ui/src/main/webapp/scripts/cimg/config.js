@@ -221,6 +221,13 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             access: "user"
         })
 
+        .state('dashboard.listInvoice',{
+            url:'/listInvoice',
+            controller: 'invoiceListCtrl',
+            templateUrl:'views/pages/invoiceList.html',
+            access: "user"
+        })
+
         .state('dashboard.blank',{
             templateUrl:'views/pages/blank.html',
             url:'/blank'

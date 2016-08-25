@@ -104,7 +104,10 @@ var service_uri = {
     'ROLE_GET_URI' : 'user/getRole/',
     'ROLE_DELETE_URI' : 'user/deleteRole/',
     'LOGIN_URI' : 'user/login',
-    'LOGOUT_URI' : 'user/logout'
+    'LOGOUT_URI' : 'user/logout',
+    'INVOICE_ALL_URI' : 'transaction/invoice/all',
+    'INVOICE_GET_URI' : 'transaction/getInvoice/'
+
 }
 
 var response_status = {

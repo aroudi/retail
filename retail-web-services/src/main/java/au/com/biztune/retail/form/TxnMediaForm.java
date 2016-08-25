@@ -14,6 +14,10 @@ public class TxnMediaForm {
     private boolean txmdVoided;
     private long orguId;
     private boolean deleted;
+    private long txhdId;
+    private long parentId;
+
+
     public long getId() {
         return id;
     }
@@ -68,5 +72,21 @@ public class TxnMediaForm {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public long getTxhdId() {
+        return txhdId;
+    }
+
+    public void setTxhdId(long txhdId) {
+        this.txhdId = txhdId;
+    }
+
+    public long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
     }
 }

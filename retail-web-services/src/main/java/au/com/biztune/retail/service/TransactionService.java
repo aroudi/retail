@@ -31,6 +31,13 @@ public interface TransactionService {
     TxnHeaderForm getTxnHeaderPerId(long txhdId);
 
     /**
+     * get Invoice per Id.
+     * @param  invoiceId invoiceId
+     * @return TxnHeaderForm
+     */
+    TxnHeaderForm getInvoicePerId(long invoiceId);
+
+    /**
      * update Transaction.
      * @param txnHeaderForm txnHeaderForm
      * @param securityContext securityContext
@@ -54,4 +61,9 @@ public interface TransactionService {
      */
     CommonResponse createInvoice(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
 
+    /**
+     * get all transaction of store.
+     * @return List of TxnHeader
+     */
+    List<TxnHeader> getAllInvoiceHeadersForStore();
 }

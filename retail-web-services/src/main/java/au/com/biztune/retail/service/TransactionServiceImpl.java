@@ -139,30 +139,9 @@ public class TransactionServiceImpl implements TransactionService {
                     }
                 }
                 //save txn media
-                TxnMedia txnMedia = null;
                 for (TxnMediaForm txnMediaForm : txnHeaderForm.getTxnMediaFormList()) {
-                    if (txnMediaForm == null) {
-                        continue;
-                    }
-                    if (txnMediaForm.isDeleted()) {
-                        continue;
-                    }
-                    txnMedia = new TxnMedia();
-                    txnMedia.setOrguId(sessionState.getStore().getOrgUnit().getId());
-                    txnMedia.setStoreId(sessionState.getStore().getId());
-                    txnMedia.setTxhdId(txnHeader.getId());
-                    txnMedia.setMedtId(txnMediaForm.getPaymentMedia().getMediaType().getId());
-                    txnMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
-                    /*
-                    final ConfigCategory txntMediaType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_SALE);
-                    if (txntMediaType != null) {
-                        txnMedia.setTxmdType(txntMediaType);
-                    }
-                    */
-                    txnMedia.setTxmdType(txnMediaForm.getTxmdType());
-                    txnMedia.setTxmdAmountLocal(txnMediaForm.getTxmdAmountLocal());
-                    txnDao.insertTxnMedia(txnMedia);
-                    txnMediaForm.setId(txnMedia.getId());
+                    txnMediaForm.setTxhdId(txnHeader.getId());
+                    doSaleOrderPayment(txnMediaForm);
                 }
                 response.setInfo(txnHeader.getTxhdTxnNr());
             }
@@ -219,10 +198,10 @@ public class TransactionServiceImpl implements TransactionService {
             if (txnHeaderForm.isConvertedToTxnSale()) {
                 txnHeader.setTxhdOrigTxnNr(txnHeaderForm.getTxhdTxnNr());
                 txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.TXN_NUMBER_PREFIX));
+                txnHeaderForm.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
                 final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_SALE);
                 txnHeader.setTxhdTxnType(txnType);
             }
-
             //save it to database.
             final Principal principal = securityContext.getUserPrincipal();
             AppUser appUser = null;
@@ -232,7 +211,6 @@ public class TransactionServiceImpl implements TransactionService {
             }
             txnDao.updateTxnHeader(txnHeader);
             txnHeaderForm.setId(txnHeader.getId());
-            txnHeaderForm.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
             TxnDetail txnDetail = null;
             for (TxnDetailForm txnDetailForm: txnHeaderForm.getTxnDetailFormList()) {
                 if (txnDetailForm == null) {
@@ -287,37 +265,9 @@ public class TransactionServiceImpl implements TransactionService {
                 }
             }
             //save txn media
-            TxnMedia txnMedia = null;
             for (TxnMediaForm txnMediaForm : txnHeaderForm.getTxnMediaFormList()) {
-                if (txnMediaForm == null) {
-                    continue;
-                }
-                if (txnMediaForm.isDeleted()) {
-                    continue;
-                }
-                txnMedia = new TxnMedia();
-                txnMedia.setOrguId(txnHeader.getStore().getOrgUnit().getId());
-                txnMedia.setStoreId(txnHeader.getStore().getId());
-                txnMedia.setTxhdId(txnHeader.getId());
-                txnMedia.setTxmdVoided(txnMediaForm.isTxmdVoided());
-                txnMedia.setMedtId(txnMediaForm.getPaymentMedia().getMediaType().getId());
-                txnMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
-                /*
-                final ConfigCategory txntMediaType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_SALE);
-                if (txntMediaType != null) {
-                    txnMedia.setTxmdType(txntMediaType);
-                }
-                */
-                txnMedia.setTxmdType(txnMediaForm.getTxmdType());
-                txnMedia.setTxmdAmountLocal(txnMediaForm.getTxmdAmountLocal());
-                //insert new txn_media
-                if (txnMediaForm.getId() < 0) {
-                    txnDao.insertTxnMedia(txnMedia);
-                } else if (txnMediaForm.isTxmdVoided()) {
-                    txnMedia.setId(txnMediaForm.getId());
-                    txnDao.voidTxnMedia(txnMedia);
-                }
-                txnMediaForm.setId(txnMedia.getId());
+                txnMediaForm.setTxhdId(txnHeader.getId());
+                doSaleOrderPayment(txnMediaForm);
             }
 
             //get amount paid for transaction
@@ -385,36 +335,9 @@ public class TransactionServiceImpl implements TransactionService {
 
 
             //save txn media
-            TxnMedia txnMedia = null;
             for (TxnMediaForm txnMediaForm : txnHeaderForm.getTxnMediaFormList()) {
-                if (txnMediaForm == null) {
-                    continue;
-                }
-                if (txnMediaForm.isDeleted()) {
-                    continue;
-                }
-                txnMedia = new TxnMedia();
-                txnMedia.setOrguId(txnHeaderForm.getStore().getOrgUnit().getId());
-                txnMedia.setStoreId(txnHeaderForm.getStore().getId());
-                txnMedia.setTxhdId(txnHeaderForm.getId());
-                txnMedia.setTxmdVoided(txnMediaForm.isTxmdVoided());
-                txnMedia.setMedtId(txnMediaForm.getPaymentMedia().getMediaType().getId());
-                txnMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
-                /*
-                final ConfigCategory txntMediaType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_SALE);
-                if (txntMediaType != null) {
-                    txnMedia.setTxmdType(txntMediaType);
-                }
-                */
-                txnMedia.setTxmdType(txnMediaForm.getTxmdType());
-                txnMedia.setTxmdAmountLocal(txnMediaForm.getTxmdAmountLocal());
-                //insert new txn_media
-                if (txnMediaForm.getId() < 0) {
-                    txnDao.insertTxnMedia(txnMedia);
-                } else if (txnMediaForm.isTxmdVoided()) {
-                    txnMedia.setId(txnMediaForm.getId());
-                    txnDao.voidTxnMedia(txnMedia);
-                }
+                txnMediaForm.setTxhdId(txnHeader.getId());
+                doSaleOrderPayment(txnMediaForm);
             }
             response.setInfo(txnHeaderForm.getTxhdTxnNr());
             return response;
@@ -452,73 +375,102 @@ public class TransactionServiceImpl implements TransactionService {
                 logger.error("Not able to fetch transaction id " + txhdId);
                 return null;
             }
-            final TxnHeaderForm txnHeaderForm = new TxnHeaderForm();
-            txnHeaderForm.setStore(txnHeader.getStore());
-            txnHeaderForm.setTxhdTxnType(txnHeader.getTxhdTxnType());
-            txnHeaderForm.setTxhdState(txnHeader.getTxhdState());
-            txnHeaderForm.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
-            txnHeaderForm.setId(txnHeader.getId());
-            txnHeaderForm.setTxhdOrigTxnNr(txnHeader.getTxhdOrigTxnNr());
-            txnHeaderForm.setTxhdValueGross(txnHeader.getTxhdValueGross());
-            txnHeaderForm.setTxhdValueNett(txnHeader.getTxhdValueNett());
-            txnHeaderForm.setTxhdValueDue(txnHeader.getTxhdValueDue());
-            txnHeaderForm.setTxhdValueChange(txnHeader.getTxhdValueChange());
-            txnHeaderForm.setTxhdValRounding(txnHeader.getTxhdValRounding());
-            txnHeaderForm.setTxhdValueTax(txnHeader.getTxhdValueTax());
-            txnHeaderForm.setCustomer(txnHeader.getCustomer());
-            if (txnHeader.getTxnDetails() != null) {
-                TxnDetailForm txnDetailForm;
-                final List<TxnDetailForm> txnDetailFormList = new ArrayList<TxnDetailForm>();
-                for (TxnDetail txnDetail : txnHeader.getTxnDetails()) {
-                    if (txnDetail == null) {
-                        continue;
-                    }
-                    txnDetailForm = new TxnDetailForm();
-                    txnDetailForm.setId(txnDetail.getId());
-                    txnDetailForm.setTxdePriceOveriden(txnDetail.isTxdePriceOveriden());
-                    txnDetailForm.setProduct(txnDetail.getProduct());
-                    txnDetailForm.setUnitOfMeasure(txnDetail.getUnitOfMeasure());
-                    txnDetailForm.setTxdeValueLine(txnDetail.getTxdeValueLine());
-                    txnDetailForm.setTxdeProfitMargin(txnDetail.getTxdeProfitMargin());
-                    txnDetailForm.setTxdeValueGross(txnDetail.getTxdeValueGross());
-                    txnDetailForm.setTxdeValueProfit(txnDetail.getTxdeValueProfit());
-                    txnDetailForm.setTxdeTax(txnDetail.getTxdeTax());
-                    txnDetailForm.setTxdeValueNet(txnDetail.getTxdeValueNet());
-                    txnDetailForm.setTxdeQuantitySold(txnDetail.getTxdeQuantitySold());
-                    txnDetailForm.setTxdeQtyBalance(txnDetail.getTxdeQtyBalance());
-                    txnDetailForm.setTxdeQtyTotalInvoiced(txnDetail.getTxdeQtyTotalInvoiced());
-                    txnDetailForm.setTxdePriceSold(txnDetail.getTxdePriceSold());
-                    txnDetailForm.setTxdeLineRefund(txnDetail.isTxdeLineRefund());
-                    txnDetailForm.setTxdeItemVoid(txnDetail.isTxdeItemVoid());
-                    txnDetailForm.setTxdeDetailType(txnDetail.getTxdeDetailType());
-                    txnDetailForm.setCalculatedLineValue(txnDetailForm.getTxdeQuantitySold() * txnDetailForm.getTxdeValueGross());
-                    txnDetailForm.setCalculatedLineTax(txnDetailForm.getTxdeTax() * txnDetailForm.getCalculatedLineValue());
-                    txnDetailFormList.add(txnDetailForm);
-                }
-                txnHeaderForm.setTxnDetailFormList(txnDetailFormList);
-            }
-            if (txnHeader.getTxnMedias() != null) {
-                TxnMediaForm txnMediaForm;
-                final List<TxnMediaForm> txnMediaFormList = new ArrayList<TxnMediaForm>();
-                for (TxnMedia txnMedia: txnHeader.getTxnMedias()) {
-                    if (txnMedia == null) {
-                        continue;
-                    }
-                    txnMediaForm = new TxnMediaForm();
-                    txnMediaForm.setId(txnMedia.getId());
-                    txnMediaForm.setPaymentMedia(txnMedia.getPaymentMedia());
-                    txnMediaForm.setTxmdType(txnMedia.getTxmdType());
-                    txnMediaForm.setTxmdAmountLocal(txnMedia.getTxmdAmountLocal());
-                    txnMediaForm.setTxmdVoided(txnMedia.isTxmdVoided());
-                    txnMediaFormList.add(txnMediaForm);
-                }
-                txnHeaderForm.setTxnMediaFormList(txnMediaFormList);
-            }
-            return txnHeaderForm;
+            return createTxnHeaderToForm(txnHeader);
         } catch (Exception e) {
             logger.error("Exception in getting transaction per id: ", e);
             return null;
         }
+    }
+
+    /**
+     * get Invoice per Id.
+     * @param  invoiceId invoiceId
+     * @return TxnHeaderForm
+     */
+    public TxnHeaderForm getInvoicePerId(long invoiceId) {
+        try {
+            final TxnHeader txnHeader = invoiceDao.getInvoiceHeaderPerInvoiceId(invoiceId);
+            if (txnHeader == null) {
+                logger.error("Not able to fetch invoice id " + invoiceId);
+                return null;
+            }
+            return createTxnHeaderToForm(txnHeader);
+        } catch (Exception e) {
+            logger.error("Exception in getting invoice per id: ", e);
+            return null;
+        }
+    }
+
+    /**
+     * create Form from TxnHeader.
+     * @param txnHeader txnHeader
+     * @return TxnHeaderForm
+     */
+    public TxnHeaderForm createTxnHeaderToForm(TxnHeader txnHeader) {
+        final TxnHeaderForm txnHeaderForm = new TxnHeaderForm();
+        txnHeaderForm.setStore(txnHeader.getStore());
+        txnHeaderForm.setTxhdTxnType(txnHeader.getTxhdTxnType());
+        txnHeaderForm.setTxhdState(txnHeader.getTxhdState());
+        txnHeaderForm.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
+        txnHeaderForm.setId(txnHeader.getId());
+        txnHeaderForm.setTxhdOrigTxnNr(txnHeader.getTxhdOrigTxnNr());
+        txnHeaderForm.setTxhdValueGross(txnHeader.getTxhdValueGross());
+        txnHeaderForm.setTxhdValueNett(txnHeader.getTxhdValueNett());
+        txnHeaderForm.setTxhdValueDue(txnHeader.getTxhdValueDue());
+        txnHeaderForm.setTxhdValueChange(txnHeader.getTxhdValueChange());
+        txnHeaderForm.setTxhdValRounding(txnHeader.getTxhdValRounding());
+        txnHeaderForm.setTxhdValueTax(txnHeader.getTxhdValueTax());
+        txnHeaderForm.setCustomer(txnHeader.getCustomer());
+        if (txnHeader.getTxnDetails() != null) {
+            TxnDetailForm txnDetailForm;
+            final List<TxnDetailForm> txnDetailFormList = new ArrayList<TxnDetailForm>();
+            for (TxnDetail txnDetail : txnHeader.getTxnDetails()) {
+                if (txnDetail == null) {
+                    continue;
+                }
+                txnDetailForm = new TxnDetailForm();
+                txnDetailForm.setId(txnDetail.getId());
+                txnDetailForm.setTxdePriceOveriden(txnDetail.isTxdePriceOveriden());
+                txnDetailForm.setProduct(txnDetail.getProduct());
+                txnDetailForm.setUnitOfMeasure(txnDetail.getUnitOfMeasure());
+                txnDetailForm.setTxdeValueLine(txnDetail.getTxdeValueLine());
+                txnDetailForm.setTxdeProfitMargin(txnDetail.getTxdeProfitMargin());
+                txnDetailForm.setTxdeValueGross(txnDetail.getTxdeValueGross());
+                txnDetailForm.setTxdeValueProfit(txnDetail.getTxdeValueProfit());
+                txnDetailForm.setTxdeTax(txnDetail.getTxdeTax());
+                txnDetailForm.setTxdeValueNet(txnDetail.getTxdeValueNet());
+                txnDetailForm.setTxdeQuantitySold(txnDetail.getTxdeQuantitySold());
+                txnDetailForm.setTxdeQtyBalance(txnDetail.getTxdeQtyBalance());
+                txnDetailForm.setTxdeQtyTotalInvoiced(txnDetail.getTxdeQtyTotalInvoiced());
+                txnDetailForm.setTxdePriceSold(txnDetail.getTxdePriceSold());
+                txnDetailForm.setTxdeLineRefund(txnDetail.isTxdeLineRefund());
+                txnDetailForm.setTxdeItemVoid(txnDetail.isTxdeItemVoid());
+                txnDetailForm.setTxdeDetailType(txnDetail.getTxdeDetailType());
+                txnDetailForm.setCalculatedLineValue(txnDetailForm.getTxdeQuantitySold() * txnDetailForm.getTxdeValueGross());
+                txnDetailForm.setCalculatedLineTax(txnDetailForm.getTxdeTax() * txnDetailForm.getCalculatedLineValue());
+                txnDetailFormList.add(txnDetailForm);
+            }
+            txnHeaderForm.setTxnDetailFormList(txnDetailFormList);
+        }
+        if (txnHeader.getTxnMedias() != null) {
+            TxnMediaForm txnMediaForm;
+            final List<TxnMediaForm> txnMediaFormList = new ArrayList<TxnMediaForm>();
+            for (TxnMedia txnMedia: txnHeader.getTxnMedias()) {
+                if (txnMedia == null) {
+                    continue;
+                }
+                txnMediaForm = new TxnMediaForm();
+                txnMediaForm.setTxhdId(txnHeaderForm.getId());
+                txnMediaForm.setId(txnMedia.getId());
+                txnMediaForm.setPaymentMedia(txnMedia.getPaymentMedia());
+                txnMediaForm.setTxmdType(txnMedia.getTxmdType());
+                txnMediaForm.setTxmdAmountLocal(txnMedia.getTxmdAmountLocal());
+                txnMediaForm.setTxmdVoided(txnMedia.isTxmdVoided());
+                txnMediaFormList.add(txnMediaForm);
+            }
+            txnHeaderForm.setTxnMediaFormList(txnMediaFormList);
+        }
+        return txnHeaderForm;
     }
 
     /**
@@ -585,6 +537,7 @@ public class TransactionServiceImpl implements TransactionService {
     public CommonResponse createInvoice(TxnHeaderForm txnHeaderForm, SecurityContext securityContext) {
         this.securityContext = securityContext;
         CommonResponse response = new CommonResponse();
+        final long invoiceId;
         try {
             response.setStatus(IdBConstant.RESULT_SUCCESS);
 
@@ -623,6 +576,7 @@ public class TransactionServiceImpl implements TransactionService {
             }
             //save invoice
             invoiceDao.insertInvoice(txnHeader);
+            invoiceId = txnHeader.getId();
             txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.INVOICE_PREFIX));
             invoiceDao.assigneInvoiceNumber(txnHeader);
             TxnDetail txnDetail = null;
@@ -665,22 +619,58 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetailMain.setTxdeQtyTotalInvoiced(txnDetailForm.getTxdeQtyTotalInvoiced() + txnDetailForm.getTxdeQtyInvoiced());
                 txnDao.updateTxnDetailQtyBalance(txnDetailMain);
             }
-            //save txn media
-            TxnMedia txnMedia = null;
-            for (TxnMediaForm txnMediaForm : txnHeaderForm.getTxnMediaFormList()) {
-                if (txnMediaForm == null) {
-                    continue;
+            //check due value.
+            double totalUnpaid = txnHeaderForm.getTxhdValueNett();
+            //if customer owing us
+            if (txnHeaderForm.getTxhdValueDue() >= 0) {
+                for (TxnMediaForm txnMediaForm : txnHeaderForm.getTxnMediaFormList()) {
+                    //the media need to be saved under Sale Transaction(not invoice) and then link to invoice
+                    txnMediaForm.setTxhdId(txnHeaderForm.getId());
+                    if (txnMediaForm == null) {
+                        continue;
+                    }
+                    if (txnMediaForm.isDeleted()) {
+                        continue;
+                    }
+                    if (txnMediaForm.isTxmdVoided()) {
+                        continue;
+                    }
+                    if (txnMediaForm.getTxmdType().getCategoryCode().equals(IdBConstant.TXN_MEDIA_TYPE_DEPOSIT)) {
+                        //PAY FROM DEPOSEIT
+                        doInvoicePaymentFromDeposit(txnMediaForm, txnMediaForm.getTxmdAmountLocal(), invoiceId);
+                    } else {
+                        //link to invoice
+                        doInvoicePayment(txnMediaForm, invoiceId);
+                    }
                 }
-                if (txnMediaForm.isDeleted()) {
-                    continue;
+            } else {
+                for (TxnMediaForm txnMediaForm : txnHeaderForm.getTxnMediaFormList()) {
+                    txnMediaForm.setTxhdId(txnHeaderForm.getId());
+                    if (txnMediaForm == null) {
+                        continue;
+                    }
+                    if (txnMediaForm.isDeleted()) {
+                        continue;
+                    }
+                    if (txnMediaForm.isTxmdVoided()) {
+                        continue;
+                    }
+                    if (txnMediaForm.getTxmdType().getCategoryCode().equals(IdBConstant.TXN_MEDIA_TYPE_DEPOSIT)) {
+                        if (totalUnpaid >= txnMediaForm.getTxmdAmountLocal()) {
+                            doInvoicePaymentFromDeposit(txnMediaForm, txnMediaForm.getTxmdAmountLocal(), invoiceId);
+                            totalUnpaid = totalUnpaid - txnMediaForm.getTxmdAmountLocal();
+                            if (totalUnpaid == 0) {
+                                //payment done!
+                                break;
+                            }
+                            continue;
+                        } else {
+                            doInvoicePaymentFromDeposit(txnMediaForm, totalUnpaid, invoiceId);
+                            //payment done!
+                            break;
+                        }
+                    }
                 }
-                txnMedia = new TxnMedia();
-                txnMedia.setOrguId(sessionState.getStore().getOrgUnit().getId());
-                txnMedia.setStoreId(sessionState.getStore().getId());
-                txnMedia.setTxhdId(txnHeader.getId());
-                txnMedia.setParentId(txnMediaForm.getId());
-                txnMedia.setTxmdAmountLocal(txnMediaForm.getTxmdAmountLocal());
-                invoiceDao.insertIncoiceMedia(txnMedia);
             }
             response.setInfo(txnHeader.getTxhdTxnNr());
             return response;
@@ -691,4 +681,115 @@ public class TransactionServiceImpl implements TransactionService {
             return response;
         }
     }
+
+    /**
+     * do paymebnt for Sale Order.
+     * @param txnMediaForm txnMediaForm
+     */
+    public void doSaleOrderPayment(TxnMediaForm txnMediaForm) {
+        if (txnMediaForm == null) {
+            return;
+        }
+        if (txnMediaForm.isDeleted()) {
+            return;
+        }
+        final TxnMedia txnMedia = new TxnMedia();
+        txnMedia.setOrguId(sessionState.getStore().getOrgUnit().getId());
+        txnMedia.setStoreId(sessionState.getStore().getId());
+        txnMedia.setTxhdId(txnMediaForm.getTxhdId());
+        txnMedia.setTxmdVoided(txnMediaForm.isTxmdVoided());
+        txnMedia.setMedtId(txnMediaForm.getPaymentMedia().getMediaType().getId());
+        txnMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
+        txnMedia.setTxmdType(txnMediaForm.getTxmdType());
+        txnMedia.setTxmdAmountLocal(txnMediaForm.getTxmdAmountLocal());
+        //insert new txn_media
+        if (txnMediaForm.getId() <= 0) {
+            txnDao.insertTxnMedia(txnMedia);
+            txnMediaForm.setId(txnMedia.getId());
+        } else if (txnMediaForm.isTxmdVoided()) {
+            txnMedia.setId(txnMediaForm.getId());
+            txnDao.voidTxnMedia(txnMedia);
+        }
+    }
+
+
+    /**
+     * do paymebnt for invoice.
+     * @param txnMediaForm txnMediaForm
+     * @param invoiceId invoiceId
+     */
+    public void doInvoicePayment(TxnMediaForm txnMediaForm, long invoiceId) {
+        final TxnMedia txnMedia = new TxnMedia();
+        txnMedia.setOrguId(sessionState.getStore().getOrgUnit().getId());
+        txnMedia.setStoreId(sessionState.getStore().getId());
+        txnMedia.setTxhdId(invoiceId);
+        txnMedia.setParentId(txnMediaForm.getId());
+        txnMedia.setTxmdAmountLocal(txnMediaForm.getTxmdAmountLocal());
+        invoiceDao.insertIncoiceMedia(txnMedia);
+    }
+
+    /**
+     * do invoice payment from deposit.
+     * @param txnMediaForm txnMediaForm
+     * @param invoiceId invoiceId
+     * @param amount amount need to pay for this invoice
+     */
+    public void doInvoicePaymentFromDeposit(TxnMediaForm txnMediaForm, double amount, long invoiceId) {
+
+        //check amount. it should be smaller than deposit amount.
+        if (amount > txnMediaForm.getTxmdAmountLocal()) {
+            return;
+        }
+        //first we need to void the original deposit.
+        //check the amount. if less than deposit, we need pay amount from deposit and save rest of deposit as a new PaymentMedea
+        final TxnMedia txnMedia = new TxnMedia();
+        txnMedia.setTxmdVoided(true);
+        txnMedia.setId(txnMediaForm.getId());
+        txnDao.voidTxnMedia(txnMedia);
+        //pay amount for this invoice
+        final TxnMediaForm invoicePaymentMedia = new TxnMediaForm();
+        invoicePaymentMedia.setId(-1);
+        invoicePaymentMedia.setTxmdAmountLocal(amount);
+        invoicePaymentMedia.setParentId(txnMediaForm.getId());
+        invoicePaymentMedia.setTxhdId(txnMediaForm.getTxhdId());
+        invoicePaymentMedia.setTxmdVoided(false);
+        invoicePaymentMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
+        final ConfigCategory txnMediaType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_SALE);
+        if (txnMediaType != null) {
+            invoicePaymentMedia.setTxmdType(txnMediaType);
+        }
+        //do payment
+        doSaleOrderPayment(invoicePaymentMedia);
+        //link it to this invoice
+        doInvoicePayment(invoicePaymentMedia, invoiceId);
+
+        //check if we have any deposit amount left
+        final double depositRemain = txnMediaForm.getTxmdAmountLocal() - amount;
+        if (depositRemain > 0) {
+            final TxnMediaForm depositPaymentMedia = new TxnMediaForm();
+            depositPaymentMedia.setTxmdAmountLocal(depositRemain);
+            depositPaymentMedia.setParentId(txnMediaForm.getId());
+            depositPaymentMedia.setTxhdId(txnMediaForm.getTxhdId());
+            depositPaymentMedia.setTxmdVoided(false);
+            depositPaymentMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
+            final ConfigCategory txnMediaDepositType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_DEPOSIT);
+            if (txnMediaDepositType != null) {
+                depositPaymentMedia.setTxmdType(txnMediaDepositType);
+            }
+            doSaleOrderPayment(depositPaymentMedia);
+        }
+    }
+    /**
+     * get all transaction of store.
+     * @return List of TxnHeader
+     */
+    public List<TxnHeader> getAllInvoiceHeadersForStore() {
+        try {
+            return invoiceDao.getAllInvoiceHeaderPerStoreId(sessionState.getStore().getId());
+        } catch (Exception e) {
+            logger.error("Exception in getting transaction sale: ", e);
+            return null;
+        }
+    }
+
 }

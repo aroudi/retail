@@ -61,4 +61,11 @@ public interface InvoiceDao {
      * @param txnHeader txnHeader
      */
     void assigneInvoiceNumber(TxnHeader txnHeader);
+
+    /**
+     * get all invoices.
+     * @param storeId storeId
+     * @return List of Invoice
+     */
+    List<TxnHeader> getAllInvoiceHeaderPerStoreId(long storeId);
 }

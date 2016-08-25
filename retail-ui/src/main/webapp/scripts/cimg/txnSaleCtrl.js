@@ -426,7 +426,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         for (var i = 0; i < txnMediaList.length; i++) {
             if ($scope.isInvoiceMode) {
                 //in invoice mode we only need to calculate new added rows + deposit paid, because the rest are belong to the transaction
-                if ( !(txnMediaList[i].txmdVoided || txnMediaList[i].deleted || txnMediaList[i].id > 0) || (txnMediaList[i].txmdType.categoryCode == 'TXN_MEDIA_DEPOSIT')) {
+                if ( !(txnMediaList[i].txmdVoided || txnMediaList[i].deleted || txnMediaList[i].id > 0) || ((!txnMediaList[i].txmdVoided) && (txnMediaList[i].txmdType.categoryCode == 'TXN_MEDIA_DEPOSIT'))) {
                     total = total*1 + txnMediaList[i].txmdAmountLocal*1;
                 }
 
@@ -602,6 +602,14 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     $scope.invoiceTransactionSale = function () {
         $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
+
+        //remove rows not invoiced.
+        $scope.txnHeaderForm.txnMediaFormList.forEach(function (row){
+            if (!row.invoiced) {
+                row.deleted = true;
+            }
+        })
+
         $scope.txnHeaderForm.customer = $scope.customer;
         var rowObject = $scope.txnHeaderForm;
         baseDataService.addRow(rowObject, TXN_INVOICE_URI).then(function(response) {

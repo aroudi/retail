@@ -105,17 +105,20 @@
                 </ul>
             </li>
             <li ng-class="{active: collapseVar==8}">{{dropDown}}
-                <a href="" ng-click="check(8)"><i class="fa fa-comments fa-fw"></i> Sale Transaction<span
+                <a href="" ng-click="check(8)"><i class="fa fa-comments fa-fw"></i> Sale Order<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=8">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.createSaleTransaction({txnType:'quote'})">Quote</a>
                     </li>
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.createSaleTransaction({txnType:'txnSale'})">Invoice</a>
+                        <a ui-sref="dashboard.createSaleTransaction({txnType:'txnSale'})">Sale Order</a>
                     </li>
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.listSaleTransaction">Transaction List</a>
+                        <a ui-sref="dashboard.listSaleTransaction">Sale Order List</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.listInvoice">Invoice List</a>
                     </li>
                 </ul>
             </li>

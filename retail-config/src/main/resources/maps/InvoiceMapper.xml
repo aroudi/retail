@@ -21,6 +21,7 @@
         <result column="TXIV_RECEIPT_ID" property="txhdReceiptId" />
         <result column="TXIV_REFUND_EXPIRY" property="txhdRefundExpiry" />
         <result column="TXIV_COLLECT_DATE" property="txhdCollectDate" />
+        <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <!--association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" /-->
     </resultMap>
 
@@ -273,6 +274,14 @@
         )
     </insert>
 
+    <select id="getAllInvoiceHeaderPerStoreId" resultMap="invoiceLightMap" >
+        SELECT
+        <include refid="invoiceColumns"><property name="alias" value="invoice"/></include>
+        FROM
+        INVOICE invoice where STORE_ID = #{value}
+    </select>
+
+
     <select id="getInvoiceDetailPerInvoiceId" resultMap="invoiceDetailMap" >
         SELECT
           <include refid="au.com.biztune.retail.dao.TxnDao.txnDetailColumns"><property name="alias" value="txde"/></include>,
@@ -287,7 +296,7 @@
         <include refid="au.com.biztune.retail.dao.TxnDao.txnMediaColumns"><property name="alias" value="txmd"/></include>,
         <include refid="invoiceMediaColumns"><property name="alias" value="inme"/></include>
         FROM
-        INVOICE_MEDIA inme  inner join  TXN_MEDIA txmd on (txmd.txmdId = inme.txmdId)
+        INVOICE_MEDIA inme  inner join  TXN_MEDIA txmd on (txmd.TXMD_ID = inme.TXMD_ID)
         WHERE inme.TXIV_ID=#{value}
     </select>
 

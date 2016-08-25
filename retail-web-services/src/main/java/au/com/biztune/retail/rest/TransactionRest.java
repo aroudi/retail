@@ -123,4 +123,34 @@ public class TransactionRest {
         final StreamingOutput streamingOutput = transactionRptMgr.createTransactionPdfStream(txhdId);
         return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = transaction" + txhdId + ".pdf").build();
     }
+
+    /**
+     * Returns list of Invoice.
+     * @return list of Invoice
+     */
+    @Secured
+    @Path("/invoice/all")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TxnHeader> getAllInvoices() {
+        try {
+            return transactionService.getAllInvoiceHeadersForStore();
+        } catch (Exception e) {
+            logger.error ("Error in retrieving invoice List :", e);
+            return null;
+        }
+    }
+
+    /**
+     * get invoice by Id.
+     * @param id id.
+     * @return TxnHeaderForm
+     */
+    @Secured
+    @GET
+    @Path("/getInvoice/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public TxnHeaderForm getInvoiceById (@PathParam("id") long id) {
+        return transactionService.getInvoicePerId(id);
+    }
 }
