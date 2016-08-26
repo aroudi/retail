@@ -32,13 +32,14 @@
                                                             </div >
                                                         </div>
                                                     </div >
+                                                    <!--
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
                                                             <label>Create Invoice:</label>
                                                             <input type="checkbox" data-ng-model="isInvoiceMode" ng-click="changeToInvoiceMode()">
                                                         </div >
                                                     </div>
-
+                                                    -->
                                                     <!--
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
@@ -176,8 +177,8 @@
                                 <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
                                 <button type="button" class="btn btn-success" ng-click="submitTransaction()" ng-show="!isTxnSaleAndFinal()">Submit</button>
                                 <button type="button" class="btn btn-success" ng-click="addPayment()" ng-show="isTxnSaleAndFinal()">Add Payment</button>
-                                <button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT'">Save draft</button>
-                                <button type="button" class="btn btn-success" ng-click="invoiceTransactionSale()">Invoice</button>
+                                <!--button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT'">Save draft</button -->
+                                <button type="button" class="btn btn-success" ng-click="invoiceTransactionSale()" ng-show="isInvoiceMode">Invoice</button>
                                 <button type="button" class="btn btn-success" ng-click="exportToPdf()">Print</button>
 
                             </div>

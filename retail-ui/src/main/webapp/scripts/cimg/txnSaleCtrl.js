@@ -94,7 +94,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 {field: 'calculatedLineValue', displayName: 'Aomount', enableCellEdit: false, cellFilter: 'currency', width: '9%'},
                 {field: 'calculatedLineTax', displayName: 'Tax', enableCellEdit: false, width: '7%'},
                 {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'},
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="grid.appScope.isTxnLineVoidable()" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="grid.appScope.isTxnLineVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
 
             ]
         }
@@ -110,7 +110,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     row.entity.invoiced = true;
                 } else {
                     row.entity.invoiced = false;
+                    row.entity.txdeQtyInvoiced = 0;
                 }
+                checkIfItemSelected();
+                evaluatRowItem(row.entity);
                 totalTransaction();
             });
             gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef){
@@ -126,12 +129,20 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
         $scope.$on('uiGridEventEndCellEdit', function (event) {
             var txnDetail = event.targetScope.row.entity;
+            if ( event.targetScope.col.field == 'txdeQtyInvoiced' && (txnDetail.invoiced==false)) {
+                console.log('set invoice back to original : ' + $scope.txdeQtyInvoicedBeforeEditting);
+                txnDetail.txdeQtyInvoice = $scope.txdeQtyInvoicedBeforeEditting;
+                txnDetail['txdeQtyInvoiced'] = $scope.txdeQtyInvoicedBeforeEditting;
+                txnDetail.txdeQtyBalance = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
+                txnDetail['txdeQtyBalance'] = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
+                return;
+            }
             //cellData = txnDetail[event.targetScope.col.field];
             //if it has not been invoiced before and total invoiced is undefined:
             if (txnDetail.txdeQtyTotalInvoiced == undefined) {
                 txnDetail.txdeQtyTotalInvoiced = 0;
             }
-            var newBalance = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1)
+            var newBalance = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
             if (newBalance < 0) {
                 baseDataService.displayMessage('info','Invalid Qty', 'Invoiced Quantity is higher than total Quantity !!!');
                 if (event.targetScope.col.field == 'txdeQuantitySold') {
@@ -263,7 +274,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             'txdePriceOveriden' : false,
             'txdeLineRefund' : false,
             'txdeItemVoid' : false,
-            'deleted' : false
+            'deleted' : false,
+            'invoiced' : false
+
         }
         return txnDetailObject;
     }
@@ -274,6 +287,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         txnDetail.txdeValueProfit =  txnDetail.txdeValueLine*txnDetail.txdeProfitMargin;
         txnDetail.txdeValueGross =  txnDetail.txdeValueProfit*1 + txnDetail.txdeValueLine*1;
         txnDetail.txdeValueNet =  (txnDetail.txdeValueGross * txnDetail.txdeTax)*1 + txnDetail.txdeValueGross*1;
+        txnDetail.txdeQtyBalance = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1)
 
         var quantity = 0;
         if ($scope.isInvoiceMode) {
@@ -564,7 +578,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
      *
      * @param mode true:invoice false:saleOrder
      */
-    $scope.changeToInvoiceMode = function() {
+    function changeToInvoiceMode() {
         var mode = $scope.isInvoiceMode;
 
         //recalculate txnDetail rows.
@@ -603,13 +617,6 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
 
-        //remove rows not invoiced.
-        $scope.txnHeaderForm.txnMediaFormList.forEach(function (row){
-            if (!row.invoiced) {
-                row.deleted = true;
-            }
-        })
-
         $scope.txnHeaderForm.customer = $scope.customer;
         var rowObject = $scope.txnHeaderForm;
         baseDataService.addRow(rowObject, TXN_INVOICE_URI).then(function(response) {
@@ -623,5 +630,18 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         });
         return;
     }
+
+    function checkIfItemSelected(){
+        var invoiceModeBeforeSelection = $scope.isInvoiceMode;
+        if ($scope.txnDetailGridApi.selection.getSelectedRows().length > 0) {
+            $scope.isInvoiceMode = true;
+        } else {
+            $scope.isInvoiceMode = false;
+        }
+        if (invoiceModeBeforeSelection != $scope.isInvoiceMode) {
+            changeToInvoiceMode();
+        }
+    }
+
 
 });
