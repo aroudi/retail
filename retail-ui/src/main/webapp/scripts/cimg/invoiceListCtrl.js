@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, TXN_EXPORT_PDF) {
+cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF) {
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
@@ -47,4 +47,15 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout,baseData
             $state.go('dashboard.createSaleTransaction');
         });
     }
+    $scope.exportToPdf = function(row) {
+
+        var exportUrl = INVOICE_EXPORT_PDF + row.entity.id;
+        baseDataService.getStreamData(exportUrl).then(function(response){
+            var blob = new Blob([response.data], {'type': 'application/pdf'});
+            var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
+            baseDataService.setPdfContent(myPdfContent);
+            $state.go('dashboard.pdfViewer');
+        });
+    }
+
 });

@@ -106,7 +106,9 @@ var service_uri = {
     'LOGIN_URI' : 'user/login',
     'LOGOUT_URI' : 'user/logout',
     'INVOICE_ALL_URI' : 'transaction/invoice/all',
-    'INVOICE_GET_URI' : 'transaction/getInvoice/'
+    'INVOICE_GET_URI' : 'transaction/getInvoice/',
+    'INVOICE_EXPORT_PDF' : 'transaction/invoice/exportPdf/'
+
 
 }
 

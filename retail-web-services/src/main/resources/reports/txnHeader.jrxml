@@ -31,7 +31,7 @@
 
 				<textField>
     				<reportElement x="154" y="23" width="262" height="46" uuid="371cdd93-3faa-44ab-bbc2-e305fb273faf"/>
-                    <textFieldExpression><![CDATA[($F{txhdTxnType}.getCategoryCode()=="TXN_TYPE_QUOTE")?"Quote":"TAX Invoice"]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[($F{txhdTxnType}.getCategoryCode().equals("TXN_TYPE_QUOTE"))?"Quote":(($F{txhdTxnType}.getCategoryCode().equals("TXN_TYPE_SALE"))?"Sale Order":"Tax Invoice")]]></textFieldExpression>
                 </textField>
 			<staticText>
 				<reportElement x="13" y="118" width="59" height="20" uuid="10d9aa5a-6740-4f54-994d-6b454160b053"/>

@@ -394,6 +394,16 @@ public class TransactionServiceImpl implements TransactionService {
                 logger.error("Not able to fetch invoice id " + invoiceId);
                 return null;
             }
+            //set txn_type to invoice
+            final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_INVOICE);
+            if (txnType != null) {
+                txnHeader.setTxhdTxnType(txnType);
+            }
+            //set txn_state to invoice
+            final ConfigCategory txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_FINAL);
+            if (txnState != null) {
+                txnHeader.setTxhdState(txnType);
+            }
             return createTxnHeaderToForm(txnHeader);
         } catch (Exception e) {
             logger.error("Exception in getting invoice per id: ", e);
@@ -672,7 +682,8 @@ public class TransactionServiceImpl implements TransactionService {
                     }
                 }
             }
-            response.setInfo(txnHeader.getTxhdTxnNr());
+
+            response.setInfo(String.valueOf(invoiceId));
             return response;
         } catch (Exception e) {
             logger.error("Exception in saving transaction: ", e);
@@ -777,6 +788,8 @@ public class TransactionServiceImpl implements TransactionService {
                 depositPaymentMedia.setTxmdType(txnMediaDepositType);
             }
             doSaleOrderPayment(depositPaymentMedia);
+            //link it to this invoice
+            doInvoicePayment(depositPaymentMedia, invoiceId);
         }
     }
     /**

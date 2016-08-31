@@ -1,8 +1,11 @@
 package au.com.biztune.retail.report;
 
 import au.com.biztune.retail.dao.ConfigCategoryDao;
+import au.com.biztune.retail.dao.InvoiceDao;
 import au.com.biztune.retail.dao.TxnDao;
+import au.com.biztune.retail.domain.ConfigCategory;
 import au.com.biztune.retail.domain.TxnHeader;
+import au.com.biztune.retail.util.IdBConstant;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
@@ -33,24 +36,74 @@ public class TransactionRptMgr {
     @Autowired
     private TxnDao txnDao;
 
+    @Autowired
+    private InvoiceDao invoiceDao;
+
     private Resource reportPath;
     private String reportHeaderFileName;
     private String reportTxnLineFileName;
     private String reportTxnMediaFileName;
 
+
+    /**
+     * convert SaleOrder to PDF and return Outputstream.
+     * @param txhdId txhdId
+     * @return StreamingOutput.
+     */
+    public StreamingOutput convertSaleOrderToPdf(long txhdId) {
+        try {
+
+            final TxnHeader txnHeader = txnDao.getTxnHeaderPerTxhdId(txhdId);
+            if (txnHeader == null) {
+                logger.error("Not able to fetch invoice id " + txhdId);
+                return null;
+            }
+            final List<TxnHeader> txnHeaders = new ArrayList<TxnHeader>();
+            txnHeaders.add(txnHeader);
+            return createTransactionPdfStream(txnHeaders);
+        } catch (Exception e) {
+            logger.error("Exception in returning transaction header");
+            return null;
+        }
+    }
+
+    /**
+     * convert Invoice to PDF and return Outputstream.
+     * @param inoiceId inoiceId
+     * @return StreamingOutput.
+     */
+    public StreamingOutput convertInvoiceToPdf(long inoiceId) {
+        try {
+            final List<TxnHeader> txnHeaders = new ArrayList<TxnHeader>();
+            final TxnHeader txnHeader = invoiceDao.getInvoiceHeaderPerInvoiceId(inoiceId);
+            //set txn_type to invoice
+            final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_INVOICE);
+            if (txnType != null) {
+                txnHeader.setTxhdTxnType(txnType);
+            }
+            //set txn_state to invoice
+            final ConfigCategory txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_FINAL);
+            if (txnState != null) {
+                txnHeader.setTxhdState(txnType);
+            }
+            txnHeaders.add(txnHeader);
+            return createTransactionPdfStream(txnHeaders);
+        } catch (Exception e) {
+            logger.error("Exception in returning transaction header");
+            return null;
+        }
+    }
+
     /**
      * export Transaction to PDF.
-     * @param txnHeaderId txnHeaderId
+     * @param txnHeaders txnHeaders
      * @return StreamingOutput
      */
-    public StreamingOutput createTransactionPdfStream(long txnHeaderId) {
+    public StreamingOutput createTransactionPdfStream(List<TxnHeader> txnHeaders) {
         StreamingOutput streamingOutput = null;
         try {
             final String pathStr = reportPath.getURL().getPath();
             final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            final List<TxnHeader> txnHeaders = new ArrayList<TxnHeader>();
-            final TxnHeader txnHeader = txnDao.getTxnHeaderPerTxhdId(txnHeaderId);
-            txnHeaders.add(txnHeader);
             final JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(txnHeaders);
             final String reportTxnLineJrxmlName = pathStr + "/" + reportTxnLineFileName + ".jrxml";
             final String reportTxnLineJasperName = pathStr + "/" + reportTxnLineFileName + ".jasper";

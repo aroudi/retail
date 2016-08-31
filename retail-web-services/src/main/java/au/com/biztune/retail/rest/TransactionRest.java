@@ -119,9 +119,23 @@ public class TransactionRest {
     @Path("/exportPdf/{txhdId}")
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response exportTransactionToPdf(@PathParam("txhdId") long txhdId) {
-        final StreamingOutput streamingOutput = transactionRptMgr.createTransactionPdfStream(txhdId);
+    public Response exportSaleOrderToPdf(@PathParam("txhdId") long txhdId) {
+        final StreamingOutput streamingOutput = transactionRptMgr.convertSaleOrderToPdf(txhdId);
         return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = transaction" + txhdId + ".pdf").build();
+    }
+
+    /**
+     * export Invoice as PDF.
+     * @param invoiceId invoiceId
+     * @return Stream output.
+     */
+    @Secured
+    @Path("/invoice/exportPdf/{invoiceId}")
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response exportInvoiceToPdf(@PathParam("invoiceId") long invoiceId) {
+        final StreamingOutput streamingOutput = transactionRptMgr.convertInvoiceToPdf(invoiceId);
+        return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = transaction" + invoiceId + ".pdf").build();
     }
 
     /**
