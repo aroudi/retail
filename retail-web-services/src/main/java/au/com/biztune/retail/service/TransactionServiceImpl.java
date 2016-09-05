@@ -82,6 +82,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnHeader.setTxhdValueGross(txnHeaderForm.getTxhdValueGross());
                 txnHeader.setTxhdValueNett(txnHeaderForm.getTxhdValueNett());
                 txnHeader.setTxhdValueDue(txnHeaderForm.getTxhdValueDue());
+                txnHeader.setTxhdValRounding(txnHeaderForm.getTxhdValRounding());
                 txnHeader.setTxhdValueTax(txnHeaderForm.getTxhdValueTax());
                 txnHeader.setCustomer(txnHeaderForm.getCustomer());
                 final Principal principal = securityContext.getUserPrincipal();
@@ -192,6 +193,7 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdValueGross(txnHeaderForm.getTxhdValueGross());
             txnHeader.setTxhdValueNett(txnHeaderForm.getTxhdValueNett());
             txnHeader.setTxhdValueDue(txnHeaderForm.getTxhdValueDue());
+            txnHeader.setTxhdValRounding(txnHeaderForm.getTxhdValRounding());
             txnHeader.setTxhdValueTax(txnHeaderForm.getTxhdValueTax());
             txnHeader.setCustomer(txnHeaderForm.getCustomer());
             //check if we have converted txnQuote to Sale
@@ -234,7 +236,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeQuantitySold(txnDetailForm.getTxdeQuantitySold());
                 txnDetail.setTxdeQtyBalance(txnDetailForm.getTxdeQtyBalance());
                 txnDetail.setTxdeQtyTotalInvoiced(txnDetailForm.getTxdeQtyTotalInvoiced() + txnDetailForm.getTxdeQtyInvoiced());
-                txnDetail.setTxdePriceSold(txnDetailForm.getTxdePriceSold());
+                txnDetail.setTxdePriceSold(txnDetailForm.getTxdeValueNet() * txnDetailForm.getTxdeQuantitySold());
                 txnDetail.setTxdeLineRefund(txnDetailForm.isTxdeLineRefund());
                 txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
                 /*
@@ -277,6 +279,10 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdValueNett(txhdValueNett);
             txnHeader.setTxhdValueTax(txhdValueTax);
             txnHeader.setTxhdValueDue(txhdValueNett - txhdValuePaid);
+            if (Math.abs(txhdValueNett - txhdValuePaid) <= IdBConstant.ROUNDING_VALUE_BASE) {
+                txnHeader.setTxhdValueDue(0.00);
+                txnHeader.setTxhdValRounding(txhdValueNett - txhdValuePaid);
+            }
             txnDao.updateTxnHeaderTotalValues(txnHeader);
 
             response.setInfo(txnHeader.getTxhdTxnNr());
@@ -322,6 +328,7 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdValueGross(txnHeaderForm.getTxhdValueGross());
             txnHeader.setTxhdValueNett(txnHeaderForm.getTxhdValueNett());
             txnHeader.setTxhdValueDue(txnHeaderForm.getTxhdValueDue());
+            txnHeader.setTxhdValRounding(txnHeaderForm.getTxhdValRounding());
             txnHeader.setTxhdValueTax(txnHeaderForm.getTxhdValueTax());
 
             //save it to database.
@@ -574,6 +581,7 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdValueGross(txnHeaderForm.getTxhdValueGross());
             txnHeader.setTxhdValueNett(txnHeaderForm.getTxhdValueNett());
             txnHeader.setTxhdValueDue(txnHeaderForm.getTxhdValueDue());
+            txnHeader.setTxhdValRounding(txnHeaderForm.getTxhdValRounding());
             txnHeader.setTxhdValueTax(txnHeaderForm.getTxhdValueTax());
             txnHeader.setCustomer(txnHeaderForm.getCustomer());
             txnHeader.setTxhdOrigTxnNr(txnHeaderForm.getTxhdTxnNr());

@@ -413,4 +413,9 @@ public interface IdBConstant {
      */
     String QUOTE_NUMBER_PREFIX = "QUOTE-";
 
+    /**
+     * Minimum value for rounding
+     */
+    double ROUNDING_VALUE_BASE = 0.05;
+
 }

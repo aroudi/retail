@@ -241,8 +241,10 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             //resolve: {supplier: function(){return $scope.purchaseOrderHeader.supplier}}
         }).then (function (selectedItem){
                 if (selectedItem != undefined) {
-                    $scope.gridOptions.data.push(selectedItem);
-                    $scope.billOfQuantity.boqValueGross = $scope.billOfQuantity.boqValueGross + selectedItem.itemValue;
+                    if (!checkIfProductHasBeenSelected(selectedItem)) {
+                        $scope.gridOptions.data.push(selectedItem);
+                        $scope.billOfQuantity.boqValueGross = $scope.billOfQuantity.boqValueGross + selectedItem.itemValue;
+                    }
                 }
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
@@ -259,18 +261,20 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             //resolve: {supplier: function(){return $scope.purchaseOrderHeader.supplier}}
         }).then (function (selectedItem){
                 if (selectedItem != undefined) {
-                    if (selectedItem.linkedPurchaseOrders != undefined && selectedItem.linkedPurchaseOrders.length > 0) {
-                        for (i =0; i<selectedItem.linkedPurchaseOrders.length; i++) {
-                            selectedItem.linkedPurchaseOrders[i].boqId = $scope.billOfQuantity.id;
-                            selectedItem.linkedPurchaseOrders[i].boqName = $scope.billOfQuantity.boqName;
-                            selectedItem.linkedPurchaseOrders[i].projectId = $scope.billOfQuantity.project.id;
-                            selectedItem.linkedPurchaseOrders[i].projectId = $scope.billOfQuantity.project.id;
-                            selectedItem.linkedPurchaseOrders[i].projectCode = $scope.billOfQuantity.project.projectCode;
+                    if (!checkIfProductHasBeenSelected(selectedItem)) {
+                        if (selectedItem.linkedPurchaseOrders != undefined && selectedItem.linkedPurchaseOrders.length > 0) {
+                            for (i =0; i<selectedItem.linkedPurchaseOrders.length; i++) {
+                                selectedItem.linkedPurchaseOrders[i].boqId = $scope.billOfQuantity.id;
+                                selectedItem.linkedPurchaseOrders[i].boqName = $scope.billOfQuantity.boqName;
+                                selectedItem.linkedPurchaseOrders[i].projectId = $scope.billOfQuantity.project.id;
+                                selectedItem.linkedPurchaseOrders[i].projectId = $scope.billOfQuantity.project.id;
+                                selectedItem.linkedPurchaseOrders[i].projectCode = $scope.billOfQuantity.project.projectCode;
+                            }
                         }
+                        displayLinkedPurchaseOrders(selectedItem);
+                        $scope.gridOptions.data.push(selectedItem);
+                        $scope.billOfQuantity.boqValueGross = $scope.billOfQuantity.boqValueGross + selectedItem.itemValue;
                     }
-                    displayLinkedPurchaseOrders(selectedItem);
-                    $scope.gridOptions.data.push(selectedItem);
-                    $scope.billOfQuantity.boqValueGross = $scope.billOfQuantity.boqValueGross + selectedItem.itemValue;
                 }
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
@@ -330,4 +334,15 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
         }
         return false;
     }
+
+    function checkIfProductHasBeenSelected(item) {
+
+        for (var i = 0; i<$scope.gridOptions.data.length; i++) {
+            if ($scope.gridOptions.data[i].product.id == item.product.id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 });

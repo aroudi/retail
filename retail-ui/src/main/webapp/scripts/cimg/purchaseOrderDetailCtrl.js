@@ -184,6 +184,9 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                 if (selectedItems != undefined) {
                     for (var i = 0; i < selectedItems.length; i++) {
                         var selectedProduct = selectedItems[i];
+                        if (checkIfProductHasBeenSelected(selectedProduct)) {
+                            continue;
+                        }
                         var purchaseLine = createPurchaseLine(selectedProduct);
                         $scope.gridOptions.data.push(purchaseLine);
                     }
@@ -432,5 +435,14 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
 
     }
 
+    function checkIfProductHasBeenSelected(item) {
+
+        for (var i = 0; i<$scope.gridOptions.data.length; i++) {
+            if ($scope.gridOptions.data[i].purchaseItem.prodId == item.prodId) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 });

@@ -722,7 +722,7 @@
         <include refid="txnMediaColumns"><property name="alias" value="txmd"/></include>
         FROM
         TXN_MEDIA txmd
-        WHERE txmd.txhd_id=#{value}
+        WHERE txmd.txhd_id=#{value} and txmd.txmd_voided != 1
     </select>
 
     <select id="getTxnHeaderPerStoreIdAndCustomerId" resultMap="txnHeaderLightMap" >

@@ -297,7 +297,7 @@
         <include refid="invoiceMediaColumns"><property name="alias" value="inme"/></include>
         FROM
         INVOICE_MEDIA inme  inner join  TXN_MEDIA txmd on (txmd.TXMD_ID = inme.TXMD_ID)
-        WHERE inme.TXIV_ID=#{value}
+        WHERE inme.TXIV_ID=#{value} and txmd.txmd_voided != 1
     </select>
 
     <select id="getInvoiceHeaderPerTxhdId" resultMap="invoiceLightMap" >

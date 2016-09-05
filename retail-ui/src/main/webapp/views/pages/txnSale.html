@@ -113,13 +113,13 @@
                                                                     <div class="row">
                                                                         <label>Amount
                                                                            <span class="btn btn-warning btn-xs" ng-show="mainForm.paymentAmount.$error.range">
-                                                                                max allowed is ${{txnHeaderForm.txhdValueDue}}
+                                                                                max allowed is ${{maxPaymentAllowed()}}
                                                                            </span>
                                                                            <span class="btn btn-warning btn-xs" ng-show="mainForm.paymentAmount.$error.pattern">
                                                                                 Invalid Amount!!!
                                                                            </span>
                                                                         </label>
-                                                                        <input class="form-control" type="number" min="0" ng-app-max="{{txnHeaderForm.txhdValueDue}}" name="paymentAmount" data-ng-model="paymentAmount" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
+                                                                        <input class="form-control" type="number" min="0" ng-app-max="{{maxPaymentAllowed()}}" name="paymentAmount" data-ng-model="paymentAmount" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
                                                                     </div>
                                                                 </div >
                                                             </div>
@@ -179,7 +179,7 @@
                                 <button type="button" class="btn btn-success" ng-click="addPayment()" ng-show="showAddPaymentButtom()">Add Payment</button>
                                 <!--button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT'">Save draft</button -->
                                 <button type="button" class="btn btn-success" ng-click="invoiceTransactionSale()" ng-show="showInvoiceButtom()">Invoice</button>
-                                <button type="button" class="btn btn-success" ng-click="exportToPdf(exportSaleOrderToPdfUrl)">Print</button>
+                                <!--button type="button" class="btn btn-success" ng-click="exportToPdf(exportSaleOrderToPdfUrl)">Print</button-->
 
                             </div>
                         </form>

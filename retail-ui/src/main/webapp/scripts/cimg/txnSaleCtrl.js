@@ -29,7 +29,6 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.txnHeaderForm.id = -1;
         } else {
             $scope.txnHeaderForm = angular.copy(baseDataService.getRow());
-            console.log('txnType = ' + $scope.txnHeaderForm.txhdTxnType.categoryCode);
             $scope.customer = $scope.txnHeaderForm.customer;
             baseDataService.setRow({});
             baseDataService.setIsPageNew(true);
@@ -248,6 +247,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 if (selectedItems != undefined) {
                     for (var i = 0; i < selectedItems.length; i++) {
                         var selectedProduct = selectedItems[i];
+                        //check if product is already selected.
+                        if (checkIfProductHasBeenSelected(selectedProduct)) {
+                            continue;
+                        }
+                        console.log('continue not work');
                         var txnDetail = createTxnDetail();
                         txnDetail.product = selectedProduct;
                         txnDetail.unitOfMeasure = txnDetail.product.sellPrice.unitOfMeasure;
@@ -438,6 +442,13 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         $scope.txnHeaderForm.txhdValueGross = valueGross;
         $scope.txnHeaderForm.txhdValueTax = valueTax;
         $scope.txnHeaderForm.txhdValueDue = valueNett - $scope.calculateAmountPaid();
+        //check if amount due is less than 5 cents, then add it to rounding
+        console.log('Math.abs($scope.txnHeaderForm.txhdValueDue) =' + Math.abs($scope.txnHeaderForm.txhdValueDue));
+        if (Math.abs($scope.txnHeaderForm.txhdValueDue) <= 0.05 ) {
+            console.log('set rounding value');
+            $scope.txnHeaderForm.txhdValRounding = $scope.txnHeaderForm.txhdValueDue;
+            $scope.txnHeaderForm.txhdValueDue = 0.00;
+        }
     }
     $scope.calculateAmountPaid = function() {
         if ($scope.txnMediaList == undefined || $scope.txnMediaList.data == undefined) {
@@ -600,24 +611,32 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.txnMediaListBackup = angular.copy($scope.txnMediaList.data);
             $scope.txnMediaList.data.forEach(function (row){
                 //we need to display new added media and also deposit as well.
-                if (row.id < 0 || row.txmdType.categoryCode == 'TXN_MEDIA_DEPOSIT') {
+                if ((!row.deleted)&&(row.id < 0 || row.txmdType.categoryCode == 'TXN_MEDIA_DEPOSIT')) {
                     invoiceMediaList.push(row);
                 }
             })
             $scope.txnMediaList.data = invoiceMediaList;
         } else {
+            var saleOrderMediaList = [];
+            //make list from backup
+            $scope.txnMediaListBackup.forEach(function (row){
+                //if not row deleted
+                if ( !(row.deleted)) {
+                    saleOrderMediaList.push(row);
+                }
+            })
             //copy new added rows to the backup one.
             $scope.txnMediaList.data.forEach(function (row){
                 //for new added rows
                 if ( !(row.id > 0 || row.deleted)) {
                     //if row not exists in backup then add it
                     if (baseDataService.getArrIndexOf($scope.txnMediaListBackup, row)<0) {
-                        $scope.txnMediaListBackup.push(row);
+                        saleOrderMediaList.push(row);
                     }
                 }
             })
             //now set the data to backup
-            $scope.txnMediaList.data = $scope.txnMediaListBackup;
+            $scope.txnMediaList.data = saleOrderMediaList;
         }
         totalTransaction();
     }
@@ -659,11 +678,25 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     }
 
     $scope.showAddPaymentButtom = function() {
-        return ($scope.isTxnSaleAndFinal()) && !($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE');
+        return (!$scope.isInvoiceMode)&&($scope.isTxnSaleAndFinal()) && !($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE');
     }
     $scope.showInvoiceButtom = function() {
         return $scope.isInvoiceMode && !($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE');
     }
 
+    function checkIfProductHasBeenSelected(product) {
 
+        for (var i = 0; i<$scope.txnDetailList.data.length; i++) {
+            if ( (!($scope.txnDetailList.data[i].deleted || $scope.txnDetailList.data[i].txdeItemVoid))&&($scope.txnDetailList.data[i].product.id == product.id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    $scope.maxPaymentAllowed = function() {
+        var maxPayment = (Math.round($scope.txnHeaderForm.txhdValueDue*Math.pow(10,1))/Math.pow(10,1)).toFixed(2);
+        console.log("max payment = " + maxPayment);
+        return maxPayment;
+    }
 });
