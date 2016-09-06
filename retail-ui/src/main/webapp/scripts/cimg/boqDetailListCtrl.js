@@ -177,6 +177,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
                     {name: "boqQtyTotal", field: "boqQtyTotal", displayName:"Qty Ordered", width: '10%'},
                     {name: "poQtyReceived", field: "poQtyReceived", displayName:"Qty Received", width: '10%'},
                     {name: "boqQtyBalance", field: "boqQtyBalance", displayName:"Qty Balance", width: '10%'},
+                    {name: "comment", field: "comment", displayName:"Location", width: '30%'},
                     {field:'status', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                         cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                             return grid.getCellValue(row, col).color

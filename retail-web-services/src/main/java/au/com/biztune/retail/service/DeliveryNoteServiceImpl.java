@@ -185,6 +185,12 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 purchaseLine.setPolQtyReceived(qtyReceived);
                 purchaseLine.setPolValueReceived(purchaseLine.getPolUnitCost() * qtyReceived);
                 purchaseLine.setPolDateReceived(deliveryNoteHeader.getDelnDeliveryDate());
+                //put the location of received goods in comments(free_text)
+                String location = "";
+                if (purchaseLine.getPolFreeText() != null) {
+                    location = purchaseLine.getPolFreeText();
+                }
+                purchaseLine.setPolFreeText(location + "Location: " + deliveryNoteLine.getDlnlComment() + " Qty: " + deliveryNoteLine.getRcvdQty() + System.lineSeparator());
                 if (qtyReceived >= purchaseLine.getPolQtyOrdered()) {
                     polStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_GOOD_RECEIVED);
 
@@ -257,6 +263,7 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                     qtyRemain = 0;
                 }
                 poBoqLink.setStatus(status);
+                poBoqLink.setComment(purchaseLine.getPolFreeText());
                 poBoqLinkDao.updateQtyReceived(poBoqLink);
                 if (qtyRemain == 0) {
                     break;

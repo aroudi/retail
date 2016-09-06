@@ -113,5 +113,5 @@ public interface TxnDao {
      * @param txhdId txhdId
      * @return amount paid
      */
-    double getTxnHeaderAmountPaid(long txhdId);
+    Double getTxnHeaderAmountPaid(long txhdId);
 }

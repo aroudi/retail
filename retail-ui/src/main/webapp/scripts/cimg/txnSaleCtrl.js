@@ -105,9 +105,15 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         //$scope.txnDetailList.noUnselect = true;
         //
         $scope.txnDetailList.onRegisterApi = function (gridApi) {
+            gridApi.core.registerColumnsProcessor(hideInvoiceColumns);
             $scope.txnDetailGridApi = gridApi;
             gridApi.selection.on.rowSelectionChanged($scope, function (row) {
                 //$scope.selectedTxnDetailRow = row.entity;
+                //invoice option must be available only for Sale Order (type=TXN_SALE)
+                if ($scope.txnHeaderForm.txhdTxnType.categoryCode != 'TXN_TYPE_SALE') {
+                    gridApi.selection.unSelectRow(row.entity);
+                    return;
+                }
                 //check if it had been invoiced totally before, prevent user from selecting the row
                 if (row.entity.txdeQtyTotalInvoiced*1  >= row.entity.txdeQuantitySold*1) {
                     gridApi.selection.unSelectRow(row.entity);
@@ -124,26 +130,72 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 totalTransaction();
             });
             gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef){
-                console.log('beginCellEdit');
                 if (colDef.name == 'txdeQuantitySold') {
                     $scope.txdeQuantitySoldBeforeEditting = rowEntity.txdeQuantitySold;
                 }
                 if (colDef.name == 'txdeQtyInvoiced') {
                     $scope.txdeQtyInvoicedBeforeEditting = rowEntity.txdeQtyInvoiced;
                 }
+                if (colDef.name == 'txdeValueGross') {
+                    $scope.txdeValueGrossBeforeEditting = rowEntity.txdeValueGross;
+                }
             })
+            //hide Invoice and Balance column for Quote and Invoice.
+            function hideInvoiceColumns(columns){
+                if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
+                    columns.forEach(function(column){
+                        if (column.field === 'txdeQtyInvoiced' || column.field ==='txdeQtyBalance') {
+                            column.visible = true;
+                        }
+
+                        if (column.field === 'product.prodSku') {
+                            column.width = '10%';
+                        }
+                        if (column.field === 'product.prodName') {
+                            column.width = '20%';
+                        }
+                    });
+                    return columns;
+                }
+                columns.forEach(function(column){
+                    if (column.field === 'txdeQtyInvoiced' || column.field ==='txdeQtyBalance') {
+                        column.visible = false;
+                    }
+
+                    if (column.field === 'product.prodSku') {
+                        column.width = '17%';
+                    }
+                    if (column.field === 'product.prodName') {
+                        column.width = '27%';
+                    }
+                });
+                return columns;
+            }
         };
 
         $scope.$on('uiGridEventEndCellEdit', function (event) {
             var txnDetail = event.targetScope.row.entity;
-            if ( event.targetScope.col.field == 'txdeQtyInvoiced' && (txnDetail.invoiced==false)) {
-                console.log('set invoice back to original : ' + $scope.txdeQtyInvoicedBeforeEditting);
+            if ( event.targetScope.col.field == 'txdeValueGross') {
+                var originalPrice = txnDetail.product.sellPrice.prcePrice*1;
+                if (txnDetail.txdeValueGross < originalPrice ) {
+                    baseDataService.displayMessage('info','Warnning', 'You can not set the price below original which is $' + originalPrice );
+                    txnDetail['txdeValueGross'] = $scope.txdeValueGrossBeforeEditting;
+                    return;
+                }
                 //txnDetail.txdeQtyInvoice = $scope.txdeQtyInvoicedBeforeEditting;
                 txnDetail['txdeQtyInvoiced'] = $scope.txdeQtyInvoicedBeforeEditting;
                 //txnDetail.txdeQtyBalance = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
                 txnDetail['txdeQtyBalance'] = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
                 return;
             }
+            if ( event.targetScope.col.field == 'txdeQtyInvoiced' && (txnDetail.invoiced==false)) {
+                //txnDetail.txdeQtyInvoice = $scope.txdeQtyInvoicedBeforeEditting;
+                txnDetail['txdeQtyInvoiced'] = $scope.txdeQtyInvoicedBeforeEditting;
+                //txnDetail.txdeQtyBalance = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
+                txnDetail['txdeQtyBalance'] = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
+                return;
+            }
+
             //cellData = txnDetail[event.targetScope.col.field];
             //if it has not been invoiced before and total invoiced is undefined:
             if (txnDetail['txdeQtyTotalInvoiced'] == undefined) {
@@ -551,6 +603,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 $scope.txnHeaderForm.txhdTxnType = response.data;
             });
         }
+        $scope.txnDetailGridApi.core.refresh();
     }
 
     $scope.isTxnLineVoidable = function (row) {

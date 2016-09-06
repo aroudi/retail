@@ -17,6 +17,7 @@
         <result column="BOQ_QTY_TOTAL" property="boqQtyTotal" />
         <result column="PO_QTY_RECEIVED" property="poQtyReceived" />
         <result column="BOQ_QTY_BALANCE" property="boqQtyBalance" />
+        <result column="COMMENT" property="comment" />
         <association property="status" column="BPQL_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="projectName" column="PROJECT_ID" select="getProjectNameByProjectId" />
     </resultMap>
@@ -34,6 +35,7 @@
      ${alias}.BOQ_QTY_TOTAL,
      ${alias}.PO_QTY_RECEIVED,
      ${alias}.BOQ_QTY_BALANCE,
+     ${alias}.COMMENT,
      ${alias}.BPQL_STATUS
     </sql>
 
@@ -81,6 +83,7 @@
             BOQ_QTY_TOTAL,
             PO_QTY_RECEIVED,
             BOQ_QTY_BALANCE,
+            COMMENT,
             BPQL_STATUS
         ) VALUES (
         #{pohId}
@@ -134,6 +137,13 @@
             ,null
         </if>
 
+        <if test="comment != null">
+            ,#{comment}
+        </if>
+        <if test="comment == null">
+            ,null
+        </if>
+
         <if test="status != null">
             ,#{status.id}
         </if>
@@ -144,7 +154,7 @@
     </insert>
     <update id="updateQtyReceived" parameterType="PoBoqLink" >
           UPDATE PO_BOQ_LINK
-          SET PO_QTY_RECEIVED = #{poQtyReceived}, BOQ_QTY_BALANCE=#{boqQtyBalance}, BPQL_STATUS=#{status.id}
+          SET PO_QTY_RECEIVED = #{poQtyReceived}, BOQ_QTY_BALANCE=#{boqQtyBalance}, BPQL_STATUS=#{status.id}, COMMENT = #{comment}
           WHERE PBQL_ID = #{id}
     </update>
 

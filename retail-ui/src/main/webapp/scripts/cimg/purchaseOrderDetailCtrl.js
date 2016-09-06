@@ -36,7 +36,11 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                 }
             },
             {field:'polValueOrdered', displayName:'Value',enableCellEdit:false, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'polQtyReceived', displayName:'Qty Received', enableCellEdit:false,width:'8%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'polQtyReceived', displayName:'Qty Received', enableCellEdit:false,width:'8%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+                cellTooltip: function(row,col) {
+                    return row.entity.polFreeText
+                }
+            },
             {field:'polCreationType', displayName:'Type',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color

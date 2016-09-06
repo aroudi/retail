@@ -35,7 +35,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
                         }
                     }
             },
-            {field:'dlnlComment', displayName:'Comment',enableCellEdit:true, width:'15%',
+            {field:'dlnlComment', displayName:'Location',enableCellEdit:true, width:'15%',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }

@@ -239,12 +239,6 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdePriceSold(txnDetailForm.getTxdeValueNet() * txnDetailForm.getTxdeQuantitySold());
                 txnDetail.setTxdeLineRefund(txnDetailForm.isTxdeLineRefund());
                 txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
-                /*
-                final ConfigCategory txntLineType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_LINE_TYPE, IdBConstant.TXN_LINE_TYPE_SALE);
-                if (txntLineType != null) {
-                    txnDetail.setTxdeDetailType(txntLineType);
-                }
-                */
                 //check if the item is new then insert the item. otherwise update the item
                 if (txnDetailForm.getId() < 0) {
                     final ConfigCategory txntLineType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_LINE_TYPE, IdBConstant.TXN_LINE_TYPE_SALE);
@@ -273,7 +267,12 @@ public class TransactionServiceImpl implements TransactionService {
             }
 
             //get amount paid for transaction
-            txhdValuePaid = txnDao.getTxnHeaderAmountPaid(txnHeader.getId());
+            final Double amountPaid = txnDao.getTxnHeaderAmountPaid(txnHeader.getId());
+            if (amountPaid == null) {
+                txhdValuePaid = 0.00;
+            } else {
+                txhdValuePaid = amountPaid;
+            }
             //update txn header total values
             txnHeader.setTxhdValueGross(txhdValueGross);
             txnHeader.setTxhdValueNett(txhdValueNett);

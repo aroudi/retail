@@ -18,6 +18,7 @@ public class PoBoqLink {
     private double boqQtyBalance;
     private ConfigCategory status;
     private String projectName;
+    private String comment;
 
     public long getId() {
         return id;
@@ -129,5 +130,13 @@ public class PoBoqLink {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
