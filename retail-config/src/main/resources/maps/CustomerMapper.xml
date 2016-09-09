@@ -21,6 +21,12 @@
         <result column="Title" property="title" />
         <result column="Fax" property="fax" />
         <result column="Comment" property="comment" />
+        <result column="CREDIT_LIMIT" property="creditLimit" />
+        <result column="OWING" property="owing" />
+        <result column="REMAIN_CREDIT" property="remainCredit" />
+        <result column="CREDIT_DURATION" property="creditDuration" />
+        <result column="CREDIT_START_DATE" property="creditStartDate" />
+        <result column="CREDIT_START_EOM" property="creditStartEom" />
         <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
         <association property="customerType" column="Customer_Type" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="customerStatus" column="CUSTOMER_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -43,6 +49,12 @@
         <result column="Title" property="title" />
         <result column="Fax" property="fax" />
         <result column="Comment" property="comment" />
+        <result column="CREDIT_LIMIT" property="creditLimit" />
+        <result column="OWING" property="owing" />
+        <result column="REMAIN_CREDIT" property="remainCredit" />
+        <result column="CREDIT_DURATION" property="creditDuration" />
+        <result column="CREDIT_START_DATE" property="creditStartDate" />
+        <result column="CREDIT_START_EOM" property="creditStartEom" />
         <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
         <association property="customerType" column="Customer_Type" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="customerStatus" column="CUSTOMER_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -68,7 +80,13 @@
         ${alias}.Code,
         ${alias}.Title,
         ${alias}.Comment,
-        ${alias}.Fax
+        ${alias}.Fax,
+        ${alias}.CREDIT_LIMIT,
+        ${alias}.OWING,
+        ${alias}.REMAIN_CREDIT,
+        ${alias}.CREDIT_DURATION,
+        ${alias}.CREDIT_START_DATE,
+        ${alias}.CREDIT_START_EOM
     </sql>
     <sql id="gradeColumns">
         ${alias}.grade_id,
@@ -151,7 +169,13 @@
         Title,
         Fax,
         Comment,
-        grade_Id
+        grade_Id,
+        CREDIT_LIMIT,
+        OWING,
+        REMAIN_CREDIT,
+        CREDIT_DURATION,
+        CREDIT_START_DATE,
+        CREDIT_START_EOM
         ) VALUES (
         #{customerType.id}
         <if test="customerStatus != null">
@@ -256,6 +280,42 @@
         <if test="grade == null">
             ,null
         </if>
+        <if test="creditLimit != null">
+            ,#{creditLimit}
+        </if>
+        <if test="creditLimit == null">
+            ,null
+        </if>
+        <if test="owing != null">
+            ,#{owing}
+        </if>
+        <if test="owing == null">
+            ,null
+        </if>
+        <if test="remainCredit != null">
+            ,#{remainCredit}
+        </if>
+        <if test="remainCredit == null">
+            ,null
+        </if>
+        <if test="creditDuration != null">
+            ,#{creditDuration}
+        </if>
+        <if test="creditDuration == null">
+            ,null
+        </if>
+        <if test="creditStartDate != null">
+            ,#{creditStartDate}
+        </if>
+        <if test="creditStartDate == null">
+            ,null
+        </if>
+        <if test="creditStartEom != null">
+            ,#{creditStartEom}
+        </if>
+        <if test="creditStartEom == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -339,6 +399,25 @@
             <if test="grade != null">
                 ,grade_Id = #{grade.id}
             </if>
+            <if test="creditLimit != null">
+                ,CREDIT_LIMIT = #{creditLimit}
+            </if>
+            <if test="owing != null">
+                ,OWING = #{owing}
+            </if>
+            <if test="remainCredit != null">
+                ,REMAIN_CREDIT = #{remainCredit}
+            </if>
+            <if test="creditDuration != null">
+                ,CREDIT_DURATION = #{creditDuration}
+            </if>
+            <if test="creditStartDate != null">
+                ,CREDIT_START_DATE = #{creditStartDate}
+            </if>
+            <if test="creditStartEom != null">
+                ,CREDIT_START_EOM = #{creditStartEom}
+            </if>
+
         WHERE CUSTOMER_ID = #{id}
     </update>
 </mapper>

@@ -46,10 +46,13 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog, UserService
     function initPageData() {
         if ( baseDataService.getIsPageNew()) {
             $scope.customer = {};
-            $scope.customer.customerType='Individual';
+            $scope.customer.creditStartEom = false;
+            $scope.customer.creditStartEom = false;
+            $scope.customer.creditStartDate= getLastDateOfMonth();
         } else {
             $scope.customer = angular.copy(baseDataService.getRow());
             $scope.gridOptions.data = $scope.customer.contacts;
+            $scope.customer.creditStartDate = new Date($scope.customer.creditStartDate);
             baseDataService.setIsPageNew(true);
             baseDataService.setRow({});
         }
@@ -158,4 +161,20 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog, UserService
 
     }
 
+    function getLastDateOfMonth() {
+        var date = new Date();
+        //var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        return lastDay;
+    }
+    $scope.setCreditStartEom = function() {
+        $scope.customer.creditStartDate = getLastDateOfMonth();
+    }
+
+    $scope.onCreditLimitChange= function() {
+        if ($scope.customer.owing == undefined) {
+            $scope.customer.owing = 0;
+        }
+        $scope.customer.remainCredit = $scope.customer.creditLimit*1 - $scope.customer.owing*1;
+    }
 });

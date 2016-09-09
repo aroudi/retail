@@ -32,6 +32,12 @@ public class Customer {
     private String dateOfBirthStr;
     private CustomerGrade grade;
     private ArrayList<Contact> contacts;
+    private double creditLimit;
+    private double owing;
+    private double remainCredit;
+    private int creditDuration;
+    private Timestamp creditStartDate;
+    private boolean creditStartEom;
 
     public long getId() {
         return id;
@@ -199,5 +205,53 @@ public class Customer {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public double getCreditLimit() {
+        return creditLimit;
+    }
+
+    public void setCreditLimit(double creditLimit) {
+        this.creditLimit = creditLimit;
+    }
+
+    public double getOwing() {
+        return owing;
+    }
+
+    public void setOwing(double owing) {
+        this.owing = owing;
+    }
+
+    public double getRemainCredit() {
+        return remainCredit;
+    }
+
+    public void setRemainCredit(double remainCredit) {
+        this.remainCredit = remainCredit;
+    }
+
+    public int getCreditDuration() {
+        return creditDuration;
+    }
+
+    public void setCreditDuration(int creditDuration) {
+        this.creditDuration = creditDuration;
+    }
+
+    public Timestamp getCreditStartDate() {
+        return creditStartDate;
+    }
+
+    public void setCreditStartDate(Timestamp creditStartDate) {
+        this.creditStartDate = creditStartDate;
+    }
+
+    public boolean isCreditStartEom() {
+        return creditStartEom;
+    }
+
+    public void setCreditStartEom(boolean creditStartEom) {
+        this.creditStartEom = creditStartEom;
     }
 }
