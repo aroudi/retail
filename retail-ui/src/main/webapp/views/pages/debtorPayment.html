@@ -3,7 +3,7 @@
     <div class="col-lg-12">
         <div class="panel  panel-primary">
             <div class="panel-heading">
-                {{txnHeaderForm.txhdTxnType.displayName}}
+                Debtor Payment
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -13,79 +13,25 @@
                                 <div class="col-lg-12">
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
-                                            Transaction Header
+                                            Customer
                                         </div>
                                         <div class="panel-body">
                                             <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <div class="col-lg-6">
-                                                            <div class="col-lg-6">
-                                                                <div class="form-group">
-                                                                    <label>Customer</label>
-                                                                    <input class="form-control" data-ng-model="customer.companyName" ng-disabled="true">
-                                                                </div >
-                                                            </div>
-                                                            <div class="col-lg-2">
-                                                                <div class="form-group">
-                                                                    <label>&nbsp;</label>
-                                                                    <button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchCustomer()">Customer</button>
-                                                                </div >
-                                                            </div>
-                                                        </div >
-
-                                                        <div class="col-lg-3">
-                                                            <div class="form-group">
-                                                                <label>Phone</label>
-                                                                <input class="form-control" data-ng-model="customer.phone">
-                                                            </div >
-                                                        </div>
-                                                        <div class="col-lg-3" ng-show="customer.customerType.categoryCode === 'CUSTOMER_TYPE_ACCOUNT'">
-                                                            <div class="form-group">
-                                                                <label>Credit Available</label>
-                                                                <span>{{customer.remainCredit | currency}}</span>
-                                                            </div >
-                                                        </div>
-                                                    </div >
-                                            </div>
-                                            <div class="row">
                                                 <div class="col-lg-12">
-                                                    <div class="col-lg-7">
-                                                        <div class="form-group">
-                                                            <label>Delivery Address</label>
-                                                            <input class="form-control" data-ng-model="txnHeaderForm.txhdDlvAddress">
-                                                        </div >
-
-                                                    </div>
-                                                    <!--
-                                                    <div class="col-lg-4">
-                                                        <div class="form-group">
-                                                            <label>Create Invoice:</label>
-                                                            <input type="checkbox" data-ng-model="isInvoiceMode" ng-click="changeToInvoiceMode()">
-                                                        </div >
-                                                    </div>
-                                                    -->
-                                                    <!--
-                                                    <div class="col-lg-4">
-                                                        <div class="form-group">
-                                                            <label>Order Number</label>
-                                                            <input class="form-control" >
-                                                        </div >
-                                                    </div >
-                                                    -->
-                                                    <div class="col-lg-3" ng-show="txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' && !isPageNew">
-                                                        <label>Convert to sale transaction</label>
-                                                        <div class="form-group">
-                                                            <label class="checkbox-inline">
-                                                                <input type="checkbox" data-ng-model="txnHeaderForm.convertedToTxnSale" ng-click="convertToSaleTxn()" >
-                                                                <div class="alert alert-success" ng-show="txnHeaderForm.convertedToTxnSale">
-                                                                    Sale Transaction
-                                                                </div>
-                                                                <div class="alert alert-info" ng-show="!txnHeaderForm.convertedToTxnSale">
-                                                                    Quote
-                                                                </div>
-                                                            </label>
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group">
+                                                                <label>Customer</label>
+                                                                <input class="form-control" data-ng-model="customer.companyName" ng-disabled="true">
+                                                            </div >
                                                         </div>
-                                                    </div>
+                                                        <div class="col-lg-2">
+                                                            <div class="form-group">
+                                                                <label>&nbsp;</label>
+                                                                <button type="button" class="btn btn-primary" ng-click="searchCustomer()">Customer</button>
+                                                            </div >
+                                                        </div>
+                                                    </div >
                                                 </div>
                                             </div>
                                         </div>
@@ -96,12 +42,11 @@
                                 <div class="col-lg-12">
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
-                                            Products
-                                            <button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchProduct()">Add Product</button>
+                                            Debt List
                                         </div>
-                                        <div class="panel-body" ng-disabled="isTxnSaleAndFinal()">
+                                        <div class="panel-body">
                                             <div class="row">
-                                                <div ui-grid="txnDetailList" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-cellNav style="height:400px;" class="grid" ng-disabled="isTxnSaleAndFinal()"></div>
+                                                <div ui-grid="debtList" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-cellNav style="height:400px;" class="grid" ></div>
                                             </div>
                                         </div>
                                     </div>
@@ -112,12 +57,12 @@
                                 <div class="col-lg-12">
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
-                                            Transaction Footer
+                                            Payment
                                         </div>
                                         <div class="panel-body">
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <div class="col-lg-9" ng-show="txnHeaderForm.txhdTxnType.categoryCode != 'TXN_TYPE_QUOTE'">
+                                                    <div class="col-lg-9">
                                                         <div class="col-lg-12">
                                                             <div class="col-lg-3">
                                                                 <div class="form-group">
@@ -171,12 +116,12 @@
                                                     <div class="col-lg-3">
                                                         <div class="row">
                                                             <label>Total</label>
-                                                            <span>{{txnHeaderForm.txhdValueNett |currency}}</span>
+                                                            <span>{{debtorPaymentForm.total |currency}}</span>
                                                         </div>
 
                                                         <div class="row">
                                                             <label>Due</label>
-                                                            <span>{{txnHeaderForm.txhdValueDue | currency}}</span>
+                                                            <span>{{debtorPaymentForm.amountDue | currency}}</span>
                                                         </div>
                                                         <div class="row" ng-show="false">
                                                             <label>Discount</label>
@@ -184,7 +129,7 @@
                                                         </div>
                                                         <div class="row" ng-show="false">
                                                             <label>Rounding</label>
-                                                            <input class="form-control" data-ng-model = txnHeaderForm.txhdValRounding>
+                                                            <input class="form-control" data-ng-model = debtorPaymentForm.valueRounding>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -198,12 +143,7 @@
                             <div class="row">
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                 <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                                <button type="button" class="btn btn-success" ng-click="submitTransaction()" ng-show="showSubmitButtom()">Submit</button>
-                                <button type="button" class="btn btn-success" ng-click="addPayment()" ng-show="showAddPaymentButtom()">Add Payment</button>
-                                <!--button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT'">Save draft</button -->
-                                <button type="button" class="btn btn-success" ng-click="invoiceTransactionSale()" ng-show="showInvoiceButtom()">Invoice</button>
-                                <!--button type="button" class="btn btn-success" ng-click="exportToPdf(exportSaleOrderToPdfUrl)">Print</button-->
-
+                                <button type="button" class="btn btn-success" ng-click="createTxnAccPayment()" >Submit</button>
                             </div>
                         </form>
                     </div>

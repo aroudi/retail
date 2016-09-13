@@ -26,6 +26,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             //get txn_type from state params.
             $scope.txnType = $stateParams.txnType;
             $scope.txnHeaderForm = {};
+            $scope.txnHeaderForm.txhdValueCredit = 0.00;
             $scope.txnHeaderForm.id = -1;
         } else {
             $scope.txnHeaderForm = angular.copy(baseDataService.getRow());
@@ -282,6 +283,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             closeByDocument:false
         }).then (function (value){
                 $scope.customer = value;
+                $scope.txnHeaderForm.txhdDlvAddress = $scope.customer.address2;
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }
@@ -386,6 +388,24 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     }
 
     $scope.addTxnMedia= function() {
+        //check if selected Media Type is Account. then we need to check if customer is account customer and has enough credit
+        if ($scope.paymentMedia.paymName === 'Account') {
+            //check if we are not in invoice mode then do nothing
+            if (!$scope.isInvoiceMode) {
+                baseDataService.displayMessage('info','Warning!!','Account Payment is only available for Invoice');
+                return;
+            }
+            if ($scope.customer.customerType.categoryCode != 'CUSTOMER_TYPE_ACCOUNT') {
+                baseDataService.displayMessage('info','Warning!!','Account Payment is only applicable for Account customers');
+                return;
+            }
+            //check if we have enough credit
+            var newCredit = $scope.txnHeaderForm.txhdValueCredit*1  + $scope.paymentAmount*1;
+            if (newCredit > $scope.customer.remainCredit) {
+                baseDataService.displayMessage('info','Warning!!','amount exceeds remain credit.');
+                return;
+            }
+        }
         var rowId;
         if ($scope.txnMediaList.data == undefined && $scope.txnMediaList.data ==null) {
             rowId = -2000;
@@ -407,6 +427,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             "txmdType": txnMediaType
         }
         $scope.txnMediaList.data.push(txnMedia);
+        if ($scope.paymentMedia.paymName === 'Account') {
+            $scope.txnHeaderForm.txhdValueCredit = $scope.txnHeaderForm.txhdValueCredit*1 + $scope.paymentAmount*1
+        }
         totalTransaction();
     };
     $scope.removeTxnMedia= function (row) {
@@ -419,6 +442,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 row.entity.deleted = true;
                 $scope.txnMediaGridApi.core.setRowInvisible(row);
                 totalTransaction();
+                if ((!$scope.isInvoiceMode) && ($scope.paymentMedia.paymName === 'Account')) {
+                    $scope.txnHeaderForm.txhdValueCredit = $scope.txnHeaderForm.txhdValueCredit*1 - $scope.paymentAmount*1
+                }
+
             } else {
                 return;
             }
@@ -442,6 +469,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
         $scope.txnHeaderForm.customer = $scope.customer;
+
         var rowObject = $scope.txnHeaderForm;
         baseDataService.addRow(rowObject, TXN_ADD_URI).then(function(response) {
             addResponse = response.data;

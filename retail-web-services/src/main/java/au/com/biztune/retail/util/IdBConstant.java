@@ -95,6 +95,12 @@ public interface IdBConstant {
     String TXN_TYPE_QUOTE = "TXN_TYPE_QUOTE";
 
     /**
+     * TRANSACTION TYPE ACCOUNT PAYMENT.
+     */
+    String TXN_TYPE_ACCOUNT_PAYMENT = "TXN_TYPE_ACCOUNT_PAYMENT";
+
+
+    /**
      * TRANSACTION TYPE GOODS IN - USE FOR GOOD RECEIVED TRANSACTION.
      */
     String TXN_TYPE_GOODS_IN = "TXN_TYPE_GOODS_IN";
@@ -417,5 +423,10 @@ public interface IdBConstant {
      * Minimum value for rounding
      */
     double ROUNDING_VALUE_BASE = 0.05;
+
+    /**
+     *
+     */
+    String PAYMENT_MEDIA_ACCOUNT = "Account";
 
 }

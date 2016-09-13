@@ -1,5 +1,6 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.domain.DebtorPaymentForm;
 import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.form.TxnHeaderForm;
 import au.com.biztune.retail.response.CommonResponse;
@@ -66,4 +67,13 @@ public interface TransactionService {
      * @return List of TxnHeader
      */
     List<TxnHeader> getAllInvoiceHeadersForStore();
+
+    /**
+     * create Txn Account Payment.
+     * @param debtorPaymentForm debtorPaymentForm
+     * @param securityContext securityContext
+     * @return CommonResponse
+     */
+    CommonResponse createTxnAccPayment(DebtorPaymentForm debtorPaymentForm, SecurityContext securityContext);
+
 }

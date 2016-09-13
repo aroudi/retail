@@ -50,6 +50,7 @@
         <typeAlias type="au.com.biztune.retail.domain.StockLocation" alias="StockLocation" />
         <typeAlias type="au.com.biztune.retail.domain.Stock" alias="Stock" />
         <typeAlias type="au.com.biztune.retail.domain.StockEvent" alias="StockEvent" />
+        <typeAlias type="au.com.biztune.retail.domain.CustomerAccountDebt" alias="CustomerAccountDebt" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />
@@ -78,5 +79,6 @@
         <mapper resource="maps/UserMapper.xml" />
         <mapper resource="maps/StockMapper.xml" />
         <mapper resource="maps/InvoiceMapper.xml" />
+        <mapper resource="maps/CustomerAccountDebtMapper.xml" />
     </mappers>
 </configuration>

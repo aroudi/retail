@@ -1,5 +1,6 @@
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.domain.DebtorPaymentForm;
 import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.form.TxnHeaderForm;
 import au.com.biztune.retail.report.TransactionRptMgr;
@@ -167,4 +168,20 @@ public class TransactionRest {
     public TxnHeaderForm getInvoiceById (@PathParam("id") long id) {
         return transactionService.getInvoicePerId(id);
     }
+
+    /**
+     * crate a txn account payment Transaction.
+     * @param debtorPaymentForm debtorPaymentForm
+     * @return CommonResponse
+     */
+    @Secured
+    @Path("/txnAccPayment/add")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse addTxnAccPayment (DebtorPaymentForm debtorPaymentForm) {
+        return transactionService.createTxnAccPayment(debtorPaymentForm, securityContext);
+    }
+
+
 }

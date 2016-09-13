@@ -420,4 +420,11 @@
 
         WHERE CUSTOMER_ID = #{id}
     </update>
+
+    <update id="updateCustomerDebt" parameterType="Customer" >
+        UPDATE CUSTOMER SET
+            OWING = #{owing},
+            REMAIN_CREDIT = #{remainCredit}
+        WHERE CUSTOMER_ID = #{id}
+    </update>
 </mapper>

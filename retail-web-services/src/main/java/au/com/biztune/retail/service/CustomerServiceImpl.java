@@ -1,9 +1,6 @@
 package au.com.biztune.retail.service;
 
-import au.com.biztune.retail.dao.ConfigCategoryDao;
-import au.com.biztune.retail.dao.ContactDao;
-import au.com.biztune.retail.dao.CustomerDao;
-import au.com.biztune.retail.dao.CustomerGradeDao;
+import au.com.biztune.retail.dao.*;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.util.IdBConstant;
@@ -36,6 +33,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private ContactDao contactDao;
 
+    @Autowired
+    private CustomerAccountDebtDao customerAccountDebtDao;
 
     /**
      * return all customers.
@@ -159,6 +158,33 @@ public class CustomerServiceImpl implements CustomerService {
             return customer;
         } catch (Exception e) {
             logger.error("Error in getting customer with code: " + code, e);
+            return null;
+        }
+    }
+
+    /**
+     * get all customer account debt.
+     * @return List of CustomerAccountDebt
+     */
+    public List<CustomerAccountDebt> getAllCustomerAccountDebt() {
+        try {
+            return customerAccountDebtDao.getAllCustomerAccountDebt();
+        } catch (Exception e) {
+            logger.error("Error in getting customer account debt list: ", e);
+            return null;
+        }
+    }
+
+    /**
+     * get Customer Account Debt list per customer Id.
+     * @param customerId customerId
+     * @return List of CustomerAccountDebt
+     */
+    public List<CustomerAccountDebt> getCustomerAccountDebtPerCustomerId(long customerId) {
+        try {
+            return customerAccountDebtDao.getCustomerAccountDebtPerCustomerId(customerId);
+        } catch (Exception e) {
+            logger.error("Error in getting customer account debt list: ", e);
             return null;
         }
     }

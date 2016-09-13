@@ -35,6 +35,7 @@ public class TxnHeader {
     private List<TxnMedia> txnMedias;
     //this is used for invoice only. it contains parent sale order id
     private long parentId;
+    private String txhdDlvAddress;
 
     public long getId() {
         return id;
@@ -250,5 +251,13 @@ public class TxnHeader {
 
     public void setParentId(long parentId) {
         this.parentId = parentId;
+    }
+
+    public String getTxhdDlvAddress() {
+        return txhdDlvAddress;
+    }
+
+    public void setTxhdDlvAddress(String txhdDlvAddress) {
+        this.txhdDlvAddress = txhdDlvAddress;
     }
 }

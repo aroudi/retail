@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.CustomerAccountDebtDao">
+    <!-- result maps -->
+    <resultMap id="customerAccountDebtMap" type="CustomerAccountDebt" >
+        <id column="CAD_ID" property="cadId" />
+        <result column="TXHD_ID" property="txhdId" />
+        <result column="TXHD_TXN_NR" property="txhdTxnNr" />
+        <result column="CAD_AMOUNT_DEBT" property="cadAmountDebt" />
+        <result column="BALANCE" property="balance" />
+        <result column="CAD_START_DATE" property="cadStartDate" />
+        <result column="CAD_DUE_DATE" property="cadDueDate" />
+        <result column="CAD_PAYMENT_DATE" property="cadPaymentDate" />
+        <result column="CAD_PAIED" property="cadPaid" />
+        <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
+    </resultMap>
+
+    <sql id="customerAccountDebtColumns">
+        ${alias}.CAD_ID,
+        ${alias}.TXHD_ID,
+        ${alias}.TXHD_TXN_NR,
+        ${alias}.CAD_AMOUNT_DEBT,
+        ${alias}.BALANCE,
+        ${alias}.CAD_START_DATE,
+        ${alias}.CAD_DUE_DATE,
+        ${alias}.CAD_PAYMENT_DATE,
+        ${alias}.CAD_PAIED,
+        ${alias}.CUSTOMER_ID
+    </sql>
+
+    <sql id="txnAccPaymentColumns">
+        ${alias}.TAP_ID,
+        ${alias}.TXHD_ID,
+        ${alias}.CAD_ID,
+        ${alias}.TAP_PAYMENT_DATE,
+        ${alias}.TAP_AMOUNT_PAID
+    </sql>
+
+
+
+    <insert id="insert" parameterType="CustomerAccountDebt" useGeneratedKeys="true" keyProperty="cadId" keyColumn="CAD_ID">
+        INSERT INTO CUSTOMER_ACCOUNT_DEBT(
+        CUSTOMER_ID,
+        TXHD_ID,
+        TXHD_TXN_NR,
+        CAD_AMOUNT_DEBT,
+        BALANCE,
+        CAD_START_DATE,
+        CAD_DUE_DATE,
+        CAD_PAYMENT_DATE,
+        CAD_PAIED
+        ) VALUES (
+        #{customer.id},
+        #{txhdId},
+        #{txhdTxnNr}
+        <if test="cadAmountDebt != null">
+            ,#{cadAmountDebt}
+        </if>
+        <if test="cadAmountDebt == null">
+            ,null
+        </if>
+        <if test="balance != null">
+            ,#{balance}
+        </if>
+        <if test="balance == null">
+            ,null
+        </if>
+
+        <if test="cadStartDate != null">
+            ,#{cadStartDate}
+        </if>
+        <if test="cadStartDate == null">
+            ,null
+        </if>
+
+        <if test="cadDueDate != null">
+            ,#{cadDueDate}
+        </if>
+        <if test="cadDueDate == null">
+            ,null
+        </if>
+
+        <if test="cadPaymentDate != null">
+            ,#{cadPaymentDate}
+        </if>
+        <if test="cadPaymentDate == null">
+            ,null
+        </if>
+        <if test="cadPaid != null">
+            ,#{cadPaid}
+        </if>
+        <if test="cadPaid == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <update id="update" parameterType="CustomerAccountDebt" >
+        UPDATE CUSTOMER_ACCOUNT_DEBT SET
+            BALANCE = #{balance}
+            <if test="cadPaymentDate != null">
+                ,CAD_PAYMENT_DATE = #{cadPaymentDate}
+            </if>
+            <if test="cadPaid != null">
+                ,CAD_PAIED = #{cadPaid}
+            </if>
+        WHERE CAD_ID = #{cadId}
+    </update>
+
+    <insert id="insertTxnAccPayment" parameterType="CustomerAccountDebt" useGeneratedKeys="true" keyProperty="tapId" keyColumn="TAP_ID">
+        INSERT INTO TXN_ACC_PAYMENT(
+        TXHD_ID,
+        CAD_ID,
+        ORGU_ID,
+        STORE_ID,
+        TAP_PAYMENT_DATE,
+        TAP_AMOUNT_PAID
+        ) VALUES (
+        #{txnAccPayId},
+        #{cadId},
+        #{orguId},
+        #{storeId},
+        #{cadPaymentDate},
+        #{paying}
+        )
+    </insert>
+
+    <select id="getAllCustomerAccountDebt" resultMap="customerAccountDebtMap" >
+        SELECT
+        <include refid="customerAccountDebtColumns"><property name="alias" value="cad"/></include>
+        FROM
+        CUSTOMER_ACCOUNT_DEBT cad
+        where CAD_PAIED = 0 order by customer_id
+    </select>
+
+    <select id="getCustomerAccountDebtPerCustomerId" resultMap="customerAccountDebtMap" >
+        SELECT
+        <include refid="customerAccountDebtColumns"><property name="alias" value="cad"/></include>
+        FROM
+        CUSTOMER_ACCOUNT_DEBT cad
+        where CAD_PAIED = 0 and CUSTOMER_ID=#{value}
+    </select>
+
+</mapper>

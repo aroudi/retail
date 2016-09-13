@@ -56,6 +56,8 @@ var service_uri = {
     'CUSTOMER_ADD_URI' : 'customer/add',
     'CUSTOMER_GET_URI' : 'customer/get',
     'CUSTOMERGRADE_ALL_URI' : 'customer/allGrades',
+    'CUSTOMER_GET_ACCOUNT_DEBT_URI' : 'customer/getAccountDebt/',
+    'CUSTOMER_ALL_ACCOUNT_DEBT_URI' : 'customer/getAccountDebt/all',
     'ALL_CATEGORY_OFTYPE_URI' : 'categories/',
     'SUPPLIER_ALL_URI' : 'supplier/all',
     'SUPPLIER_ADD_URI' : 'supplier/add',
@@ -76,6 +78,7 @@ var service_uri = {
     'PRODUCT_SALE_ITEM_ALL_URI' : 'product/allProductSaleItem',
     'TXN_ALL_URI' : 'transaction/all',
     'TXN_ADD_URI' : 'transaction/add',
+    'TXN_ADD_ACC_PAYMENT' : 'transaction/txnAccPayment/add',
     'TXN_INVOICE_URI' : 'transaction/invoice',
     'TXN_ADD_PAYMENT_URI' : 'transaction/addPayment',
     'TXN_GET_URI' : 'transaction/get/',
@@ -586,7 +589,7 @@ cimgApp.service('AccessChecker2', function ($state, $rootScope, UserService, bas
     /*userType must be user,admin or reader*/
     return {
         checkAcess: function (accessName) {
-            if (accessName == 'dashboard.login' || accessName == 'dashboard.logout') {
+            if (accessName == 'dashboard.login' || accessName == 'dashboard.logout' || accessName == 'dashboard.firstPage') {
                 return;
             }
             var userAccessList = UserService.getUserAccess();

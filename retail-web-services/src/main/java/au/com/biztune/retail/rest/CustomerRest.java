@@ -1,6 +1,7 @@
 package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.Customer;
+import au.com.biztune.retail.domain.CustomerAccountDebt;
 import au.com.biztune.retail.domain.CustomerGrade;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
@@ -108,4 +109,34 @@ public class CustomerRest {
         return customerService.getCustomerByCode(code);
     }
 
+    /**
+     * get customer account debt by  customer Id.
+     * @param id id.
+     * @return Customer
+     */
+    @Secured
+    @GET
+    @Path("/getAccountDebt/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<CustomerAccountDebt> getCustomerAccountDebtByCustomerId (@PathParam("id") long id) {
+        return customerService.getCustomerAccountDebtPerCustomerId(id);
+    }
+
+    /**
+     * Returns All Customer Account Debt.
+     * @return list of Customer account debt for all customers.
+     */
+
+    @Secured
+    @Path("/getAccountDebt/all")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<CustomerAccountDebt> getAllCustomerAccountDebt() {
+        try {
+            return customerService.getAllCustomerAccountDebt();
+        } catch (Exception e) {
+            logger.error ("Error in retrieving customer List :", e);
+            return null;
+        }
+    }
 }

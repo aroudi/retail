@@ -25,6 +25,10 @@ public class TxnHeaderForm {
     private ConfigCategory txhdTxnType;
     private ConfigCategory txhdState;
     private boolean convertedToTxnSale;
+    private double txhdValueCredit;
+    private String txhdDlvAddress;
+
+
     public long getId() {
         return id;
     }
@@ -159,5 +163,21 @@ public class TxnHeaderForm {
 
     public void setConvertedToTxnSale(boolean convertedToTxnSale) {
         this.convertedToTxnSale = convertedToTxnSale;
+    }
+
+    public double getTxhdValueCredit() {
+        return txhdValueCredit;
+    }
+
+    public void setTxhdValueCredit(double txhdValueCredit) {
+        this.txhdValueCredit = txhdValueCredit;
+    }
+
+    public String getTxhdDlvAddress() {
+        return txhdDlvAddress;
+    }
+
+    public void setTxhdDlvAddress(String txhdDlvAddress) {
+        this.txhdDlvAddress = txhdDlvAddress;
     }
 }

@@ -1,8 +1,6 @@
 package au.com.biztune.retail.service;
 
-import au.com.biztune.retail.dao.ConfigCategoryDao;
-import au.com.biztune.retail.dao.InvoiceDao;
-import au.com.biztune.retail.dao.TxnDao;
+import au.com.biztune.retail.dao.*;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.TxnDetailForm;
 import au.com.biztune.retail.form.TxnHeaderForm;
@@ -20,6 +18,7 @@ import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +44,11 @@ public class TransactionServiceImpl implements TransactionService {
     private SecurityContext securityContext;
     @Autowired
     private InvoiceDao invoiceDao;
+
+    @Autowired
+    private CustomerAccountDebtDao customerAccountDebtDao;
+    @Autowired
+    private CustomerDao customerDao;
     /**
      * submit a transaction and save it into database.
      * @param  txnHeaderForm txnHeaderForm
@@ -85,6 +89,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnHeader.setTxhdValRounding(txnHeaderForm.getTxhdValRounding());
                 txnHeader.setTxhdValueTax(txnHeaderForm.getTxhdValueTax());
                 txnHeader.setCustomer(txnHeaderForm.getCustomer());
+                txnHeader.setTxhdDlvAddress(txnHeaderForm.getTxhdDlvAddress());
                 final Principal principal = securityContext.getUserPrincipal();
                 AppUser appUser = null;
                 if (principal instanceof AppUser) {
@@ -196,6 +201,7 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdValRounding(txnHeaderForm.getTxhdValRounding());
             txnHeader.setTxhdValueTax(txnHeaderForm.getTxhdValueTax());
             txnHeader.setCustomer(txnHeaderForm.getCustomer());
+            txnHeader.setTxhdDlvAddress(txnHeaderForm.getTxhdDlvAddress());
             //check if we have converted txnQuote to Sale
             if (txnHeaderForm.isConvertedToTxnSale()) {
                 txnHeader.setTxhdOrigTxnNr(txnHeaderForm.getTxhdTxnNr());
@@ -437,6 +443,8 @@ public class TransactionServiceImpl implements TransactionService {
         txnHeaderForm.setTxhdValRounding(txnHeader.getTxhdValRounding());
         txnHeaderForm.setTxhdValueTax(txnHeader.getTxhdValueTax());
         txnHeaderForm.setCustomer(txnHeader.getCustomer());
+        txnHeaderForm.setTxhdDlvAddress(txnHeader.getTxhdDlvAddress());
+
         if (txnHeader.getTxnDetails() != null) {
             TxnDetailForm txnDetailForm;
             final List<TxnDetailForm> txnDetailFormList = new ArrayList<TxnDetailForm>();
@@ -689,7 +697,40 @@ public class TransactionServiceImpl implements TransactionService {
                     }
                 }
             }
-
+            //check if customer has used from his credit account.
+            if (txnHeaderForm.getCustomer().getCustomerType().getCategoryCode().equals(IdBConstant.CUSTOMER_TYPE_ACCOUNT)
+                    && (txnHeaderForm.getTxhdValueCredit() > 0))
+            {
+                final CustomerAccountDebt customerAccountDebt = new CustomerAccountDebt();
+                customerAccountDebt.setCustomer(txnHeaderForm.getCustomer());
+                customerAccountDebt.setTxhdId(invoiceId);
+                customerAccountDebt.setCadAmountDebt(txnHeaderForm.getTxhdValueCredit());
+                customerAccountDebt.setBalance(txnHeaderForm.getTxhdValueCredit());
+                customerAccountDebt.setCadPaid(false);
+                customerAccountDebt.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
+                Date startDate = null;
+                Calendar cal = null;
+                //calculate due date for payment
+                if (txnHeaderForm.getCustomer().isCreditStartEom()) {
+                    cal = Calendar.getInstance();
+                    cal.setTime(currentDate);
+                    cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+                    startDate = cal.getTime();
+                } else {
+                    startDate = new Date();
+                }
+                customerAccountDebt.setCadStartDate(new Timestamp(startDate.getTime()));
+                //calculate due date
+                cal = Calendar.getInstance();
+                cal.setTime(startDate);
+                cal.add(Calendar.DATE, txnHeaderForm.getCustomer().getCreditDuration());
+                customerAccountDebt.setCadDueDate(new Timestamp(cal.getTime().getTime()));
+                customerAccountDebtDao.insert(customerAccountDebt);
+                //update customer debt
+                txnHeaderForm.getCustomer().setRemainCredit(txnHeaderForm.getCustomer().getRemainCredit() - txnHeaderForm.getTxhdValueCredit());
+                txnHeaderForm.getCustomer().setOwing(txnHeaderForm.getCustomer().getOwing() + txnHeaderForm.getTxhdValueCredit());
+                customerDao.updateCustomerDebt(txnHeaderForm.getCustomer());
+            }
             response.setInfo(String.valueOf(invoiceId));
             return response;
         } catch (Exception e) {
@@ -811,5 +852,85 @@ public class TransactionServiceImpl implements TransactionService {
             return null;
         }
     }
+
+    /**
+     * create Txn Account Payment.
+     * @param debtorPaymentForm debtorPaymentForm
+     * @param securityContext securityContext
+     * @return CommonResponse
+     */
+    public CommonResponse createTxnAccPayment(DebtorPaymentForm debtorPaymentForm, SecurityContext securityContext) {
+        this.securityContext = securityContext;
+        final CommonResponse response = new CommonResponse();
+        try {
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+
+            if (debtorPaymentForm == null || debtorPaymentForm.getDebtList() == null || debtorPaymentForm.getTxnMediaList() == null) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("transaction object or its related objects are null");
+                return response;
+            }
+                final Timestamp currentDate = new Timestamp(new Date().getTime());
+                final TxnHeader txnHeader = new TxnHeader();
+                txnHeader.setOrgUnit(sessionState.getStore().getOrgUnit());
+                txnHeader.setStore(sessionState.getStore());
+                final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_ACCOUNT_PAYMENT);
+                if (txnType != null) {
+                    txnHeader.setTxhdTxnType(txnType);
+                }
+                txnHeader.setOrgUnitOriginal(sessionState.getStore().getOrgUnit());
+                txnHeader.setTxhdTradingDate(currentDate);
+                txnHeader.setTxhdVoided(false);
+                txnHeader.setTxhdValueNett(debtorPaymentForm.getTotal());
+                txnHeader.setTxhdValueDue(debtorPaymentForm.getAmountDue());
+                txnHeader.setTxhdValRounding(debtorPaymentForm.getValueRounding());
+                txnHeader.setCustomer(debtorPaymentForm.getCustomer());
+                final Principal principal = securityContext.getUserPrincipal();
+                AppUser appUser = null;
+                if (principal instanceof AppUser) {
+                    appUser = (AppUser) principal;
+                    txnHeader.setTxhdOperator(appUser.getId());
+                }
+                //save it to database.
+                txnDao.insertTxnHeader(txnHeader);
+                txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.TXN_NUMBER_PREFIX));
+                txnDao.assigneTxnNumber(txnHeader);
+                //save txn_acc_payment items
+                for (CustomerAccountDebt customerAccountDebt : debtorPaymentForm.getDebtList()) {
+                    if (customerAccountDebt == null) {
+                        continue;
+                    }
+                    customerAccountDebt.setOrguId(sessionState.getStore().getOrgUnit().getId());
+                    customerAccountDebt.setStoreId(sessionState.getStore().getId());
+                    customerAccountDebt.setCadPaymentDate(currentDate);
+                    customerAccountDebt.setTxnAccPayId(txnHeader.getId());
+                    customerAccountDebtDao.insertTxnAccPayment(customerAccountDebt);
+
+                    if (customerAccountDebt.getBalance() - customerAccountDebt.getPaying() == 0.00) {
+                        customerAccountDebt.setCadPaid(true);
+                    }
+                    //update the customer account debt amount
+                    customerAccountDebt.setBalance(customerAccountDebt.getBalance() - customerAccountDebt.getPaying());
+                    customerAccountDebtDao.update(customerAccountDebt);
+                }
+
+                //save txn media
+                final ConfigCategory mediaType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_SALE);
+                for (TxnMediaForm txnMediaForm : debtorPaymentForm.getTxnMediaList()) {
+                    txnMediaForm.setTxmdType(mediaType);
+                    txnMediaForm.setTxhdId(txnHeader.getId());
+                    doSaleOrderPayment(txnMediaForm);
+                }
+                response.setInfo(txnHeader.getTxhdTxnNr());
+            return response;
+        } catch (Exception e) {
+            logger.error("Exception in saving transaction: ", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Exception in saving Transaction");
+            return response;
+        }
+    }
+
+
 
 }

@@ -1,6 +1,7 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.Customer;
+import au.com.biztune.retail.domain.CustomerAccountDebt;
 import au.com.biztune.retail.domain.CustomerGrade;
 import au.com.biztune.retail.response.CommonResponse;
 
@@ -42,4 +43,17 @@ public interface CustomerService {
      * @return CustomerGrade
      */
     Customer getCustomerByCode(String code);
+
+    /**
+     * get all customer account debt.
+     * @return List of CustomerAccountDebt
+     */
+    List<CustomerAccountDebt> getAllCustomerAccountDebt();
+
+    /**
+     * get Customer Account Debt list per customer Id.
+     * @param customerId customerId
+     * @return List of CustomerAccountDebt
+     */
+    List<CustomerAccountDebt> getCustomerAccountDebtPerCustomerId(long customerId);
 }

@@ -23,6 +23,7 @@
         <result column="TXHD_TAX_EXEMPT" property="txhdTaxExempt" />
         <result column="TXHD_REFUND_EXPIRY" property="txhdRefundExpiry" />
         <result column="TXHD_COLLECT_DATE" property="txhdCollectDate" />
+        <result column="TXHD_DLV_ADDRESS" property="txhdDlvAddress" />
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="txhdState" column="TXHD_STATE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="txhdTxnType" column="TXHD_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -47,6 +48,7 @@
         <result column="TXHD_TAX_EXEMPT" property="txhdTaxExempt" />
         <result column="TXHD_REFUND_EXPIRY" property="txhdRefundExpiry" />
         <result column="TXHD_COLLECT_DATE" property="txhdCollectDate" />
+        <result column="TXHD_DLV_ADDRESS" property="txhdDlvAddress" />
         <association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" />
         <association property="txhdState" column="TXHD_STATE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="txhdTxnType" column="TXHD_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -115,7 +117,8 @@
         ${alias}.TXHD_REFUND_EXPIRY,
         ${alias}.TXHD_COLLECT_DATE,
         ${alias}.CUSTOMER_ID,
-        ${alias}.TXHD_STATE
+        ${alias}.TXHD_STATE,
+        ${alias}.TXHD_DLV_ADDRESS
 
     </sql>
 
@@ -182,7 +185,8 @@
         TXHD_VOID_TXN_NR,
         TXHD_TAX_EXEMPT,
         TXHD_REFUND_EXPIRY,
-        TXHD_COLLECT_DATE
+        TXHD_COLLECT_DATE,
+        TXHD_DLV_ADDRESS
         ) VALUES (
         #{orgUnit.id},
         #{store.id},
@@ -308,6 +312,12 @@
         <if test="txhdCollectDate == null">
             ,null
         </if>
+        <if test="txhdDlvAddress != null">
+            ,#{txhdDlvAddress}
+        </if>
+        <if test="txhdDlvAddress == null">
+            ,null
+        </if>
         )
     </insert>
     <update id="updateTxnHeader" parameterType="TxnHeader" >
@@ -366,6 +376,9 @@
         </if>
         <if test="txhdOperator != null">
             ,TXHD_OPERATOR = #{txhdOperator}
+        </if>
+        <if test="txhdDlvAddress != null">
+            ,TXHD_DLV_ADDRESS = #{txhdDlvAddress}
         </if>
         WHERE TXHD_ID = #{id}
     </update>

@@ -75,4 +75,9 @@ public interface CustomerDao {
      */
     void deleteCustomerContactWhereIdNotIn(long customerId, List contactList);
 
+    /**
+     * update customer debt amount.
+     * @param customer customer
+     */
+    void updateCustomerDebt(Customer customer);
 }

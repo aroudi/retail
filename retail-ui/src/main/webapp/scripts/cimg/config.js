@@ -228,6 +228,13 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             access: "user"
         })
 
+        .state('dashboard.debtorPayment',{
+            url:'/debtorPayment',
+            controller: 'debtorPaymentCtrl',
+            templateUrl:'views/pages/debtorPayment.html',
+            access: "user"
+        })
+
         .state('dashboard.blank',{
             templateUrl:'views/pages/blank.html',
             url:'/blank'
@@ -236,6 +243,11 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/login.html',
             url:'/login'
         })
+        .state('dashboard.firstPage',{
+            url:'/firstPage',
+            templateUrl:'views/pages/firstPage.html'
+        })
+
     /**
      }]).run(function($rootScope, AccessChecker) {
     $rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
