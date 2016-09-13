@@ -70,9 +70,10 @@ public interface TxnDao {
     /**
      * get TxnHeader Per StoreId.
      * @param storeId storeId
+     * @param txnTypeList txnTypeList
      * @return List of TxnHeader
      */
-    List<TxnHeader> getTxnHeaderPerStoreId(long storeId);
+    List<TxnHeader> getTxnHeaderPerStoreId(long storeId, List txnTypeList);
     /**
      * get TxnHeader Per StoreId, and CustomerId and TypeId.
      * @param storeId storeId

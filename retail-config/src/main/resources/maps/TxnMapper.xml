@@ -751,7 +751,13 @@
         <include refid="txnHeaderColumns"><property name="alias" value="txhd"/></include>
         FROM
         TXN_HEADER txhd
-        WHERE txhd.STORE_ID=#{value}
+        WHERE txhd.STORE_ID=#{param1} AND txhd.TXHD_TXN_TYPE in
+        <foreach collection="param2" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY txhd.TXHD_TRADING_DATE DESC
+
     </select>
 
     <select id="getTxnHeaderPerStoreIdAndCustomerIdAndTypeId" resultMap="txnHeaderLightMap" >

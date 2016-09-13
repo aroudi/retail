@@ -363,12 +363,17 @@ public class TransactionServiceImpl implements TransactionService {
 
 
     /**
-     * get all transaction of store.
+     * get all transaction header of type sale and quote of store.
      * @return List of TxnHeader
      */
     public List<TxnHeader> getAllTxnHeadersForStore() {
         try {
-            return txnDao.getTxnHeaderPerStoreId(sessionState.getStore().getId());
+            final List<Long> txnType = new ArrayList<Long>();
+            ConfigCategory configCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_SALE);
+            txnType.add(configCategory.getId());
+            configCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_QUOTE);
+            txnType.add(configCategory.getId());
+            return txnDao.getTxnHeaderPerStoreId(sessionState.getStore().getId(), txnType);
         } catch (Exception e) {
             logger.error("Exception in getting transaction sale: ", e);
             return null;

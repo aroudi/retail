@@ -278,7 +278,7 @@
         SELECT
         <include refid="invoiceColumns"><property name="alias" value="invoice"/></include>
         FROM
-        INVOICE invoice where STORE_ID = #{value}
+        INVOICE invoice where STORE_ID = #{value} ORDER BY TXIV_TRADING_DATE DESC
     </select>
 
 
