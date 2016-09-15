@@ -36,7 +36,7 @@ public class TxnHeader {
     //this is used for invoice only. it contains parent sale order id
     private long parentId;
     private String txhdDlvAddress;
-
+    private AppUser user;
     public long getId() {
         return id;
     }
@@ -259,5 +259,13 @@ public class TxnHeader {
 
     public void setTxhdDlvAddress(String txhdDlvAddress) {
         this.txhdDlvAddress = txhdDlvAddress;
+    }
+
+    public AppUser getUser() {
+        return user;
+    }
+
+    public void setUser(AppUser user) {
+        this.user = user;
     }
 }

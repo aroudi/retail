@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,12 +47,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Autowired
     private BillOfQuantityDao billOfQuantityDao;
 
+    private SecurityContext securityContext;
+
     /**
      * save Purchase Order Header into database.
      * @param purchaseOrderHeader purchaseOrderHeader
+     * @param  securityContext securityContext
      * @return response
      */
-    public CommonResponse savePurchaseOrder(PurchaseOrderHeader purchaseOrderHeader) {
+    public CommonResponse savePurchaseOrder(PurchaseOrderHeader purchaseOrderHeader, SecurityContext securityContext) {
+        this.securityContext = securityContext;
         final CommonResponse response = new CommonResponse();
         try {
             response.setStatus(IdBConstant.RESULT_SUCCESS);
@@ -63,6 +69,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             final Timestamp currentDate = new Timestamp(new Date().getTime());
             purchaseOrderHeader.setOrgUnit(sessionState.getOrgUnit());
             String pohNumber = purchaseOrderHeader.getPohOrderNumber();
+            //set user
+            final Principal principal = securityContext.getUserPrincipal();
+            AppUser appUser = null;
+            if (principal instanceof AppUser) {
+                appUser = (AppUser) principal;
+                purchaseOrderHeader.setPohLastModifiedBy(appUser.getId());
+            }
             //check if status is confirmed
             if (purchaseOrderHeader.getPohStatus() != null && purchaseOrderHeader.getPohStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_CONFIRMED)) {
                 purchaseOrderHeader.setPohConfirmDate(currentDate);
@@ -223,9 +236,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     /**
      * create Purchase Order From Boq.
      * @param boqDetail boqDetail
+     * @param appUser appUser
      * @return PurchaseOrderHeader
      */
-    public PurchaseOrderHeader createPoFromBoq(BoqDetail boqDetail) {
+    public PurchaseOrderHeader createPoFromBoq(BoqDetail boqDetail, AppUser appUser) {
         try {
             if (boqDetail == null) {
                 return  null;
@@ -244,6 +258,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             purchaseOrderHeader.setPohType(pohType);
             purchaseOrderHeader.setPohCreationType(pohCreationType);
             purchaseOrderHeader.setPohStatus(pohStatus);
+            purchaseOrderHeader.setPohLastModifiedBy(appUser.getId());
             //save purchase order header
             purchaseOrderDao.insertPurchaseOrderHeader(purchaseOrderHeader);
             //assinge number to purchase order header.

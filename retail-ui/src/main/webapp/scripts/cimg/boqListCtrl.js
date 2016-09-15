@@ -28,12 +28,13 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
                     return row.entity.project.projectName
                 }
             },
-            {field:'project.referenceNo', displayName:'Project Ref.',enableCellEdit:false, width:'10%',
+            {field:'project.referenceNo', displayName:'Project Ref.',enableCellEdit:false, width:'10%', visible:false,
                 cellTooltip: function(row,col) {
                     return row.entity.project.referenceNo
                 }
             },
             {field:'dateCreated', displayName:'Created',enableCellEdit:false, width:'8%', cellFilter:'date:\'yyyy-MM-dd HH:mm\'' },
+            {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             //{field:'boqValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             //{field:'boqValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'boqStatus', displayName:'status',enableCellEdit:false, width:'7%', cellFilter:'configCategoryFilter',

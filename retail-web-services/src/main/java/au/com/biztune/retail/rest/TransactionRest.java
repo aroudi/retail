@@ -63,11 +63,7 @@ public class TransactionRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResponse addTransaction (TxnHeaderForm txnHeaderForm) {
-        if (txnHeaderForm.getId() < 0) {
-            return transactionService.addTransaction(txnHeaderForm, securityContext);
-        } else {
-            return transactionService.updateTransaction(txnHeaderForm, securityContext);
-        }
+       return transactionService.saveTransaction(txnHeaderForm, securityContext);
     }
 
     /**

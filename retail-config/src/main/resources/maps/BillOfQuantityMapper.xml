@@ -18,6 +18,7 @@
         <result column="BOQ_VALUE_NETT" property="boqValueNett" />
         <result column="BOQ_TOTAL_QTY" property="boqTotalQty" />
         <result column="BOQ_TOTAL_LINES" property="boqTotalLines" />
+        <association property="user" column="BOQ_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="project" column="PROJECT_ID" select="au.com.biztune.retail.dao.ProjectDao.getProjectById" />
         <association property="boqStatus" column="BOQ_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>

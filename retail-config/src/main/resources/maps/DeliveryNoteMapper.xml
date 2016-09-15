@@ -22,6 +22,7 @@
         <result column="DELN_TOTAL_LINES" property="delnTotalLines" />
         <result column="DELN_COMMENT" property="delnComment" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
+        <association property="user" column="DELN_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 

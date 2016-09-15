@@ -3,6 +3,7 @@ package au.com.biztune.retail.service;
 import au.com.biztune.retail.domain.BoqDetail;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.response.CommonResponse;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.core.SecurityContext;
 import java.io.InputStream;
@@ -15,9 +16,10 @@ public interface BillOfQuantityService {
     /**
      * upload Bill Of Quantity.
      * @param uploadedInputStream uploadedInputStream
+     * @param securityContext securityContext
      * @return CommonResponse
      */
-    CommonResponse uploadBillOfQuantity(InputStream uploadedInputStream);
+    CommonResponse uploadBillOfQuantity (InputStream uploadedInputStream, SecurityContext securityContext);
 
     /**
      * get bill of quantity detail list per BOQ Id.
@@ -50,7 +52,9 @@ public interface BillOfQuantityService {
     /**
      * generate Purchase orders from bill of quantities.
      * @param billOfQuantities list of BillOfQyantity Objects.
+     * @param  securityContext securityContext
      * @return response
      */
-    List<PurchaseOrderHeader> createPurchaseOrderFromBillOfQuantities(List<au.com.biztune.retail.domain.BillOfQuantity> billOfQuantities);
+    @Transactional
+    List<PurchaseOrderHeader> createPurchaseOrderFromBillOfQuantities(List<au.com.biztune.retail.domain.BillOfQuantity> billOfQuantities, SecurityContext securityContext);
     }

@@ -17,6 +17,16 @@
         <collection property="accessPoints" javaType="ArrayList" column="USR_ID" ofType="AccessPoint" select="getUserAccesspointsByUserId"/>
     </resultMap>
 
+    <resultMap id="appUserLiteMap" type="AppUser" >
+        <id column="USR_ID" property="id" />
+        <result column="USR_NAME" property="usrName" />
+        <result column="USR_FIRST_NAME" property="usrFirstName" />
+        <result column="USR_SUR_NAME" property="usrSurName" />
+        <result column="USR_ACTIVE" property="usrActive" />
+        <result column="USR_DELETED" property="usrDeleted" />
+        <result column="USR_LOGED_ON" property="usrLogedOn" />
+    </resultMap>
+
     <resultMap id="appRoleMap" type="AppRole" >
         <id column="ROLE_ID" property="id" />
         <result column="ROLE_CODE" property="roleCode" />
@@ -122,6 +132,15 @@
     </select>
 
     <select id="getUserById" resultMap="appUserMap" >
+        SELECT
+        <include refid="appUserColumns"><property name="alias" value="usr"/></include>
+        FROM
+        APP_USER usr
+        WHERE
+        usr.USR_ID=#{value}
+    </select>
+
+    <select id="getLiteUserById" resultMap="appUserLiteMap" >
         SELECT
         <include refid="appUserColumns"><property name="alias" value="usr"/></include>
         FROM

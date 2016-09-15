@@ -25,6 +25,7 @@
         <result column="TXHD_COLLECT_DATE" property="txhdCollectDate" />
         <result column="TXHD_DLV_ADDRESS" property="txhdDlvAddress" />
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
+        <association property="user" column="TXHD_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="txhdState" column="TXHD_STATE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="txhdTxnType" column="TXHD_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
@@ -793,6 +794,7 @@
             ,TXHD_VALUE_NETT = #{txhdValueNett}
             ,TXHD_VALUE_DUE = #{txhdValueDue}
             ,TXHD_VALUE_TAX = #{txhdValueTax}
+            ,TXHD_STATE = #{txhdState.id}
         WHERE TXHD_ID = #{id}
     </update>
 

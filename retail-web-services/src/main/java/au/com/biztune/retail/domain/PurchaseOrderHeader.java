@@ -39,6 +39,7 @@ public class PurchaseOrderHeader {
     private List<PoDelNoteLink> linkedDelNotes;
     private Timestamp pohExpDelivery;
     private String pohExpDeliveryStr;
+    private AppUser user;
 
 
     /**
@@ -311,5 +312,13 @@ public class PurchaseOrderHeader {
 
     public void setPohExpDeliveryStr(String pohExpDeliveryStr) {
         this.pohExpDeliveryStr = pohExpDeliveryStr;
+    }
+
+    public AppUser getUser() {
+        return user;
+    }
+
+    public void setUser(AppUser user) {
+        this.user = user;
     }
 }

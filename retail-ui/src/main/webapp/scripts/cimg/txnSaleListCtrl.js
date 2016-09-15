@@ -6,19 +6,13 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state, $timeout,baseData
         enableFiltering: true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'35%'},
-            {field:'txhdTxnNr', displayName:'Number',enableCellEdit:false, width:'15%'},
-            {field:'txhdState.displayName', displayName:'State', enableCellEdit:false, width:'10%',
+            {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
+            {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+            {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'20%'},
+            {field:'txhdTxnNr', displayName:'Number',enableCellEdit:false, width:'10%'},
+            {field:'txhdState', displayName:'State', enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
-                    if (grid.getCellValue(row, col) === 'DRAFT') {
-                        return 'amber';
-                    } else if (grid.getCellValue(row, col) === 'VOID') {
-                        return 'red'
-                    } else if (grid.getCellValue(row, col) === 'SUSPEND') {
-                        return 'blue'
-                    } else if (grid.getCellValue(row, col) === 'FINAL') {
-                        return 'green'
-                    }
+                    return grid.getCellValue(row, col).color
                 }
             },
             {field:'txhdTxnType.displayName' , displayName:'Type', enableCellEdit:false, width:'10%'},

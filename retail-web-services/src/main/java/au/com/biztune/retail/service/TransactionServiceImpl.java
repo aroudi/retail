@@ -55,118 +55,7 @@ public class TransactionServiceImpl implements TransactionService {
      * @param  securityContext securityContext
      * @return CommonResponse
      */
-    public CommonResponse addTransaction(TxnHeaderForm txnHeaderForm, SecurityContext securityContext) {
-        this.securityContext = securityContext;
-        final CommonResponse response = new CommonResponse();
-        try {
-            response.setStatus(IdBConstant.RESULT_SUCCESS);
-
-            if (txnHeaderForm == null || txnHeaderForm.getTxnDetailFormList() == null || txnHeaderForm.getTxnMediaFormList() == null) {
-                response.setStatus(IdBConstant.RESULT_FAILURE);
-                response.setMessage("transaction object or its related objects are null");
-                return response;
-            }
-            final boolean isNew = txnHeaderForm.getId() > 0 ? false : true;
-            if (isNew) {
-                final Timestamp currentDate = new Timestamp(new Date().getTime());
-                final TxnHeader txnHeader = new TxnHeader();
-                txnHeader.setOrgUnit(sessionState.getStore().getOrgUnit());
-                txnHeader.setStore(sessionState.getStore());
-                /*
-                final ConfigCategory txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_FINAL);
-                if (txnState != null) {
-                    txnHeader.setTxhdState(txnState);
-                }
-                */
-                txnHeader.setTxhdState(txnHeaderForm.getTxhdState());
-                txnHeader.setOrgUnitOriginal(sessionState.getStore().getOrgUnit());
-                txnHeader.setTxhdTradingDate(currentDate);
-                txnHeader.setTxhdTxnType(txnHeaderForm.getTxhdTxnType());
-                txnHeader.setTxhdVoided(false);
-                txnHeader.setTxhdValueGross(txnHeaderForm.getTxhdValueGross());
-                txnHeader.setTxhdValueNett(txnHeaderForm.getTxhdValueNett());
-                txnHeader.setTxhdValueDue(txnHeaderForm.getTxhdValueDue());
-                txnHeader.setTxhdValRounding(txnHeaderForm.getTxhdValRounding());
-                txnHeader.setTxhdValueTax(txnHeaderForm.getTxhdValueTax());
-                txnHeader.setCustomer(txnHeaderForm.getCustomer());
-                txnHeader.setTxhdDlvAddress(txnHeaderForm.getTxhdDlvAddress());
-                final Principal principal = securityContext.getUserPrincipal();
-                AppUser appUser = null;
-                if (principal instanceof AppUser) {
-                    appUser = (AppUser) principal;
-                    txnHeader.setTxhdOperator(appUser.getId());
-                }
-                //save it to database.
-                txnDao.insertTxnHeader(txnHeader);
-                if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
-                    txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.TXN_NUMBER_PREFIX));
-                } else if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_QUOTE)) {
-                    txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.QUOTE_NUMBER_PREFIX));
-                }
-                txnDao.assigneTxnNumber(txnHeader);
-                txnHeaderForm.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
-                txnHeaderForm.setId(txnHeader.getId());
-                TxnDetail txnDetail = null;
-                for (TxnDetailForm txnDetailForm: txnHeaderForm.getTxnDetailFormList()) {
-                    if (txnDetailForm == null) {
-                        continue;
-                    }
-                    if (txnDetailForm.isDeleted()) {
-                        continue;
-                    }
-                    txnDetail = new TxnDetail();
-                    txnDetail.setOrguId(sessionState.getStore().getOrgUnit().getId());
-                    txnDetail.setStoreId(sessionState.getStore().getId());
-                    txnDetail.setTxhdId(txnHeader.getId());
-                    txnDetail.setProduct(txnDetailForm.getProduct());
-                    txnDetail.setUnitOfMeasure(txnDetailForm.getUnitOfMeasure());
-                    txnDetail.setTxdeValueLine(txnDetailForm.getTxdeValueLine());
-                    txnDetail.setTxdeProfitMargin(txnDetailForm.getTxdeProfitMargin());
-                    txnDetail.setTxdeValueProfit(txnDetailForm.getTxdeValueProfit());
-                    txnDetail.setTxdeValueGross(txnDetailForm.getTxdeValueGross());
-                    txnDetail.setTxdeTax(txnDetailForm.getTxdeTax());
-                    txnDetail.setTxdeValueNet(txnDetailForm.getTxdeValueNet());
-                    txnDetail.setTxdeQuantitySold(txnDetailForm.getTxdeQuantitySold());
-                    txnDetail.setTxdeQtyBalance(txnDetailForm.getTxdeQtyBalance());
-                    txnDetail.setTxdeQtyTotalInvoiced(txnDetailForm.getTxdeQtyTotalInvoiced() + txnDetailForm.getTxdeQtyInvoiced());
-                    txnDetail.setTxdePriceSold(txnDetailForm.getTxdePriceSold());
-                    txnDetail.setTxdeLineRefund(txnDetailForm.isTxdeLineRefund());
-                    txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
-                    final ConfigCategory txntLineType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_LINE_TYPE, IdBConstant.TXN_LINE_TYPE_SALE);
-                    if (txntLineType != null) {
-                        txnDetail.setTxdeDetailType(txntLineType);
-                    }
-                    txnDao.insertTxnDetail(txnDetail);
-                    txnDetailForm.setId(txnDetail.getId());
-                    if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)
-                            && txnHeader.getTxhdState().getCategoryCode().equals(IdBConstant.TXN_STATE_FINAL))
-                    {
-                        updateStockQuantity(txnHeader, txnDetail);
-                    }
-                }
-                //save txn media
-                for (TxnMediaForm txnMediaForm : txnHeaderForm.getTxnMediaFormList()) {
-                    txnMediaForm.setTxhdId(txnHeader.getId());
-                    doSaleOrderPayment(txnMediaForm);
-                }
-                response.setInfo(txnHeader.getTxhdTxnNr());
-            }
-            return response;
-        } catch (Exception e) {
-            logger.error("Exception in saving transaction: ", e);
-            response.setStatus(IdBConstant.RESULT_FAILURE);
-            response.setMessage("Exception in saving Transaction");
-            return response;
-        }
-    }
-
-    /**
-     * update Transaction.
-     * @param txnHeaderForm txnHeaderForm
-     * @param securityContext securityContext
-     * @return Response.
-     */
-    public CommonResponse updateTransaction(TxnHeaderForm txnHeaderForm, SecurityContext securityContext) {
+    public CommonResponse saveTransaction(TxnHeaderForm txnHeaderForm, SecurityContext securityContext) {
         this.securityContext = securityContext;
         final CommonResponse response = new CommonResponse();
         try {
@@ -181,20 +70,28 @@ public class TransactionServiceImpl implements TransactionService {
                 response.setMessage("transaction object or its related objects are null");
                 return response;
             }
+            final boolean isNew = txnHeaderForm.getId() > 0 ? false : true;
             final Timestamp currentDate = new Timestamp(new Date().getTime());
             final TxnHeader txnHeader = new TxnHeader();
-            txnHeader.setId(txnHeaderForm.getId());
-            txnHeader.setOrgUnit(txnHeaderForm.getStore().getOrgUnit());
-            txnHeader.setStore(txnHeaderForm.getStore());
-            /*
-            final ConfigCategory txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_DRAFT);
-            if (txnState != null) {
-                txnHeader.setTxhdState(txnState);
+            if (!isNew) {
+                txnHeader.setId(txnHeaderForm.getId());
+                txnHeader.setTxhdVoided(txnHeaderForm.isTxhdVoided());
+                //check if we have converted txnQuote to Sale
+                if (txnHeaderForm.isConvertedToTxnSale()) {
+                    txnHeader.setTxhdOrigTxnNr(txnHeaderForm.getTxhdTxnNr());
+                    txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.TXN_NUMBER_PREFIX));
+                    txnHeaderForm.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
+                    final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_SALE);
+                    txnHeader.setTxhdTxnType(txnType);
+                }
+            } else {
+                txnHeader.setTxhdTradingDate(currentDate);
+                txnHeader.setTxhdVoided(false);
             }
-            */
-            txnHeader.setTxhdState(txnHeaderForm.getTxhdState());
+            txnHeader.setOrgUnit(sessionState.getStore().getOrgUnit());
+            txnHeader.setStore(sessionState.getStore());
+            txnHeader.setOrgUnitOriginal(sessionState.getStore().getOrgUnit());
             txnHeader.setTxhdTxnType(txnHeaderForm.getTxhdTxnType());
-            txnHeader.setTxhdVoided(txnHeaderForm.isTxhdVoided());
             txnHeader.setTxhdValueGross(txnHeaderForm.getTxhdValueGross());
             txnHeader.setTxhdValueNett(txnHeaderForm.getTxhdValueNett());
             txnHeader.setTxhdValueDue(txnHeaderForm.getTxhdValueDue());
@@ -202,22 +99,25 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdValueTax(txnHeaderForm.getTxhdValueTax());
             txnHeader.setCustomer(txnHeaderForm.getCustomer());
             txnHeader.setTxhdDlvAddress(txnHeaderForm.getTxhdDlvAddress());
-            //check if we have converted txnQuote to Sale
-            if (txnHeaderForm.isConvertedToTxnSale()) {
-                txnHeader.setTxhdOrigTxnNr(txnHeaderForm.getTxhdTxnNr());
-                txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.TXN_NUMBER_PREFIX));
-                txnHeaderForm.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
-                final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_SALE);
-                txnHeader.setTxhdTxnType(txnType);
-            }
-            //save it to database.
             final Principal principal = securityContext.getUserPrincipal();
             AppUser appUser = null;
             if (principal instanceof AppUser) {
                 appUser = (AppUser) principal;
                 txnHeader.setTxhdOperator(appUser.getId());
             }
-            txnDao.updateTxnHeader(txnHeader);
+            if (isNew) {
+                //save it to database.
+                txnDao.insertTxnHeader(txnHeader);
+                if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
+                    txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.TXN_NUMBER_PREFIX));
+                } else if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_QUOTE)) {
+                    txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.QUOTE_NUMBER_PREFIX));
+                }
+                txnDao.assigneTxnNumber(txnHeader);
+                txnHeaderForm.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
+            } else {
+                txnDao.updateTxnHeader(txnHeader);
+            }
             txnHeaderForm.setId(txnHeader.getId());
             TxnDetail txnDetail = null;
             for (TxnDetailForm txnDetailForm: txnHeaderForm.getTxnDetailFormList()) {
@@ -228,8 +128,13 @@ public class TransactionServiceImpl implements TransactionService {
                     continue;
                 }
                 txnDetail = new TxnDetail();
-                txnDetail.setOrguId(txnHeader.getOrgUnit().getId());
-                txnDetail.setStoreId(txnHeader.getStore().getId());
+                if (isNew) {
+                    txnDetail.setOrguId(sessionState.getStore().getOrgUnit().getId());
+                    txnDetail.setStoreId(sessionState.getStore().getId());
+                } else {
+                    txnDetail.setOrguId(txnHeader.getOrgUnit().getId());
+                    txnDetail.setStoreId(txnHeader.getStore().getId());
+                }
                 txnDetail.setTxhdId(txnHeader.getId());
                 txnDetail.setProduct(txnDetailForm.getProduct());
                 txnDetail.setUnitOfMeasure(txnDetailForm.getUnitOfMeasure());
@@ -242,10 +147,9 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeQuantitySold(txnDetailForm.getTxdeQuantitySold());
                 txnDetail.setTxdeQtyBalance(txnDetailForm.getTxdeQtyBalance());
                 txnDetail.setTxdeQtyTotalInvoiced(txnDetailForm.getTxdeQtyTotalInvoiced() + txnDetailForm.getTxdeQtyInvoiced());
-                txnDetail.setTxdePriceSold(txnDetailForm.getTxdeValueNet() * txnDetailForm.getTxdeQuantitySold());
+                txnDetail.setTxdePriceSold(txnDetailForm.getTxdePriceSold());
                 txnDetail.setTxdeLineRefund(txnDetailForm.isTxdeLineRefund());
                 txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
-                //check if the item is new then insert the item. otherwise update the item
                 if (txnDetailForm.getId() < 0) {
                     final ConfigCategory txntLineType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_LINE_TYPE, IdBConstant.TXN_LINE_TYPE_SALE);
                     if (txntLineType != null) {
@@ -256,22 +160,24 @@ public class TransactionServiceImpl implements TransactionService {
                     txnDetail.setId(txnDetailForm.getId());
                     txnDao.updateTxnDetail(txnDetail);
                 }
+                txnDetailForm.setId(txnDetail.getId());
                 txhdValueGross = txhdValueGross + txnDetail.getTxdeValueGross() * txnDetail.getTxdeQuantitySold();
                 txhdValueNett = txhdValueNett + txnDetail.getTxdeValueNet() * txnDetail.getTxdeQuantitySold();
                 txhdValueTax = txhdValueTax + txnDetail.getTxdeTax() * txnDetail.getTxdeValueGross() * txnDetail.getTxdeQuantitySold();;
-                txnDetailForm.setId(txnDetail.getId());
+                //TODO: update stock for sale order
+                /*
                 if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)
                         && txnHeader.getTxhdState().getCategoryCode().equals(IdBConstant.TXN_STATE_FINAL))
                 {
                     updateStockQuantity(txnHeader, txnDetail);
                 }
+                */
             }
             //save txn media
             for (TxnMediaForm txnMediaForm : txnHeaderForm.getTxnMediaFormList()) {
                 txnMediaForm.setTxhdId(txnHeader.getId());
                 doSaleOrderPayment(txnMediaForm);
             }
-
             //get amount paid for transaction
             final Double amountPaid = txnDao.getTxnHeaderAmountPaid(txnHeader.getId());
             if (amountPaid == null) {
@@ -288,10 +194,19 @@ public class TransactionServiceImpl implements TransactionService {
                 txnHeader.setTxhdValueDue(0.00);
                 txnHeader.setTxhdValRounding(txhdValueNett - txhdValuePaid);
             }
-            txnDao.updateTxnHeaderTotalValues(txnHeader);
+            ConfigCategory txnState = null;
 
+            if (txnHeader.getTxhdValueDue() > 0) {
+                txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_DRAFT);
+            } else {
+                txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_FINAL);
+            }
+            if (txnState != null) {
+                txnHeader.setTxhdState(txnState);
+            }
+            txnDao.updateTxnHeaderTotalValues(txnHeader);
             response.setInfo(txnHeader.getTxhdTxnNr());
-            return response;
+        return response;
         } catch (Exception e) {
             logger.error("Exception in saving transaction: ", e);
             response.setStatus(IdBConstant.RESULT_FAILURE);
@@ -299,7 +214,6 @@ public class TransactionServiceImpl implements TransactionService {
             return response;
         }
     }
-
 
     /**
      * add payment.
@@ -576,11 +490,7 @@ public class TransactionServiceImpl implements TransactionService {
                 return response;
             }
             final boolean isNew = txnHeaderForm.getId() > 0 ? false : true;
-            if (isNew) {
-                response = addTransaction(txnHeaderForm, securityContext);
-            } else {
-                response = updateTransaction(txnHeaderForm, securityContext);
-            }
+            response = saveTransaction(txnHeaderForm, securityContext);
             if (response.getStatus() == IdBConstant.RESULT_FAILURE) {
                 return  response;
             }

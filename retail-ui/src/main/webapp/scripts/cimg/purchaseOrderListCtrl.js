@@ -36,12 +36,13 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'15%'},
-            {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'40%',
+            {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'30%',
                 cellTooltip: function(row,col) {
                     return row.entity.supplier.supplierName
                 }
             },
             {field:'pohCreatedDate', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+            {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'pohValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'pohValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'pohStatus', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',

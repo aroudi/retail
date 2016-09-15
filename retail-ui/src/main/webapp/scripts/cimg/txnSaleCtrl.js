@@ -610,13 +610,6 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         });
     }
 
-    $scope.submitTransaction = function() {
-        baseDataService.getBaseData(TXN_STATE_FINAL).then(function(response){
-            $scope.txnHeaderForm.txhdState = response.data;
-            $scope.createTransactionSale();
-        });
-    }
-
     $scope.convertToSaleTxn = function() {
         //when converting to txn_sale, we need to change the state to draft.
         if ($scope.txnHeaderForm.convertedToTxnSale) {

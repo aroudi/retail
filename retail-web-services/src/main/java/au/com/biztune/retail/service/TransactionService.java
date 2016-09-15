@@ -18,7 +18,7 @@ public interface TransactionService {
      * @param  securityContext securityContext
      * @return CommonResponse
      */
-    CommonResponse addTransaction(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
+    CommonResponse saveTransaction(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
     /**
      * get all transaction of store.
      * @return List of TxnHeader
@@ -37,14 +37,6 @@ public interface TransactionService {
      * @return TxnHeaderForm
      */
     TxnHeaderForm getInvoicePerId(long invoiceId);
-
-    /**
-     * update Transaction.
-     * @param txnHeaderForm txnHeaderForm
-     * @param securityContext securityContext
-     * @return Response.
-     */
-    CommonResponse updateTransaction(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
 
     /**
      * add payment.

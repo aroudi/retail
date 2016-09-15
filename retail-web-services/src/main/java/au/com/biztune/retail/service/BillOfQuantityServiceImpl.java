@@ -75,9 +75,11 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     /**
      * upload Bill Of Quantity.
      * @param uploadedInputStream uploadedInputStream
+     * @param securityContext securityContext
      * @return CommonResponse
      */
-    public CommonResponse uploadBillOfQuantity (InputStream uploadedInputStream) {
+    public CommonResponse uploadBillOfQuantity (InputStream uploadedInputStream, SecurityContext securityContext) {
+        this.securityContext = securityContext;
         final CommonResponse response = new CommonResponse();
         try {
             final BillOfQuantity billOfQuantity = billOfQuantityUploader.uploadBillOfQuantityFromInputStream(uploadedInputStream);
@@ -333,6 +335,14 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
         billOfQuantity.setNote(header.getNote());
         billOfQuantity.setOrderNo(header.getOrderNumber());
         billOfQuantity.setOrguId(sessionState.getOrgUnit().getId());
+        //set user
+        final Principal principal = securityContext.getUserPrincipal();
+        AppUser appUser = null;
+        if (principal instanceof AppUser) {
+            appUser = (AppUser) principal;
+            billOfQuantity.setBoqLastModifiedBy(appUser.getId());
+        }
+
         final ConfigCategory staus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_NEW);
         if (staus != null) {
             billOfQuantity.setBoqStatus(staus);
@@ -548,6 +558,13 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 //update stock quantity.
                 updateStockQuantity(billOfQuantity, boqDetail, boqDetailBeforeUpdate);
             }
+            //set user
+            final Principal principal = securityContext.getUserPrincipal();
+            AppUser appUser = null;
+            if (principal instanceof AppUser) {
+                appUser = (AppUser) principal;
+                billOfQuantity.setBoqLastModifiedBy(appUser.getId());
+            }
             //update boq header
             billOfQuantityDao.updatePerId(billOfQuantity);
 
@@ -563,10 +580,18 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     /**
      * generate Purchase orders from bill of quantities.
      * @param billOfQuantities list of BillOfQyantity Objects.
+     * @param  securityContext securityContext
      * @return response
      */
     @Transactional
-    public List<PurchaseOrderHeader> createPurchaseOrderFromBillOfQuantities(List<au.com.biztune.retail.domain.BillOfQuantity> billOfQuantities) {
+    public List<PurchaseOrderHeader> createPurchaseOrderFromBillOfQuantities(List<au.com.biztune.retail.domain.BillOfQuantity> billOfQuantities, SecurityContext securityContext) {
+        this.securityContext = securityContext;
+        AppUser appUser = null;
+        //set user
+        final Principal principal = securityContext.getUserPrincipal();
+        if (principal instanceof AppUser) {
+            appUser = (AppUser) principal;
+        }
         final List<PurchaseOrderHeader> result = new ArrayList<PurchaseOrderHeader>();
         try {
             if (billOfQuantities == null) {
@@ -608,7 +633,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 }
                 //get the first item from the list and create the Purchase Order Header.
                 final BoqDetail boqDetailItem = supplierBoqItems.get(0);
-                final PurchaseOrderHeader purchaseOrderHeader = purchaseOrderService.createPoFromBoq(boqDetailItem);
+                final PurchaseOrderHeader purchaseOrderHeader = purchaseOrderService.createPoFromBoq(boqDetailItem, appUser);
                 for (BoqDetail item : supplierBoqItems) {
                     if (item == null) {
                         continue;

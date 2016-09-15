@@ -61,6 +61,13 @@ public interface UserDao {
     AppUser getUserById(long userId);
 
     /**
+     * get user object by id.
+     * @param userId userId
+     * @return AppUser
+     */
+    AppUser getLiteUserById(long userId);
+
+    /**
      * get user by username.
      * @param userName userName
      * @return AppUser

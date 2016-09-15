@@ -1,10 +1,12 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.domain.AppUser;
 import au.com.biztune.retail.domain.BoqDetail;
 import au.com.biztune.retail.domain.ProductPurchaseItem;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.response.CommonResponse;
 
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 /**
@@ -14,9 +16,10 @@ public interface PurchaseOrderService {
     /**
      * create Purchase Order From Boq.
      * @param boqDetail boqDetail
+     * @param appUser appUser
      * @return PurchaseOrderHeader
      */
-    PurchaseOrderHeader createPoFromBoq(BoqDetail boqDetail);
+    PurchaseOrderHeader createPoFromBoq(BoqDetail boqDetail, AppUser appUser);
     /**
      * add lines to Purchase Order Header.
      * @param purchaseOrderHeader purchaseOrderHeader
@@ -28,9 +31,10 @@ public interface PurchaseOrderService {
     /**
      * save Purchase Order Header into database.
      * @param purchaseOrderHeader purchaseOrderHeader
+     * @param  securityContext securityContext
      * @return response
      */
-    CommonResponse savePurchaseOrder(PurchaseOrderHeader purchaseOrderHeader);
+    CommonResponse savePurchaseOrder(PurchaseOrderHeader purchaseOrderHeader, SecurityContext securityContext);
 
     /**
      * get all purchase Order Header.

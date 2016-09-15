@@ -30,6 +30,7 @@
         <result column="POH_TOTAL_QTY" property="pohTotalQty" />
         <result column="POH_TOTAL_LINES" property="pohTotalLines" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
+        <association property="user" column="POH_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="pohStatus" column="POH_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <collection property="linkedDelNotes" javaType="ArrayList" column="POH_ID" ofType="PoDelNoteLink" select="au.com.biztune.retail.dao.PoDelNoteLinkDao.getAllPoDelNoteLinkPerPohId"/>
     </resultMap>

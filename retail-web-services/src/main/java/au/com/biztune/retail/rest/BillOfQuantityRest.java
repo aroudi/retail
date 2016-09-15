@@ -53,7 +53,7 @@ public class BillOfQuantityRest {
     @Path("/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public CommonResponse uploadBillOfQuantity(@FormDataParam("file")InputStream uploadedInputStream) {
-        return billOfQuantityService.uploadBillOfQuantity(uploadedInputStream);
+        return billOfQuantityService.uploadBillOfQuantity(uploadedInputStream, securityContext);
     }
 
     /**
@@ -120,7 +120,7 @@ public class BillOfQuantityRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public List<PurchaseOrderHeader> generatePurchaseOrderFromBoqs (List<BillOfQuantity> billOfQuantityList) {
-        return billOfQuantityService.createPurchaseOrderFromBillOfQuantities(billOfQuantityList);
+        return billOfQuantityService.createPurchaseOrderFromBillOfQuantities(billOfQuantityList, securityContext);
     }
 
     /**

@@ -26,6 +26,8 @@ public class PurchaseOrderRest {
     private UriInfo uriInfo;
     @Context
     private Request request;
+    @Context
+    private SecurityContext securityContext;
 
     @Autowired
     private PurchaseOrderService purchaseOrderService;
@@ -86,7 +88,7 @@ public class PurchaseOrderRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResponse addPurchaseOrder (PurchaseOrderHeader purchaseOrderHeader) {
-        return purchaseOrderService.savePurchaseOrder(purchaseOrderHeader);
+        return purchaseOrderService.savePurchaseOrder(purchaseOrderHeader, securityContext);
     }
 
 

@@ -14,19 +14,20 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
             {field:'id', visible:false, enableCellEdit:false},
             {field:'pohId', visible:false, enableCellEdit:false},
             {field:'delnNoteNumber', displayName:'Note No',enableCellEdit:false, width:'10%'},
-            {field:'delnGrn', displayName:'GRN',enableCellEdit:false, width:'12%'},
-            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'12%',
+            {field:'delnGrn', displayName:'GRN',enableCellEdit:false, width:'10%'},
+            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'10%',
                 cellTemplate:'<a href="" ng-click="grid.appScope.viewPurchaseOrderDetail(row)">{{grid.appScope.getLinkedPurchaseOrder(row)}}</a>'
             },
-            {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'22%',
+            {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'20%',
                 cellTooltip: function(row,col) {
                     return row.entity.supplier.supplierName
                 }
             },
-            {field:'delnDeliveryDate', displayName:'Delivery Date',enableCellEdit:false, width:'11%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+            {field:'delnDeliveryDate', displayName:'Delivery Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+            {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'delnValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'delnValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'delnStatus', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+            {field:'delnValueNett', displayName:'Net Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'delnStatus', displayName:'status',enableCellEdit:false, width:'8%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                    return grid.getCellValue(row, col).color
                 }

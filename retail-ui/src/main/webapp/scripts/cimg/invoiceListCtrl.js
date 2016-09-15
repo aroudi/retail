@@ -6,12 +6,13 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout,baseData
         enableFiltering: true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'35%'},
+            {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
+            {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+            {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'25%'},
             {field:'txhdOrigTxnNr', displayName:'Sale Order No',enableCellEdit:false, width:'12.5%'},
             {field:'txhdTxnNr', displayName:'Invoice No',enableCellEdit:false, width:'12.5%'},
             {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
             {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'},
-            {field:'txhdTradingDate', displayName:'Trading Date', enableCellEdit:false, cellFilter:'date:\'yyyy-MM-dd HH:mm\'', width:'10%'},
             {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' }
         ]
     }

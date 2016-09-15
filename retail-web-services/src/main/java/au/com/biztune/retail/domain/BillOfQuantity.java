@@ -23,6 +23,7 @@ public class BillOfQuantity {
     private double boqTotalQty;
     private int boqTotalLines;
     private List<BoqDetail> lines;
+    private AppUser user;
 
     public long getId() {
         return id;
@@ -150,5 +151,13 @@ public class BillOfQuantity {
 
     public void setLines(List<BoqDetail> lines) {
         this.lines = lines;
+    }
+
+    public AppUser getUser() {
+        return user;
+    }
+
+    public void setUser(AppUser user) {
+        this.user = user;
     }
 }

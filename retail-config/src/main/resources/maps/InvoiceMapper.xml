@@ -22,7 +22,7 @@
         <result column="TXIV_REFUND_EXPIRY" property="txhdRefundExpiry" />
         <result column="TXIV_COLLECT_DATE" property="txhdCollectDate" />
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
-        <!--association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" /-->
+        <association property="user" column="TXIV_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
     </resultMap>
 
     <resultMap id="invoiceMap" type="TxnHeader" >

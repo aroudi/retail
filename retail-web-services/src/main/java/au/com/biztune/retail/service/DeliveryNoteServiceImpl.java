@@ -50,6 +50,13 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
      */
     public CommonResponse saveDeliveryNote(DeliveryNoteHeader deliveryNoteHeader, SecurityContext securityContext) {
         this.securityContext = securityContext;
+        //get current user from security context.
+        final Principal principal = securityContext.getUserPrincipal();
+        AppUser appUser = null;
+        if (principal instanceof AppUser) {
+            appUser = (AppUser) principal;
+        }
+
         final CommonResponse response = new CommonResponse();
         try {
             response.setStatus(IdBConstant.RESULT_SUCCESS);
@@ -63,6 +70,7 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             deliveryNoteHeader.setOrguId(sessionState.getOrgUnit().getId());
             String grnNumber = deliveryNoteHeader.getDelnGrn();
             deliveryNoteHeader.setDelnLastModifiedDate(currentDate);
+            deliveryNoteHeader.setDelnLastModifiedBy(appUser.getId());
             deliveryNoteHeader.setDelnDeliveryDate(DateUtil.stringToDate(deliveryNoteHeader.getDeliveryDate(), "yyyy-MM-dd"));
             if (isNew) {
                 //final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_DLV_NOTE_STATUS, IdBConstant.DLV_NOTE_STATUS_IN_PROGRESS);

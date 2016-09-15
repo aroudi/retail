@@ -29,6 +29,8 @@ public class DeliveryNoteHeader {
     private List<DeliveryNoteLine> lines;
     private String deliveryDate;
     private String delnComment;
+    private AppUser user;
+
 
     public long getId() {
         return id;
@@ -204,5 +206,13 @@ public class DeliveryNoteHeader {
 
     public void setDelnComment(String delnComment) {
         this.delnComment = delnComment;
+    }
+
+    public AppUser getUser() {
+        return user;
+    }
+
+    public void setUser(AppUser user) {
+        this.user = user;
     }
 }

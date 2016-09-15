@@ -26,6 +26,11 @@ public class AppUser implements Principal {
     public String getName() {
         return usrName;
     }
+    public void setName(String usrName) {
+        this.usrName = usrName;
+    }
+
+
     public long getId() {
         return id;
     }
