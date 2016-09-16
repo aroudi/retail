@@ -40,7 +40,7 @@ public class PurchaseOrderHeader {
     private Timestamp pohExpDelivery;
     private String pohExpDeliveryStr;
     private AppUser user;
-
+    private String pohComment;
 
     /**
      * constructor.
@@ -320,5 +320,13 @@ public class PurchaseOrderHeader {
 
     public void setUser(AppUser user) {
         this.user = user;
+    }
+
+    public String getPohComment() {
+        return pohComment;
+    }
+
+    public void setPohComment(String pohComment) {
+        this.pohComment = pohComment;
     }
 }

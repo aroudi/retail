@@ -151,7 +151,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             $scope.purchaseOrderHeader = {};
             $scope.purchaseOrderHeader.pohStatus = $scope.statusOnProgress;
             //$scope.purchaseOrderHeader.pohCreatedDate = new Date().getTime();
-            $scope.purchaseOrderHeader.pohExpDeliveryStr = new Date().getTime();
+            $scope.purchaseOrderHeader.pohExpDeliveryStr = new Date();
             $scope.purchaseOrderHeader.id = -1;
             $scope.pageIsNew = true;
         } else {

@@ -29,6 +29,7 @@
         <result column="POH_VALUE_NETT" property="pohValueNett" />
         <result column="POH_TOTAL_QTY" property="pohTotalQty" />
         <result column="POH_TOTAL_LINES" property="pohTotalLines" />
+        <result column="POH_COMMENT" property="pohComment" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="user" column="POH_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="pohStatus" column="POH_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -60,6 +61,7 @@
         <result column="POH_VALUE_NETT" property="pohValueNett" />
         <result column="POH_TOTAL_QTY" property="pohTotalQty" />
         <result column="POH_TOTAL_LINES" property="pohTotalLines" />
+        <result column="POH_COMMENT" property="pohComment" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="pohStatus" column="POH_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <collection property="lines" javaType="ArrayList" column="POH_ID" ofType="PurchaseLine" select="getPurchaseLinesPerPohId"/>
@@ -122,6 +124,7 @@
         ${alias}.POH_TYPE,
         ${alias}.POH_STATUS,
         ${alias}.POH_CREATION_TYPE,
+        ${alias}.POH_COMMENT,
         ${alias}.POH_EXP_DELIVERY
     </sql>
 
@@ -184,7 +187,8 @@
          POH_TYPE,
          POH_STATUS,
          POH_CREATION_TYPE,
-         POH_EXP_DELIVERY
+         POH_EXP_DELIVERY,
+         POH_COMMENT
         ) VALUES (
         #{orgUnit.id},
         #{pohOrderNumber}
@@ -360,6 +364,12 @@
         <if test="pohExpDelivery == null">
             ,null
         </if>
+        <if test="pohComment != null">
+            ,#{pohComment}
+        </if>
+        <if test="pohComment == null">
+            ,null
+        </if>
 
         )
     </insert>
@@ -438,6 +448,9 @@
         </if>
         <if test="pohExpDelivery != null">
             ,POH_EXP_DELIVERY = #{pohExpDelivery}
+        </if>
+        <if test="pohComment != null">
+            ,POH_COMMENT = #{pohComment}
         </if>
         WHERE POH_ID = #{id}
     </update>

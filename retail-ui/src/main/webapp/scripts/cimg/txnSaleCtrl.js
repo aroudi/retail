@@ -33,6 +33,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.customer = $scope.txnHeaderForm.customer;
             baseDataService.setRow({});
             baseDataService.setIsPageNew(true);
+            $scope.paymentAmount = maxPaymentAllowed()*1;
         }
         $scope.txnHeaderForm.convertedToTxnSale = false;
         if ($scope.isPageNew) {
@@ -177,17 +178,19 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         $scope.$on('uiGridEventEndCellEdit', function (event) {
             var txnDetail = event.targetScope.row.entity;
             if ( event.targetScope.col.field == 'txdeValueGross') {
+                //check if we already had invoiced this item. if so user can not change the price.
+                if (txnDetail.txdeQtyTotalInvoiced >0 ) {
+                    baseDataService.displayMessage('info','Warnning', 'The Item is invoiced. you can not change the price.' );
+                    txnDetail['txdeValueGross'] = $scope.txdeValueGrossBeforeEditting;
+                    return;
+                }
                 var originalPrice = txnDetail.product.sellPrice.prcePrice*1;
                 if (txnDetail.txdeValueGross < originalPrice ) {
                     baseDataService.displayMessage('info','Warnning', 'You can not set the price below original which is $' + originalPrice );
                     txnDetail['txdeValueGross'] = $scope.txdeValueGrossBeforeEditting;
                     return;
                 }
-                //txnDetail.txdeQtyInvoice = $scope.txdeQtyInvoicedBeforeEditting;
-                txnDetail['txdeQtyInvoiced'] = $scope.txdeQtyInvoicedBeforeEditting;
-                //txnDetail.txdeQtyBalance = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
                 txnDetail['txdeQtyBalance'] = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
-                return;
             }
             if ( event.targetScope.col.field == 'txdeQtyInvoiced' && (txnDetail.invoiced==false)) {
                 //txnDetail.txdeQtyInvoice = $scope.txdeQtyInvoicedBeforeEditting;
@@ -399,11 +402,15 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 baseDataService.displayMessage('info','Warning!!','Account Payment is only applicable for Account customers');
                 return;
             }
+            //check if customer is not on hold
+            if ($scope.customer.customerStatus.categoryCode === 'CUSTOMER_STATUS_ON_HOLD') {
+                baseDataService.displayMessage('info','Warning!!','customer is on hold. you can not pay from credit');
+                return;
+            }
             //check if we have enough credit
             var newCredit = $scope.txnHeaderForm.txhdValueCredit*1  + $scope.paymentAmount*1;
             if (newCredit > $scope.customer.remainCredit) {
                 baseDataService.displayMessage('info','Warning!!','amount exceeds remain credit.');
-                return;
             }
         }
         var rowId;
@@ -529,6 +536,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.txnHeaderForm.txhdValRounding = $scope.txnHeaderForm.txhdValueDue;
             $scope.txnHeaderForm.txhdValueDue = 0.00;
         }
+        //set default value of payment amount to value due.
+        $scope.paymentAmount = maxPaymentAllowed()*1;
+
     }
     $scope.calculateAmountPaid = function() {
         if ($scope.txnMediaList == undefined || $scope.txnMediaList.data == undefined) {
@@ -553,6 +563,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     }
 
     $scope.voidItem = function(row) {
+        //if item has been invoiced before then we can not void item.
+        if (row.entity.txdeQtyTotalInvoiced >0) {
+            baseDataService.displayMessage("info","Warning!!","Item has been invoiced. you can not void it!!!");
+            return;
+        }
         baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to void this item??').then(function(result){
             console.log('result :', result);
             if (result) {
@@ -716,6 +731,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     }
     $scope.invoiceTransactionSale = function () {
 
+        //check if we have outstanding amount to pay
+        if (maxPaymentAllowed() > 0) {
+            baseDataService.displayMessage("info","Warning", "Payment is due!!!");
+            return;
+        }
         $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
 
@@ -768,9 +788,13 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         return false;
     }
 
-    $scope.maxPaymentAllowed = function() {
+    function maxPaymentAllowed() {
         var maxPayment = (Math.round($scope.txnHeaderForm.txhdValueDue*Math.pow(10,1))/Math.pow(10,1)).toFixed(2);
         console.log("max payment = " + maxPayment);
         return maxPayment;
+    }
+
+    $scope.maxPaymentAllowed = function() {
+        return maxPaymentAllowed();
     }
 });
