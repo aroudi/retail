@@ -25,6 +25,7 @@ public class ProductForm {
     private double prcePrice;
     private double prceMargin;
     private boolean prceTaxIncluded;
+    private String prodLocation;
 
     public long getProdId() {
         return prodId;
@@ -160,6 +161,14 @@ public class ProductForm {
 
     public void setPrceTaxIncluded(boolean prceTaxIncluded) {
         this.prceTaxIncluded = prceTaxIncluded;
+    }
+
+    public String getProdLocation() {
+        return prodLocation;
+    }
+
+    public void setProdLocation(String prodLocation) {
+        this.prodLocation = prodLocation;
     }
 }
 

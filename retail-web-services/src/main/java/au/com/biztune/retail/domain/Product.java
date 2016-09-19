@@ -31,6 +31,7 @@ public class Product {
     private double stockQty;
     private double reservedQty;
     private Price sellPrice;
+    private String prodLocation;
 
     public long getId() {
         return id;
@@ -222,5 +223,13 @@ public class Product {
 
     public void setSellPrice(Price sellPrice) {
         this.sellPrice = sellPrice;
+    }
+
+    public String getProdLocation() {
+        return prodLocation;
+    }
+
+    public void setProdLocation(String prodLocation) {
+        this.prodLocation = prodLocation;
     }
 }

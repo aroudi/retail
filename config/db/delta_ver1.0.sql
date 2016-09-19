@@ -507,3 +507,11 @@ go
 alter table PURCHASE_ORDER_HEADER
   add POH_COMMENT VARCHAR(1000)
 go
+
+
+alter table PRODUCT
+ add PROD_LOCATION VARCHAR(1000)
+go
+
+
+--up to this point applied to JOMON

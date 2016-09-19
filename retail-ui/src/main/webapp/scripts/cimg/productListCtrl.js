@@ -20,14 +20,14 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseData
                 }
             },
             */
-            {field:'prodName', displayName:'Name',enableCellEdit:false, width:'20%',
+            {field:'prodName', displayName:'Name',enableCellEdit:false, width:'30%',
                 cellTooltip: function(row,col) {
                     return row.entity.prodName
                 }
             },
-            {field:'prodDesc', displayName:'Description',enableCellEdit:false, width:'25%',
+            {field:'prodLocation', displayName:'Stock Location',enableCellEdit:false, width:'20%',
                 cellTooltip: function(row,col) {
-                    return row.entity.prodDesc
+                    return row.entity.prodLocation
                 }
             },
             {field:'stockQty', displayName:'Available Qty',enableCellEdit:false, width:'10%'},

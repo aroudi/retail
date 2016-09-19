@@ -132,6 +132,7 @@ public class ProductServiceImpl implements ProductService {
             productForm.setStatus(product.getProdOrguLink().getStatus());
             productForm.setTaxRules(product.getProdOrguLink().getTaxRules());
             productForm.setSuppProdPrices(product.getSuppProdPriceList());
+            productForm.setProdLocation(product.getProdLocation());
 
             //we only DISPLAY SELL_PRICE TO THE USER
             if (product.getPriceList() != null && product.getPriceList().size() > 0) {
@@ -164,6 +165,7 @@ public class ProductServiceImpl implements ProductService {
         product.setProdOwnBrand(false);
         product.setProdBrand(productForm.getProdBrand());
         product.setProdClass(productForm.getProdClass());
+        product.setProdLocation(productForm.getProdLocation());
         productDao.insertProduct(product);
         logger.info("Product Object Inserted");
         return product;
@@ -183,6 +185,7 @@ public class ProductServiceImpl implements ProductService {
         product.setProdOwnBrand(false);
         product.setProdBrand(productForm.getProdBrand());
         product.setProdClass(productForm.getProdClass());
+        product.setProdLocation(productForm.getProdLocation());
         productDao.updateProduct(product);
         logger.info("Product Object updated");
         return product;
