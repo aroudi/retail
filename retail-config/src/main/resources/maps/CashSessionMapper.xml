@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.CashSessionDao">
+    <!-- result maps -->
+    <resultMap id="CashSessionMap" type="CashSession" >
+        <id column="CSSN_SESSION_ID" property="id" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="TILL_SHORT_DESC" property="tillShortDesc" />
+        <result column="CSSN_TRADING_DATE" property="cssnTradingDate" />
+        <result column="CSSN_START_DATE" property="cssnStartDate" />
+        <result column="CSSN_IMBALANCE_RSN" property="cssnImbalanceRsn" />
+        <result column="CSSN_TXN_NR" property="cssnTxnNr" />
+        <result column="CSSN_FORCED" property="cssnForced" />
+        <result column="CSSN_IS_OP_ACC" property="cssnIsOpAcc" />
+        <result column="CSSN_SAP_CTRL_NR" property="cssnSapCtrlNr" />
+        <result column="CSSN_EXP_END_DATE" property="cssnExpEndDate" />
+        <result column="CSSN_ACT_END_DATE" property="cssnActEndDate" />
+        <result column="CSSN_CURRENT_CASH" property="cssnCurrentCash" />
+        <!--association resultMap="au.com.biztune.retail.dao.CustomerDao.customerMap" property="customer" /-->
+        <association property="cssnStatus" column="CSSN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="cssnOperator" column="CSSN_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getUserById" />
+        <association property="cssnMethodClose" column="CSSN_METHOD_CLOSE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="cssnMethodOpen" column="CSSN_METHOD_OPEN" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="cssnCyclePeriod" column="CSSN_CYCLE_PERIOD" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+
+    </resultMap>
+
+    <resultMap id="SessionEventMap" type="SessionEvent" >
+        <id column="SEEV_ID" property="id" />
+        <result column="CSSN_SESSION_ID" property="cssnSessionId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="SEEV_EVENT_DATE" property="seevEventDate" />
+        <result column="SEEV_OPERATOR" property="seevOperator" />
+        <result column="SEEV_REFERENCE" property="seevReference" />
+        <result column="SEEV_COMMENT" property="seevComment" />
+        <result column="SEEV_REASON" property="seevReason" />
+        <result column="SEEV_COLLECT_DATE" property="seevCollectDate" />
+        <result column="SEEV_COLLECT_REF" property="seevCollectRef" />
+        <result column="SEEV_PICKUP_NR" property="seevPickupNr" />
+        <result column="SEEV_PAY_IN_SLIP" property="seevPayInSlip" />
+        <association property="seevEventType" column="SEEV_EVENT_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+
+    </resultMap>
+
+    <sql id="cashSessionColumns">
+        ${alias}.CSSN_SESSION_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.CSSN_OPERATOR,
+        ${alias}.CSSN_TRADING_DATE,
+        ${alias}.CSSN_STATUS,
+        ${alias}.CSSN_START_DATE,
+        ${alias}.CSSN_IMBALANCE_RSN,
+        ${alias}.CSSN_TXN_NR,
+        ${alias}.CSSN_FORCED,
+        ${alias}.CSSN_IS_OP_ACC,
+        ${alias}.CSSN_SAP_CTRL_NR,
+        ${alias}.CSSN_EXP_END_DATE,
+        ${alias}.CSSN_ACT_END_DATE,
+        ${alias}.CSSN_METHOD_OPEN,
+        ${alias}.CSSN_METHOD_CLOSE,
+        ${alias}.CSSN_CYCLE_PERIOD,
+        ${alias}.CSSN_CURRENT_CASH
+    </sql>
+
+    <sql id="sessionEventColumns">
+        ${alias}.SEEV_ID,
+        ${alias}.CSSN_SESSION_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.SEEV_EVENT_TYPE,
+        ${alias}.SEEV_EVENT_DATE,
+        ${alias}.SEEV_OPERATOR,
+        ${alias}.SEEV_REFERENCE,
+        ${alias}.SEEV_COMMENT,
+        ${alias}.SEEV_REASON,
+        ${alias}.SEEV_COLLECT_DATE,
+        ${alias}.SEEV_COLLECT_REF,
+        ${alias}.SEEV_PICKUP_NR,
+        ${alias}.SEEV_PAY_IN_SLIP
+    </sql>
+
+
+    <insert id="createSession" parameterType="CashSession" useGeneratedKeys="true" keyProperty="id" keyColumn="CSSN_SESSION_ID">
+        INSERT INTO CASH_SESSION(
+        ORGU_ID,
+        STORE_ID,
+        TILL_SHORT_DESC,
+        CSSN_OPERATOR,
+        CSSN_TRADING_DATE,
+        CSSN_STATUS,
+        CSSN_START_DATE,
+        CSSN_IMBALANCE_RSN,
+        CSSN_TXN_NR,
+        CSSN_FORCED,
+        CSSN_IS_OP_ACC,
+        CSSN_SAP_CTRL_NR,
+        CSSN_EXP_END_DATE,
+        CSSN_ACT_END_DATE,
+        CSSN_METHOD_OPEN,
+        CSSN_METHOD_CLOSE,
+        CSSN_CYCLE_PERIOD,
+        CSSN_CURRENT_CASH
+        ) VALUES (
+        #{orguId},
+        #{storeId}
+        <if test="tillShortDesc != null">
+            ,#{tillShortDesc}
+        </if>
+        <if test="tillShortDesc == null">
+            ,null
+        </if>
+        <if test="cssnOperator != null">
+            ,#{cssnOperator.id}
+        </if>
+        <if test="cssnOperator == null">
+            ,null
+        </if>
+
+        <if test="cssnTradingDate != null">
+            ,#{cssnTradingDate}
+        </if>
+        <if test="cssnTradingDate == null">
+            ,null
+        </if>
+        <if test="cssnStatus != null">
+            ,#{cssnStatus.id}
+        </if>
+        <if test="cssnStatus == null">
+            ,null
+        </if>
+        <if test="cssnStartDate != null">
+            ,#{cssnStartDate}
+        </if>
+        <if test="cssnStartDate == null">
+            ,null
+        </if>
+        <if test="cssnImbalanceRsn != null">
+            ,#{cssnImbalanceRsn}
+        </if>
+        <if test="cssnImbalanceRsn == null">
+            ,null
+        </if>
+        <if test="cssnTxnNr != null">
+            ,#{cssnTxnNr}
+        </if>
+        <if test="cssnTxnNr == null">
+            ,null
+        </if>
+        <if test="cssnForced != null">
+            ,#{cssnForced}
+        </if>
+        <if test="cssnForced == null">
+            ,null
+        </if>
+        <if test="cssnIsOpAcc != null">
+            ,#{cssnIsOpAcc}
+        </if>
+        <if test="cssnIsOpAcc == null">
+            ,null
+        </if>
+
+        <if test="cssnSapCtrlNr != null">
+            ,#{cssnSapCtrlNr}
+        </if>
+        <if test="cssnSapCtrlNr == null">
+            ,null
+        </if>
+        <if test="cssnExpEndDate != null">
+            ,#{cssnExpEndDate}
+        </if>
+        <if test="cssnExpEndDate == null">
+            ,null
+        </if>
+        <if test="cssnActEndDate != null">
+            ,#{cssnActEndDate}
+        </if>
+        <if test="cssnActEndDate == null">
+            ,null
+        </if>
+        <if test="cssnMethodOpen != null">
+            ,#{cssnMethodOpen.id}
+        </if>
+        <if test="cssnMethodOpen == null">
+            ,null
+        </if>
+        <if test="cssnMethodClose != null">
+            ,#{cssnMethodClose.id}
+        </if>
+        <if test="cssnMethodClose == null">
+            ,null
+        </if>
+        <if test="cssnCyclePeriod != null">
+            ,#{cssnCyclePeriod.id}
+        </if>
+        <if test="cssnCyclePeriod == null">
+            ,null
+        </if>
+        <if test="cssnCurrentCash != null">
+            ,#{cssnCurrentCash}
+        </if>
+        <if test="cssnCurrentCash == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <insert id="insertSessionEvent" parameterType="SessionEvent" useGeneratedKeys="true" keyProperty="id" keyColumn="SEEV_ID">
+        INSERT INTO SESSION_EVENT(
+        CSSN_SESSION_ID,
+        ORGU_ID,
+        STORE_ID,
+        SEEV_EVENT_TYPE,
+        SEEV_EVENT_DATE,
+        SEEV_OPERATOR,
+        SEEV_REFERENCE,
+        SEEV_COMMENT,
+        SEEV_REASON,
+        SEEV_COLLECT_DATE,
+        SEEV_COLLECT_REF,
+        SEEV_PICKUP_NR,
+        SEEV_PAY_IN_SLIP
+        ) VALUES (
+        #{cssnSessionId},
+        #{orguId},
+        #{storeId}
+        <if test="seevEventType != null">
+            ,#{seevEventType.id}
+        </if>
+        <if test="seevEventType == null">
+            ,null
+        </if>
+        <if test="seevEventDate != null">
+            ,#{seevEventDate}
+        </if>
+        <if test="seevEventDate == null">
+            ,null
+        </if>
+
+        <if test="seevOperator != null">
+            ,#{seevOperator}
+        </if>
+        <if test="seevOperator == null">
+            ,null
+        </if>
+        <if test="seevReference != null">
+            ,#{seevReference}
+        </if>
+        <if test="seevReference == null">
+            ,null
+        </if>
+        <if test="seevComment != null">
+            ,#{seevComment}
+        </if>
+        <if test="seevComment == null">
+            ,null
+        </if>
+        <if test="seevReason != null">
+            ,#{seevReason}
+        </if>
+        <if test="seevReason == null">
+            ,null
+        </if>
+        <if test="seevCollectDate != null">
+            ,#{seevCollectDate}
+        </if>
+        <if test="seevCollectDate == null">
+            ,null
+        </if>
+        <if test="seevCollectRef != null">
+            ,#{seevCollectRef}
+        </if>
+        <if test="seevCollectRef == null">
+            ,null
+        </if>
+        <if test="seevPickupNr != null">
+            ,#{seevPickupNr}
+        </if>
+        <if test="seevPickupNr == null">
+            ,null
+        </if>
+        <if test="seevPayInSlip != null">
+            ,#{seevPayInSlip}
+        </if>
+        <if test="seevPayInSlip == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+
+    <sql id="updateSession">
+        UPDATE CASH_SESSION SET
+        CSSN_SESSION_ID= #{id}
+        <if test="cssnStatus != null">
+            ,CSSN_STATUS = #{cssnStatus.id}
+        </if>
+        <if test="cssnImbalanceRsn != null">
+            ,CSSN_IMBALANCE_RSN = #{cssnImbalanceRsn}
+        </if>
+        <if test="cssnForced != null">
+            ,CSSN_FORCED = #{cssnForced}
+        </if>
+        <if test="cssnSapCtrlNr != null">
+            ,CSSN_SAP_CTRL_NR = #{cssnSapCtrlNr}
+        </if>
+        <if test="cssnActEndDate != null">
+            ,CSSN_ACT_END_DATE = #{cssnActEndDate}
+        </if>
+        <if test="cssnMethodOpen != null">
+            ,CSSN_METHOD_OPEN = #{cssnMethodOpen.id}
+        </if>
+        <if test="cssnMethodClose != null">
+            ,CSSN_METHOD_CLOSE = #{cssnMethodClose.id}
+        </if>
+        <if test="cssnCurrentCash != null">
+            ,CSSN_CURRENT_CASH = #{cssnCurrentCash}
+        </if>
+        WHERE CSSN_SESSION_ID = #{id}
+    </sql>
+
+
+    <!-- get only open or closed session. there must be only one open or closed session per user -->
+    <sql id="getCurrentCashSessionPerUser">
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_METHOD_OPEN = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED' ) AND CSSN_OPERATOR = #{value}
+    </sql>
+
+    <sql id="getAllCurrentCashSessions">
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_METHOD_OPEN = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED' )
+    </sql>
+
+    <sql id="getAllEndedCashSessions">
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_METHOD_OPEN = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_ENDED')
+    </sql>
+</mapper>

@@ -138,4 +138,8 @@
         <property name="mapperInterface" value="au.com.biztune.retail.dao.CustomerAccountDebtDao" />
     </bean>
 
+    <bean id="CashSessionDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.CashSessionDao" />
+    </bean>
 </beans>

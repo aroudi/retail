@@ -51,6 +51,12 @@
         <typeAlias type="au.com.biztune.retail.domain.Stock" alias="Stock" />
         <typeAlias type="au.com.biztune.retail.domain.StockEvent" alias="StockEvent" />
         <typeAlias type="au.com.biztune.retail.domain.CustomerAccountDebt" alias="CustomerAccountDebt" />
+        <typeAlias type="au.com.biztune.retail.domain.CashSession" alias="CashSession" />
+        <typeAlias type="au.com.biztune.retail.domain.SessionEvent" alias="SessionEvent" />
+        <typeAlias type="au.com.biztune.retail.domain.SessionEventDetail" alias="SessionEventDetail" />
+        <typeAlias type="au.com.biztune.retail.domain.SessionMedia" alias="SessionMedia" />
+        <typeAlias type="au.com.biztune.retail.domain.SessionTotal" alias="SessionTotal" />
+        <typeAlias type="au.com.biztune.retail.domain.TxnSessionLink" alias="TxnSessionLink" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />
@@ -80,5 +86,6 @@
         <mapper resource="maps/StockMapper.xml" />
         <mapper resource="maps/InvoiceMapper.xml" />
         <mapper resource="maps/CustomerAccountDebtMapper.xml" />
+        <mapper resource="maps/CashSessionMapper.xml" />
     </mappers>
 </configuration>
