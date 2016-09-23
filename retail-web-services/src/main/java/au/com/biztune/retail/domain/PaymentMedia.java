@@ -58,4 +58,12 @@ public class PaymentMedia {
     public void setPaymDisplayText(String paymDisplayText) {
         this.paymDisplayText = paymDisplayText;
     }
+
+    /**
+     * hashcode.
+     * @return id
+     */
+    public int hashCode() {
+        return (int) id;
+    }
 }

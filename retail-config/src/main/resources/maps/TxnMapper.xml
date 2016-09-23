@@ -70,6 +70,7 @@
         <result column="TXDE_TAX" property="txdeTax" />
         <result column="TXDE_VALUE_NET" property="txdeValueNet" />
         <result column="TXDE_QUANTITY_SOLD" property="txdeQuantitySold" />
+        <result column="TXDE_QUANTITY_SOLD" property="originalQuantity" /> <!-- we need this to figure out the change in quantity on sale order -->
         <result column="TXDE_QTY_BALANCE" property="txdeQtyBalance" />
         <result column="TXDE_QTY_TOTAL_INVOICED" property="txdeQtyTotalInvoiced" />
         <result column="TXDE_PRICE_SOLD" property="txdePriceSold" />

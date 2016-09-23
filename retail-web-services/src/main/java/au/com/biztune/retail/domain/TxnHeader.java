@@ -1,6 +1,7 @@
 package au.com.biztune.retail.domain;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +38,29 @@ public class TxnHeader {
     private long parentId;
     private String txhdDlvAddress;
     private AppUser user;
+
+    /**
+     * add txn detail to txn header.
+     * @param txnDetail txnDetail
+     */
+    public void addTxnDetail(TxnDetail txnDetail) {
+        if (txnDetails == null) {
+            txnDetails = new ArrayList<TxnDetail>();
+        }
+        txnDetails.add(txnDetail);
+    }
+
+    /**
+     * add txn media to txn header.
+     * @param txnMedia txnMedia
+     */
+    public void addTxnMedia(TxnMedia txnMedia) {
+        if (txnMedias == null) {
+            txnMedias = new ArrayList<TxnMedia>();
+        }
+        txnMedias.add(txnMedia);
+    }
+
     public long getId() {
         return id;
     }

@@ -26,6 +26,9 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
     @Autowired
     private SessionState sessionState;
+
+    @Autowired
+    private CashSessionService cashSessionService;
     /**
      * add/edit user.
      * @param appUser appUser
@@ -301,6 +304,7 @@ public class UserServiceImpl implements UserService {
                 appUser.setToken(token);
                 sessionState.addToken(token, appUser);
             }
+            cashSessionService.assignCashSessionToLoggedinUser(appUser);
             return appUser;
         } catch (Exception e) {
             logger.error("Exception in login user: ", e);

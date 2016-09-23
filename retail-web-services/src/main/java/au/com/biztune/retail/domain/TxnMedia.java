@@ -21,6 +21,48 @@ public class TxnMedia {
     private boolean txmdVoided;
     //use only for invoice. populated with media id from txn_media
     private long parentId;
+    private boolean newAdded;
+
+    /**
+     * get value based on txmdType.
+     * @return media valu
+     */
+    public double getValue() {
+        if (txmdType == null) {
+            return getTxmdAmountLocal();
+        }
+        if ("TXN_MEDIA_SALE".equals(txmdType.getCategoryCode())) {
+            return getTxmdAmountLocal();
+        }
+        if ("TXN_MEDIA_DEPOSIT".equals(txmdType.getCategoryCode())) {
+            return getTxmdAmountLocal();
+        }
+        if ("TXN_MEDIA_REFUND".equals(txmdType.getCategoryCode())) {
+            return getTxmdAmountLocal() * (-1);
+        }
+        return getTxmdAmountLocal();
+    }
+
+    /**
+     * get count based on txmdType.
+     * @return media count -- always 1 or -1
+     */
+    public int getCount() {
+        if (txmdType == null) {
+            return 1;
+        }
+        if ("TXN_MEDIA_SALE".equals(txmdType.getCategoryCode())) {
+            return 1;
+        }
+        if ("TXN_MEDIA_DEPOSIT".equals(txmdType.getCategoryCode())) {
+            return 1;
+        }
+        if ("TXN_MEDIA_REFUND".equals(txmdType.getCategoryCode())) {
+            return -1;
+        }
+        return 1;
+    }
+
 
     public long getId() {
         return id;
@@ -132,5 +174,13 @@ public class TxnMedia {
 
     public void setParentId(long parentId) {
         this.parentId = parentId;
+    }
+
+    public boolean isNewAdded() {
+        return newAdded;
+    }
+
+    public void setNewAdded(boolean newAdded) {
+        this.newAdded = newAdded;
     }
 }

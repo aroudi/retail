@@ -33,6 +33,7 @@ public class TxnDetailForm {
     //indicate if this item is going to be invoiced or not
     private boolean invoiced;
     private double txdeQtyTotalInvoiced;
+    private double originalQuantity;
 
     public long getId() {
         return id;
@@ -216,5 +217,13 @@ public class TxnDetailForm {
 
     public void setTxdeQtyTotalInvoiced(double txdeQtyTotalInvoiced) {
         this.txdeQtyTotalInvoiced = txdeQtyTotalInvoiced;
+    }
+
+    public double getOriginalQuantity() {
+        return originalQuantity;
+    }
+
+    public void setOriginalQuantity(double originalQuantity) {
+        this.originalQuantity = originalQuantity;
     }
 }

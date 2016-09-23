@@ -25,6 +25,8 @@ public class CashSession {
     private ConfigCategory cssnMethodClose;
     private ConfigCategory cssnCyclePeriod;
     private double cssnCurrentCash;
+    private double cssnTotalFloat;
+    private double cssnTotalPickup;
 
     public long getId() {
         return id;
@@ -176,5 +178,21 @@ public class CashSession {
 
     public void setCssnCurrentCash(double cssnCurrentCash) {
         this.cssnCurrentCash = cssnCurrentCash;
+    }
+
+    public double getCssnTotalFloat() {
+        return cssnTotalFloat;
+    }
+
+    public void setCssnTotalFloat(double cssnTotalFloat) {
+        this.cssnTotalFloat = cssnTotalFloat;
+    }
+
+    public double getCssnTotalPickup() {
+        return cssnTotalPickup;
+    }
+
+    public void setCssnTotalPickup(double cssnTotalPickup) {
+        this.cssnTotalPickup = cssnTotalPickup;
     }
 }

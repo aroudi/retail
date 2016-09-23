@@ -30,7 +30,7 @@ public class QueueManager implements Runnable
 	
     //private volatile static boolean transmitFlag = false;
     public static long onlineThreadTimeToDie = 1000;
-    public static int maxAttempt = 2;
+    public static int maxAttempt = 1;
     private final Logger logger = LoggerFactory.getLogger(QueueManager.class);
 
     public QueueManager() {
@@ -87,12 +87,14 @@ public class QueueManager implements Runnable
                 }
                 finally{
                   // on case of fail
+                  /*
                   if ( (response == null) || ((response != null && response.getMessage()!=null) && ( !response.getMessage().equals(IdBConstant.BAD_REQUEST) || !response.getMessage().equals(IdBConstant.BAD_REQUEST ) && !( response.isSucceeded()) )))
                   {
                       if (item.getAttempt() <= maxAttempt) {
                           queue.offer(item);
                       }
                   }
+                  */
                 }
             }
         }

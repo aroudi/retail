@@ -32,6 +32,9 @@ public class TxnDetail {
     private double txdeDiscPrice;
     private long txdeReturnOrguId;
     private long txdeReturnStoreId;
+    private boolean invoiced;
+    private double originalQuantity;
+    private boolean newAdded;
 
     public long getId() {
         return id;
@@ -255,5 +258,29 @@ public class TxnDetail {
 
     public void setTxdeQtyTotalInvoiced(double txdeQtyTotalInvoiced) {
         this.txdeQtyTotalInvoiced = txdeQtyTotalInvoiced;
+    }
+
+    public boolean isInvoiced() {
+        return invoiced;
+    }
+
+    public void setInvoiced(boolean invoiced) {
+        this.invoiced = invoiced;
+    }
+
+    public double getOriginalQuantity() {
+        return originalQuantity;
+    }
+
+    public void setOriginalQuantity(double originalQuantity) {
+        this.originalQuantity = originalQuantity;
+    }
+
+    public boolean isNewAdded() {
+        return newAdded;
+    }
+
+    public void setNewAdded(boolean newAdded) {
+        this.newAdded = newAdded;
     }
 }

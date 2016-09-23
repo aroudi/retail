@@ -10,8 +10,6 @@ public class SessionTotal {
     private PaymentMedia paymentMedia;
     private double mediaTotalCount;
     private double mediaTotalValue;
-    private double floatTotalValue;
-    private double pickupTotalValue;
 
     public long getId() {
         return id;
@@ -61,19 +59,4 @@ public class SessionTotal {
         this.mediaTotalValue = mediaTotalValue;
     }
 
-    public double getFloatTotalValue() {
-        return floatTotalValue;
-    }
-
-    public void setFloatTotalValue(double floatTotalValue) {
-        this.floatTotalValue = floatTotalValue;
-    }
-
-    public double getPickupTotalValue() {
-        return pickupTotalValue;
-    }
-
-    public void setPickupTotalValue(double pickupTotalValue) {
-        this.pickupTotalValue = pickupTotalValue;
-    }
 }
