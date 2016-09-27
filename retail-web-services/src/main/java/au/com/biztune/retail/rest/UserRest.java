@@ -219,7 +219,7 @@ public class UserRest {
                 logger.info("logout 1");
                 final AppUser appUser = (AppUser) principal;
                 logger.info("logout 2");
-                userService.logOut(appUser.getToken());
+                userService.logOut(appUser);
             }
         } catch (Exception e) {
             logger.error ("Error in retrieving Access Point List :", e);

@@ -459,49 +459,6 @@ public class TransactionServiceImpl implements TransactionService {
         return preFix + DateUtil.dateToString(currentDate, "yyyy-MM-dd") + "-" + txnId;
     }
 
-    /**
-     * update stock quantity.
-     * @param txnHeader txnHeader
-     * @param txnDetail txnDetail
-     */
-    public void updateStockQuantity(TxnHeader txnHeader, TxnDetail txnDetail) {
-        try {
-            //get current user from security context.
-            final Principal principal = securityContext.getUserPrincipal();
-            AppUser appUser = null;
-            if (principal instanceof AppUser) {
-                appUser = (AppUser) principal;
-            }
-
-            String txnType = null;
-            if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_QUOTE)) {
-                txnType = IdBConstant.TXN_TYPE_QUOTE;
-            } else if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
-                txnType = IdBConstant.TXN_TYPE_SALE;
-            } else if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
-                txnType = IdBConstant.TXN_TYPE_INVOICE;
-            }
-            final Timestamp currentTime = new Timestamp(new Date().getTime());
-            final StockEvent stockEvent = new StockEvent();
-            stockEvent.setTxnTypeConst(txnType);
-            stockEvent.setStckQty(txnDetail.getTxdeQuantitySold());
-            stockEvent.setUnomId(txnDetail.getUnitOfMeasure().getId());
-            //stockEvent.setSupplierId();
-            stockEvent.setCostPrice(txnDetail.getTxdeValueLine());
-            stockEvent.setProdId(txnDetail.getProduct().getId());
-            stockEvent.setSellPrice(txnDetail.getTxdeValueNet());
-            stockEvent.setStckEvntDate(currentTime);
-            stockEvent.setTxnDate(txnHeader.getTxhdTradingDate());
-            stockEvent.setTxnHeader(txnHeader.getId());
-            stockEvent.setTxnLine(txnDetail.getId());
-            stockEvent.setUserId(appUser.getId());
-            stockEvent.setTxnNumber(txnHeader.getTxhdTxnNr());
-            stockEvent.setOrguId(sessionState.getOrgUnit().getId());
-            stockService.pushStockEvent(stockEvent);
-        } catch (Exception e) {
-            logger.error("Exception in creating stock event:", e);
-        }
-    }
 
     /**
      * create invoice from transaction.
@@ -599,7 +556,6 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
                 txnDetail.setTxdeParentDetail(txnDetailForm.getId());
                 invoiceDao.insertInvoiceDetail(txnDetail);
-                updateStockQuantity(txnHeader, txnDetail);
                 //update balance on Sale Order
                 txnDetailMain = new TxnDetail();
                 txnDetailMain.setId(txnDetailForm.getId());
@@ -856,6 +812,7 @@ public class TransactionServiceImpl implements TransactionService {
                 if (principal instanceof AppUser) {
                     appUser = (AppUser) principal;
                     txnHeader.setTxhdOperator(appUser.getId());
+                    txnHeader.setUser(appUser);
                 }
                 //save it to database.
                 txnDao.insertTxnHeader(txnHeader);

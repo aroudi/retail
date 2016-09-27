@@ -2,6 +2,7 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.Stock;
 import au.com.biztune.retail.domain.StockEvent;
+import au.com.biztune.retail.domain.TxnHeader;
 
 /**
  * Created by arash on 26/07/2016.
@@ -25,4 +26,10 @@ public interface StockService {
      * @param stockEvent stockEvent
      */
     void pushStockEvent (StockEvent stockEvent);
+
+    /**
+     * update stock quantity.
+     * @param txnHeader txnHeader
+     */
+    void processTxnForStockUpdate(TxnHeader txnHeader);
 }

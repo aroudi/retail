@@ -1,5 +1,6 @@
 package au.com.biztune.retail.dao;
 
+import au.com.biztune.retail.domain.TaxLegVariance;
 import au.com.biztune.retail.domain.TaxRule;
 
 import java.util.List;
@@ -28,4 +29,10 @@ public interface TaxRuleDao {
      */
     List<TaxRule> getTaxRulesOfProduct(long prouId);
 
+    /**
+     * get TaxLegVariance By Id.
+     * @param id id
+     * @return TaxLegVariance.
+     */
+    TaxLegVariance getTaxLegVarianceById(long id);
 }

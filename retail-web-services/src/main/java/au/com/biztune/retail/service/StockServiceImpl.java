@@ -2,9 +2,7 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.ConfigCategoryDao;
 import au.com.biztune.retail.dao.StockDao;
-import au.com.biztune.retail.domain.ConfigCategory;
-import au.com.biztune.retail.domain.Stock;
-import au.com.biztune.retail.domain.StockEvent;
+import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.processor.StockProcessor;
 import au.com.biztune.retail.processor.StockRequest;
 import au.com.biztune.retail.session.SessionState;
@@ -14,6 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by arash on 25/07/2016.
@@ -31,39 +32,64 @@ public class StockServiceImpl implements StockService {
     private StockProcessor stockProcessor;
     @Autowired
     private QueueManager stockProcessingQueue;
+
     /**
-     * update stock qty per stock event.
-     * @param stockEvent stockEvent
+     * update stock quantity.
+     * @param txnHeader txnHeader
      */
-    private void updateStockQty(StockEvent stockEvent) {
+    public void processTxnForStockUpdate(TxnHeader txnHeader) {
         try {
-            //check if we can find product in stock. if found modify stock qty otherwise add it to the stock.
-            Stock stock = stockDao.checkStockForProduct(stockEvent.getProdId(), stockEvent.getOrguId(), stockEvent.getStckCond(), stockEvent.getStckCat(), stockEvent.getStckLocId());
-            if (stock == null) {
-                stock = new Stock();
-                stock.setOrguIdLocation(sessionState.getOrgUnit().getId());
-                stock.setOrguIdRespbility(sessionState.getOrgUnit().getId());
-                stock.setPrgpId(stockEvent.getPrgpId());
-                stock.setProdId(stockEvent.getProdId());
-                stock.setSelcId(stockEvent.getSelcId());
-                stock.setStckCat(stockEvent.getStckCat());
-                stock.setStckCond(stockEvent.getStckCond());
-                stock.setStckLocnId(stockEvent.getStckLocId());
-                stock.setSupplierId(stockEvent.getSupplierId());
-                stock.setUnomId(stockEvent.getUnomId());
-                stock.setStckQty(stockEvent.getStckQty());
-                stockDao.insertStock(stock);
-            } else {
-                stock.setStckQty(stock.getStckQty() + stockEvent.getStckQty());
-                stockDao.updateStockQty(stock);
+            //update stock only for txn_invoice and sale order.
+            if (!(txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)
+                    || txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)))
+            {
+                return;
             }
-            //insert stock event
-            stockEvent.setStckId(stock.getId());
-            stockDao.insertStockEvent(stockEvent);
+
+            String txnType = null;
+            if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
+                txnType = IdBConstant.TXN_TYPE_SALE;
+            } else if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
+                txnType = IdBConstant.TXN_TYPE_INVOICE;
+            }
+
+            final Timestamp currentTime = new Timestamp(new Date().getTime());
+            for (TxnDetail txnDetail:txnHeader.getTxnDetails()) {
+                if (txnDetail == null) {
+                    continue;
+                }
+
+                final StockEvent stockEvent = new StockEvent();
+                stockEvent.setTxnTypeConst(txnType);
+                if (txnType.equals(IdBConstant.TXN_TYPE_INVOICE)) {
+                    stockEvent.setStckQty(txnDetail.getTxdeQtyInvoiced());
+
+                } else if (txnType.equals(IdBConstant.TXN_TYPE_SALE)) {
+                    stockEvent.setStckQty(txnDetail.getTxdeQuantitySold() - txnDetail.getOriginalQuantity());
+                    //if item is voided then return the item to saleable stock.
+                    if (txnDetail.isTxdeItemVoid()) {
+                        stockEvent.setStckQty(-txnDetail.getOriginalQuantity());
+                    }
+                }
+                stockEvent.setUnomId(txnDetail.getUnitOfMeasure().getId());
+                //stockEvent.setSupplierId();
+                stockEvent.setCostPrice(txnDetail.getTxdeValueLine());
+                stockEvent.setProdId(txnDetail.getProduct().getId());
+                stockEvent.setSellPrice(txnDetail.getTxdeValueNet());
+                stockEvent.setStckEvntDate(currentTime);
+                stockEvent.setTxnDate(txnHeader.getTxhdTradingDate());
+                stockEvent.setTxnHeader(txnHeader.getId());
+                stockEvent.setTxnLine(txnDetail.getId());
+                stockEvent.setUserId(txnHeader.getUser().getId());
+                stockEvent.setTxnNumber(txnHeader.getTxhdTxnNr());
+                stockEvent.setOrguId(sessionState.getOrgUnit().getId());
+                processStockEvent(stockEvent);
+            }
         } catch (Exception e) {
-            logger.error("Exception in updating stock qty:", e);
+            logger.error("Exception in creating stock event:", e);
         }
     }
+
 
     /**
      * process stock event.
@@ -126,19 +152,25 @@ public class StockServiceImpl implements StockService {
                     updateStockQty(stockEvent);
                     break;
                 case IdBConstant.TXN_TYPE_INVOICE :
-                    stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_SALEABLE);
-                    stockEvent.setStckQty(-stockEvent.getStckQty());
+
+                    stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_RESERVED);
                     stockEvent.setStckCat(stockCategory.getId());
+                    stockEvent.setStckQty(-stockEvent.getStckQty());
                     updateStockQty(stockEvent);
+
                     break;
-                /*TODO: WHAT STOCK TRANSACTION SHOULD BE APPLIED FOR TXN_TYPE_SALE???
                 case IdBConstant.TXN_TYPE_SALE :
                     stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_SALEABLE);
                     stockEvent.setStckQty(-stockEvent.getStckQty());
                     stockEvent.setStckCat(stockCategory.getId());
                     updateStockQty(stockEvent);
+
+                    stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_RESERVED);
+                    stockEvent.setStckCat(stockCategory.getId());
+                    stockEvent.setStckQty(stockEvent.getStckQty());
+                    updateStockQty(stockEvent);
+
                     break;
-                */
                 case IdBConstant.TXN_TYPE_REFUND :
                     //TODO: for txn_refund we need to engage the reason to indicate which stock category should goes in.
                     stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_SALEABLE);
@@ -183,4 +215,40 @@ public class StockServiceImpl implements StockService {
             return null;
         }
     }
+
+    /**
+     * update stock qty per stock event.
+     * @param stockEvent stockEvent
+     */
+    private void updateStockQty(StockEvent stockEvent) {
+        try {
+            //check if we can find product in stock. if found modify stock qty otherwise add it to the stock.
+            Stock stock = stockDao.checkStockForProduct(stockEvent.getProdId(), stockEvent.getOrguId(), stockEvent.getStckCond(), stockEvent.getStckCat(), stockEvent.getStckLocId());
+            if (stock == null) {
+                stock = new Stock();
+                stock.setOrguIdLocation(sessionState.getOrgUnit().getId());
+                stock.setOrguIdRespbility(sessionState.getOrgUnit().getId());
+                stock.setPrgpId(stockEvent.getPrgpId());
+                stock.setProdId(stockEvent.getProdId());
+                stock.setSelcId(stockEvent.getSelcId());
+                stock.setStckCat(stockEvent.getStckCat());
+                stock.setStckCond(stockEvent.getStckCond());
+                stock.setStckLocnId(stockEvent.getStckLocId());
+                stock.setSupplierId(stockEvent.getSupplierId());
+                stock.setUnomId(stockEvent.getUnomId());
+                stock.setStckQty(stockEvent.getStckQty());
+                stockDao.insertStock(stock);
+            } else {
+                stock.setStckQty(stock.getStckQty() + stockEvent.getStckQty());
+                stockDao.updateStockQty(stock);
+            }
+            //insert stock event
+            stockEvent.setStckId(stock.getId());
+            stockDao.insertStockEvent(stockEvent);
+        } catch (Exception e) {
+            logger.error("Exception in updating stock qty:", e);
+        }
+    }
+
+
 }

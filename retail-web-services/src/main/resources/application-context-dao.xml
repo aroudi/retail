@@ -142,4 +142,10 @@
         <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
         <property name="mapperInterface" value="au.com.biztune.retail.dao.CashSessionDao" />
     </bean>
+
+    <bean id="TotalerDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.TotalerDao" />
+    </bean>
+
 </beans>

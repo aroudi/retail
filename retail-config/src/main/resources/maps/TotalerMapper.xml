@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.TotalerDao">
+    <!-- result maps -->
+    <resultMap id="totalSaleOperatorMap" type="TotalSaleOperator" >
+        <id column="TOOP_ID" property="id" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="TOOP_TRADING_DATE" property="toopTradingDate" />
+        <result column="TOOP_SALE_QTY" property="toopSaleQty" />
+        <result column="TOOP_ITEMS_VALUE" property="toopItemsValue" />
+        <result column="TOOP_PROFIT_VALUE" property="toopProfitValue" />
+        <result column="TOOP_TAXED_VALUE" property="toopTaxedValue" />
+        <result column="TOOP_TAX_PAID" property="toopTaxPaid" />
+        <result column="TOOP_SALE_VALUE" property="toopSaleValue" />
+        <result column="TOOP_REFUND_QTY" property="toopRefundQty" />
+        <result column="TOOP_REFUND_VALUE" property="toopRefundValue" />
+        <result column="TOOP_DISCOUNT_VALUE" property="toopDiscountValue" />
+        <result column="TOOP_VOID_QTY" property="toopVoidQty" />
+        <result column="TOOP_VOID_VALUE" property="toopVoidValue" />
+        <association property="toopOperator" column="TOOP_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getUserById" />
+        <association property="toopTxnType" column="TOOP_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+    </resultMap>
+
+    <resultMap id="totalTaxGroupMap" type="TotalTaxGroup" >
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="TOTG_TRADING_DATE" property="totgTradingDate" />
+        <result column="TOTG_TXGP_CODE" property="totgTxgpCode" />
+        <result column="TOTG_TAXED_VALUE" property="totgTaxedValue" />
+        <result column="TOTG_TAX" property="totgTax" />
+        <result column="TOTG_TOT_SALES_QTY" property="totgTotSalesQty" />
+        <association property="taxLegVariance" column="TOTG_TXRL_ID" select="au.com.biztune.retail.dao.TaxRuleDao.getTaxLegVarianceById" />
+    </resultMap>
+
+    <resultMap id="totalMediaOperatorMap" type="TotalMediaOperator" >
+        <id column="TOMO_ID" property="id" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="TOMO_TRADING_DATE" property="tomoTradingDate" />
+        <result column="MEDT_ID" property="medtId" />
+        <result column="TOMO_SALE_QTY" property="tomoSaleQty" />
+        <result column="TOMO_SALE_VALUE" property="tomoSaleValue" />
+        <result column="TOMO_REFUND_QTY" property="tomoRefundQty" />
+        <result column="TOMO_REFUMND_VALUE" property="tomoRefundValue" />
+        <result column="TOMO_CASHBACK_QTY" property="tomoCashbackQty" />
+        <result column="TOMO_CASHBACK_VALUE" property="tomoCashbackValue" />
+        <association property="toopOperator" column="TOMO_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getUserById" />
+        <association property="paymentMedia" column="PAYM_ID" select="au.com.biztune.retail.dao.PaymentMediaDao.getPaymentMediaPerId" />
+    </resultMap>
+
+
+    <sql id="totalSaleOperatorColumns">
+        ${alias}.TOOP_ID,
+        ${alias}.TOOP_OPERATOR,
+        ${alias}.TOOP_TXN_TYPE,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.TOOP_TRADING_DATE,
+        ${alias}.TOOP_SALE_QTY,
+        ${alias}.TOOP_ITEMS_VALUE,
+        ${alias}.TOOP_PROFIT_VALUE,
+        ${alias}.TOOP_TAXED_VALUE,
+        ${alias}.TOOP_TAX_PAID,
+        ${alias}.TOOP_SALE_VALUE,
+        ${alias}.TOOP_REFUND_QTY,
+        ${alias}.TOOP_REFUND_VALUE,
+        ${alias}.TOOP_DISCOUNT_VALUE,
+        ${alias}.TOOP_VOID_QTY,
+        ${alias}.TOOP_VOID_VALUE
+    </sql>
+
+    <sql id="totalTaxGroupColumns">
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.TOTG_TXRL_ID,
+        ${alias}.TOTG_TRADING_DATE,
+        ${alias}.TOTG_TXGP_CODE,
+        ${alias}.TOTG_TAXED_VALUE,
+        ${alias}.TOTG_TAX,
+        ${alias}.TOTG_TOT_SALES_QTY
+    </sql>
+
+    <sql id="totalMediaOperatorColumns">
+        ${alias}.TOMO_ID,
+        ${alias}.TOMO_OPERATOR,
+        ${alias}.TOOP_TXN_TYPE,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.TOMO_TRADING_DATE,
+        ${alias}.MEDT_ID,
+        ${alias}.PAYM_ID,
+        ${alias}.TOMO_SALE_QTY,
+        ${alias}.TOMO_SALE_VALUE,
+        ${alias}.TOMO_REFUND_QTY,
+        ${alias}.TOMO_REFUMND_VALUE,
+        ${alias}.TOMO_CASHBACK_QTY,
+        ${alias}.TOMO_CASHBACK_VALUE
+    </sql>
+
+    <insert id="insertTotalSaleOperator" parameterType="TotalSaleOperator" useGeneratedKeys="true" keyProperty="id" keyColumn="TOOP_ID">
+        INSERT INTO TOTAL_SALE_OPERATOR(
+        TOOP_OPERATOR,
+        TOOP_TXN_TYPE,
+        ORGU_ID,
+        STORE_ID,
+        TOOP_TRADING_DATE,
+        TOOP_SALE_QTY,
+        TOOP_ITEMS_VALUE,
+        TOOP_PROFIT_VALUE,
+        TOOP_TAXED_VALUE,
+        TOOP_TAX_PAID,
+        TOOP_SALE_VALUE,
+        TOOP_REFUND_QTY,
+        TOOP_REFUND_VALUE,
+        TOOP_DISCOUNT_VALUE,
+        TOOP_VOID_QTY,
+        TOOP_VOID_VALUE
+        ) VALUES (
+        #{toopOperator.id},
+        #{toopTxnType.id},
+        #{orguId},
+        #{storeId},
+        #{toopTradingDate}
+        <if test="toopSaleQty != null">
+            ,#{toopSaleQty}
+        </if>
+        <if test="toopSaleQty == null">
+            ,null
+        </if>
+        <if test="toopItemsValue != null">
+            ,#{toopItemsValue}
+        </if>
+        <if test="toopItemsValue == null">
+            ,null
+        </if>
+        <if test="toopProfitValue != null">
+            ,#{toopProfitValue}
+        </if>
+        <if test="toopProfitValue == null">
+            ,null
+        </if>
+        <if test="toopTaxedValue != null">
+            ,#{toopTaxedValue}
+        </if>
+        <if test="toopTaxedValue == null">
+            ,null
+        </if>
+        <if test="toopTaxPaid != null">
+            ,#{toopTaxPaid}
+        </if>
+        <if test="toopTaxPaid == null">
+            ,null
+        </if>
+        <if test="toopSaleValue != null">
+            ,#{toopSaleValue}
+        </if>
+        <if test="toopSaleValue == null">
+            ,null
+        </if>
+        <if test="toopRefundQty != null">
+            ,#{toopRefundQty}
+        </if>
+        <if test="toopRefundQty == null">
+            ,null
+        </if>
+        <if test="toopRefundValue != null">
+            ,#{toopRefundValue}
+        </if>
+        <if test="toopRefundValue == null">
+            ,null
+        </if>
+        <if test="toopDiscountValue != null">
+            ,#{toopDiscountValue}
+        </if>
+        <if test="toopDiscountValue == null">
+            ,null
+        </if>
+        <if test="toopVoidQty != null">
+            ,#{toopVoidQty}
+        </if>
+        <if test="toopVoidQty == null">
+            ,null
+        </if>
+        <if test="toopVoidValue != null">
+            ,#{toopVoidValue}
+        </if>
+        <if test="toopVoidValue == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <insert id="insertTotalTaxGroup" parameterType="TotalTaxGroup">
+        INSERT INTO TOTAL_TAX_GROUP(
+        ORGU_ID,
+        STORE_ID,
+        TOTG_TXRL_ID,
+        TOTG_TRADING_DATE,
+        TOTG_TXGP_CODE,
+        TOTG_TAXED_VALUE,
+        TOTG_TAX,
+        TOTG_TOT_SALES_QTY
+        ) VALUES (
+        #{orguId},
+        #{storeId},
+        #{taxLegVariance.id}
+        <if test="totgTradingDate != null">
+            ,#{totgTradingDate}
+        </if>
+        <if test="totgTradingDate == null">
+            ,null
+        </if>
+        <if test="totgTxgpCode != null">
+            ,#{totgTxgpCode}
+        </if>
+        <if test="totgTxgpCode == null">
+            ,null
+        </if>
+        <if test="totgTaxedValue != null">
+            ,#{totgTaxedValue}
+        </if>
+        <if test="totgTaxedValue == null">
+            ,null
+        </if>
+        <if test="totgTax != null">
+            ,#{totgTax}
+        </if>
+        <if test="totgTax == null">
+            ,null
+        </if>
+        <if test="totgTotSalesQty != null">
+            ,#{totgTotSalesQty}
+        </if>
+        <if test="totgTotSalesQty == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <insert id="insertTotalMediaOperator" parameterType="TotalMediaOperator" useGeneratedKeys="true" keyProperty="id" keyColumn="TOMO_ID">
+        INSERT INTO TOTAL_MEDIA_OPERATOR(
+        TOMO_OPERATOR,
+        ORGU_ID,
+        STORE_ID,
+        TOMO_TRADING_DATE,
+        MEDT_ID,
+        PAYM_ID,
+        TOMO_SALE_QTY,
+        TOMO_SALE_VALUE,
+        TOMO_REFUND_QTY,
+        TOMO_REFUMND_VALUE,
+        TOMO_CASHBACK_QTY,
+        TOMO_CASHBACK_VALUE
+        ) VALUES (
+        #{tomoOperator.id},
+        #{orguId},
+        #{storeId},
+        #{tomoTradingDate}
+        <if test="medtId != null">
+            ,#{medtId}
+        </if>
+        <if test="medtId == null">
+            ,null
+        </if>
+        <if test="paymentMedia != null">
+            ,#{paymentMedia.id}
+        </if>
+        <if test="paymentMedia == null">
+            ,null
+        </if>
+        <if test="tomoSaleQty != null">
+            ,#{tomoSaleQty}
+        </if>
+        <if test="tomoSaleQty == null">
+            ,null
+        </if>
+        <if test="tomoSaleValue != null">
+            ,#{tomoSaleValue}
+        </if>
+        <if test="tomoSaleValue == null">
+            ,null
+        </if>
+        <if test="tomoRefundQty != null">
+            ,#{tomoRefundQty}
+        </if>
+        <if test="tomoRefundQty == null">
+            ,null
+        </if>
+        <if test="tomoRefundValue != null">
+            ,#{tomoRefundValue}
+        </if>
+        <if test="tomoRefundValue == null">
+            ,null
+        </if>
+        <if test="tomoCashbackQty != null">
+            ,#{tomoCashbackQty}
+        </if>
+        <if test="tomoCashbackQty == null">
+            ,null
+        </if>
+        <if test="tomoCashbackValue != null">
+            ,#{tomoCashbackValue}
+        </if>
+        <if test="tomoCashbackValue == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+</mapper>

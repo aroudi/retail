@@ -57,6 +57,9 @@
         <typeAlias type="au.com.biztune.retail.domain.SessionMedia" alias="SessionMedia" />
         <typeAlias type="au.com.biztune.retail.domain.SessionTotal" alias="SessionTotal" />
         <typeAlias type="au.com.biztune.retail.domain.TxnSessionLink" alias="TxnSessionLink" />
+        <typeAlias type="au.com.biztune.retail.domain.TotalMediaOperator" alias="TotalMediaOperator" />
+        <typeAlias type="au.com.biztune.retail.domain.TotalSaleOperator" alias="TotalSaleOperator" />
+        <typeAlias type="au.com.biztune.retail.domain.TotalTaxGroup" alias="TotalTaxGroup" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />
@@ -87,5 +90,6 @@
         <mapper resource="maps/InvoiceMapper.xml" />
         <mapper resource="maps/CustomerAccountDebtMapper.xml" />
         <mapper resource="maps/CashSessionMapper.xml" />
+        <mapper resource="maps/TotalerMapper.xml" />
     </mappers>
 </configuration>

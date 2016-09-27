@@ -84,8 +84,8 @@ public interface UserService {
 
     /**
      * logout user from the system. remove the token.
-     * @param token token
+     * @param appUser appUser
      */
-    void logOut(String token);
+    void logOut(AppUser appUser);
 
 }

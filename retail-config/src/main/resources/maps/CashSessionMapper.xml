@@ -691,7 +691,7 @@
         SELECT
         <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
         FROM
-        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_METHOD_OPEN = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED' ) AND CSSN_OPERATOR = #{value}
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED' ) AND CSSN_OPERATOR = #{value}
     </select>
 
     <select id="getAllCurrentCashSessions" resultMap="CashSessionMap" >

@@ -729,7 +729,7 @@
           <include refid="txnDetailColumns"><property name="alias" value="txde"/></include>
         FROM
           TXN_DETAIL txde
-        WHERE txde.txhd_id=#{value}
+        WHERE txde.txhd_id=#{value} and txde.TXDE_ITEM_VOID = 0;
     </select>
 
     <select id="getTxnMediaPerTxhdId" resultMap="txnMediaMap" >

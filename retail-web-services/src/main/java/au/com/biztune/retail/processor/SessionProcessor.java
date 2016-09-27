@@ -4,6 +4,8 @@ import au.com.biztune.retail.dao.CashSessionDao;
 import au.com.biztune.retail.dao.ConfigCategoryDao;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.service.CashSessionService;
+import au.com.biztune.retail.service.StockService;
+import au.com.biztune.retail.service.TotalerService;
 import au.com.biztune.retail.util.IdBConstant;
 import au.com.biztune.retail.util.queuemanager.Processor;
 import au.com.biztune.retail.util.queuemanager.Request;
@@ -34,6 +36,12 @@ public class SessionProcessor implements Processor {
 
     @Autowired
     private CashSessionService cashSessionService;
+
+    @Autowired
+    private TotalerService totalerService;
+
+    @Autowired
+    private StockService stockService;
     /**
      * process the incoming session requests.
      * @param request request
@@ -50,7 +58,15 @@ public class SessionProcessor implements Processor {
                 response.setMessage("BAD ONSET REQUEST");
                 return response;
             }
+            //process session figures
             doSessionProcess(sessionRequest);
+
+            //process totaller
+            totalerService.extractTotalFiguresFromTxn(sessionRequest.getTxnHeader());
+
+            //update stock
+            stockService.processTxnForStockUpdate(sessionRequest.getTxnHeader());
+
             response.setSucceeded(true);
             return response;
         } catch (Exception e) {

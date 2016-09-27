@@ -314,10 +314,11 @@ public class UserServiceImpl implements UserService {
 
     /**
      * logout user from the system. remove the token.
-     * @param token token
+     * @param appUser appUser
      */
-    public void logOut(String token) {
-        sessionState.removeToken(token);
+    public void logOut(AppUser appUser) {
+        sessionState.removeToken(appUser.getToken());
+        cashSessionService.closeCashSessionForLoggedOutUser(appUser);
     }
     /**
      * generate randowm token for user.
