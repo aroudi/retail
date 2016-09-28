@@ -182,12 +182,16 @@ public class TransactionServiceImpl implements TransactionService {
                 } else {
                     txnDetail.setId(txnDetailForm.getId());
                     txnDetail.setNewAdded(false);
+                    txnDetail.setTxdeDetailType(txnDetailForm.getTxdeDetailType());
                     txnDao.updateTxnDetail(txnDetail);
                 }
                 txnDetailForm.setId(txnDetail.getId());
                 txhdValueGross = txhdValueGross + txnDetail.getTxdeValueGross() * txnDetail.getTxdeQuantitySold();
                 txhdValueNett = txhdValueNett + txnDetail.getTxdeValueNet() * txnDetail.getTxdeQuantitySold();
                 txhdValueTax = txhdValueTax + txnDetail.getTxdeTax() * txnDetail.getTxdeValueGross() * txnDetail.getTxdeQuantitySold();;
+                txnDetail.setInvoiced(txnDetailForm.isInvoiced());
+                txnDetail.setTxdeQtyInvoiced(txnDetailForm.getTxdeQtyInvoiced());
+                txnDetail.setOriginalQuantity(txnDetailForm.getOriginalQuantity());
                 txnHeader.addTxnDetail(txnDetail);
                 //TODO: update stock for sale order
                 /*

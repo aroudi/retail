@@ -663,6 +663,18 @@
         WHERE CSSN_SESSION_ID = #{id}
     </update>
 
+    <update id="updateCashSessionTotalFloat" parameterType="CashSession">
+        UPDATE CASH_SESSION SET
+            CSSN_TOTAL_FLOAT = #{cssnTotalFloat}
+        WHERE CSSN_SESSION_ID = #{id}
+    </update>
+
+    <update id="updateCashSessionTotalPickup" parameterType="CashSession">
+        UPDATE CASH_SESSION SET
+        CSSN_TOTAL_PICKUP = #{cssnTotalPickup}
+        WHERE CSSN_SESSION_ID = #{id}
+    </update>
+
 
     <update id="updateSessionTotalPerSessionIdAndPaymentMediaId" parameterType="SessionTotal">
         UPDATE SESSION_TOTAL SET

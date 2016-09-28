@@ -113,6 +113,7 @@ public class StockServiceImpl implements StockService {
             //TODO: for timebeing we consider all goods as pristine. we need to decide the stock condition per reason code.
             stockCondition = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CONDITION, IdBConstant.STOCK_CONDITION_PRISTINE);
             stockEvent.setStckCond(stockCondition.getId());
+            double quantity = 0.00;
             switch (stockEvent.getTxnTypeConst()) {
                 case IdBConstant.TXN_TYPE_GOODS_IN :
                     //add products to SALEABLE category
@@ -129,18 +130,19 @@ public class StockServiceImpl implements StockService {
                     break;
                 case IdBConstant.TXN_TYPE_GOODS_RESERVE :
                     //add to reserve category
+                    quantity = stockEvent.getStckQty();
                     stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_RESERVED);
                     stockEvent.setStckCat(stockCategory.getId());
                     updateStockQty(stockEvent);
                     //remove from saleable category
                     stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_SALEABLE);
                     stockEvent.setStckCat(stockCategory.getId());
-                    stockEvent.setStckQty(-stockEvent.getStckQty());
+                    stockEvent.setStckQty(-quantity);
                     updateStockQty(stockEvent);
                     break;
                 case IdBConstant.TXN_TYPE_GOODS_CANCEL_RESERVE :
                     //return to saleable category
-                    final double quantity = stockEvent.getStckQty();
+                    quantity = stockEvent.getStckQty();
                     stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_RESERVED);
                     stockEvent.setStckCat(stockCategory.getId());
                     stockEvent.setStckQty(-quantity);
@@ -152,22 +154,23 @@ public class StockServiceImpl implements StockService {
                     updateStockQty(stockEvent);
                     break;
                 case IdBConstant.TXN_TYPE_INVOICE :
-
+                    quantity = stockEvent.getStckQty();
                     stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_RESERVED);
                     stockEvent.setStckCat(stockCategory.getId());
-                    stockEvent.setStckQty(-stockEvent.getStckQty());
+                    stockEvent.setStckQty(-quantity);
                     updateStockQty(stockEvent);
 
                     break;
                 case IdBConstant.TXN_TYPE_SALE :
+                    quantity = stockEvent.getStckQty();
                     stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_SALEABLE);
-                    stockEvent.setStckQty(-stockEvent.getStckQty());
+                    stockEvent.setStckQty(-quantity);
                     stockEvent.setStckCat(stockCategory.getId());
                     updateStockQty(stockEvent);
 
                     stockCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_STOCK_CATEGORY, IdBConstant.STOCK_CATEGORY_RESERVED);
                     stockEvent.setStckCat(stockCategory.getId());
-                    stockEvent.setStckQty(stockEvent.getStckQty());
+                    stockEvent.setStckQty(quantity);
                     updateStockQty(stockEvent);
 
                     break;

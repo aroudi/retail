@@ -64,4 +64,14 @@
         pm.PAYM_ID=#{value}
     </select>
 
+    <select id="getPaymentMediaPerCode" resultMap="paymentMediaMap" >
+        SELECT
+        <include refid="paymentMediaColumns"><property name="alias" value="pm"/></include>,
+        <include refid="mediaTypeColumns"><property name="alias" value="mt"/></include>
+        FROM
+        PAYMENT_MEDIA pm inner join MEDIA_TYPE mt on (pm.MEDT_ID=mt.MEDT_ID)
+        WHERE
+        pm.PAYM_CODE=#{value}
+    </select>
+
 </mapper>

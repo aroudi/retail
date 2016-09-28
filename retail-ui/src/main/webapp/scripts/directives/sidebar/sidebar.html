@@ -123,14 +123,25 @@
                 </ul>
             </li>
 
+            <li ng-class="{active: collapseVar==9}">{{dropDown}}
+                <a href="" ng-click="check(9)"><i class="fa fa-comments fa-fw"></i> Reconciliation<span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=9">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.listCurrentCashSession">Session List</a>
+                    </li>
+                </ul>
+            </li>
+
+
             <li ui-sref-active="active">
                 <a ui-sref="dashboard.debtorPayment"><i class="fa fa-comments fa-fw"></i> Debtor Payment</a>
             </li>
 
-            <li ng-class="{active: collapseVar==9}">{{dropDown}}
-                <a href="" ng-click="check(9)"><i class="fa fa-comments fa-fw"></i> User Management<span
+            <li ng-class="{active: collapseVar==10}">{{dropDown}}
+                <a href="" ng-click="check(10)"><i class="fa fa-comments fa-fw"></i> User Management<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=9">
+                <ul class="nav nav-second-level" collapse="collapseVar!=10">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.addUser">Create User</a>
                     </li>

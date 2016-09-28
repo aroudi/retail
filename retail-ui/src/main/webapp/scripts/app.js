@@ -110,7 +110,9 @@ var service_uri = {
     'LOGOUT_URI' : 'user/logout',
     'INVOICE_ALL_URI' : 'transaction/invoice/all',
     'INVOICE_GET_URI' : 'transaction/getInvoice/',
-    'INVOICE_EXPORT_PDF' : 'transaction/invoice/exportPdf/'
+    'INVOICE_EXPORT_PDF' : 'transaction/invoice/exportPdf/',
+    'CASH_SESSION_ALL_CURRENT_URI' : 'cashSession/getAllCurrentSession',
+    'CASH_SESSION_ADD_FLOAT_URI' : 'cashSession/addFloat'
 
 
 }
@@ -143,7 +145,10 @@ var type_constant = {
     'TXN_STATE_DRAFT' : 'categories/TXN_STATE/TXN_STATE_DRAFT',
     'TXN_STATE_FINAL' : 'categories/TXN_STATE/TXN_STATE_FINAL',
     'TXN_MEDIA_SALE' : 'categories/TXN_MEDIA_TYPE/TXN_MEDIA_SALE',
-    'TXN_MEDIA_DEPOSIT' : 'categories/TXN_MEDIA_TYPE/TXN_MEDIA_DEPOSIT'
+    'TXN_MEDIA_DEPOSIT' : 'categories/TXN_MEDIA_TYPE/TXN_MEDIA_DEPOSIT',
+    'SESSION_EVENT_TYPE_FLOAT' : 'categories/SESSION_EVENT_TYPE/SESSION_EVENT_TYPE_FLOAT',
+    'SESSION_EVENT_TYPE_PICKUP' : 'categories/SESSION_EVENT_TYPE/SESSION_EVENT_TYPE_PICKUP'
+
 
 }
 

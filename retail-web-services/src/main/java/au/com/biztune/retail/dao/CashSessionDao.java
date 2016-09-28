@@ -90,4 +90,16 @@ public interface CashSessionDao {
      * @return List of Ended sessions.
      */
     List<CashSession> getAllEndedCashSessions();
+
+    /**
+     * update Cash Session Total Float.
+     * @param cashSession cashSession
+     */
+    void updateCashSessionTotalFloat (CashSession cashSession);
+
+    /**
+     * update cash session total pickup.
+     * @param cashSession cashSession
+     */
+    void updateCashSessionTotalPickup (CashSession cashSession);
 }

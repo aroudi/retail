@@ -234,6 +234,18 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/debtorPayment.html',
             access: "user"
         })
+        .state('dashboard.addFloat',{
+            url:'/addFloat',
+            controller: 'addFloatCtrl',
+            templateUrl:'views/pages/addFloat.html',
+            access: "user"
+        })
+        .state('dashboard.listCurrentCashSession',{
+            url:'/listCurrentCashSession',
+            controller: 'cashSessionListCtrl',
+            templateUrl:'views/pages/cashSessionList.html',
+            access: "user"
+        })
 
         .state('dashboard.blank',{
             templateUrl:'views/pages/blank.html',

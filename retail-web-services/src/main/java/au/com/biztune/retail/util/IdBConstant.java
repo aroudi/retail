@@ -461,4 +461,6 @@ public interface IdBConstant {
 
     //DEFAULT PROFIT MARGIN IF IT HAS NOT BEEN ASSIGNED TO THE CUSTOMER.
     double DEFAULT_PROFIT_MARGIN = 0.20;
+
+    String PAY_MEDIA_CODE_CASH = "1";
 }

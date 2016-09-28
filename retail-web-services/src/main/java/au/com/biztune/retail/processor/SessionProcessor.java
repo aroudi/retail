@@ -77,23 +77,6 @@ public class SessionProcessor implements Processor {
         }
     }
 
-    private SessionEvent createSessionEvent(SessionRequest sessionRequest, CashSession cashSession) {
-        //create session event
-        final SessionEvent sessionEvent = new SessionEvent();
-        sessionEvent.setCssnSessionId(cashSession.getId());
-        sessionEvent.setOrguId(sessionRequest.getTxnHeader().getOrgUnit().getId());
-        sessionEvent.setStoreId(sessionRequest.getTxnHeader().getStore().getId());
-        final Timestamp currentDate = new Timestamp(new Date().getTime());
-        sessionEvent.setSeevEventDate(currentDate);
-        final ConfigCategory eventType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SESSION_EVENT, sessionRequest.getEventType());
-        if (eventType != null) {
-            sessionEvent.setSeevEventType(eventType);
-        }
-        sessionEvent.setSeevOperator(sessionRequest.getTxnHeader().getUser().getId());
-        cashSessionDao.insertSessionEvent(sessionEvent);
-        return sessionEvent;
-    }
-
     private void processSessionMedia(SessionRequest sessionRequest, SessionEvent sessionEvent) {
         try {
             //extract media values used for this event
@@ -120,16 +103,7 @@ public class SessionProcessor implements Processor {
             SessionTotal sessionTotal = null;
             for (PaymentMedia paymentMedia : totalMediaVals.keySet()) {
                 values = totalMediaVals.get(paymentMedia);
-                sessionMedia = new SessionMedia();
-                sessionMedia.setOrguId(sessionEvent.getOrguId());
-                sessionMedia.setStoreId(sessionEvent.getStoreId());
-                sessionMedia.setCssnSessionId(sessionEvent.getCssnSessionId());
-                sessionMedia.setSeevId(sessionEvent.getId());
-                sessionMedia.setPaymentMedia(paymentMedia);
-                sessionMedia.setMediaType(paymentMedia.getMediaType());
-                sessionMedia.setSemeMediaCount(values[0]);
-                sessionMedia.setSemeMediaValue(values[1]);
-                cashSessionDao.insertSessionMedia(sessionMedia);
+                sessionMedia = cashSessionService.createSessionMedia(sessionEvent, paymentMedia, values[0], values[1]);
 
                 //update session total
                 sessionTotal = cashSessionDao.getSessionTotalPerSessionIdAndPaymentMediaId(sessionEvent.getCssnSessionId(), paymentMedia.getId());
@@ -146,7 +120,6 @@ public class SessionProcessor implements Processor {
                     sessionTotal.setMediaTotalValue(sessionTotal.getMediaTotalValue() + values[1]);
                     cashSessionDao.updateSessionTotalPerSessionIdAndPaymentMediaId(sessionTotal);
                 }
-
             }
 
         } catch (Exception e) {
@@ -185,7 +158,7 @@ public class SessionProcessor implements Processor {
             cashSessionDao.updateCashSession(cashSession);
         }
         //create session event
-        final SessionEvent sessionEvent = createSessionEvent(sessionRequest, cashSession);
+        final SessionEvent sessionEvent = cashSessionService.createSessionEvent(cashSession.getId(), sessionRequest.getEventType(), sessionRequest.getTxnHeader().getUser().getId());
 
         //process session media
         if (sessionRequest.getTxnHeader().getTxnMedias() != null) {

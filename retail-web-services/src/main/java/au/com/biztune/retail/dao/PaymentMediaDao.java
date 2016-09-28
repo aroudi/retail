@@ -28,4 +28,11 @@ public interface PaymentMediaDao {
      * @return PaymentMedia
      */
     PaymentMedia getPaymentMediaPerId(long paymId);
+
+    /**
+     * get payment media by code.
+     * @param paymentCode paymentCode
+     * @return payment media.
+     */
+    PaymentMedia getPaymentMediaPerCode(String paymentCode);
 }
