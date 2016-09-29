@@ -629,10 +629,7 @@
 
     <update id="updateCashSession" parameterType="CashSession">
         UPDATE CASH_SESSION SET
-        CSSN_SESSION_ID= #{id}
-        <if test="cssnStatus != null">
-            ,CSSN_STATUS = #{cssnStatus.id}
-        </if>
+            CSSN_STATUS = #{cssnStatus.id}
         <if test="cssnImbalanceRsn != null">
             ,CSSN_IMBALANCE_RSN = #{cssnImbalanceRsn}
         </if>
@@ -660,6 +657,12 @@
         <if test="cssnTotalPickup != null">
             ,CSSN_TOTAL_PICKUP = #{cssnTotalPickup}
         </if>
+        WHERE CSSN_SESSION_ID = #{id}
+    </update>
+
+    <update id="updateCashSessionStatus" parameterType="CashSession">
+        UPDATE CASH_SESSION SET
+        CSSN_STATUS = #{cssnStatus.id}
         WHERE CSSN_SESSION_ID = #{id}
     </update>
 

@@ -80,9 +80,10 @@ public class CashSessionServiceImpl implements CashSessionService {
      * @param sessionId sessionId
      * @param eventType eventType
      * @param userId userId
+     * @param comment comment
      * @return SessionEvent.
      */
-    public SessionEvent createSessionEvent(long sessionId, String eventType, long userId) {
+    public SessionEvent createSessionEvent(long sessionId, String eventType, long userId, String comment) {
         try {
             //create session event
             final SessionEvent sessionEvent = new SessionEvent();
@@ -96,6 +97,7 @@ public class CashSessionServiceImpl implements CashSessionService {
                 sessionEvent.setSeevEventType(configEventType);
             }
             sessionEvent.setSeevOperator(userId);
+            sessionEvent.setSeevComment(comment);
             cashSessionDao.insertSessionEvent(sessionEvent);
             return sessionEvent;
         } catch (Exception e) {
@@ -148,7 +150,7 @@ public class CashSessionServiceImpl implements CashSessionService {
             if (!cashSession.getCssnStatus().getCategoryCode().equals(IdBConstant.SESSION_STATE_OPEN)) {
                 final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SESSION_STATE, IdBConstant.SESSION_STATE_OPEN);
                 cashSession.setCssnStatus(status);
-                cashSessionDao.updateCashSession(cashSession);
+                cashSessionDao.updateCashSessionStatus(cashSession);
             }
         } catch (Exception e) {
             logger.error("Exception in assigning cash session to user", e);
@@ -171,7 +173,7 @@ public class CashSessionServiceImpl implements CashSessionService {
             if (cashSession.getCssnStatus().getCategoryCode().equals(IdBConstant.SESSION_STATE_OPEN)) {
                 final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SESSION_STATE, IdBConstant.SESSION_STATE_CLOSED);
                 cashSession.setCssnStatus(status);
-                cashSessionDao.updateCashSession(cashSession);
+                cashSessionDao.updateCashSessionStatus(cashSession);
             }
         } catch (Exception e) {
             logger.error("Exception in assigning cash session to user", e);
@@ -255,7 +257,7 @@ public class CashSessionServiceImpl implements CashSessionService {
                 commonResponse.setMessage("input form is corrupted.");
                 return commonResponse;
             }
-            final SessionEvent sessionEvent = createSessionEvent(addFloatForm.getCashSession().getId(), addFloatForm.getEventType().getCategoryCode(), appUser.getId());
+            final SessionEvent sessionEvent = createSessionEvent(addFloatForm.getCashSession().getId(), addFloatForm.getEventType().getCategoryCode(), appUser.getId(), addFloatForm.getComment());
             if (sessionEvent == null) {
                 commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
                 commonResponse.setMessage("error in saving session event.");
@@ -272,12 +274,12 @@ public class CashSessionServiceImpl implements CashSessionService {
 
             //set total amount on cash session
             if (addFloatForm.getEventType().getCategoryCode().equals(IdBConstant.SESSION_EVENT_TYPE_FLOAT)) {
-                addFloatForm.getCashSession().setCssnTotalFloat(addFloatForm.getAmount());
+                addFloatForm.getCashSession().setCssnTotalFloat(addFloatForm.getCashSession().getCssnTotalFloat() + addFloatForm.getAmount());
                 cashSessionDao.updateCashSessionTotalFloat(addFloatForm.getCashSession());
             }
 
             if (addFloatForm.getEventType().getCategoryCode().equals(IdBConstant.SESSION_EVENT_TYPE_PICKUP)) {
-                addFloatForm.getCashSession().setCssnTotalPickup(addFloatForm.getAmount());
+                addFloatForm.getCashSession().setCssnTotalPickup(addFloatForm.getCashSession().getCssnTotalPickup() + addFloatForm.getAmount());
                 cashSessionDao.updateCashSessionTotalPickup(addFloatForm.getCashSession());
             }
             return commonResponse;

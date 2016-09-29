@@ -102,4 +102,10 @@ public interface CashSessionDao {
      * @param cashSession cashSession
      */
     void updateCashSessionTotalPickup (CashSession cashSession);
+
+    /**
+     * update cash session status.
+     * @param cashSession cashSession
+     */
+    void updateCashSessionStatus(CashSession cashSession);
 }

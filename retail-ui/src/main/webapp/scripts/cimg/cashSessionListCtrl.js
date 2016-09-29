@@ -10,8 +10,8 @@ cimgApp.controller('cashSessionListCtrl', function($scope, $state, $timeout,base
             {field:'cssnOperator.usrSurName', enableCellEdit:false, width:'25%'},
             {field:'cssnStartDate', displayName:'Created on',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
             {field:'cssnStatus.displayName', displayName:'Status',enableCellEdit:false, width:'15%'},
-            {field:'cssnTotalFloat', displayName:'Total Float',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'cssnTotalPickup', displayName:'Total Pickup',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'cssnTotalFloat', displayName:'Total Float',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency'},
+            {field:'cssnTotalPickup', displayName:'Total Pickup',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency'},
             {name:'Action', cellTemplate:'<a href=""><i tooltip="Add Float" tooltip-placement="bottom" class="fa fa-calculator fa-2x" ng-click="grid.appScope.addFloat(row)"></i></a> <a href=""><i tooltip="Pickup Float" tooltip-placement="bottom" class="fa fa-dollar fa-2x" ng-click="grid.appScope.pickupFloat(row)"></i></a>', width:'10%' }
         ]
     }

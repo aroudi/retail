@@ -155,10 +155,10 @@ public class SessionProcessor implements Processor {
         if (cashSession.getCssnStatus().getCategoryCode().equals(IdBConstant.SESSION_STATE_CLOSED)) {
             final ConfigCategory openState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SESSION_STATE, IdBConstant.SESSION_STATE_OPEN);
             cashSession.setCssnStatus(openState);
-            cashSessionDao.updateCashSession(cashSession);
+            cashSessionDao.updateCashSessionStatus(cashSession);
         }
         //create session event
-        final SessionEvent sessionEvent = cashSessionService.createSessionEvent(cashSession.getId(), sessionRequest.getEventType(), sessionRequest.getTxnHeader().getUser().getId());
+        final SessionEvent sessionEvent = cashSessionService.createSessionEvent(cashSession.getId(), sessionRequest.getEventType(), sessionRequest.getTxnHeader().getUser().getId(), "");
 
         //process session media
         if (sessionRequest.getTxnHeader().getTxnMedias() != null) {

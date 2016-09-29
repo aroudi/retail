@@ -43,9 +43,10 @@ public interface CashSessionService {
      * @param sessionId sessionId
      * @param eventType eventType
      * @param userId userId
+     * @param comment comment
      * @return SessionEvent.
      */
-    SessionEvent createSessionEvent(long sessionId, String eventType, long userId);
+    SessionEvent createSessionEvent(long sessionId, String eventType, long userId, String comment);
 
     /**
      * create Session Media.
