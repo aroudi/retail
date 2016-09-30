@@ -35,4 +35,10 @@ public interface PaymentMediaDao {
      * @return payment media.
      */
     PaymentMedia getPaymentMediaPerCode(String paymentCode);
+
+    /**
+     * get all payment medias.
+     * @return List of Payment Media.
+     */
+    List<PaymentMedia> getAllPaymentMedias();
 }

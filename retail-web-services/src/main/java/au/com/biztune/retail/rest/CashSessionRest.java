@@ -1,7 +1,9 @@
 package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.CashSession;
+import au.com.biztune.retail.domain.SessionEventDetail;
 import au.com.biztune.retail.form.AddFloatForm;
+import au.com.biztune.retail.form.ReconciliationForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.CashSessionService;
@@ -42,7 +44,7 @@ public class CashSessionRest {
     @Produces(MediaType.APPLICATION_JSON)
     public List<CashSession> getAllCurrentCashSessions() {
         try {
-            return cashSessionService.getAllCurrentCashSessions();
+            return cashSessionService.getAllUnReconciledCashSessions();
         } catch (Exception e) {
             logger.error ("Error in retrieving cash session List :", e);
             return null;
@@ -62,4 +64,57 @@ public class CashSessionRest {
     public CommonResponse addFloat (AddFloatForm addFloatForm) {
         return cashSessionService.addFloat(addFloatForm, securityContext);
     }
+
+
+    /**
+     * Returns list of active Cash Sessions.
+     * @param sessionId sessionId
+     * @return list of cash sessions
+     */
+    @Secured
+    @GET
+    @Path("/fetchSessionTotalForReconciliation/{sessionId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<SessionEventDetail> fetchSessionDataForReconciliation(@PathParam("sessionId") long sessionId) {
+        try {
+            return cashSessionService.fetchSessionDataForReconciliation(sessionId);
+        } catch (Exception e) {
+            logger.error ("Error in fetching cash session data for reconciliation :", e);
+            return null;
+        }
+    }
+
+    /**
+     * End Session.
+     * @param cashSession cashSession
+     * @return Common respones
+     */
+    @Secured
+    @Path("/endSession")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse endSession(CashSession cashSession) {
+        try {
+            return cashSessionService.endCashSession(cashSession);
+        } catch (Exception e) {
+            logger.error ("Error in ending session :", e);
+            return null;
+        }
+    }
+
+    /**
+     * reconcile Session.
+     * @param reconciliationForm reconciliationForm
+     * @return CommonResponse
+     */
+    @Secured
+    @Path("/reconcileSession")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse reconcileSession (ReconciliationForm reconciliationForm) {
+        return cashSessionService.reconcileSession(reconciliationForm, securityContext);
+    }
+
 }

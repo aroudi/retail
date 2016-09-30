@@ -1,0 +1,74 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel  panel-primary">
+            <div class="panel-heading">
+                Reconcile Session
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form role="form" name="mainForm">
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>User:</label>
+                                        <span> {{reconciliationForm.cashSession.cssnOperator.usrFirstName}} {{reconciliationForm.cashSession.cssnOperator.usrSurName}} </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label>Total Pay In</label>
+                                            <span>{{reconciliationForm.cashSession.cssnTotalFloat | currency}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label>Total picked up</label>
+                                            <span>{{reconciliationForm.cashSession.cssnTotalPickup | currency}}</span>
+                                        </div>
+                                    </div>
+                                </div >
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-10">
+                                        <div class="form-group">
+                                            <label>Comments</label>
+                                            <input class="form-control" data-ng-model="reconciliationForm.comment">
+                                        </div>
+                                    </div>
+                                </div >
+                            </div >
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="panel  panel-primary">
+                                        <div class="panel-heading">
+                                            Tender list
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div id="tenderList" external-scopes="clickHandler" ui-grid ="gridOptions" ui-grid-pinning  class="grid" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-cellNav style="height:350px"  ></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
+                                <button type="button" class="btn btn-success" ng-click="reconcileSession()">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -247,6 +247,13 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             access: "user"
         })
 
+        .state('dashboard.reconcileSession',{
+            url:'/reconcileSession',
+            controller: 'reconcileSessionCtrl',
+            templateUrl:'views/pages/reconcileSession.html',
+            access: "user"
+        })
+
         .state('dashboard.blank',{
             templateUrl:'views/pages/blank.html',
             url:'/blank'

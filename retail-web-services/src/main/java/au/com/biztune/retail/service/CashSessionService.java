@@ -2,6 +2,7 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.AddFloatForm;
+import au.com.biztune.retail.form.ReconciliationForm;
 import au.com.biztune.retail.response.CommonResponse;
 
 import javax.ws.rs.core.SecurityContext;
@@ -62,7 +63,7 @@ public interface CashSessionService {
      * get All current cash sessions.
      * @return List of cash session
      */
-    List<CashSession> getAllCurrentCashSessions();
+    List<CashSession> getAllUnReconciledCashSessions();
 
     /**
      * add float/ pickup cash.
@@ -71,4 +72,26 @@ public interface CashSessionService {
      * @return CommonResponse.
      */
     CommonResponse addFloat(AddFloatForm addFloatForm, SecurityContext securityContext);
+
+    /**
+     * fetch session total data for reconciliation.
+     * @param cashSessionId cashSessionId
+     * @return SessionEventDetail which contains session data.
+     */
+    List<SessionEventDetail> fetchSessionDataForReconciliation(long cashSessionId);
+
+    /**
+     * End cash session.
+     * @param cashSession cashSession
+     * @return common response.
+     */
+    CommonResponse endCashSession(CashSession cashSession);
+
+    /**
+     * Reconcile Session.
+     * @param reconciliationForm reconciliationForm
+     * @param securityContext securityContext
+     * @return CommonResponse
+     */
+    CommonResponse reconcileSession(ReconciliationForm reconciliationForm, SecurityContext securityContext);
 }

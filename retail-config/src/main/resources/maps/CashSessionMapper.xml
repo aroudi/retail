@@ -18,6 +18,7 @@
         <result column="CSSN_SAP_CTRL_NR" property="cssnSapCtrlNr" />
         <result column="CSSN_EXP_END_DATE" property="cssnExpEndDate" />
         <result column="CSSN_ACT_END_DATE" property="cssnActEndDate" />
+        <result column="CSSN_RECOCILE_DATE" property="cssnReconcileDate" />
         <result column="CSSN_CURRENT_CASH" property="cssnCurrentCash" />
         <result column="CSSN_TOTAL_FLOAT" property="cssnTotalFloat" />
         <result column="CSSN_TOTAL_PICKUP" property="cssnTotalPickup" />
@@ -111,6 +112,7 @@
         ${alias}.CSSN_SAP_CTRL_NR,
         ${alias}.CSSN_EXP_END_DATE,
         ${alias}.CSSN_ACT_END_DATE,
+        ${alias}.CSSN_RECOCILE_DATE,
         ${alias}.CSSN_METHOD_OPEN,
         ${alias}.CSSN_METHOD_CLOSE,
         ${alias}.CSSN_CYCLE_PERIOD,
@@ -663,6 +665,12 @@
     <update id="updateCashSessionStatus" parameterType="CashSession">
         UPDATE CASH_SESSION SET
         CSSN_STATUS = #{cssnStatus.id}
+        <if test="cssnReconcileDate != null">
+            ,CSSN_RECOCILE_DATE = #{cssnReconcileDate}
+        </if>
+        <if test="cssnActEndDate != null">
+            ,CSSN_ACT_END_DATE = #{cssnActEndDate}
+        </if>
         WHERE CSSN_SESSION_ID = #{id}
     </update>
 
@@ -697,9 +705,15 @@
         SELECT
         <include refid="sessionTotalColumns"><property name="alias" value="ctl"/></include>
         FROM
-        SESSION_TOTAL ctl WHERE CSSN_SESSION_ID = #{cssnSessionId}
+        SESSION_TOTAL ctl WHERE CSSN_SESSION_ID = #{value}
     </select>
 
+    <select id="getSessionTotalMediasPerSessionIdAndPaymId" resultMap="SessionTotalMap">
+        SELECT
+        <include refid="sessionTotalColumns"><property name="alias" value="ctl"/></include>
+        FROM
+        SESSION_TOTAL ctl WHERE CSSN_SESSION_ID = #{param1} and PAYM_ID = #{param2}
+    </select>
 
     <!-- get only open or closed session. there must be only one open or closed session per user -->
     <select id="getCurrentCashSessionPerUser" resultMap="CashSessionMap">
@@ -713,7 +727,14 @@
         SELECT
         <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
         FROM
-        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED' )
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED'  )
+    </select>
+
+    <select id="getAllUnReconciledCashSessions" resultMap="CashSessionMap" >
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE != 'SESSION_STATE_RECONCILED')
     </select>
 
     <select id="getAllEndedCashSessions" resultMap="CashSessionMap">

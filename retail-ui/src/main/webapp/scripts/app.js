@@ -112,9 +112,10 @@ var service_uri = {
     'INVOICE_GET_URI' : 'transaction/getInvoice/',
     'INVOICE_EXPORT_PDF' : 'transaction/invoice/exportPdf/',
     'CASH_SESSION_ALL_CURRENT_URI' : 'cashSession/getAllCurrentSession',
-    'CASH_SESSION_ADD_FLOAT_URI' : 'cashSession/addFloat'
-
-
+    'CASH_SESSION_ADD_FLOAT_URI' : 'cashSession/addFloat',
+    'CASH_SESSION_FETCH_DATA_FOR_RECONCILIATION_URI' : 'cashSession/fetchSessionTotalForReconciliation/',
+    'CASH_SESSION_RECONCILE_URI' : 'cashSession/reconcileSession',
+    'CASH_SESSION_END_URI' : 'cashSession/endSession'
 }
 
 var response_status = {
@@ -147,7 +148,8 @@ var type_constant = {
     'TXN_MEDIA_SALE' : 'categories/TXN_MEDIA_TYPE/TXN_MEDIA_SALE',
     'TXN_MEDIA_DEPOSIT' : 'categories/TXN_MEDIA_TYPE/TXN_MEDIA_DEPOSIT',
     'SESSION_EVENT_TYPE_FLOAT' : 'categories/SESSION_EVENT_TYPE/SESSION_EVENT_TYPE_FLOAT',
-    'SESSION_EVENT_TYPE_PICKUP' : 'categories/SESSION_EVENT_TYPE/SESSION_EVENT_TYPE_PICKUP'
+    'SESSION_EVENT_TYPE_PICKUP' : 'categories/SESSION_EVENT_TYPE/SESSION_EVENT_TYPE_PICKUP',
+    'CASH_SESSION_STATE_ENDED' : 'categories/SESSION_STATE/SESSION_STATE_ENDED'
 
 
 }

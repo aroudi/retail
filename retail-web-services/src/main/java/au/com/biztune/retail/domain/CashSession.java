@@ -14,6 +14,7 @@ public class CashSession {
     private Timestamp cssnTradingDate;
     private ConfigCategory cssnStatus;
     private Timestamp cssnStartDate;
+    private Timestamp cssnReconcileDate;
     private String cssnImbalanceRsn;
     private String cssnTxnNr;
     private boolean cssnForced;
@@ -194,5 +195,13 @@ public class CashSession {
 
     public void setCssnTotalPickup(double cssnTotalPickup) {
         this.cssnTotalPickup = cssnTotalPickup;
+    }
+
+    public Timestamp getCssnReconcileDate() {
+        return cssnReconcileDate;
+    }
+
+    public void setCssnReconcileDate(Timestamp cssnReconcileDate) {
+        this.cssnReconcileDate = cssnReconcileDate;
     }
 }

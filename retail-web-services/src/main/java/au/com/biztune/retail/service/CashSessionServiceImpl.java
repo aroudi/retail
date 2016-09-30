@@ -5,6 +5,7 @@ import au.com.biztune.retail.dao.ConfigCategoryDao;
 import au.com.biztune.retail.dao.PaymentMediaDao;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.AddFloatForm;
+import au.com.biztune.retail.form.ReconciliationForm;
 import au.com.biztune.retail.processor.SessionProcessor;
 import au.com.biztune.retail.processor.SessionRequest;
 import au.com.biztune.retail.response.CommonResponse;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +50,7 @@ public class CashSessionServiceImpl implements CashSessionService {
 
     @Autowired
     private PaymentMediaDao paymentMediaDao;
+
     /**
      * create cash session for user.
      * @param user user.
@@ -225,9 +228,9 @@ public class CashSessionServiceImpl implements CashSessionService {
      * get All current cash sessions.
      * @return List of cash session
      */
-    public List<CashSession> getAllCurrentCashSessions() {
+    public List<CashSession> getAllUnReconciledCashSessions() {
         try {
-            return cashSessionDao.getAllCurrentCashSessions();
+            return cashSessionDao.getAllUnReconciledCashSessions();
         } catch (Exception e) {
             logger.error("Exception in retrieving list of cash sessions ", e);
             return null;
@@ -287,6 +290,155 @@ public class CashSessionServiceImpl implements CashSessionService {
             logger.error("Exception in adding float", e);
             commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
             commonResponse.setMessage("Erro in adding float" + e.getMessage());
+            return commonResponse;
+        }
+    }
+
+
+    /**
+     * Reconcile Session.
+     * @param reconciliationForm reconciliationForm
+     * @param securityContext securityContext
+     * @return CommonResponse
+     */
+    public CommonResponse reconcileSession(ReconciliationForm reconciliationForm, SecurityContext securityContext) {
+        this.securityContext = securityContext;
+        final Principal principal = securityContext.getUserPrincipal();
+        AppUser appUser = null;
+        if (principal instanceof AppUser) {
+            appUser = (AppUser) principal;
+        }
+
+        final CommonResponse commonResponse = new CommonResponse();
+        commonResponse.setStatus(IdBConstant.RESULT_SUCCESS);
+        try {
+            if (reconciliationForm == null) {
+                commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
+                commonResponse.setMessage("input form is corrupted.");
+                return commonResponse;
+            }
+
+            //create session event for reconciliation.
+            final SessionEvent sessionEvent = createSessionEvent(reconciliationForm.getCashSession().getId(),
+                    IdBConstant.SESSION_EVENT_TYPE_RECONCILE, appUser.getId(), reconciliationForm.getComment());
+
+            //save session event detail for reconciliation.
+            for (SessionEventDetail sessionEventDetail : reconciliationForm.getSessionEventDetailList()) {
+                if (sessionEventDetail == null) {
+                    continue;
+                }
+                sessionEventDetail.setSeevId(sessionEvent.getId());
+                sessionEventDetail.setCssnSessionId(reconciliationForm.getCashSession().getId());
+                cashSessionDao.insertSessionEventDetail(sessionEventDetail);
+            }
+
+            //change session status to reconciled.
+            final ConfigCategory sessionStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SESSION_STATE, IdBConstant.SESSION_STATE_RECONCILED);
+            reconciliationForm.getCashSession().setCssnStatus(sessionStatus);
+            final Timestamp currentDate = new Timestamp(new Date().getTime());
+            reconciliationForm.getCashSession().setCssnReconcileDate(currentDate);
+            cashSessionDao.updateCashSessionStatus(reconciliationForm.getCashSession());
+
+            //return response
+            return commonResponse;
+
+        } catch (Exception e) {
+            logger.error("Exception in Reconciliation session", e);
+            commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
+            commonResponse.setMessage("Erro in adding float" + e.getMessage());
+            return commonResponse;
+        }
+    }
+
+    /**
+     * fetch session total data for reconciliation.
+     * @param cashSessionId cashSessionId
+     * @return SessionEventDetail which contains session data.
+     */
+    public List<SessionEventDetail> fetchSessionDataForReconciliation(long cashSessionId) {
+        try {
+            //first fetch all payment medias.
+            final List<PaymentMedia> paymentMedias = paymentMediaDao.getAllPaymentMedias();
+            if (paymentMedias == null) {
+                logger.error("not able to find any payment media. something goes wrong");
+                return null;
+            }
+            SessionEventDetail sessionEventDetail = null;
+            SessionTotal sessionTotal = null;
+            final List<SessionEventDetail> sessionTotals = new ArrayList<SessionEventDetail>();
+            for (PaymentMedia paymentMedia : paymentMedias) {
+                if (paymentMedia == null) {
+                    continue;
+                }
+                sessionEventDetail = new SessionEventDetail();
+                sessionEventDetail.setStoreId(sessionState.getStore().getId());
+                sessionEventDetail.setOrguId(sessionState.getOrgUnit().getId());
+                sessionEventDetail.setPaymentMedia(paymentMedia);
+                sessionEventDetail.setCssnSessionId(cashSessionId);
+                //fetch payment media data for session.
+                sessionTotal = cashSessionDao.getSessionTotalPerSessionIdAndPaymentMediaId(cashSessionId, paymentMedia.getId());
+
+                if (sessionTotal == null) {
+                    sessionEventDetail.setMediaCountExpected(0.00);
+                    sessionEventDetail.setMediaValueExpected(0.00);
+                } else {
+                    sessionEventDetail.setMediaCountExpected(sessionTotal.getMediaTotalCount());
+                    sessionEventDetail.setMediaValueExpected(sessionTotal.getMediaTotalValue());
+                }
+
+                sessionEventDetail.setMediaValueActual(0.00);
+                sessionEventDetail.setMediaCountActual(0.00);
+                sessionEventDetail.setMediaType(paymentMedia.getMediaType());
+                sessionEventDetail.setMediaCountDiff(sessionEventDetail.getMediaCountExpected() - sessionEventDetail.getMediaCountActual());
+                sessionEventDetail.setMediaValueDiff(sessionEventDetail.getMediaValueExpected() - sessionEventDetail.getMediaValueActual());
+
+                sessionTotals.add(sessionEventDetail);
+            }
+            return  sessionTotals;
+        } catch (Exception e) {
+            logger.error("Exception in fetching session data for reconciliation", e);
+            return null;
+        }
+    }
+
+    /**
+     * End cash session.
+     * @param cashSession cashSession
+     * @return common response.
+     */
+    public CommonResponse endCashSession(CashSession cashSession) {
+        this.securityContext = securityContext;
+        final Principal principal = securityContext.getUserPrincipal();
+        AppUser appUser = null;
+        if (principal instanceof AppUser) {
+            appUser = (AppUser) principal;
+        }
+
+        final CommonResponse commonResponse = new CommonResponse();
+        commonResponse.setStatus(IdBConstant.RESULT_SUCCESS);
+        try {
+            if (cashSession == null) {
+                commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
+                commonResponse.setMessage("cash session is null.");
+                return commonResponse;
+            }
+            //first create session event.
+            final SessionEvent sessionEvent = createSessionEvent(cashSession.getId(), IdBConstant.SESSION_EVENT_TYPE_END, appUser.getId(), "");
+
+            //change session status to closed.
+            final ConfigCategory sessionStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SESSION_STATE, IdBConstant.SESSION_STATE_ENDED);
+            cashSession.setCssnStatus(sessionStatus);
+            final Timestamp currentDate = new Timestamp(new Date().getTime());
+            cashSession.setCssnActEndDate(currentDate);
+            cashSessionDao.updateCashSessionStatus(cashSession);
+
+            //return response
+            return commonResponse;
+
+        } catch (Exception e) {
+            logger.error("Exception in ending session", e);
+            commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
+            commonResponse.setMessage("Erro in ending session" + e.getMessage());
             return commonResponse;
         }
     }

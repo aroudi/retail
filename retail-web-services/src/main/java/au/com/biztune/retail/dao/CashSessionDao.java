@@ -86,6 +86,11 @@ public interface CashSessionDao {
     List<CashSession> getAllCurrentCashSessions();
 
     /**
+     * get All UNRECONCILED(Open or Closed or ended) sessions.
+     * @return List of Current Sessions.
+     */
+    List<CashSession> getAllUnReconciledCashSessions();
+    /**
      * get All Session Ended.
      * @return List of Ended sessions.
      */
@@ -108,4 +113,12 @@ public interface CashSessionDao {
      * @param cashSession cashSession
      */
     void updateCashSessionStatus(CashSession cashSession);
+
+    /**
+     * get session total per session id and media id.
+     * @param sessionId sessionId
+     * @param paymId paymId
+     * @return SessionTotal
+     */
+    SessionTotal getSessionTotalMediasPerSessionIdAndPaymId(long sessionId, long paymId);
 }
