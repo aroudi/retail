@@ -254,6 +254,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             access: "user"
         })
 
+        .state('dashboard.saleSummaryReport',{
+            url:'/saleSummaryReport',
+            controller: 'saleSummaryReportCtrl',
+            templateUrl:'views/pages/saleSummaryReport.html',
+            access: "user"
+        })
         .state('dashboard.blank',{
             templateUrl:'views/pages/blank.html',
             url:'/blank'

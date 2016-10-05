@@ -131,12 +131,18 @@
                         <a ui-sref="dashboard.listCurrentCashSession">Session List</a>
                     </li>
                 </ul>
+                <ul class="nav nav-second-level" collapse="collapseVar!=9">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.saleSummaryReport">Sale Summary report</a>
+                    </li>
+                </ul>
             </li>
 
 
             <li ui-sref-active="active">
                 <a ui-sref="dashboard.debtorPayment"><i class="fa fa-comments fa-fw"></i> Debtor Payment</a>
             </li>
+
 
             <li ng-class="{active: collapseVar==10}">{{dropDown}}
                 <a href="" ng-click="check(10)"><i class="fa fa-comments fa-fw"></i> User Management<span

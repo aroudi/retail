@@ -32,7 +32,8 @@ var cimgApp = angular
     'ngMessages',
     'ngStorage',
     'ngSanitize',
-    'pdfjsViewer'
+    'pdfjsViewer',
+    'chart.js'
   ]);
 
 //SIT
@@ -115,7 +116,8 @@ var service_uri = {
     'CASH_SESSION_ADD_FLOAT_URI' : 'cashSession/addFloat',
     'CASH_SESSION_FETCH_DATA_FOR_RECONCILIATION_URI' : 'cashSession/fetchSessionTotalForReconciliation/',
     'CASH_SESSION_RECONCILE_URI' : 'cashSession/reconcileSession',
-    'CASH_SESSION_END_URI' : 'cashSession/endSession'
+    'CASH_SESSION_END_URI' : 'cashSession/endSession',
+    'SALE_SUMMARY_REPORT_URI' : 'saleSummaryReport/saleSummary'
 }
 
 var response_status = {
@@ -839,3 +841,11 @@ cimgApp.directive('ngAppMax', function(){
         }
     }
 });
+
+/*
+cimgApp.config(['ChartJsProvider', function(ChartJsProvider){
+    ChartJsProvider.setOptions({ chartColors : [ '#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'],
+    responsive : false});
+    ChartJsProvider.setOptions('line', {showLines:false});
+}]);
+*/

@@ -52,6 +52,37 @@
     </resultMap>
 
 
+    <resultMap id="totalSaleReportMap" type="TotalSaleOperator" >
+        <result column="TOTAL_SALE_QTY" property="toopSaleQty" />
+        <result column="TOTAL_ITEMS_VALUE" property="toopItemsValue" />
+        <result column="TOTAL_PROFIT_VALUE" property="toopProfitValue" />
+        <result column="TOTAL_TAXED_VALUE" property="toopTaxedValue" />
+        <result column="TOTAL_TAX_PAID" property="toopTaxPaid" />
+        <result column="TOTAL_SALE_VALUE" property="toopSaleValue" />
+        <result column="TOTAL_REFUND_QTY" property="toopRefundQty" />
+        <result column="TOTAL_REFUND_VALUE" property="toopRefundValue" />
+        <result column="TOTAL_DISCOUNT_VALUE" property="toopDiscountValue" />
+        <result column="TOTAL_VOID_QTY" property="toopVoidQty" />
+        <result column="TOTAL_VOID_VALUE" property="toopVoidValue" />
+    </resultMap>
+
+    <resultMap id="totalOperatorSaleReportMap" type="TotalSaleOperator" >
+        <result column="TOTAL_SALE_QTY" property="toopSaleQty" />
+        <result column="TOTAL_ITEMS_VALUE" property="toopItemsValue" />
+        <result column="TOTAL_PROFIT_VALUE" property="toopProfitValue" />
+        <result column="TOTAL_TAXED_VALUE" property="toopTaxedValue" />
+        <result column="TOTAL_TAX_PAID" property="toopTaxPaid" />
+        <result column="TOTAL_SALE_VALUE" property="toopSaleValue" />
+        <result column="TOTAL_REFUND_QTY" property="toopRefundQty" />
+        <result column="TOTAL_REFUND_VALUE" property="toopRefundValue" />
+        <result column="TOTAL_DISCOUNT_VALUE" property="toopDiscountValue" />
+        <result column="TOTAL_VOID_QTY" property="toopVoidQty" />
+        <result column="TOTAL_VOID_VALUE" property="toopVoidValue" />
+        <association property="toopOperator" column="TOOP_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getUserById" />
+    </resultMap>
+
+
+
     <sql id="totalSaleOperatorColumns">
         ${alias}.TOOP_ID,
         ${alias}.TOOP_OPERATOR,
@@ -310,4 +341,40 @@
         )
     </insert>
 
+
+    <select id="getTotalSaleReportPerDate" resultMap="totalSaleReportMap">
+        select
+            SUM(toop_sale_qty) TOTAL_SALE_QTY,
+            SUM(toop_items_value) TOTAL_ITEMS_VALUE,
+            SUM(TOOP_PROFIT_VALUE) TOTAL_PROFIT_VALUE,
+            SUM(TOOP_TAXED_VALUE) TOTAL_TAXED_VALUE,
+            SUM(TOOP_TAX_PAID) TOTAL_TAX_PAID,
+            SUM(TOOP_SALE_VALUE) TOTAL_SALE_VALUE,
+            SUM(TOOP_REFUND_QTY) TOTAL_REFUND_QTY,
+            SUM(TOOP_REFUND_VALUE) TOTAL_REFUND_VALUE,
+            SUM(TOOP_DISCOUNT_VALUE) TOTAL_DISCOUNT_VALUE,
+            SUM(TOOP_VOID_QTY) TOTAL_VOID_QTY,
+            SUM(TOOP_VOID_VALUE) TOTAL_VOID_VALUE
+        from TOTAL_SALE_OPERATOR
+          WHERE TOOP_TRADING_DATE between #{param1} AND #{param2}
+    </select>
+
+    <select id="getTotalOperatorSaleReportPerDate" resultMap="totalOperatorSaleReportMap">
+        select
+        TOOP_OPERATOR,
+        SUM(toop_sale_qty) TOTAL_SALE_QTY,
+        SUM(toop_items_value) TOTAL_ITEMS_VALUE,
+        SUM(TOOP_PROFIT_VALUE) TOTAL_PROFIT_VALUE,
+        SUM(TOOP_TAXED_VALUE) TOTAL_TAXED_VALUE,
+        SUM(TOOP_TAX_PAID) TOTAL_TAX_PAID,
+        SUM(TOOP_SALE_VALUE) TOTAL_SALE_VALUE,
+        SUM(TOOP_REFUND_QTY) TOTAL_REFUND_QTY,
+        SUM(TOOP_REFUND_VALUE) TOTAL_REFUND_VALUE,
+        SUM(TOOP_DISCOUNT_VALUE) TOTAL_DISCOUNT_VALUE,
+        SUM(TOOP_VOID_QTY) TOTAL_VOID_QTY,
+        SUM(TOOP_VOID_VALUE) TOTAL_VOID_VALUE
+        from TOTAL_SALE_OPERATOR
+        WHERE TOOP_TRADING_DATE between #{param1} AND #{param2}
+        GROUP BY TOOP_OPERATOR
+    </select>
 </mapper>
