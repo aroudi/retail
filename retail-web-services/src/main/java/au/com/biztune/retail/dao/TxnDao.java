@@ -62,11 +62,11 @@ public interface TxnDao {
     List<TxnMedia> getTxnMediaPerTxhdId(long txhdId);
     /**
      * get TxnHeader Per StoreId, and CustomerId.
-     * @param storeId storeId
      * @param customerId customerId
+     * @param txnTypeList txnTypeList
      * @return List of TxnHeader
      */
-    List<TxnHeader> getTxnHeaderPerStoreIdAndCustomerId(long storeId, long customerId);
+    List<TxnHeader> getSaleOrderAndQuoteOfCustomer(long customerId, List txnTypeList);
     /**
      * get TxnHeader Per StoreId.
      * @param storeId storeId

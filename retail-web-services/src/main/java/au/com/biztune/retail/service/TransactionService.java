@@ -68,4 +68,17 @@ public interface TransactionService {
      */
     CommonResponse createTxnAccPayment(DebtorPaymentForm debtorPaymentForm, SecurityContext securityContext);
 
+    /**
+     * get all Invoice of customer.
+     * @param cusgtomerId customerId
+     * @return List of TxnHeader
+     */
+   List<TxnHeader> getAllInvoiceOfCustomer(long cusgtomerId);
+
+    /**
+     * get all transaction header of type sale and quote for specific customer.
+     * @param customerId customerId
+     * @return List of TxnHeader
+     */
+    List<TxnHeader> getAllSaleOrdersAndQuotesOfCustomer(long customerId);
 }

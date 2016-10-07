@@ -61,19 +61,6 @@
                                 <div class="col-lg-12">
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
-                                            Contact Person
-                                            <button type="button" class="btn btn-success" ng-click="addContact()">Add Contact</button>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div id="contactList" external-scopes="clickHandler" ui-grid ="gridOptions" ui-grid-pinning  class="grid" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns style="height:200px"  ></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading">
                                             Account Details
                                         </div>
                                         <div class="panel-body">
@@ -129,24 +116,24 @@
 
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <div class="form-group">
-                                                        <label>Postal Address:</label>
-                                                        <input type="text" class="form-control" data-ng-model="customer.address" maxlength="200" />
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label>Postal Address:</label>
+                                                            <input type="text" class="form-control" data-ng-model="customer.address" maxlength="200" />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="form-group">
-                                                        <label>Delivery Address:</label>
-                                                        <input type="text" class="form-control" data-ng-model="customer.address2" maxlength="200" />
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label>Delivery Address:</label>
+                                                            <input type="text" class="form-control" data-ng-model="customer.address2" maxlength="200" />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <div class="col-lg-6">
+                                                    <div class="col-lg-3">
                                                         <div class="form-group">
                                                             <label>EMail
                                                                <span class="btn btn-warning btn-xs" ng-show="mainForm.email.$error.email">
@@ -156,27 +143,25 @@
                                                             <input type="email" name="email" class="form-control" data-ng-model="customer.email" maxlength="50">
                                                         </div >
                                                     </div >
-                                                    <div class="col-lg-6">
+                                                    <div class="col-lg-3">
                                                         <div class="form-group">
                                                             <label>Web:</label>
                                                             <input class="form-control" data-ng-model="customer.webSite" maxlength="100">
                                                         </div >
                                                     </div >
+                                                    <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label>Phone:</label>
+                                                            <input class="form-control" data-ng-model="customer.phone" maxlength="20">
+                                                        </div >
+                                                    </div >
+                                                    <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label>Fax:</label>
+                                                            <input class="form-control" data-ng-model="customer.fax" maxlength="20">
+                                                        </div >
+                                                    </div >
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-4">
-                                                    <div class="form-group">
-                                                        <label>Phone:</label>
-                                                        <input class="form-control" data-ng-model="customer.phone" maxlength="20">
-                                                    </div >
-                                                </div >
-                                                <div class="col-lg-4">
-                                                    <div class="form-group">
-                                                        <label>Fax:</label>
-                                                        <input class="form-control" data-ng-model="customer.fax" maxlength="20">
-                                                    </div >
-                                                </div >
                                             </div>
                                         </div>
                                     </div>
@@ -192,6 +177,70 @@
 
                                 <!--button type="button" class="btn btn-outline btn-success" ng-click="createIncident()">Submit</button -->
                             </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            Additional Information
+                                        </div>
+                                        <!-- /.panel-heading -->
+                                        <div class="panel-body">
+                                            <!-- Nav tabs -->
+                                            <ul class="nav nav-tabs">
+                                                <li class="active"><a href="dashboard.createCustomer#ContactList" data-toggle="tab">Contact List</a>
+                                                </li>
+                                                <li ><a href="dashboard.createCustomer#CustomerDebtList" data-toggle="tab">Debt</a>
+                                                </li>
+                                                <li><a href="dashboard.createCustomer#CustomerSaleOrderList" data-toggle="tab">Sale Orders</a>
+                                                </li>
+                                                <li><a href="dashboard.createCustomer#CustomerInvoiceList" data-toggle="tab">Invoice List</a>
+                                                </li>
+                                            </ul>
+                                            <!-- Tab panes -->
+                                            <div class="tab-content">
+                                                <div class="tab-pane fade in active" id="ContactList">
+                                                    <h4>Debt List</h4>
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div id="ContactList1" external-scopes="clickHandler" ui-grid ="gridOptions" ui-grid-pinning  class="grid" ui-grid-cellNav ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-gird-move-columns ui-grid-pinning style="width:1200px; height: 300px;"  ></div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="tab-pane fade" id="CustomerDebtList">
+                                                    <h4>Debt List</h4>
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div id="customerDebtList1" external-scopes="clickHandler" ui-grid ="debtList" ui-grid-pinning  class="grid" ui-grid-cellNav ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-gird-move-columns ui-grid-pinning style="width:1200px; height: 300px;"  ></div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="tab-pane fade" id="CustomerSaleOrderList">
+                                                    <h4>Sale Order List</h4>
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div id="CustomerSaleOrderList1" external-scopes="clickHandler" ui-grid ="saleOrderList" ui-grid-pinning  class="grid" ui-grid-cellNav ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-gird-move-columns ui-grid-pinning style="width:1200px; height: 300px;"  ></div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="tab-pane fade" id="CustomerInvoiceList">
+                                                    <h4>Invoice List</h4>
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div id="CustomerInvoiceList1" external-scopes="clickHandler" ui-grid ="invoiceList" ui-grid-pinning  class="grid" ui-grid-cellNav ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-gird-move-columns ui-grid-pinning style="width:1200px; height: 300px;"  ></div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </form>
                     </div>
                 </div>

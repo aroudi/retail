@@ -740,12 +740,17 @@
         WHERE txmd.txhd_id=#{value} and txmd.txmd_voided != 1
     </select>
 
-    <select id="getTxnHeaderPerStoreIdAndCustomerId" resultMap="txnHeaderLightMap" >
+    <select id="getSaleOrderAndQuoteOfCustomer" resultMap="txnHeaderLightMap" >
         SELECT
         <include refid="txnHeaderColumns"><property name="alias" value="txhd"/></include>
         FROM
         TXN_HEADER txhd
-        WHERE txhd.STORE_ID=#{param1} AND txhd.CUSTOMER_ID =#{param2}
+        WHERE txhd.CUSTOMER_ID =#{param1} AND txhd.TXHD_TXN_TYPE in
+        <foreach collection="param2" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY txhd.TXHD_TRADING_DATE DESC
     </select>
 
     <select id="getTxnHeaderPerStoreId" resultMap="txnHeaderLightMap" >

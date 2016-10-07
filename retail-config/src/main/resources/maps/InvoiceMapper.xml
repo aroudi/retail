@@ -281,6 +281,12 @@
         INVOICE invoice where STORE_ID = #{value} ORDER BY TXIV_TRADING_DATE DESC
     </select>
 
+    <select id="getAllInvoiceOfCustomer" resultMap="invoiceLightMap" >
+        SELECT
+        <include refid="invoiceColumns"><property name="alias" value="invoice"/></include>
+        FROM
+        INVOICE invoice where CUSTOMER_ID = #{value} ORDER BY TXIV_TRADING_DATE DESC
+    </select>
 
     <select id="getInvoiceDetailPerInvoiceId" resultMap="invoiceDetailMap" >
         SELECT

@@ -179,5 +179,40 @@ public class TransactionRest {
         return transactionService.createTxnAccPayment(debtorPaymentForm, securityContext);
     }
 
+    /**
+     * Returns list of Invoice for specific customer.
+     * @param customerId customerId
+     * @return list of Invoice
+     */
+    @Secured
+    @Path("/invoice/customer/{customerId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TxnHeader> getAllInvoicesOfCustomer(@PathParam("customerId") long customerId) {
+        try {
+            return transactionService.getAllInvoiceOfCustomer(customerId);
+        } catch (Exception e) {
+            logger.error ("Error in retrieving invoice List :", e);
+            return null;
+        }
+    }
+
+    /**
+     * Returns list of SaleOrders and Quotes for specific customer.
+     * @param customerId customerId
+     * @return list of Sale Orders and Quotes
+     */
+    @Secured
+    @Path("/saleOrder/customer/{customerId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TxnHeader> getAllSaleOrderAndQuoteOfCustomer(@PathParam("customerId") long customerId) {
+        try {
+            return transactionService.getAllSaleOrdersAndQuotesOfCustomer(customerId);
+        } catch (Exception e) {
+            logger.error ("Error in retrieving invoice List :", e);
+            return null;
+        }
+    }
 
 }

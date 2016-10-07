@@ -68,4 +68,11 @@ public interface InvoiceDao {
      * @return List of Invoice
      */
     List<TxnHeader> getAllInvoiceHeaderPerStoreId(long storeId);
+
+    /**
+     * get invoice list of customer.
+     * @param customerId customerId
+     * @return List of Invoice.
+     */
+    List<TxnHeader> getAllInvoiceOfCustomer(long customerId);
 }

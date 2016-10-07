@@ -330,6 +330,26 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     /**
+     * get all transaction header of type sale and quote for specific customer.
+     * @param customerId customerId
+     * @return List of TxnHeader
+     */
+    public List<TxnHeader> getAllSaleOrdersAndQuotesOfCustomer(long customerId) {
+        try {
+            final List<Long> txnType = new ArrayList<Long>();
+            ConfigCategory configCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_SALE);
+            txnType.add(configCategory.getId());
+            configCategory = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_QUOTE);
+            txnType.add(configCategory.getId());
+            return txnDao.getSaleOrderAndQuoteOfCustomer(customerId, txnType);
+        } catch (Exception e) {
+            logger.error("Exception in getting transaction sale: ", e);
+            return null;
+        }
+    }
+
+
+    /**
      * get Transaction Sale per Id.
      * @param  txhdId Transaction Header Id
      * @return TxnHeaderForm
@@ -778,6 +798,22 @@ public class TransactionServiceImpl implements TransactionService {
             return null;
         }
     }
+
+
+    /**
+     * get all Invoice of customer.
+     * @param cusgtomerId customerId
+     * @return List of TxnHeader
+     */
+    public List<TxnHeader> getAllInvoiceOfCustomer(long cusgtomerId) {
+        try {
+            return invoiceDao.getAllInvoiceOfCustomer(cusgtomerId);
+        } catch (Exception e) {
+            logger.error("Exception in getting transaction sale: ", e);
+            return null;
+        }
+    }
+
 
     /**
      * create Txn Account Payment.

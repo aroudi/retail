@@ -42,19 +42,15 @@
                                                     </li>
                                                     <li><a href="dashboard.saleSummaryReport#staffSaleInfo" data-toggle="tab">Staff Sale Information</a>
                                                     </li>
-                                                    <li><a href="dashboard.saleSummaryReport#staffSaleGraph" data-toggle="tab">Staff Sale Graph</a>
-                                                    </li>
                                                 </ul>
-
                                                 <!-- Tab panes -->
                                                 <div class="tab-content">
                                                     <div class="tab-pane fade in active" id="SaleSummaryInfo">
-
                                                         <div class="col-lg-6 col-sm-12" >
                                                             <div class="panel panel-default">
-                                                                <div class="panel-heading">Bar Chart</div>
+                                                                <div class="panel-heading">Total Sale Summary Bar Chart</div>
                                                                 <div class="panel-body">
-                                                                    <canvas id="totalSaleSummaryRptBar" class="chart chart-bar" data="totalSaleSummaryRpt.data" labels="totalSaleSummaryRpt.labels">
+                                                                    <canvas id="totalSaleSummaryRptBar" class="chart chart-bar" data="totalSaleSummaryRptBar.data" labels="totalSaleSummaryRptBar.labels" series="totalSaleSummaryRptBar.series">
                                                                     </canvas>
                                                                 </div>
                                                             </div>
@@ -62,41 +58,37 @@
 
                                                         <div class="col-lg-6 col-sm-12"  >
                                                             <div class="panel panel-default">
-                                                                <div class="panel-heading">Polar Area Chart</div>
+                                                                <div class="panel-heading">Total Sale Summary Polar Area Chart</div>
                                                                 <div class="panel-body">
-                                                                    <canvas id="totalSaleSummaryRptPolar" class="chart chart-polar-area" data="totalSaleSummaryRpt.data" labels="totalSaleSummaryRpt.labels"></canvas>
+                                                                    <canvas id="totalSaleSummaryRptPolar" class="chart chart-polar-area" data="totalSaleSummaryRptPolar.data" labels="totalSaleSummaryRptPolar.labels"></canvas>
                                                                 </div>
                                                             </div>
                                                         </div>
 
+                                                        <div class="col-lg-6 col-sm-12"  >
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading">Number of Sales Per Operator</div>
+                                                                <div class="panel-body">
+                                                                    <canvas id="operatorSaleQtyRptPie1" class="chart chart-pie chart-xs" data="operatorSaleQtyRpt.data" labels="operatorSaleQtyRpt.labels"></canvas>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-6 col-sm-12"  >
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading">Sale and eGP Per Operator</div>
+                                                                <div class="panel-body">
+                                                                    <canvas id="operatorSaleAndEGPRptBar2" class="chart chart-bar" data="operatorSaleAndEGPRpt.data" labels="operatorSaleAndEGPRpt.labels" series="operatorSaleAndEGPRpt.series"></canvas>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
 
                                                     <div class="tab-pane fade" id="staffSaleInfo">
                                                         <h4>Staff Sale Information</h4>
                                                         <div class="row">
                                                             <div class="col-lg-12">
-                                                                <div id="staffSaleInformation" external-scopes="clickHandler" ui-grid ="staffSaleSummary" ui-grid-pinning  class="grid" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns style="height:750px"  ></div>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                    <div class="tab-pane fade" id="staffSaleGraph">
-                                                        <div class="col-lg-6 col-sm-12"  >
-                                                            <div class="panel panel-default">
-                                                                <div class="panel-heading">Number of Sales</div>
-                                                                <div class="panel-body">
-                                                                    <canvas id="operatorSaleQtyRpt" class="chart chart-pie chart-xs" data="operatorSaleQtyRpt.data" labels="operatorSaleQtyRpt.labels"></canvas>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-lg-6 col-sm-12"  >
-                                                            <div class="panel panel-default">
-                                                                <div class="panel-heading">Sale and eGP</div>
-                                                                <div class="panel-body">
-                                                                    <canvas id="operatorSaleAndEGPRpt" class="chart chart-bar" data="operatorSaleAndEGPRpt.data" labels="operatorSaleAndEGPRpt.labels" series="operatorSaleAndEGPRpt.series"
-                                                                            options="bar.options"></canvas>
-                                                                </div>
+                                                                <div id="staffSaleInformation" external-scopes="clickHandler" ui-grid ="staffSaleSummary" ui-grid-pinning  class="grid" ui-grid-cellNav ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-gird-move-columns ui-grid-pinning style="width:1000px; height: 500px;"  ></div>
                                                             </div>
                                                         </div>
 
