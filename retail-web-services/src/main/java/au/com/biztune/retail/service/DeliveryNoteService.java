@@ -29,4 +29,10 @@ public interface DeliveryNoteService {
      * @return DeliveryNoteHeader
      */
     DeliveryNoteHeader getDeliveryNoteWhole(long delnId);
+    /**
+     * get all delivery note headers per supplier.
+     * @param supplierId supplierId.
+     * @return List of DeliveryNoteHeader
+     */
+    List<DeliveryNoteHeader> getAllSuppliersDeliveryNotes(long supplierId);
 }

@@ -1,205 +1,258 @@
 <div class="row">
     <div class="col-lg-12">
-        <div class="panel  panel-primary">
+        <div class="panel panel-primary">
             <div class="panel-heading">
                 Supplier Information
             </div>
+            <!-- /.panel-heading -->
             <div class="panel-body">
-                <div class="row">
-                    <div class="col-lg-12">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="dashboard.createSupplier#SupplierInfo" data-toggle="tab">Supplier Info</a>
+                    </li>
+                    <li ><a href="dashboard.createSupplier#PurchaseOrderList" data-toggle="tab">Purchase Order List</a>
+                    </li>
+                    <li><a href="dashboard.createSupplier#ProductList" data-toggle="tab">Product List</a>
+                    </li>
+                    <li><a href="dashboard.createSupplier#DeliveryNoteList" data-toggle="tab">Good Received</a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="SupplierInfo">
+                        <!------ -->
+                        <div class="col-lg-12">
                         <form role="form" name="mainForm">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            Identification
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Supplier Code:
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        Identification
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-2">
+                                                    <div class="form-group">
+                                                        <label>Supplier Code:
                                                                <span class="btn btn-warning btn-xs" ng-show="mainForm.code.$error.required">
                                                                     Required!
                                                                </span>
-                                                            </label>
-                                                            <input class="form-control" data-ng-model="supplier.supplierCode" name="code" required maxlength="50">
-                                                        </div >
+                                                        </label>
+                                                        <input class="form-control" data-ng-model="supplier.supplierCode" name="code" required maxlength="50">
                                                     </div >
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group">
-                                                            <label>Supplier Name:
+                                                </div >
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Supplier Name:
                                                                <span class="btn btn-warning btn-xs" ng-show="mainForm.supplierName.$error.required">
                                                                     Required!
                                                                </span>
-                                                            </label>
-                                                            <input class="form-control" data-ng-model="supplier.supplierName" name="supplierName" required maxlength="100">
-                                                        </div >
+                                                        </label>
+                                                        <input class="form-control" data-ng-model="supplier.supplierName" name="supplierName" required maxlength="100">
                                                     </div >
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Supplier Type</label>
-                                                            <select class="form-control" data-ng-model="supplier.supplierType"
-                                                                    ng-options="type.displayName for type in supplierTypeSet" >
-                                                            </select>
-                                                        </div >
+                                                </div >
+                                                <div class="col-lg-2">
+                                                    <div class="form-group">
+                                                        <label>Supplier Type</label>
+                                                        <select class="form-control" data-ng-model="supplier.supplierType"
+                                                                ng-options="type.displayName for type in supplierTypeSet" >
+                                                        </select>
                                                     </div >
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Supplier Status</label>
-                                                            <select class="form-control" data-ng-model="supplier.supplierStatus"
-                                                                    ng-options="type.displayName for type in supplierStatusSet" >
-                                                            </select>
-                                                        </div >
+                                                </div >
+                                                <div class="col-lg-2">
+                                                    <div class="form-group">
+                                                        <label>Supplier Status</label>
+                                                        <select class="form-control" data-ng-model="supplier.supplierStatus"
+                                                                ng-options="type.displayName for type in supplierStatusSet" >
+                                                        </select>
                                                     </div >
-                                                </div>
+                                                </div >
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading">
-                                            Ordering Details
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Lead Time (Days):
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                        Ordering Details
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-2">
+                                                    <div class="form-group">
+                                                        <label>Lead Time (Days):
                                                                <span class="btn btn-warning btn-xs" ng-show="mainForm.leadTime.$error.pattern">
                                                                     Invalid Number!
                                                                </span>
-                                                            </label>
-                                                            <input class="form-control" data-ng-model="supplier.leadTime" name="leadTime" ng-pattern="/^\d{0,9}$/">
-                                                        </div >
+                                                        </label>
+                                                        <input class="form-control" data-ng-model="supplier.leadTime" name="leadTime" ng-pattern="/^\d{0,9}$/">
                                                     </div >
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Stok Cover(Days):
+                                                </div >
+                                                <div class="col-lg-2">
+                                                    <div class="form-group">
+                                                        <label>Stok Cover(Days):
                                                                <span class="btn btn-warning btn-xs" ng-show="mainForm.stockCover.$error.pattern">
                                                                     Invalid number!
                                                                </span>
-                                                            </label>
-                                                            <input class="form-control" data-ng-model="supplier.stockCover" name="stockCover" ng-pattern="/^\d{0,9}$/">
-                                                        </div >
+                                                        </label>
+                                                        <input class="form-control" data-ng-model="supplier.stockCover" name="stockCover" ng-pattern="/^\d{0,9}$/">
                                                     </div >
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Min Order Value($)</label>
-                                                            <input type="text" class="form-control" name="minOrderValue" data-ng-model="supplier.minOrderValue" type="text" data-blur-currency />
-                                                        </div >
+                                                </div >
+                                                <div class="col-lg-2">
+                                                    <div class="form-group">
+                                                        <label>Min Order Value($)</label>
+                                                        <input type="text" class="form-control" name="minOrderValue" data-ng-model="supplier.minOrderValue" type="text" data-blur-currency />
                                                     </div >
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Credit Limit($)</label>
-                                                            <input class="form-control" data-ng-model="supplier.creditLimit" type="text" data-blur-currency>
-                                                        </div >
+                                                </div >
+                                                <div class="col-lg-2">
+                                                    <div class="form-group">
+                                                        <label>Credit Limit($)</label>
+                                                        <input class="form-control" data-ng-model="supplier.creditLimit" type="text" data-blur-currency>
                                                     </div >
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Max Adv Order(Days):
+                                                </div >
+                                                <div class="col-lg-2">
+                                                    <div class="form-group">
+                                                        <label>Max Adv Order(Days):
                                                                <span class="btn btn-warning btn-xs" ng-show="mainForm.maxAdvOrder.$error.pattern">
                                                                     Invalid Number!
                                                                </span>
-                                                            </label>
-                                                            <input class="form-control" data-ng-model="supplier.maxAdvOrder" name="maxAdvOrder" ng-pattern="/^\d{0,9}$/">
-                                                        </div >
+                                                        </label>
+                                                        <input class="form-control" data-ng-model="supplier.maxAdvOrder" name="maxAdvOrder" ng-pattern="/^\d{0,9}$/">
                                                     </div >
-                                                </div>
+                                                </div >
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading">
-                                            Contact Information
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="col-lg-4">
-                                                        <div class="form-group">
-                                                            <label>Country</label>
-                                                            <input class="form-control" data-ng-model="supplier.contact.country" maxlength="100">
-                                                        </div >
-                                                    </div >
-                                                    <div class="col-lg-4">
-                                                        <div class="form-group">
-                                                            <label>State:</label>
-                                                            <input class="form-control" data-ng-model="supplier.contact.state" maxlength="100">
-                                                        </div >
-                                                    </div >
-                                                    <div class="col-lg-4">
-                                                        <div class="form-group">
-                                                            <label>Postcode:</label>
-                                                            <input class="form-control" data-ng-model="supplier.contact.postCode" maxlength="20">
-                                                        </div >
-                                                    </div >
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label>Address 1:</label>
-                                                        <input class="form-control" data-ng-model="supplier.contact.address1" maxlength="200">
-                                                    </div >
-                                                </div >
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label>Address 2:</label>
-                                                        <input class="form-control" data-ng-model="supplier.contact.address2" maxlength="200">
-                                                    </div >
-                                                </div >
-                                            </div>
-                                            <div class="row">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                        Contact Information
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-12">
                                                 <div class="col-lg-4">
                                                     <div class="form-group">
-                                                        <label>Mobile:
+                                                        <label>Country</label>
+                                                        <input class="form-control" data-ng-model="supplier.contact.country" maxlength="100">
+                                                    </div >
+                                                </div >
+                                                <div class="col-lg-4">
+                                                    <div class="form-group">
+                                                        <label>State:</label>
+                                                        <input class="form-control" data-ng-model="supplier.contact.state" maxlength="100">
+                                                    </div >
+                                                </div >
+                                                <div class="col-lg-4">
+                                                    <div class="form-group">
+                                                        <label>Postcode:</label>
+                                                        <input class="form-control" data-ng-model="supplier.contact.postCode" maxlength="20">
+                                                    </div >
+                                                </div >
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label>Address 1:</label>
+                                                    <input class="form-control" data-ng-model="supplier.contact.address1" maxlength="200">
+                                                </div >
+                                            </div >
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label>Address 2:</label>
+                                                    <input class="form-control" data-ng-model="supplier.contact.address2" maxlength="200">
+                                                </div >
+                                            </div >
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label>Mobile:
                                                                <span class="btn btn-warning btn-xs" ng-show="mainForm.mobile.$error.pattern">
                                                                     Invalid!
                                                                </span>
-                                                        </label>
-                                                        <input class="form-control" data-ng-model="supplier.contact.mobile" name="mobile" ng-pattern="/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/" maxlength="20">
-                                                    </div >
+                                                    </label>
+                                                    <input class="form-control" data-ng-model="supplier.contact.mobile" name="mobile" ng-pattern="/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/" maxlength="20">
                                                 </div >
-                                                <div class="col-lg-4">
-                                                    <div class="form-group">
-                                                        <label>Phone:</label>
-                                                        <input class="form-control" data-ng-model="supplier.contact.phone" maxlength="20">
-                                                    </div >
+                                            </div >
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label>Phone:</label>
+                                                    <input class="form-control" data-ng-model="supplier.contact.phone" maxlength="20">
                                                 </div >
-                                                <div class="col-lg-4">
-                                                    <div class="form-group">
-                                                        <label>Fax:</label>
-                                                        <input class="form-control" data-ng-model="supplier.contact.fax" maxlength="20">
-                                                    </div >
+                                            </div >
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label>Fax:</label>
+                                                    <input class="form-control" data-ng-model="supplier.contact.fax" maxlength="20">
                                                 </div >
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-4">
-                                                    <div class="form-group">
-                                                        <label>Email:
+                                            </div >
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label>Email:
                                                                <span class="btn btn-warning btn-xs" ng-show="mainForm.email.$error.email">
                                                                     Invalid!
                                                                </span>
-                                                        </label>
-                                                        <input class="form-control" data-ng-model="supplier.contact.email" name="email" type="email" maxlength="100">
+                                                    </label>
+                                                    <input class="form-control" data-ng-model="supplier.contact.email" name="email" type="email" maxlength="100">
+                                                </div >
+                                            </div >
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label>Web Site:</label>
+                                                    <input class="form-control" data-ng-model="supplier.contact.webSite" maxlength="100">
+                                                </div >
+                                            </div >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                        Contact Person
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-2">
+                                                    <div class="form-group">
+                                                        <label>Title</label>
+                                                        <input class="form-control" data-ng-model="supplier.contactTitle" maxlength="20">
                                                     </div >
                                                 </div >
                                                 <div class="col-lg-4">
                                                     <div class="form-group">
-                                                        <label>Web Site:</label>
-                                                        <input class="form-control" data-ng-model="supplier.contact.webSite" maxlength="100">
+                                                        <label>First Name</label>
+                                                        <input class="form-control" data-ng-model="supplier.contactFirstName" maxlength="100">
+                                                    </div >
+                                                </div >
+                                                <div class="col-lg-4">
+                                                    <div class="form-group">
+                                                        <label>Sur Name</label>
+                                                        <input class="form-control" data-ng-model="supplier.contactSurName" maxlength="100">
+                                                    </div >
+                                                </div >
+                                                <div class="col-lg-2">
+                                                    <div class="form-group">
+                                                        <label>Known as</label>
+                                                        <input class="form-control" data-ng-model="supplier.contactKnownAs" maxlength="100">
                                                     </div >
                                                 </div >
                                             </div>
@@ -207,52 +260,43 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading">
-                                            Contact Person
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Title</label>
-                                                            <input class="form-control" data-ng-model="supplier.contactTitle" maxlength="20">
-                                                        </div >
-                                                    </div >
-                                                    <div class="col-lg-4">
-                                                        <div class="form-group">
-                                                            <label>First Name</label>
-                                                            <input class="form-control" data-ng-model="supplier.contactFirstName" maxlength="100">
-                                                        </div >
-                                                    </div >
-                                                    <div class="col-lg-4">
-                                                        <div class="form-group">
-                                                            <label>Sur Name</label>
-                                                            <input class="form-control" data-ng-model="supplier.contactSurName" maxlength="100">
-                                                        </div >
-                                                    </div >
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Known as</label>
-                                                            <input class="form-control" data-ng-model="supplier.contactKnownAs" maxlength="100">
-                                                        </div >
-                                                    </div >
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
 
-                            <div class="row">
-                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                                <button type="button" class="btn btn-success" ng-click="createSupplier()" ng-disabled="!mainForm.$valid">Submit</button>
-                            </div>
+                        <div class="row">
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
+                            <button type="button" class="btn btn-success" ng-click="createSupplier()" ng-disabled="!mainForm.$valid">Submit</button>
+                        </div>
                         </form>
+                        </div>
+                        <!--   -->
+                    </div>
+                    <div class="tab-pane fade" id="PurchaseOrderList">
+                        <h4>Purchase Order List</h4>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div id="PurchaseOrderList1" external-scopes="clickHandler" ui-grid ="purchaseOrderList" ui-grid-pinning  class="grid" ui-grid-cellNav ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-gird-move-columns ui-grid-pinning style="width:1200px; height: 600px;"  ></div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="tab-pane fade" id="ProductList">
+                        <h4>Product List</h4>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div id="ProductList1" external-scopes="clickHandler" ui-grid ="productList" ui-grid-pinning  class="grid" ui-grid-cellNav ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-gird-move-columns ui-grid-pinning style="width:1200px; height: 600px;"  ></div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="tab-pane fade" id="DeliveryNoteList">
+                        <h4>Delivery Note List</h4>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div id="DeliveryNoteList1" external-scopes="clickHandler" ui-grid ="deliveryNoteList" ui-grid-pinning  class="grid" ui-grid-cellNav ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-gird-move-columns ui-grid-pinning style="width:1200px; height: 600px;"  ></div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

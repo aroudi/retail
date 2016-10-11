@@ -1,12 +1,13 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConstants, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_DEBT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF ) {
+cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConstants, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_DEBT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI ) {
 
     initContactList();
     initCustomerDebtList();
     initCustomerInvoiceList();
     initCustomerSaleOrderList();
+    initCustomerBoqList();
     initPageData();
 
     function initCustomerDebtList() {
@@ -17,12 +18,10 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
             enableRowSelection:false,
             columnDefs: [
                 {field: 'id', visible: false, enableCellEdit: false},
-                {field: 'cadStartDate', displayName:'Start Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
-                {field: 'cadDueDate', displayName:'Due Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
-                {field: 'txhdTxnNr', displayName: 'Invoice No.', width: '15%'},
-                {field: 'cadAmountDebt', displayName: 'Amount Owing', enableCellEdit: false, cellFilter: 'currency', width: '10%', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-                {field: 'paying', displayName: 'Paying', enableCellEdit: false, cellFilter: 'currency', width: '10%', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-                {field: 'balance', displayName: 'Balance', enableCellEdit: false, cellFilter: 'currency', width: '10%',footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum}
+                {field: 'cadStartDate', displayName:'Start Date',enableCellEdit:false, width:'15%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+                {field: 'cadDueDate', displayName:'Due Date',enableCellEdit:false, width:'15%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+                {field: 'txhdTxnNr', displayName: 'Invoice No.', width: '25%'},
+                {field: 'cadAmountDebt', displayName: 'Amount Owing', enableCellEdit: false, cellFilter: 'currency', width: '25%', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum}
             ]
         }
         $scope.debtList.enableRowSelection = false;
@@ -57,7 +56,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
 
         //
         $scope.invoiceList.onRegisterApi = function (gridApi) {
-            $scope.gridApi = gridApi;
+            $scope.invoiceListApi = gridApi;
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 baseDataService.setRow(row.entity);
             });
@@ -89,13 +88,65 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
 
         //
         $scope.saleOrderList.onRegisterApi = function (gridApi) {
-            $scope.gridApi = gridApi;
+            $scope.saleOrderListApi = gridApi;
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 baseDataService.setRow(row.entity);
             });
         };
 
     }
+
+    function initCustomerBoqList() {
+        $scope.boqList = {
+            enableFiltering: true,
+            enableSelectAll:false,
+            enableRowSelection:true,
+            showGridFooter: true,
+            showColumnFooter: true,
+            enableColumnResizing: true,
+            enableSorting:true,
+            columnDefs: [
+                {field:'id', visible:false, enableCellEdit:false},
+                {field:'project.projectCode', displayName:'Project No',enableCellEdit:false, width:'15%',
+                    cellTooltip: function(row,col) {
+                        return row.entity.project.projectCode
+                    }
+                },
+                {field:'orderNo', displayName:'Client Order',enableCellEdit:false, width:'10%'},
+                {field:'project.projectName',displayName:'Project', enableCellEdit:false, width:'35%',
+                    cellTooltip: function(row,col) {
+                        return row.entity.project.projectName
+                    }
+                },
+                {field:'project.referenceNo', displayName:'Project Ref.',enableCellEdit:false, width:'10%', visible:false,
+                    cellTooltip: function(row,col) {
+                        return row.entity.project.referenceNo
+                    }
+                },
+                {field:'dateCreated', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\'' },
+                {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
+                //{field:'boqValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+                //{field:'boqValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+                {field:'boqStatus', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+                    cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                        return grid.getCellValue(row, col).color
+                    }
+                },
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewBoqDetail(row)"></i></a>', width:'5%' }
+            ]
+        }
+        $scope.boqList.enableRowSelection = true;
+        $scope.boqList.multiSelect = true;
+        //$scope.boqList.noUnselect= true;
+
+        //
+        $scope.boqList.onRegisterApi = function (gridApi) {
+            $scope.boqListApi = gridApi;
+        };
+
+    }
+
+
 
     //set default data on the page
     function initContactList() {
@@ -329,5 +380,25 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
             $scope.saleOrderList.data = response.data;
         });
 
+        baseDataService.getBaseData(CUSTOMER_ALL_BOQ_URI + customer.id).then(function(response){
+            $scope.boqList.data = response.data;
+        });
+
     }
+
+    $scope.viewBoqDetail = function(row) {
+        if (row == undefined || row.entity == undefined) {
+            alert('row is undefined');
+            return;
+        }
+        var boqGetURI = BOQ_GET_URI +  row.entity.id;
+        baseDataService.getBaseData(boqGetURI).then(function(response){
+            //baseDataService.setIsPageNew(false);
+            baseDataService.setRow(response.data);
+            //redirect to the supplier page.
+            $state.go('dashboard.viewBoqDetail');
+        });
+    }
+
 });
+

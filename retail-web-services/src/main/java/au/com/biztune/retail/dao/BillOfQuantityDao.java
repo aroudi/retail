@@ -52,4 +52,11 @@ public interface BillOfQuantityDao {
      * @param billOfQuantity billOfQuantity
      */
     void updateStatusPerId(BillOfQuantity billOfQuantity);
+
+    /**
+     * get list of client's bill of quantity.
+     * @param clientId clientId.
+     * @return bill of quantity list.
+     */
+    List<BillOfQuantity> getBillOfQuantitiesByClientId(long clientId);
 }

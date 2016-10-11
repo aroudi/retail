@@ -465,4 +465,18 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             return null;
         }
     }
+
+    /**
+     * get all purchase Order Header for specific supplier.
+     * @param supplierId supplierId
+     * @return List of PurchaseOrderHeader
+     */
+    public List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierId(long supplierId) {
+        try {
+            return purchaseOrderDao.getAllPurchaseOrderHeaderPerOrguIdAndSupplierId(sessionState.getOrgUnit().getId(), supplierId);
+        } catch (Exception e) {
+            logger.error("Exception in getting purchase order header list per supplier:", e);
+            return null;
+        }
+    }
 }

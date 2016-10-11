@@ -74,4 +74,22 @@ public class DeliveryNoteRest {
     public CommonResponse addDeliveryNote (DeliveryNoteHeader deliveryNoteHeader) {
         return deliveryNoteService.saveDeliveryNote(deliveryNoteHeader, securityContext);
     }
+    /**
+     * Returns list of Delivery Notes.
+     * @param supplierId supplierId
+     * @return list of DeliveryNoteHeader
+     */
+    @Secured
+    @Path("/getSupplierDeliveryNotes/{supplierId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<DeliveryNoteHeader> getAllSupplierDeliveryNotes(@PathParam("supplierId") long supplierId) {
+        try {
+            return deliveryNoteService.getAllSuppliersDeliveryNotes(supplierId);
+        } catch (Exception e) {
+            logger.error ("Error in retrieving delivery note header List :", e);
+            return null;
+        }
+    }
+
 }

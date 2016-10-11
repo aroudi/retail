@@ -110,4 +110,12 @@ public interface PurchaseOrderDao {
      * @param purchaseLine purchaseLine
      */
     void updatePurchaseLineReserveQty(PurchaseLine purchaseLine);
+
+    /**
+     * get all purchaes order header for supplier.
+     * @param orgUid orgUid
+     * @param supplierId supplierId
+     * @return List of purchase order header for specific supplier.
+     */
+    List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierId(long orgUid, long supplierId);
 }

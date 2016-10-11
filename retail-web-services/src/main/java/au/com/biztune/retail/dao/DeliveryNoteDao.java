@@ -79,4 +79,12 @@ public interface DeliveryNoteDao {
      * @param dlnlId dlnlId
      */
     void deleteDeliveryNoteLinePerId(long dlnlId);
+
+    /**
+     * get all supplier's delivery note.
+     * @param orguId orguId
+     * @param suppId suppId
+     * @return supplier delivery notes.
+     */
+    List<DeliveryNoteHeader> getAllDelNoteHeaderPerOrguIdAndSupplierId(long orguId, long suppId);
 }

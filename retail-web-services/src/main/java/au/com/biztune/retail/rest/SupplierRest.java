@@ -1,5 +1,6 @@
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.domain.SuppProdPrice;
 import au.com.biztune.retail.domain.Supplier;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
@@ -76,16 +77,15 @@ public class SupplierRest {
     }
 
     /**
-     * get supplier by code.
-     * @param code code.
-     * @return Supplier
+     * get all products suppliy by supplier.
+     * @param id id.
+     * @return list of supplier's product
      */
-    /*
+    @Secured
     @GET
-    @Path("/get/{code}")
+    @Path("/productList/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Supplier getSupplierByCode (@PathParam("code") String code) {
-        return supplierService.getSupplierByCode(code);
+    public List<SuppProdPrice> getSupplierProducts (@PathParam("id") long id) {
+        return supplierService.getSupplierProducts(id);
     }
-    */
 }

@@ -156,4 +156,17 @@ public class PurchaseOrderRest {
             return null;
         }
     }
+    /**
+     * get all supplier's purchase orders.
+     * @param suppId suppId.
+     * @return List of purchase orders
+     */
+    @Secured
+    @GET
+    @Path("/getSupplierPurchaseOrders/{suppId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PurchaseOrderHeader> getSupplierPurchaseOrders (@PathParam("suppId") long suppId) {
+        return purchaseOrderService.getAllPurchaseOrderHeaderPerOrguIdAndSupplierId(suppId);
+    }
+
 }

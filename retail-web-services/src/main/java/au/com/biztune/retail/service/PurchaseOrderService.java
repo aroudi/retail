@@ -74,4 +74,10 @@ public interface PurchaseOrderService {
      */
     List<PurchaseOrderHeader> getAllPurchaseOrderHeaderNotFullyReceived();
 
+    /**
+     * get all purchase Order Header for specific supplier.
+     * @param supplierId supplierId
+     * @return List of PurchaseOrderHeader
+     */
+    List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierId(long supplierId);
 }

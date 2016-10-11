@@ -727,4 +727,19 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             logger.error("Exception in creating stock event:", e);
         }
     }
+
+    /**
+     * get client's BOQ list.
+     * @param clientId clientId
+     * @return List of Boq
+     */
+    public List<au.com.biztune.retail.domain.BillOfQuantity> getClientBillOfQuantities(long clientId) {
+        try {
+            return billOfQuantityDao.getBillOfQuantitiesByClientId(clientId);
+        } catch (Exception e) {
+            logger.error("Error in getting Bill Of Quantity for client", e);
+            return  null;
+        }
+    }
+
 }

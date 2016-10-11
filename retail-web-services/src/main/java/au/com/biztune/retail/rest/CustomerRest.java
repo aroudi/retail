@@ -1,10 +1,12 @@
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.domain.BillOfQuantity;
 import au.com.biztune.retail.domain.Customer;
 import au.com.biztune.retail.domain.CustomerAccountDebt;
 import au.com.biztune.retail.domain.CustomerGrade;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
+import au.com.biztune.retail.service.BillOfQuantityService;
 import au.com.biztune.retail.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,8 @@ public class CustomerRest {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private BillOfQuantityService billOfQuantityService;
     /**
      * Returns list of customers.
      * @return list of Customer
@@ -138,5 +142,17 @@ public class CustomerRest {
             logger.error ("Error in retrieving customer List :", e);
             return null;
         }
+    }
+    /**
+     * get customer account debt by  customer Id.
+     * @param id id.
+     * @return Customer
+     */
+    @Secured
+    @GET
+    @Path("/getBillOfQuantities/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<BillOfQuantity> getCustomerBillOfQuantityListCustomerId (@PathParam("id") long id) {
+        return billOfQuantityService.getClientBillOfQuantities(id);
     }
 }

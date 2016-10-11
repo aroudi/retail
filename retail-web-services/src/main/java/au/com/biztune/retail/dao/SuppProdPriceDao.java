@@ -90,4 +90,12 @@ public interface SuppProdPriceDao {
      * @param orguId orguId
      */
     void deleteSuppProdPricePerProdIdAndOrguId(long prodId, long orguId);
+
+    /**
+     * get all products supply by specific supplier.
+     * @param orguId orguId
+     * @param suppId suppId
+     * @return List of SuppProdPrice.
+     */
+    List<SuppProdPrice> getAllSupplierProducts(long orguId, long suppId);
 }

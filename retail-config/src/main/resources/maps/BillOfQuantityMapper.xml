@@ -79,6 +79,16 @@
           boq.BOQ_NAME = #{value}
     </select>
 
+    <select id="getBillOfQuantitiesByClientId" resultMap="BillOfQuantityMap" >
+        SELECT
+          <include refid="boqColumns"><property name="alias" value="boq"/></include>
+        FROM
+          BILL_OF_QUANTITY boq
+            INNER JOIN PROJECT PRJ ON (boq.PROJECT_ID = PRJ.PROJECT_ID)
+        WHERE
+            PRJ.CLIENT_ID = #{value}
+    </select>
+
     <select id="getBillOfQuantityById" resultMap="BillOfQuantityDetailMap" >
         <include refid="getBillOfQuantity">
         </include>

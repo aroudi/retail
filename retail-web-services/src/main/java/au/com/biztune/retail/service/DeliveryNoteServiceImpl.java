@@ -361,4 +361,18 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             logger.error("Exception in creating stock event:", e);
         }
     }
+    /**
+     * get all delivery note headers per supplier.
+     * @param supplierId supplierId.
+     * @return List of DeliveryNoteHeader
+     */
+    public List<DeliveryNoteHeader> getAllSuppliersDeliveryNotes(long supplierId) {
+        try {
+            return deliveryNoteDao.getAllDelNoteHeaderPerOrguIdAndSupplierId(sessionState.getOrgUnit().getId(), supplierId);
+        } catch (Exception e) {
+            logger.error("Exception in getting supplier's delivery note list:", e);
+            return null;
+        }
+    }
+
 }

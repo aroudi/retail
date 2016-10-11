@@ -802,6 +802,14 @@
         WHERE poh.ORGU_ID=#{value}
     </select>
 
+    <select id="getAllPurchaseOrderHeaderPerOrguIdAndSupplierId" resultMap="purchaseOrderHeaderLiteMap" >
+        SELECT
+        <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>
+        FROM
+        PURCHASE_ORDER_HEADER poh
+        WHERE poh.ORGU_ID=#{param1} and poh.SUPPLIER_ID=#{param2}
+    </select>
+
     <select id="getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusIds" resultMap="purchaseOrderHeaderLiteMap" >
         SELECT
         <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>

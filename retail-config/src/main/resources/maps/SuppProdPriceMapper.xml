@@ -26,6 +26,26 @@
         <association property="supplier" column="SOL_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySolId" />
     </resultMap>
 
+    <resultMap id="suppProdPriceLiteMap" type="SuppProdPrice" >
+        <id column="SPRC_ID" property="id" />
+        <result column="SOL_ID" property="solId" />
+        <result column="PROD_ID" property="prodId" />
+        <result column="CATALOGUE_NO" property="catalogueNo" />
+        <result column="PART_NO" property="partNo" />
+        <result column="UNOM_QTY" property="unomQty" />
+        <result column="PRICE" property="price" />
+        <result column="BULK_PRICE" property="bulkPrice" />
+        <result column="BULK_QTY" property="bulkQty" />
+        <result column="SPRC_MIN_ORD_QTY" property="sprcMinOrdQty" />
+        <result column="SPRC_LEAD_TIME" property="sprcLeadTime" />
+        <result column="SPRC_CREATED" property="sprcCreated" />
+        <result column="SPRC_MODIFIED" property="sprcModified" />
+        <result column="SPRC_PREFER_BUY" property="sprcPrefferBuy" />
+        <result column="SPRC_MIN_ORD_VAL" property="sprcMinOrdVal" />
+        <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+        <association property="unitOfMeasureContent" column="UNOM_ID_CONTENT" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+    </resultMap>
+
     <resultMap id="suppPurchaseProdMap" type="ProductPurchaseItem" >
         <id column="SPRC_ID" property="id" />
         <result column="SOL_ID" property="solId" />
@@ -128,6 +148,18 @@
         sol.ORGU_ID = #{param1}
         AND spp.PROD_ID= #{param2}
         AND sol.SUPP_ID = #{param3}
+    </select>
+
+    <select id="getAllSupplierProducts" resultMap="suppProdPriceLiteMap" >
+        SELECT
+        <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>
+        FROM
+        SUPP_ORGU_LINK sol
+        INNER JOIN
+        SUPP_PROD_PRICE spp on (sol.SOL_ID = spp.SOL_ID)
+        WHERE
+        sol.ORGU_ID = #{param1}
+        AND sol.SUPP_ID = #{param2}
     </select>
 
     <insert id="insert" parameterType="SuppProdPrice" useGeneratedKeys="true" keyProperty="id" keyColumn="SPRC_ID">

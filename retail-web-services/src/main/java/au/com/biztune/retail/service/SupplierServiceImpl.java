@@ -1,10 +1,9 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.ContactDao;
+import au.com.biztune.retail.dao.SuppProdPriceDao;
 import au.com.biztune.retail.dao.SupplierDao;
-import au.com.biztune.retail.domain.Contact;
-import au.com.biztune.retail.domain.SuppOrguLink;
-import au.com.biztune.retail.domain.Supplier;
+import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.IdBConstant;
@@ -34,6 +33,9 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Autowired
     private ContactDao contactDao;
+
+    @Autowired
+    private SuppProdPriceDao suppProdPriceDao;
 
     /**
      * return all Suppliers.
@@ -147,4 +149,20 @@ public class SupplierServiceImpl implements SupplierService {
             return null;
         }
     }
+
+    /**
+     * return all Suppliers.
+     * @param supplierId supplier id.
+     * @return list of Supplier
+     */
+    public List<SuppProdPrice> getSupplierProducts(long supplierId) {
+        try {
+            return suppProdPriceDao.getAllSupplierProducts(sessionState.getOrgUnit().getId(), supplierId);
+        } catch (Exception e) {
+            logger.error("Error in getting supplier's product list: ", e);
+            return null;
+        }
+    }
+
+
 }

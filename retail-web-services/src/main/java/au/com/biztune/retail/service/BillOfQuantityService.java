@@ -57,4 +57,11 @@ public interface BillOfQuantityService {
      */
     @Transactional
     List<PurchaseOrderHeader> createPurchaseOrderFromBillOfQuantities(List<au.com.biztune.retail.domain.BillOfQuantity> billOfQuantities, SecurityContext securityContext);
-    }
+
+    /**
+     * get client's BOQ list.
+     * @param clientId clientId
+     * @return List of Boq
+     */
+    List<au.com.biztune.retail.domain.BillOfQuantity> getClientBillOfQuantities(long clientId);
+}

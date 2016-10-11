@@ -1,5 +1,6 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.domain.SuppProdPrice;
 import au.com.biztune.retail.domain.Supplier;
 import au.com.biztune.retail.response.CommonResponse;
 
@@ -35,4 +36,12 @@ public interface SupplierService {
      * @return Supplier
      */
     Supplier getSupplierByCode(String code);
+
+    /**
+     * return all Suppliers.
+     * @param supplierId supplier id.
+     * @return list of Supplier
+     */
+    List<SuppProdPrice> getSupplierProducts(long supplierId);
+
 }

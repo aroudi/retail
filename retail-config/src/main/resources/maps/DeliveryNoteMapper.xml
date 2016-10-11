@@ -537,6 +537,14 @@
         WHERE deln.ORGU_ID=#{value}
     </select>
 
+    <select id="getAllDelNoteHeaderPerOrguIdAndSupplierId" resultMap="deliveryNoteHeaderLiteMap" >
+        SELECT
+        <include refid="deliveryNoteHeaderColumns"><property name="alias" value="deln"/></include>
+        FROM
+        DELIVERY_NOTE_HEADER deln
+        WHERE deln.ORGU_ID=#{param1} AND deln.SUPPLIER_ID = #{param2}
+    </select>
+
     <select id="getDelNoteHeaderPerNoteNumber" resultMap="deliveryNoteHeaderLiteMap" >
         SELECT
         <include refid="deliveryNoteHeaderColumns"><property name="alias" value="deln"/></include>
