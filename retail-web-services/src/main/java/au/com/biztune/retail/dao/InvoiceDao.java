@@ -75,4 +75,11 @@ public interface InvoiceDao {
      * @return List of Invoice.
      */
     List<TxnHeader> getAllInvoiceOfCustomer(long customerId);
+
+    /**
+     * update refund amount on invoice detail after refunding an item.
+     * @param totalRefunaAmount totalRefunaAmount
+     * @param id id
+     */
+    void updateInvoiceRefundItem(double totalRefunaAmount, long id);
 }

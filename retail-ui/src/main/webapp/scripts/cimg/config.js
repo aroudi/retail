@@ -174,6 +174,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
                 txnType:null
             }
         })
+        .state('dashboard.refundTxn',{
+            url:'/refundTxn',
+            controller: 'txnRefundCtrl',
+            templateUrl:'views/pages/txnRefund.html',
+            access: "user"
+        })
         .state('dashboard.listSaleTransaction',{
             url:'/listSaleTransaction',
             controller: 'txnSaleListCtrl',

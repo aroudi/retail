@@ -115,4 +115,11 @@ public interface TxnDao {
      * @return amount paid
      */
     Double getTxnHeaderAmountPaid(long txhdId);
+
+    /**
+     * update refund amount on txn sale.
+     * @param totalRefundAmount totalRefundAmount
+     * @param id id
+     */
+    void updateTxnSaleRefundItem(double totalRefundAmount, long id);
 }

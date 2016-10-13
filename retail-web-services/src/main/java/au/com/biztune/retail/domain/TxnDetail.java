@@ -1,5 +1,7 @@
 package au.com.biztune.retail.domain;
 
+import au.com.biztune.retail.util.IdBConstant;
+
 /**
  * Created by arash on 14/04/2016.
  */
@@ -36,6 +38,12 @@ public class TxnDetail {
     private double originalQuantity;
     private boolean newAdded;
     private double profitMargin;
+    private double txdeQtyRefund;
+    private double txdeQtyTotalRefund;
+    private ConfigCategory invoiceDetailType;
+    private double quantity;
+    private boolean selected;
+
 
 
 
@@ -84,7 +92,40 @@ public class TxnDetail {
     }
 
 
+    /**
+     * check if item selected for invoice or refund.
+     * @return true if item is selected either for invoice or for refund.
+     */
+    public boolean isSelected() {
+       boolean result = false;
+        if (txdeDetailType == null) {
+            return false;
+        }
+       if (txdeDetailType.getCategoryCode().equals(IdBConstant.TXN_LINE_TYPE_SALE)) {
+           result = isInvoiced();
+       } else if (txdeDetailType.getCategoryCode().equals(IdBConstant.TXN_LINE_TYPE_REFUND)) {
+           result = isTxdeLineRefund();
+       }
+        return result;
+    }
 
+    /**
+     * get quantity entered by user.
+     * @return quantity
+     */
+    public double getQuantity() {
+        double quantity = 0.00;
+        if (txdeDetailType == null) {
+            return quantity;
+        }
+        if (txdeDetailType.getCategoryCode().equals(IdBConstant.TXN_LINE_TYPE_SALE)) {
+            quantity = txdeQtyInvoiced;
+        } else if (txdeDetailType.getCategoryCode().equals(IdBConstant.TXN_LINE_TYPE_REFUND)) {
+            quantity = txdeQtyRefund * (-1);
+        }
+        return quantity;
+
+    }
     public long getId() {
         return id;
     }
@@ -340,4 +381,29 @@ public class TxnDetail {
     public void setProfitMargin(double profitMargin) {
         this.profitMargin = profitMargin;
     }
+
+    public double getTxdeQtyRefund() {
+        return txdeQtyRefund;
+    }
+
+    public void setTxdeQtyRefund(double txdeQtyRefund) {
+        this.txdeQtyRefund = txdeQtyRefund;
+    }
+
+    public double getTxdeQtyTotalRefund() {
+        return txdeQtyTotalRefund;
+    }
+
+    public void setTxdeQtyTotalRefund(double txdeQtyTotalRefund) {
+        this.txdeQtyTotalRefund = txdeQtyTotalRefund;
+    }
+
+    public ConfigCategory getInvoiceDetailType() {
+        return invoiceDetailType;
+    }
+
+    public void setInvoiceDetailType(ConfigCategory invoiceDetailType) {
+        this.invoiceDetailType = invoiceDetailType;
+    }
+
 }

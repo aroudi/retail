@@ -415,6 +415,11 @@ public interface IdBConstant {
     String INVOICE_PREFIX = "INVOICE-";
 
     /**
+     * Refund Prefix
+     */
+    String REFUND_PREFIX = "REFUND-";
+
+    /**
      * Transaction Number Prefix
      */
     String QUOTE_NUMBER_PREFIX = "QUOTE-";

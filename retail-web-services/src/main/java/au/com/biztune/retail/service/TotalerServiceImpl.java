@@ -32,7 +32,9 @@ public class TotalerServiceImpl implements TotalerService {
                 logger.debug("Totaller : transaction is empty");
                 return;
             }
-            if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
+            if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)
+                    || txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_REFUND))
+            {
                 processTotalSale(txnHeader);
             }
             //TOTAL MEDIA PROCESS
@@ -51,6 +53,7 @@ public class TotalerServiceImpl implements TotalerService {
             double totalTaxedValue = 0.00;
             double totalTaxdPaid = 0.00;
             double totalSaleValue = 0.00;
+            double totalRefundQty = 0.00;
 
             final Timestamp currentDate = new Timestamp(new Date().getTime());
 
@@ -64,21 +67,30 @@ public class TotalerServiceImpl implements TotalerService {
             for (TxnDetail txnDetail : txnHeader.getTxnDetails()) {
                 //skip voided items.
                 //process only invoiced items.
-                if (txnDetail == null || txnDetail.isTxdeItemVoid() || !txnDetail.isInvoiced()) {
+                if (txnDetail == null || txnDetail.isTxdeItemVoid() || !txnDetail.isSelected()) {
                     continue;
                 }
                 //set profit margin on item
                 txnDetail.setProfitMargin(profitMargin);
 
-                if (txnDetail.getTxdeDetailType().getCategoryCode().equals(IdBConstant.TXN_LINE_TYPE_SALE)) {
-                    totalSoldQty = totalSoldQty + txnDetail.getTxdeQtyInvoiced();
-                    totalItemsValue = totalItemsValue + txnDetail.getItemCost() * txnDetail.getTxdeQtyInvoiced();
-                    totalProfitValue = totalProfitValue + txnDetail.getItemCost() * profitMargin * txnDetail.getTxdeQtyInvoiced();
-                    totalTaxedValue = totalTaxedValue + txnDetail.getItemGrossValue() * txnDetail.getTxdeQtyInvoiced();
-                    totalTaxdPaid = totalTaxdPaid + txnDetail.getItemTaxPaid() * txnDetail.getTxdeQtyInvoiced();
-                    totalSaleValue = totalSaleValue + (txnDetail.getItemGrossValue() + txnDetail.getItemTaxPaid()) * txnDetail.getTxdeQtyInvoiced();
+                if (txnDetail.getTxdeDetailType().getCategoryCode().equals(IdBConstant.TXN_LINE_TYPE_SALE)
+                         || txnDetail.getTxdeDetailType().getCategoryCode().equals(IdBConstant.TXN_LINE_TYPE_REFUND))
+                {
+                    if (txnDetail.getTxdeDetailType().getCategoryCode().equals(IdBConstant.TXN_LINE_TYPE_SALE)) {
+                        totalSoldQty = totalSoldQty + txnDetail.getQuantity();
+                    }
+                    if (txnDetail.getTxdeDetailType().getCategoryCode().equals(IdBConstant.TXN_LINE_TYPE_REFUND)) {
+                        totalRefundQty = totalRefundQty + txnDetail.getQuantity();
+                    }
+                    totalItemsValue = totalItemsValue + txnDetail.getItemCost() * txnDetail.getQuantity();
+                    totalProfitValue = totalProfitValue + txnDetail.getItemCost() * profitMargin * txnDetail.getQuantity();
+                    totalTaxedValue = totalTaxedValue + txnDetail.getItemGrossValue() * txnDetail.getQuantity();
+                    totalTaxdPaid = totalTaxdPaid + txnDetail.getItemTaxPaid() * txnDetail.getQuantity();
+                    totalSaleValue = totalSaleValue + (txnDetail.getItemGrossValue() + txnDetail.getItemTaxPaid()) * txnDetail.getQuantity();
+
                     extractTaxFiguresFromItem(txnDetail, totalTaxGroupMap);
                 }
+
             }
             //save TotalSaleOperator.
 
@@ -90,6 +102,7 @@ public class TotalerServiceImpl implements TotalerService {
             totalSaleOperator.setToopTradingDate(currentDate);
             totalSaleOperator.setToopProfitValue(totalProfitValue);
             totalSaleOperator.setToopSaleQty(totalSoldQty);
+            totalSaleOperator.setToopRefundQty(totalRefundQty);
             totalSaleOperator.setToopSaleValue(totalSaleValue);
             totalSaleOperator.setToopTaxedValue(totalTaxedValue);
             totalSaleOperator.setToopTaxPaid(totalTaxdPaid);
@@ -121,14 +134,14 @@ public class TotalerServiceImpl implements TotalerService {
             if (itemTaxGroupMap.containsKey(taxRule.getTaxLegVariance().getTxlvCode())) {
                 totalTaxGroup = itemTaxGroupMap.get(taxRule.getTaxLegVariance().getTxlvCode());
                 if (totalTaxGroup != null) {
-                    totalTaxGroup.setTotgTaxedValue(totalTaxGroup.getTotgTaxedValue() + txnDetail.getItemGrossValue() * txnDetail.getTxdeQtyInvoiced());
-                    totalTaxGroup.setTotgTax(totalTaxGroup.getTotgTax() + txnDetail.getItemGrossValue() * txnDetail.getTxdeQtyInvoiced() * taxRule.getTaxLegVariance().getTxlvRate());
+                    totalTaxGroup.setTotgTaxedValue(totalTaxGroup.getTotgTaxedValue() + txnDetail.getItemGrossValue() * txnDetail.getQuantity());
+                    totalTaxGroup.setTotgTax(totalTaxGroup.getTotgTax() + txnDetail.getItemGrossValue() * txnDetail.getQuantity() * taxRule.getTaxLegVariance().getTxlvRate());
                 }
             } else {
                 totalTaxGroup = new TotalTaxGroup();
-                totalTaxGroup.setTotgTaxedValue(txnDetail.getItemGrossValue() * txnDetail.getTxdeQtyInvoiced());
-                totalTaxGroup.setTotgTax(txnDetail.getItemGrossValue() * txnDetail.getTxdeQtyInvoiced() * taxRule.getTaxLegVariance().getTxlvRate());
-                totalTaxGroup.setTotgTotSalesQty(txnDetail.getTxdeQtyInvoiced());
+                totalTaxGroup.setTotgTaxedValue(txnDetail.getItemGrossValue() * txnDetail.getQuantity());
+                totalTaxGroup.setTotgTax(txnDetail.getItemGrossValue() * txnDetail.getQuantity() * taxRule.getTaxLegVariance().getTxlvRate());
+                totalTaxGroup.setTotgTotSalesQty(txnDetail.getQuantity());
                 totalTaxGroup.setTaxLegVariance(taxRule.getTaxLegVariance());
                 totalTaxGroup.setTotgTxgpCode(taxRule.getTaxLegVariance().getTxlvCode());
                 itemTaxGroupMap.put(taxRule.getTaxLegVariance().getTxlvCode(), totalTaxGroup);

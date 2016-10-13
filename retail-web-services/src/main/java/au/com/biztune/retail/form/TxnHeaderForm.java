@@ -27,7 +27,8 @@ public class TxnHeaderForm {
     private boolean convertedToTxnSale;
     private double txhdValueCredit;
     private String txhdDlvAddress;
-
+    private ConfigCategory invoiceTxnType;
+    private long parentId;
 
     public long getId() {
         return id;
@@ -179,5 +180,21 @@ public class TxnHeaderForm {
 
     public void setTxhdDlvAddress(String txhdDlvAddress) {
         this.txhdDlvAddress = txhdDlvAddress;
+    }
+
+    public ConfigCategory getInvoiceTxnType() {
+        return invoiceTxnType;
+    }
+
+    public void setInvoiceTxnType(ConfigCategory invoiceTxnType) {
+        this.invoiceTxnType = invoiceTxnType;
+    }
+
+    public long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
     }
 }

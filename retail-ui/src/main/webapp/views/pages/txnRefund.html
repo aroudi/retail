@@ -1,0 +1,158 @@
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel  panel-primary">
+            <div class="panel-heading">
+                Refund Sale
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form role="form" name="mainForm">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            Transaction Header
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="col-lg-6">
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label>Customer</label>
+                                                                    <input class="form-control" data-ng-model="customer.companyName" ng-disabled="true">
+                                                                </div >
+                                                            </div>
+                                                        </div >
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group">
+                                                                <label>Delivery Address</label>
+                                                                <input class="form-control" data-ng-model="txnHeaderForm.txhdDlvAddress" ng-disabled="true">
+                                                            </div >
+                                                        </div>
+                                                    </div >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            Products
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div ui-grid="txnDetailList" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-cellNav style="height:400px;" class="grid"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            Transaction Footer
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-9">
+                                                        <div class="col-lg-12">
+                                                            <div class="col-lg-3">
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <label>Media Type</label>
+                                                                        <select class="form-control" data-ng-model="mediaType"
+                                                                                ng-options="type.medtName for type in mediaTypeSet" ng-change="onMediaTypeChange()" >
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <label>Payment Media</label>
+                                                                        <select class="form-control" data-ng-model="paymentMedia"
+                                                                                ng-options="type.paymName for type in paymentMediaSet" >
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <label>Amount
+                                                                           <span class="btn btn-warning btn-xs" ng-show="mainForm.paymentAmount.$error.range">
+                                                                                max allowed is ${{maxPaymentAllowed()}}
+                                                                           </span>
+                                                                           <span class="btn btn-warning btn-xs" ng-show="mainForm.paymentAmount.$error.pattern">
+                                                                                Invalid Amount!!!
+                                                                           </span>
+                                                                        </label>
+                                                                        <input class="form-control" type="number" min="0" ng-app-max="{{maxPaymentAllowed()}}" name="paymentAmount" data-ng-model="paymentAmount" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
+                                                                    </div>
+                                                                </div >
+                                                            </div>
+                                                            <div class="col-lg-1">
+                                                                <div class="col-lg-2">
+                                                                </div>
+                                                                <div class="col-lg-12">
+                                                                </div>
+                                                                <div class="col-lg-12">
+                                                                    <table>
+                                                                        <tr></tr><tr></tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <!--<button type="button" class="btn btn-outline btn-primary" ng-click="addTransposition()">Add</button> -->
+                                                                                <a href=""><i tooltip="Add to the list" tooltip-placement="bottom" class="fa fa-long-arrow-right fa-4x" ng-click="addTxnMedia()" ng-show="!(mainForm.paymentAmount.$error.range)" ></i> </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-8">
+                                                                <div id="txnMediaGrid" ui-grid ="txnMediaList" class="grid" ui-grid-selection style="height:200px;" ></div>
+                                                            </div>
+                                                        </div>
+                                                    </div >
+                                                    <div class="col-lg-3">
+                                                        <div class="row">
+                                                            <label>Total</label>
+                                                            <span>{{txnHeaderForm.txhdValueNett |currency}}</span>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <label>Due</label>
+                                                            <span>{{txnHeaderForm.txhdValueDue | currency}}</span>
+                                                        </div>
+                                                        <div class="row" ng-show="false">
+                                                            <label>Account Balance</label>
+                                                            <span>{{accountBalance() | currency}}</span>
+                                                        </div>
+                                                        <div class="row" ng-show="false">
+                                                            <label>Discount</label>
+                                                            <input class="form-control">
+                                                        </div>
+                                                        <div class="row" ng-show="false">
+                                                            <label>Rounding</label>
+                                                            <input class="form-control" data-ng-model = txnHeaderForm.txhdValRounding>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
+                                <button type="button" class="btn btn-success" ng-click="createTransactionRefund()" >Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

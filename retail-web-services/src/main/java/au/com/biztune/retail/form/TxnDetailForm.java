@@ -32,8 +32,14 @@ public class TxnDetailForm {
     private double calculatedLineTax;
     //indicate if this item is going to be invoiced or not
     private boolean invoiced;
+    private boolean refund;
     private double txdeQtyTotalInvoiced;
     private double originalQuantity;
+    private double txdeQtyRefund;
+    private double txdeQtyTotalRefund;
+    private ConfigCategory invoiceDetailType;
+    private long txdeParentDetail;
+
 
     public long getId() {
         return id;
@@ -225,5 +231,45 @@ public class TxnDetailForm {
 
     public void setOriginalQuantity(double originalQuantity) {
         this.originalQuantity = originalQuantity;
+    }
+
+    public double getTxdeQtyRefund() {
+        return txdeQtyRefund;
+    }
+
+    public void setTxdeQtyRefund(double txdeQtyRefund) {
+        this.txdeQtyRefund = txdeQtyRefund;
+    }
+
+    public double getTxdeQtyTotalRefund() {
+        return txdeQtyTotalRefund;
+    }
+
+    public void setTxdeQtyTotalRefund(double txdeQtyTotalRefund) {
+        this.txdeQtyTotalRefund = txdeQtyTotalRefund;
+    }
+
+    public ConfigCategory getInvoiceDetailType() {
+        return invoiceDetailType;
+    }
+
+    public void setInvoiceDetailType(ConfigCategory invoiceDetailType) {
+        this.invoiceDetailType = invoiceDetailType;
+    }
+
+    public boolean isRefund() {
+        return refund;
+    }
+
+    public void setRefund(boolean refund) {
+        this.refund = refund;
+    }
+
+    public long getTxdeParentDetail() {
+        return txdeParentDetail;
+    }
+
+    public void setTxdeParentDetail(long txdeParentDetail) {
+        this.txdeParentDetail = txdeParentDetail;
     }
 }

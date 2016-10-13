@@ -16,6 +16,7 @@ public class TxnMediaForm {
     private boolean deleted;
     private long txhdId;
     private long parentId;
+    private ConfigCategory invoiceMediaType;
 
 
     public long getId() {
@@ -88,5 +89,13 @@ public class TxnMediaForm {
 
     public void setParentId(long parentId) {
         this.parentId = parentId;
+    }
+
+    public ConfigCategory getInvoiceMediaType() {
+        return invoiceMediaType;
+    }
+
+    public void setInvoiceMediaType(ConfigCategory invoiceMediaType) {
+        this.invoiceMediaType = invoiceMediaType;
     }
 }

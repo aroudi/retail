@@ -38,6 +38,7 @@ public class TxnHeader {
     private long parentId;
     private String txhdDlvAddress;
     private AppUser user;
+    private ConfigCategory invoiceTxnType;
 
     /**
      * add txn detail to txn header.
@@ -291,5 +292,13 @@ public class TxnHeader {
 
     public void setUser(AppUser user) {
         this.user = user;
+    }
+
+    public ConfigCategory getInvoiceTxnType() {
+        return invoiceTxnType;
+    }
+
+    public void setInvoiceTxnType(ConfigCategory invoiceTxnType) {
+        this.invoiceTxnType = invoiceTxnType;
     }
 }

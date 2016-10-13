@@ -6,6 +6,7 @@
     <!-- result maps -->
     <resultMap id="txnHeaderLightMap" type="TxnHeader" >
         <id column="TXHD_ID" property="id" />
+        <result column="TXHD_ID" property="parentId" /> <!-- use for refund-->
         <result column="TXHD_TXN_NR" property="txhdTxnNr" />
         <result column="TXHD_ORIG_TXN_NR" property="txhdOrigTxnNr" />
         <result column="TXHD_TRADING_DATE" property="txhdTradingDate" />
@@ -73,6 +74,7 @@
         <result column="TXDE_QUANTITY_SOLD" property="originalQuantity" /> <!-- we need this to figure out the change in quantity on sale order -->
         <result column="TXDE_QTY_BALANCE" property="txdeQtyBalance" />
         <result column="TXDE_QTY_TOTAL_INVOICED" property="txdeQtyTotalInvoiced" />
+        <result column="TXDE_QTY_TOTAL_REFUND" property="txdeQtyTotalRefund" />
         <result column="TXDE_PRICE_SOLD" property="txdePriceSold" />
         <result column="TXDE_LINE_REFUND" property="txdeLineRefund" />
         <result column="TXDE_ITEM_VOID" property="txdeItemVoid" />
@@ -138,6 +140,7 @@
         ${alias}.TXDE_QUANTITY_SOLD,
         ${alias}.TXDE_QTY_BALANCE,
         ${alias}.TXDE_QTY_TOTAL_INVOICED,
+        ${alias}.TXDE_QTY_TOTAL_REFUND,
         ${alias}.TXDE_PRICE_SOLD,
         ${alias}.TXDE_LINE_REFUND,
         ${alias}.TXDE_ITEM_VOID,
@@ -403,6 +406,7 @@
         TXDE_QUANTITY_SOLD,
         TXDE_QTY_BALANCE,
         TXDE_QTY_TOTAL_INVOICED,
+        TXDE_QTY_TOTAL_REFUND,
         TXDE_PRICE_SOLD,
         TXDE_LINE_REFUND,
         TXDE_ITEM_VOID,
@@ -493,6 +497,13 @@
             ,#{txdeQtyTotalInvoiced}
         </if>
         <if test="txdeQtyTotalInvoiced == null">
+            ,null
+        </if>
+
+        <if test="txdeQtyTotalRefund != null">
+            ,#{txdeQtyTotalRefund}
+        </if>
+        <if test="txdeQtyTotalRefund == null">
             ,null
         </if>
 
@@ -649,6 +660,11 @@
         WHERE TXDE_ID = #{id}
     </update>
 
+    <update id="updateTxnSaleRefundItem" >
+        UPDATE TXN_DETAIL SET
+          TXDE_QTY_TOTAL_REFUND = #{param1}
+        WHERE TXDE_ID = #{param2}
+    </update>
 
     <insert id="insertTxnMedia" parameterType="TxnMedia" useGeneratedKeys="true" keyProperty="id" keyColumn="TXMD_ID">
         INSERT INTO TXN_MEDIA(

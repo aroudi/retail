@@ -23,6 +23,7 @@
         <result column="TXIV_COLLECT_DATE" property="txhdCollectDate" />
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="user" column="TXIV_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
+        <association property="invoiceTxnType" column="TXIV_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
     <resultMap id="invoiceMap" type="TxnHeader" >
@@ -44,6 +45,7 @@
         <result column="TXIV_COLLECT_DATE" property="txhdCollectDate" />
         <!--association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" /-->
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
+        <association property="invoiceTxnType" column="TXIV_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <collection property="txnDetails" javaType="ArrayList" column="TXIV_ID" ofType="TxnDetail" select="getInvoiceDetailPerInvoiceId"/>
         <collection property="txnMedias" javaType="ArrayList" column="TXIV_ID" ofType="TxnMedia" select="getInvoiceMediaPerInvoiceId"/>
     </resultMap>
@@ -58,6 +60,8 @@
         <result column="TXDE_TAX" property="txdeTax" />
         <result column="TXDE_VALUE_NET" property="txdeValueNet" />
         <result column="TXID_QTY_INVOICED" property="txdeQuantitySold" />
+        <result column="TXID_QTY_INVOICED" property="txdeQtyTotalInvoiced" />
+        <result column="TXID_QTY_REFUND" property="txdeQtyTotalRefund" />
         <result column="TXID_PRICE_SOLD" property="txdePriceSold" />
         <result column="TXDE_LINE_REFUND" property="txdeLineRefund" />
         <result column="TXDE_ITEM_VOID" property="txdeItemVoid" />
@@ -100,7 +104,8 @@
         ${alias}.TXIV_RECEIPT_ID,
         ${alias}.CUSTOMER_ID,
         ${alias}.TXIV_REFUND_EXPIRY,
-        ${alias}.TXIV_COLLECT_DATE
+        ${alias}.TXIV_COLLECT_DATE,
+        ${alias}.TXIV_TXN_TYPE
     </sql>
 
     <sql id="invoiceDetailColumns">
@@ -108,6 +113,7 @@
         ${alias}.TXIV_ID,
         ${alias}.TXDE_ID as PARENT_ID,
         ${alias}.TXID_QTY_INVOICED,
+        ${alias}.TXID_QTY_REFUND,
         ${alias}.TXID_PRICE_SOLD
     </sql>
 
@@ -137,7 +143,8 @@
         TXIV_RECEIPT_ID,
         CUSTOMER_ID,
         TXIV_REFUND_EXPIRY,
-        TXIV_COLLECT_DATE
+        TXIV_COLLECT_DATE,
+        TXIV_TXN_TYPE
         ) VALUES (
         #{parentId},
         #{orgUnit.id},
@@ -228,6 +235,12 @@
         <if test="txhdCollectDate == null">
             ,null
         </if>
+        <if test="invoiceTxnType != null">
+            ,#{invoiceTxnType.id}
+        </if>
+        <if test="invoiceTxnType == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -238,7 +251,10 @@
         ORGU_ID,
         STORE_ID,
         TXID_QTY_INVOICED,
-        TXID_PRICE_SOLD
+        TXID_QTY_REFUND,
+        TXID_PRICE_SOLD,
+        TXID_LINE_TYPE
+
         ) VALUES (
         #{txhdId},
         #{txdeParentDetail},
@@ -251,26 +267,54 @@
             ,null
         </if>
 
+        <if test="txdeQtyRefund != null">
+            ,#{txdeQtyRefund}
+        </if>
+        <if test="txdeQtyRefund == null">
+            ,null
+        </if>
+
         <if test="txdePriceSold != null">
             ,#{txdePriceSold}
         </if>
         <if test="txdePriceSold == null">
             ,null
         </if>
+        <if test="invoiceDetailType != null">
+            ,#{invoiceDetailType.id}
+        </if>
+        <if test="invoiceDetailType == null">
+            ,null
+        </if>
         )
     </insert>
+
+    <update id="updateInvoiceRefundItem" >
+        UPDATE INVOICE_DETAIL SET
+        TXID_QTY_REFUND = #{param1}
+        WHERE TXID_ID = #{param2}
+    </update>
+
 
     <insert id="insertIncoiceMedia" parameterType="TxnMedia" useGeneratedKeys="true" keyProperty="id" keyColumn="TXIM_ID">
         INSERT INTO INVOICE_MEDIA(
         ORGU_ID,
         STORE_ID,
         TXIV_ID,
-        TXMD_ID
+        TXMD_ID,
+        TXIM_LINE_TYPE
+
         ) VALUES (
         #{orguId},
         #{storeId},
         #{txhdId},
         #{parentId}
+        <if test="invoiceMediaType != null">
+            ,#{invoiceMediaType.id}
+        </if>
+        <if test="invoiceMediaType == null">
+            ,null
+        </if>
         )
     </insert>
 

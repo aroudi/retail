@@ -41,17 +41,14 @@ public class StockServiceImpl implements StockService {
         try {
             //update stock only for txn_invoice and sale order.
             if (!(txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)
-                    || txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)))
+                    || txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)
+                    || txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_REFUND)))
             {
                 return;
             }
 
             String txnType = null;
-            if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
-                txnType = IdBConstant.TXN_TYPE_SALE;
-            } else if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
-                txnType = IdBConstant.TXN_TYPE_INVOICE;
-            }
+            txnType = txnHeader.getTxhdTxnType().getCategoryCode();
 
             final Timestamp currentTime = new Timestamp(new Date().getTime());
             for (TxnDetail txnDetail:txnHeader.getTxnDetails()) {
@@ -70,6 +67,8 @@ public class StockServiceImpl implements StockService {
                     if (txnDetail.isTxdeItemVoid()) {
                         stockEvent.setStckQty(-txnDetail.getOriginalQuantity());
                     }
+                } else if (txnType.equals(IdBConstant.TXN_TYPE_REFUND)) {
+                    stockEvent.setStckQty(txnDetail.getTxdeQtyRefund());
                 }
                 stockEvent.setUnomId(txnDetail.getUnitOfMeasure().getId());
                 //stockEvent.setSupplierId();

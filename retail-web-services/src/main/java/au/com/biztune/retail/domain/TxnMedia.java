@@ -22,6 +22,7 @@ public class TxnMedia {
     //use only for invoice. populated with media id from txn_media
     private long parentId;
     private boolean newAdded;
+    private ConfigCategory invoiceMediaType;
 
     /**
      * get value based on txmdType.
@@ -38,7 +39,7 @@ public class TxnMedia {
             return getTxmdAmountLocal();
         }
         if ("TXN_MEDIA_REFUND".equals(txmdType.getCategoryCode())) {
-            return getTxmdAmountLocal() * (-1);
+            return getTxmdAmountLocal();
         }
         return getTxmdAmountLocal();
     }
@@ -182,5 +183,13 @@ public class TxnMedia {
 
     public void setNewAdded(boolean newAdded) {
         this.newAdded = newAdded;
+    }
+
+    public ConfigCategory getInvoiceMediaType() {
+        return invoiceMediaType;
+    }
+
+    public void setInvoiceMediaType(ConfigCategory invoiceMediaType) {
+        this.invoiceMediaType = invoiceMediaType;
     }
 }
