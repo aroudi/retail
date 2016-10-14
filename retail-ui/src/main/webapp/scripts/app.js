@@ -90,6 +90,7 @@ var service_uri = {
     'TXN_INVOICE_URI' : 'transaction/invoice',
     'TXN_ADD_PAYMENT_URI' : 'transaction/addPayment',
     'TXN_GET_URI' : 'transaction/get/',
+    'TXN_REFUND_URI' : 'transaction/refund',
     'TXN_EXPORT_PDF' : 'transaction/exportPdf/',
     'CREATE_PO_FROM_BOQ_URI' : 'billOfQuantity/generatePurchaseOrder',
     'POH_GET_ALL_URI' : 'purchaseOrder/header/all',

@@ -13,7 +13,7 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout,baseData
             {field:'txhdTxnNr', displayName:'Invoice No',enableCellEdit:false, width:'12.5%'},
             {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
             {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'},
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' }
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-backward fa-2x" ng-click="grid.appScope.refundTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -46,6 +46,19 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout,baseData
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.createSaleTransaction');
+        });
+    }
+    $scope.refundTransaction = function(row) {
+        if (row == undefined || row.entity == undefined) {
+            alert('row is undefined');
+            return;
+        }
+        var txnSaleGetURI = INVOICE_GET_URI + row.entity.id;
+        baseDataService.getBaseData(txnSaleGetURI).then(function(response){
+            baseDataService.setIsPageNew(false);
+            baseDataService.setRow(response.data);
+            //redirect to the supplier page.
+            $state.go('dashboard.refundTxn');
         });
     }
     $scope.exportToPdf = function(row) {

@@ -22,7 +22,7 @@
                                                             <div class="col-lg-6">
                                                                 <div class="form-group">
                                                                     <label>Customer</label>
-                                                                    <input class="form-control" data-ng-model="customer.companyName" ng-disabled="true">
+                                                                    <input class="form-control" data-ng-model="txnHeaderForm.customer.companyName" ng-disabled="true">
                                                                 </div >
                                                             </div>
                                                         </div >
@@ -43,6 +43,8 @@
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
                                             Products
+                                            <button type="button" class="btn btn-primary" ng-click="toggleAllRowSelection()" ng-show="allItemsSelected">Unselect Items</button>
+                                            <button type="button" class="btn btn-primary" ng-click="toggleAllRowSelection()" ng-show="!allItemsSelected">Select Items</button>
                                         </div>
                                         <div class="panel-body">
                                             <div class="row">
@@ -123,7 +125,7 @@
                                                             <label>Due</label>
                                                             <span>{{txnHeaderForm.txhdValueDue | currency}}</span>
                                                         </div>
-                                                        <div class="row" ng-show="false">
+                                                        <div class="row">
                                                             <label>Account Balance</label>
                                                             <span>{{accountBalance() | currency}}</span>
                                                         </div>

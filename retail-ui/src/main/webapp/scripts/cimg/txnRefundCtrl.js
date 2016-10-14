@@ -1,7 +1,11 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_MEDIA_REFUND) {
+cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_REFUND_URI, TXN_MEDIA_REFUND, INVOICE_EXPORT_PDF) {
+
+
+    //select all rows for refund
+
 
     initPageData();
     initTxnDetail();
@@ -13,6 +17,12 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         });
 
         $scope.txnHeaderForm = angular.copy(baseDataService.getRow());
+        //keep a copy of paid media list for calculation.
+        $scope.paidMediaList = angular.copy($scope.txnHeaderForm.txnMediaFormList);
+        //set new paid media list
+        $scope.txnHeaderForm.txnMediaFormList = [];
+        //select all rows for refund
+        selectAllRowsForRefund();
         baseDataService.setRow({});
         baseDataService.setIsPageNew(true);
         baseDataService.getBaseData(MEDIA_TYPE_ALL_URI).then(function(response){
@@ -87,10 +97,10 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
                     row.entity.refund = false;
                     row.entity.txdeQtyRefund = 0;
                 }
-                checkIfItemSelected();
                 evaluatRowItem(row.entity);
                 totalTransaction();
             });
+            gridApi.selection.on.rowSelectionChangedBatch()
             gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef){
                 if (colDef.name == 'txdeQtyRefund') {
                     $scope.txdeQtyRefundBeforeEditting = rowEntity.txdeRefund;
@@ -128,6 +138,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
             txnDetail['calculatedLineTax'] = txnDetail.calculatedLineValue * txnDetail.txdeTax;
             totalTransaction();
         })
+        $scope.allItemsSelected=false;
     }
 
 
@@ -166,10 +177,6 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
             });
         };
 
-        //keep a copy of paid media list for calculation.
-        $scope.paidMediaList = angular.copy($scope.txnHeaderForm.txnMediaFormList);
-        //set new paid media list
-        $scope.txnHeaderForm.txnMediaFormList = [];
     }
 
     function evaluatRowItem (txnDetail) {
@@ -239,15 +246,21 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
 
     $scope.createTransactionRefund = function () {
 
+        //check if we have outstanding amount to pay
+        if (maxPaymentAllowed() < 0) {
+            baseDataService.displayMessage("info","Warning", "Payment is due!!!");
+            return;
+        }
 
         $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
 
         var rowObject = $scope.txnHeaderForm;
-        baseDataService.addRow(rowObject, TXN_ADD_URI).then(function(response) {
+        baseDataService.addRow(rowObject, TXN_REFUND_URI).then(function(response) {
             addResponse = response.data;
             if (addResponse.status == SUCCESS ) {
-                $state.go('dashboard.listSaleTransaction');
+                $scope.txnHeaderForm.id=addResponse.info;
+                $scope.exportToPdf(INVOICE_EXPORT_PDF);
             } else {
                 alert('Not able to save Transaction. ' + addResponse.message);
             }
@@ -342,9 +355,10 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         }
         $scope.paidMediaList.forEach(function (txnMedia){
             if ((!txnMedia.txmdVoided) && (txnMedia.paymentMedia.paymName === 'Account')) {
-                amountPaidFromAcount = amountPaidFromAcount*1 + txnMedia.paymentMedia.txmdAmountLocal*1;
+                amountPaidFromAcount = amountPaidFromAcount*1 + txnMedia.txmdAmountLocal*1;
             }
         })
+        console.log('amountPaidFromAcount = ' + amountPaidFromAcount);
         return amountPaidFromAcount;
     }
     function amountAllreadyPaidByAccount() {
@@ -354,12 +368,64 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         }
         $scope.txnMediaList.data.forEach(function (txnMedia){
             if ((!txnMedia.txmdVoided) && (txnMedia.paymentMedia.paymName === 'Account')) {
-                amountPaidbyAcount = amountPaidbyAcount*1 + txnMedia.paymentMedia.txmdAmountLocal*1;
+                amountPaidbyAcount = amountPaidbyAcount*1 + txnMedia.txmdAmountLocal*1;
             }
         })
+        console.log('amountPaidbyAcount = ' + amountPaidbyAcount);
         return amountPaidbyAcount;
     }
     $scope.accountBalance = function() {
-        return amountPaidFromAccount()*1 - amountAllreadyPaidByAccount()*(-1);
+        var balance = amountPaidFromAccount()*1 - amountAllreadyPaidByAccount()*(-1);
+        console.log('account balance = ' + balance);
+        return balance;
+    }
+
+
+    $scope.exportToPdf = function(url) {
+        var exportUrl = url + $scope.txnHeaderForm.id;
+        baseDataService.getStreamData(exportUrl).then(function(response){
+            var blob = new Blob([response.data], {'type': 'application/pdf'});
+            var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
+            baseDataService.setPdfContent(myPdfContent);
+            $state.go('dashboard.pdfViewer');
+        });
+    }
+    function selectAllRowsForRefund() {
+        if ($scope.txnDetailList === undefined) {
+            return;
+        }
+        $scope.txnDetailGridApi.selection.selectAllRows();
+        for (var i = 0; i < $scope.txnDetailList.data.length; i++) {
+            if ($scope.txnDetailList.data[i].qtyBalance > 0) {
+                //$scope.txnDetailGridApi.selection.selectRow(txnDetail);
+                $scope.txnDetailList.data[i].refund = true;
+                $scope.txnDetailList.data[i].txdeQtyRefund = $scope.txnDetailList.data[i].qtyBalance;
+                evaluatRowItem($scope.txnDetailList.data[i]);
+            }
+        }
+        totalTransaction();
+        $scope.allItemsSelected=true;
+    }
+    function unSelectAllRows() {
+        if ($scope.txnDetailList === undefined) {
+            return;
+        }
+        $scope.txnDetailGridApi.selection.clearSelectedRows();
+
+        $scope.txnDetailList.data.forEach(function (txnDetail){
+            //$scope.txnDetailGridApi.selection.unSelectRow(txnDetail);
+            txnDetail.refund = false;
+            txnDetail.txdeQtyRefund = 0;
+            evaluatRowItem(txnDetail);
+        })
+        totalTransaction();
+        $scope.allItemsSelected=false;
+    }
+    $scope.toggleAllRowSelection = function() {
+        if ($scope.allItemsSelected) {
+            unSelectAllRows();
+        } else {
+            selectAllRowsForRefund();
+        }
     }
 });

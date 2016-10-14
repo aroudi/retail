@@ -53,6 +53,7 @@ public class TotalerServiceImpl implements TotalerService {
             double totalTaxedValue = 0.00;
             double totalTaxdPaid = 0.00;
             double totalSaleValue = 0.00;
+            double totalRefundValue = 0.00;
             double totalRefundQty = 0.00;
 
             final Timestamp currentDate = new Timestamp(new Date().getTime());
@@ -86,7 +87,12 @@ public class TotalerServiceImpl implements TotalerService {
                     totalProfitValue = totalProfitValue + txnDetail.getItemCost() * profitMargin * txnDetail.getQuantity();
                     totalTaxedValue = totalTaxedValue + txnDetail.getItemGrossValue() * txnDetail.getQuantity();
                     totalTaxdPaid = totalTaxdPaid + txnDetail.getItemTaxPaid() * txnDetail.getQuantity();
-                    totalSaleValue = totalSaleValue + (txnDetail.getItemGrossValue() + txnDetail.getItemTaxPaid()) * txnDetail.getQuantity();
+                    if (txnDetail.getTxdeDetailType().getCategoryCode().equals(IdBConstant.TXN_LINE_TYPE_SALE)) {
+                        totalSaleValue = totalSaleValue + (txnDetail.getItemGrossValue() + txnDetail.getItemTaxPaid()) * txnDetail.getQuantity();
+                    }
+                    if (txnDetail.getTxdeDetailType().getCategoryCode().equals(IdBConstant.TXN_LINE_TYPE_REFUND)) {
+                        totalRefundValue = totalRefundValue + (txnDetail.getItemGrossValue() + txnDetail.getItemTaxPaid()) * txnDetail.getQuantity();
+                    }
 
                     extractTaxFiguresFromItem(txnDetail, totalTaxGroupMap);
                 }
@@ -104,6 +110,7 @@ public class TotalerServiceImpl implements TotalerService {
             totalSaleOperator.setToopSaleQty(totalSoldQty);
             totalSaleOperator.setToopRefundQty(totalRefundQty);
             totalSaleOperator.setToopSaleValue(totalSaleValue);
+            totalSaleOperator.setToopRefundValue(totalRefundValue);
             totalSaleOperator.setToopTaxedValue(totalTaxedValue);
             totalSaleOperator.setToopTaxPaid(totalTaxdPaid);
             totalSaleOperator.setToopTxnType(txnHeader.getTxhdTxnType());
@@ -153,6 +160,9 @@ public class TotalerServiceImpl implements TotalerService {
         try {
             //extract media values used for this event
             final Map<PaymentMedia, Double[]> totalMediaVals = new HashMap<PaymentMedia, Double[]>();
+            /**
+             * double[0] : sale count  double[1]: sale amount double[2]: refund cound  double[3]: refund value
+             */
             Double[] values = null;
             for (TxnMedia txnMedia : txnHeader.getTxnMedias()) {
                 //only new added media should be count.
@@ -161,12 +171,22 @@ public class TotalerServiceImpl implements TotalerService {
                 }
                 if (totalMediaVals.containsKey(txnMedia.getPaymentMedia())) {
                     values = totalMediaVals.get(txnMedia.getPaymentMedia());
-                    values[0] = values[0] + txnMedia.getCount();
-                    values[1] = values[1] + txnMedia.getValue();
+                    if (txnMedia.getTxmdType().getCategoryCode().equals(IdBConstant.TXN_MEDIA_TYPE_SALE)) {
+                        values[0] = values[0] + txnMedia.getCount();
+                        values[1] = values[1] + txnMedia.getValue();
+                    } else if (txnMedia.getTxmdType().getCategoryCode().equals(IdBConstant.TXN_MEDIA_TYPE_REFUND)) {
+                        values[2] = values[2] + txnMedia.getCount();
+                        values[3] = values[3] + txnMedia.getValue();
+                    }
                 } else {
-                    values = new Double[2];
-                    values[0] = (double) txnMedia.getCount();
-                    values[1] = txnMedia.getValue();
+                    values = new Double[4];
+                    if (txnMedia.getTxmdType().getCategoryCode().equals(IdBConstant.TXN_MEDIA_TYPE_SALE)) {
+                        values[0] = (double) txnMedia.getCount();
+                        values[1] = txnMedia.getValue();
+                    } else if (txnMedia.getTxmdType().getCategoryCode().equals(IdBConstant.TXN_MEDIA_TYPE_REFUND)) {
+                        values[2] = (double) txnMedia.getCount();
+                        values[3] = txnMedia.getValue();
+                    }
                     totalMediaVals.put(txnMedia.getPaymentMedia(), values);
                 }
             }
@@ -183,6 +203,8 @@ public class TotalerServiceImpl implements TotalerService {
                 totalMediaOperator.setTomoOperator(txnHeader.getUser());
                 totalMediaOperator.setTomoSaleQty(values[0]);
                 totalMediaOperator.setTomoSaleValue(values[1]);
+                totalMediaOperator.setTomoRefundQty(values[2]);
+                totalMediaOperator.setTomoRefundValue(values[3]);
                 totalMediaOperator.setTomoTradingDate(currentDate);
                 totalerDao.insertTotalMediaOperator(totalMediaOperator);
             }

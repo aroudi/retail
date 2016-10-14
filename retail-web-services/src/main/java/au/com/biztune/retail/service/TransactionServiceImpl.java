@@ -721,7 +721,11 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdValueTax(txnHeaderForm.getTxhdValueTax());
             txnHeader.setCustomer(txnHeaderForm.getCustomer());
             txnHeader.setTxhdOrigTxnNr(txnHeaderForm.getTxhdTxnNr());
-            txnHeader.setParentId(txnHeaderForm.getParentId());
+            if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
+                txnHeader.setParentId(txnHeaderForm.getParentId());
+            } else if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
+                txnHeader.setParentId(txnHeaderForm.getId());
+            }
             if (txnType != null) {
                 txnHeader.setTxhdTxnType(txnType);
             }
@@ -730,6 +734,7 @@ public class TransactionServiceImpl implements TransactionService {
             if (principal instanceof AppUser) {
                 appUser = (AppUser) principal;
                 txnHeader.setTxhdOperator(appUser.getId());
+                txnHeader.setUser(appUser);
             }
             //save invoice
             invoiceDao.insertInvoice(txnHeader);
@@ -794,7 +799,11 @@ public class TransactionServiceImpl implements TransactionService {
             double amountRefundToAccount = 0.00;
             TxnMedia txnMedia;
             for (TxnMediaForm txnMediaForm : txnHeaderForm.getTxnMediaFormList()) {
-                txnMediaForm.setTxhdId(txnHeader.getId());
+                if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
+                    txnMediaForm.setTxhdId(txnHeaderForm.getParentId());
+                } else if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
+                    txnMediaForm.setTxhdId(txnHeaderForm.getId());
+                }
                 if (txnMediaForm == null) {
                     continue;
                 }
@@ -810,6 +819,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnMedia = doSaleOrderPayment(txnMediaForm);
                 txnHeader.addTxnMedia(txnMedia);
                 //link to invoice
+                txnMediaForm.setId(txnMedia.getId());
                 doInvoicePayment(txnMediaForm, txnRefundId);
             }
             //push event to cash session processor.

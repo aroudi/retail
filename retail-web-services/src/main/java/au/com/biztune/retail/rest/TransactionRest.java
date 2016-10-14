@@ -215,4 +215,18 @@ public class TransactionRest {
         }
     }
 
+    /**
+     * refund transaction.
+     * @param txnHeaderForm transaction Header
+     * @return CommonResponse
+     */
+    @Secured
+    @Path("/refund")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse refundTxn (TxnHeaderForm txnHeaderForm) {
+        return transactionService.refundTransaction(txnHeaderForm, securityContext);
+    }
+
 }

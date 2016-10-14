@@ -81,4 +81,12 @@ public interface TransactionService {
      * @return List of TxnHeader
      */
     List<TxnHeader> getAllSaleOrdersAndQuotesOfCustomer(long customerId);
+
+    /**
+     * refund transaction.
+     * @param  txnHeaderForm txnHeaderForm
+     * @param  securityContext securityContext
+     * @return CommonResponse
+     */
+    CommonResponse refundTransaction(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
 }
