@@ -61,6 +61,10 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state, $timeout,baseData
         }
         var txnSaleGetURI = TXN_GET_URI + row.entity.id;
         baseDataService.getBaseData(txnSaleGetURI).then(function(response){
+            var txnDetailList = response.data.txnDetailFormList;
+            for (var i = 0; i < txnDetailList.length; i++) {
+                txnDetailList[i].txdeQtyBalance = txnDetailList[i].txdeQtyTotalInvoiced*1 - txnDetailList[i].txdeQtyTotalRefund*1;
+            }
             baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.

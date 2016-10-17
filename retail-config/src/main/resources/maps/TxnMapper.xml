@@ -748,6 +748,14 @@
         WHERE txde.txhd_id=#{value} and txde.TXDE_ITEM_VOID = 0;
     </select>
 
+    <select id="getTxnDetailPerId" resultMap="txnDetailMap" >
+        SELECT
+        <include refid="txnDetailColumns"><property name="alias" value="txde"/></include>
+        FROM
+        TXN_DETAIL txde
+        WHERE txde.TXDE_ID=#{value};
+    </select>
+
     <select id="getTxnMediaPerTxhdId" resultMap="txnMediaMap" >
         SELECT
         <include refid="txnMediaColumns"><property name="alias" value="txmd"/></include>

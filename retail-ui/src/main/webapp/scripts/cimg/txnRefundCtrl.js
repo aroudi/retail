@@ -7,6 +7,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
     //select all rows for refund
 
 
+    $scope.refundMode = false;
     initPageData();
     initTxnDetail();
     initTxnMediaList();
@@ -20,9 +21,8 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         //keep a copy of paid media list for calculation.
         $scope.paidMediaList = angular.copy($scope.txnHeaderForm.txnMediaFormList);
         //set new paid media list
-        $scope.txnHeaderForm.txnMediaFormList = [];
+        //$scope.txnHeaderForm.txnMediaFormList = [];
         //select all rows for refund
-        selectAllRowsForRefund();
         baseDataService.setRow({});
         baseDataService.setIsPageNew(true);
         baseDataService.getBaseData(MEDIA_TYPE_ALL_URI).then(function(response){
@@ -60,18 +60,14 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
                         return row.entity.product.prodName
                     }
                 },
-                {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false, width: '5%'},
-                //{field: 'txdeValueLine', displayName: 'Cost', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
-                //{field: 'txdeValueProfit', displayName: 'Profit', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
+                {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false, width: '10%'},
                 {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency', width: '10%'},
-                {field: 'txdeQtyTotalInvoiced', displayName: 'Qty', enableCellEdit: false, type: 'number', width: '7%'},
-                {field: 'txdeQtyRefund', displayName: 'Refund', type: 'number', width: '7%'},
-                {field: 'txdeQtyBalance', displayName: 'Balance',enableCellEdit: false, type: 'number', width: '7%'},
-                {field: 'calculatedLineValue', displayName: 'Aomount', enableCellEdit: false, cellFilter: 'currency', width: '9%'},
-                {field: 'calculatedLineTax', displayName: 'Tax', enableCellEdit: false, width: '7%'},
-                {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'},
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="grid.appScope.isTxnLineVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
-
+                {field: 'txdeQtyTotalInvoiced', displayName: 'Qty Invoiced', enableCellEdit: false, type: 'number', width: '10%'},
+                {field: 'txdeQtyRefund', displayName: 'Qty Refund', type: 'number', width: '10%'},
+                {field: 'txdeQtyBalance', displayName: 'Balance',enableCellEdit: false, type: 'number', width: '10%'},
+                {field: 'calculatedLineValue', displayName: 'Aomount', enableCellEdit: false, cellFilter: 'currency', width: '10%'},
+                {field: 'calculatedLineTax', displayName: 'Tax', enableCellEdit: false, width: '10%'},
+                {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'}
             ]
         }
         $scope.txnDetailList.enableRowSelection = true;
@@ -97,13 +93,13 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
                     row.entity.refund = false;
                     row.entity.txdeQtyRefund = 0;
                 }
+                checkIfItemSelected();
                 evaluatRowItem(row.entity);
                 totalTransaction();
             });
-            gridApi.selection.on.rowSelectionChangedBatch()
             gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef){
                 if (colDef.name == 'txdeQtyRefund') {
-                    $scope.txdeQtyRefundBeforeEditting = rowEntity.txdeRefund;
+                    $scope.txdeQtyRefundBeforeEditting = rowEntity.txdeQtyRefund;
                 }
             })
         };
@@ -138,7 +134,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
             txnDetail['calculatedLineTax'] = txnDetail.calculatedLineValue * txnDetail.txdeTax;
             totalTransaction();
         })
-        $scope.allItemsSelected=false;
+        //$scope.allItemsSelected=false;
     }
 
 
@@ -148,7 +144,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
             enableFiltering: true,
             showGridFooter: true,
             showColumnFooter:true,
-            gridFooterTemplate:"<div id=\"currency-default\"> Total:{{grid.appScope.calculateAmountPaid() | currency}}</div>",
+            gridFooterTemplate:"<div id=\"currency-default\"> Total:{{grid.appScope.getAmountPaid() | currency}}</div>",
             rowTemplate : tenderTpl,
             columnDefs: [
                 {field:'id', visible:false, enableCellEdit:false},
@@ -176,13 +172,18 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
             gridApi.cellNav.on.navigate($scope, function(newRowCol, oldRowCol){
             });
         };
-
+        $scope.txnMediaList.data =$scope.txnHeaderForm.txnMediaFormList;
     }
 
     function evaluatRowItem (txnDetail) {
-        txnDetail.txdeQtyBalance = txnDetail.txdeQtyTotalInvoiced*1 - (txnDetail.txdeQtyTotalRefund*1 + txnDetail.txdeQtyRefund*1);
-
-        var quantity = (-1)*txnDetail.txdeQtyRefund;
+        var quantity = 0;
+        if ($scope.refundMode) {
+            txnDetail.txdeQtyBalance = txnDetail.txdeQtyTotalInvoiced*1 - (txnDetail.txdeQtyTotalRefund*1 + txnDetail.txdeQtyRefund*1);
+            quantity = (-1)*txnDetail.txdeQtyRefund;
+        } else {
+            txnDetail.txdeQtyBalance = txnDetail.txdeQtyTotalInvoiced*1 - txnDetail.txdeQtyTotalRefund*1;
+            quantity = txnDetail.txdeQtyTotalInvoiced*1;
+        }
 
         txnDetail.txdePriceSold =  quantity * txnDetail.txdeValueNet;
         txnDetail.calculatedLineValue = txnDetail.txdeValueGross * quantity;
@@ -192,6 +193,10 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
 
 
     $scope.addTxnMedia= function() {
+        if (!$scope.refundMode) {
+            baseDataService.displayMessage('info','Not Allowed', 'please select an item for refund');
+            return;
+        }
         var rowId;
         if ($scope.txnMediaList.data == undefined && $scope.txnMediaList.data ==null) {
             rowId = -2000;
@@ -228,6 +233,10 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         totalTransaction();
     };
     $scope.removeTxnMedia= function (row) {
+        if (!$scope.refundMode) {
+            baseDataService.displayMessage('info','Not Allowed', 'please select an item for refund');
+            return;
+        }
         baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this item??').then(function(result){
             if (result) {
                 if (row == undefined || row.entity == undefined) {
@@ -272,40 +281,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         $state.go($scope.previouseState);
     }
 
-    function totalTransaction() {
-        var txnDetailList =  $scope.txnDetailList.data;
-        var valueGross = 0.00;
-        var valueNett = 0.00;
-        var valueTax = 0.00;
-        var quantity = 0;
-        for (var i = 0; i < txnDetailList.length; i++) {
-            if (!txnDetailList[i].refund) {
-                continue;
-            }
-            quantity = (-1)*txnDetailList[i].txdeQtyRefund;
-
-            if (!txnDetailList[i].txdeItemVoid && !txnDetailList[i].deleted ) {
-                valueNett = valueNett*1 + txnDetailList[i].txdeValueNet*quantity*1 ;
-                valueGross = valueGross*1 + txnDetailList[i].txdeValueGross*quantity*1;
-                valueTax = valueTax*1 + txnDetailList[i].txdeTax*txnDetailList[i].txdeValueLine*quantity*1;
-            }
-        }
-        $scope.txnHeaderForm.txhdValueNett = valueNett;
-        $scope.txnHeaderForm.txhdValueGross = valueGross;
-        $scope.txnHeaderForm.txhdValueTax = valueTax;
-        $scope.txnHeaderForm.txhdValueDue = valueNett - $scope.calculateAmountPaid();
-        //check if amount due is less than 5 cents, then add it to rounding
-        console.log('Math.abs($scope.txnHeaderForm.txhdValueDue) =' + Math.abs($scope.txnHeaderForm.txhdValueDue));
-        if (Math.abs($scope.txnHeaderForm.txhdValueDue) <= 0.05 ) {
-            console.log('set rounding value');
-            $scope.txnHeaderForm.txhdValRounding = $scope.txnHeaderForm.txhdValueDue;
-            $scope.txnHeaderForm.txhdValueDue = 0.00;
-        }
-        //set default value of payment amount to value due.
-        $scope.paymentAmount = maxPaymentAllowed()*1;
-
-    }
-    $scope.calculateAmountPaid = function() {
+    function calculateAmountPaid(){
         if ($scope.txnMediaList == undefined || $scope.txnMediaList.data == undefined) {
             return 0.00;
         }
@@ -317,6 +293,47 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
             }
         }
         return total;
+    }
+
+    function totalTransaction() {
+        var txnDetailList =  $scope.txnDetailList.data;
+        var valueGross = 0.00;
+        var valueNett = 0.00;
+        var valueTax = 0.00;
+        var quantity = 0;
+
+
+        for (var i = 0; i < txnDetailList.length; i++) {
+
+            if($scope.refundMode) {
+                if (!txnDetailList[i].refund) {
+                    continue;
+                }
+                quantity = (-1)*txnDetailList[i].txdeQtyRefund;
+            }else {
+                quantity = txnDetailList[i].txdeQtyTotalInvoiced*1;
+            }
+
+            if (!txnDetailList[i].txdeItemVoid && !txnDetailList[i].deleted ) {
+                valueNett = valueNett*1 + txnDetailList[i].txdeValueNet*quantity*1 ;
+                valueGross = valueGross*1 + txnDetailList[i].txdeValueGross*quantity*1;
+                valueTax = valueTax*1 + txnDetailList[i].txdeTax*txnDetailList[i].txdeValueLine*quantity*1;
+            }
+        }
+        $scope.txnHeaderForm.txhdValueNett = valueNett;
+        $scope.txnHeaderForm.txhdValueGross = valueGross;
+        $scope.txnHeaderForm.txhdValueTax = valueTax;
+        $scope.txnHeaderForm.txhdValueDue = valueNett - calculateAmountPaid();
+        //check if amount due is less than 5 cents, then add it to rounding
+        console.log('Math.abs($scope.txnHeaderForm.txhdValueDue) =' + Math.abs($scope.txnHeaderForm.txhdValueDue));
+        if (Math.abs($scope.txnHeaderForm.txhdValueDue) <= 0.05 ) {
+            console.log('set rounding value');
+            $scope.txnHeaderForm.txhdValRounding = $scope.txnHeaderForm.txhdValueDue;
+            $scope.txnHeaderForm.txhdValueDue = 0.00;
+        }
+        //set default value of payment amount to value due.
+        $scope.paymentAmount = maxPaymentAllowed()*1;
+
     }
 
 
@@ -391,35 +408,42 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         });
     }
     function selectAllRowsForRefund() {
+        $scope.refundMode = true;
         if ($scope.txnDetailList === undefined) {
             return;
         }
-        $scope.txnDetailGridApi.selection.selectAllRows();
+        //$scope.txnDetailGridApi.selection.selectAllRows();
         for (var i = 0; i < $scope.txnDetailList.data.length; i++) {
-            if ($scope.txnDetailList.data[i].qtyBalance > 0) {
-                //$scope.txnDetailGridApi.selection.selectRow(txnDetail);
+            console.log('$scope.txnDetailList.data[i].txdeQtyBalance = ' + $scope.txnDetailList.data[i].txdeQtyBalance);
+            //we can refund only invoiced items.
+            if ($scope.txnDetailList.data[i].txdeQtyTotalInvoiced <= 0) {
+                continue;
+            }
+            if ($scope.txnDetailList.data[i].txdeQtyBalance > 0) {
+                $scope.txnDetailGridApi.selection.selectRow($scope.txnDetailList.data[i]);
                 $scope.txnDetailList.data[i].refund = true;
-                $scope.txnDetailList.data[i].txdeQtyRefund = $scope.txnDetailList.data[i].qtyBalance;
-                evaluatRowItem($scope.txnDetailList.data[i]);
+                $scope.txnDetailList.data[i].txdeQtyRefund = $scope.txnDetailList.data[i].txdeQtyBalance;
+                //evaluatRowItem($scope.txnDetailList.data[i]);
             }
         }
-        totalTransaction();
+        //totalTransaction();
         $scope.allItemsSelected=true;
+        togglePageMode();
     }
     function unSelectAllRows() {
+        $scope.refundMode = false;
         if ($scope.txnDetailList === undefined) {
             return;
         }
         $scope.txnDetailGridApi.selection.clearSelectedRows();
-
-        $scope.txnDetailList.data.forEach(function (txnDetail){
-            //$scope.txnDetailGridApi.selection.unSelectRow(txnDetail);
-            txnDetail.refund = false;
-            txnDetail.txdeQtyRefund = 0;
-            evaluatRowItem(txnDetail);
-        })
-        totalTransaction();
+        for (var i = 0; i < $scope.txnDetailList.data.length; i++) {
+            $scope.txnDetailList.data[i].refund = false;
+            $scope.txnDetailList.data[i].txdeQtyRefund = 0;
+            //evaluatRowItem($scope.txnDetailList.data[i]);
+        }
+        //totalTransaction();
         $scope.allItemsSelected=false;
+        togglePageMode();
     }
     $scope.toggleAllRowSelection = function() {
         if ($scope.allItemsSelected) {
@@ -427,5 +451,35 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         } else {
             selectAllRowsForRefund();
         }
+    }
+
+    $scope.getAmountPaid = function () {
+        return calculateAmountPaid();
+    }
+
+    function checkIfItemSelected(){
+        var refundModeBeforeSelection = $scope.refundMode;
+        if ($scope.txnDetailGridApi.selection.getSelectedRows().length > 0) {
+            $scope.refundMode = true;
+        } else {
+            $scope.refundMode = false;
+        }
+        if (refundModeBeforeSelection != $scope.refundMode) {
+            togglePageMode();
+        }
+    }
+
+    function togglePageMode() {
+        // change to sale mode
+        if ($scope.refundMode) {
+            //revert back media list to paid list.
+            $scope.txnMediaList.data = [];
+        } else {
+            $scope.txnMediaList.data = angular.copy($scope.paidMediaList);
+        }
+        for (var i = 0; i < $scope.txnDetailList.data.length; i++) {
+            evaluatRowItem($scope.txnDetailList.data[i]);
+        }
+        totalTransaction();
     }
 });

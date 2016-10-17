@@ -51,7 +51,8 @@
     </resultMap>
 
     <resultMap id="invoiceDetailMap" type="TxnDetail" >
-        <id column="TXDE_ID" property="id" />
+        <id column="TXID_ID" property="id" />
+        <result column="TXDE_ID" property="parentId" />
         <result column="TXDE_PRICE_OVRIDEN" property="txdePriceOveriden" />
         <result column="TXDE_VALUE_LINE" property="txdeValueLine" />
         <result column="TXDE_PROFIT_MARGIN" property="txdeProfitMargin" />

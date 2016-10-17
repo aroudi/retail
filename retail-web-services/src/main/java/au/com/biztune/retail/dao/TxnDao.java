@@ -122,4 +122,11 @@ public interface TxnDao {
      * @param id id
      */
     void updateTxnSaleRefundItem(double totalRefundAmount, long id);
+
+    /**
+     * get txn_detail per id.
+     * @param id id
+     * @return TxnDetail
+     */
+    TxnDetail getTxnDetailPerId(long id);
 }

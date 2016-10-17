@@ -43,6 +43,8 @@ public class TxnDetail {
     private ConfigCategory invoiceDetailType;
     private double quantity;
     private boolean selected;
+    // for invoice detail, parentId store txdeId of sale transaction.
+    private long parentId;
 
 
 
@@ -406,4 +408,19 @@ public class TxnDetail {
         this.invoiceDetailType = invoiceDetailType;
     }
 
+    public void setQuantity(double quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
+    }
 }

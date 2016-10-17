@@ -39,6 +39,8 @@ public class TxnDetailForm {
     private double txdeQtyTotalRefund;
     private ConfigCategory invoiceDetailType;
     private long txdeParentDetail;
+    //for invoice detail, store the id of txn_detail
+    private long parentId;
 
 
     public long getId() {
@@ -271,5 +273,13 @@ public class TxnDetailForm {
 
     public void setTxdeParentDetail(long txdeParentDetail) {
         this.txdeParentDetail = txdeParentDetail;
+    }
+
+    public long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
     }
 }

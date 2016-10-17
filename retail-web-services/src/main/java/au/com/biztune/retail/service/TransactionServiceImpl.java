@@ -429,6 +429,7 @@ public class TransactionServiceImpl implements TransactionService {
                 }
                 txnDetailForm = new TxnDetailForm();
                 txnDetailForm.setId(txnDetail.getId());
+                txnDetailForm.setParentId(txnDetail.getParentId());
                 txnDetailForm.setTxdePriceOveriden(txnDetail.isTxdePriceOveriden());
                 txnDetailForm.setProduct(txnDetail.getProduct());
                 txnDetailForm.setUnitOfMeasure(txnDetail.getUnitOfMeasure());
@@ -779,7 +780,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeLineRefund(true);
                 //txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
                 if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
-                    txnDetail.setTxdeParentDetail(txnDetailForm.getTxdeParentDetail());
+                    txnDetail.setTxdeParentDetail(txnDetailForm.getParentId());
                 } else if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
                     txnDetail.setTxdeParentDetail(txnDetailForm.getId());
                 }
@@ -791,6 +792,9 @@ public class TransactionServiceImpl implements TransactionService {
                 //update refund amount on parent transaction
                 if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
                     invoiceDao.updateInvoiceRefundItem(txnDetailForm.getTxdeQtyTotalRefund() + txnDetailForm.getTxdeQtyRefund(), txnDetailForm.getId());
+                    //update total refund on parent sale transaction.
+                    final TxnDetail txnDetail1 = txnDao.getTxnDetailPerId(txnDetailForm.getParentId());
+                    txnDao.updateTxnSaleRefundItem(txnDetail1.getTxdeQtyTotalRefund() + txnDetailForm.getTxdeQtyRefund(), txnDetailForm.getParentId());
                 } else if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
                     txnDao.updateTxnSaleRefundItem(txnDetailForm.getTxdeQtyTotalRefund() + txnDetailForm.getTxdeQtyRefund(), txnDetailForm.getId());
                 }
