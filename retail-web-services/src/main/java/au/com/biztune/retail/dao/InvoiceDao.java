@@ -82,4 +82,13 @@ public interface InvoiceDao {
      * @param id id
      */
     void updateInvoiceRefundItem(double totalRefunaAmount, long id);
+
+    /**
+     * search invoices.
+     * @param storeId storeId
+     * @param clauseList clauseList
+     * @param txnTypeList txnTypeList
+     * @return List of invoices
+     */
+    List<TxnHeader> searchInvoice(long storeId, List txnTypeList, List clauseList);
 }

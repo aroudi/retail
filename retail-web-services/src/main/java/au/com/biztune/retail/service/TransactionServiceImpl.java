@@ -9,6 +9,7 @@ import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.DateUtil;
 import au.com.biztune.retail.util.IdBConstant;
+import au.com.biztune.retail.util.SearchClause;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by akhoshraft on 16/03/2016.
@@ -482,8 +480,9 @@ public class TransactionServiceImpl implements TransactionService {
      * @return TxnNumber
      */
     public String generateTxnNumber(long txnId, String preFix) {
-        final Timestamp currentDate = new Timestamp(new Date().getTime());
-        return preFix + DateUtil.dateToString(currentDate, "yyyy-MM-dd") + "-" + txnId;
+        //final Timestamp currentDate = new Timestamp(new Date().getTime());
+        //return preFix + DateUtil.dateToString(currentDate, "yyyy-MM-dd") + "-" + txnId;
+        return String.valueOf(txnId);
     }
 
 
@@ -528,6 +527,10 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setCustomer(txnHeaderForm.getCustomer());
             txnHeader.setTxhdOrigTxnNr(txnHeaderForm.getTxhdTxnNr());
             txnHeader.setParentId(txnHeaderForm.getId());
+            final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_INVOICE);
+            if (txnType != null) {
+                txnHeader.setInvoiceTxnType(txnType);
+            }
             final Principal principal = securityContext.getUserPrincipal();
             AppUser appUser = null;
             if (principal instanceof AppUser) {
@@ -542,7 +545,7 @@ public class TransactionServiceImpl implements TransactionService {
 
             //push event to cash session processor.
             //set the parent transaction to sale order
-            final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_INVOICE);
+            //final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_INVOICE);
             saleOrder.setTxhdTxnType(txnType);
             saleOrder.setTxhdOrigTxnNr(saleOrder.getTxhdTxnNr());
             saleOrder.setParentId(saleOrder.getId());
@@ -728,7 +731,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnHeader.setParentId(txnHeaderForm.getId());
             }
             if (txnType != null) {
-                txnHeader.setTxhdTxnType(txnType);
+                txnHeader.setInvoiceTxnType(txnType);
             }
             final Principal principal = securityContext.getUserPrincipal();
             AppUser appUser = null;
@@ -1092,4 +1095,108 @@ public class TransactionServiceImpl implements TransactionService {
             return response;
         }
     }
+
+    /**
+     * search Sale Order and Quote per parameters.
+     * @param searchForm searchForm
+     * @return List of TxnHeader
+     */
+    public List<TxnHeader> searchTxnHeader(GeneralSearchForm searchForm) {
+        try {
+            if (searchForm == null) {
+                logger.error("search form is null");
+                return null;
+            }
+            List<Long> txnType = null;
+            if (searchForm.getTxnTypeList() != null && searchForm.getTxnTypeList().size() > 0) {
+                txnType = searchForm.getTxnTypeList();
+            }
+            return txnDao.searchTxnHeader(sessionState.getStore().getId(), txnType, buildSearchWhereCluase(searchForm, "TXN_HEADER"));
+        } catch (Exception e) {
+            logger.error("Exception in searching transaction: ", e);
+            return null;
+        }
+    }
+
+    /**
+     * search Sale Order and Quote per parameters.
+     * @param searchForm searchForm
+     * @return List of TxnHeader
+     */
+    public List<TxnHeader> searchInvoice(GeneralSearchForm searchForm) {
+        try {
+            if (searchForm == null) {
+                logger.error("search form is null");
+                return null;
+            }
+            List<Long> txnType = null;
+            if (searchForm.getTxnTypeList() != null && searchForm.getTxnTypeList().size() > 0) {
+                txnType = searchForm.getTxnTypeList();
+            }
+            return invoiceDao.searchInvoice(sessionState.getStore().getId(), txnType, buildSearchWhereCluase(searchForm, "INVOICE"));
+        } catch (Exception e) {
+            logger.error("Exception in searching transaction: ", e);
+            return null;
+        }
+    }
+
+    private List<SearchClause> buildSearchWhereCluase(GeneralSearchForm searchForm, String searchTable) {
+        List<SearchClause> clauseList = null;
+        SearchClause searchClause = null;
+        if (searchForm != null) {
+            clauseList = new ArrayList<SearchClause>();
+            Timestamp dateFrom = null;
+            Timestamp dateTo = null;
+            dateFrom = DateUtil.stringToDate(searchForm.getDateFrom(), "yyyy-MM-dd");
+            if (dateFrom != null) {
+                if ("TXN_HEADER".equals(searchTable)) {
+                    searchClause = new SearchClause("TXHD_TRADING_DATE", " >= ", dateFrom);
+                }
+                if ("INVOICE".equals(searchTable)) {
+                    searchClause = new SearchClause("TXIV_TRADING_DATE", " >= ", dateFrom);
+                }
+                clauseList.add(searchClause);
+            }
+
+            dateTo = DateUtil.stringToDate(searchForm.getDateTo(), "yyyy-MM-dd");
+            if (dateTo != null) {
+                if ("TXN_HEADER".equals(searchTable)) {
+                    searchClause = new SearchClause("TXHD_TRADING_DATE", " <= ", dateTo);
+                }
+                if ("INVOICE".equals(searchTable)) {
+                    searchClause = new SearchClause("TXIV_TRADING_DATE", " <= ", dateTo);
+                }
+                clauseList.add(searchClause);
+            }
+            if (searchForm.getNoFrom() != null && !searchForm.getNoFrom().isEmpty()) {
+                if ("TXN_HEADER".equals(searchTable)) {
+                    searchClause = new SearchClause("TXHD_TXN_NR", " >= ", searchForm.getNoFrom());
+                }
+                if ("INVOICE".equals(searchTable)) {
+                    searchClause = new SearchClause("TXIV_TXN_NR", " >= ", searchForm.getNoFrom());
+                }
+                clauseList.add(searchClause);
+            }
+            if (searchForm.getNoTo() != null && !searchForm.getNoTo().isEmpty()) {
+                if ("TXN_HEADER".equals(searchTable)) {
+                    searchClause = new SearchClause("TXHD_TXN_NR", " <= ", searchForm.getNoTo());
+                }
+                if ("INVOICE".equals(searchTable)) {
+                    searchClause = new SearchClause("TXIV_TXN_NR", " <= ", searchForm.getNoTo());
+                }
+                clauseList.add(searchClause);
+
+            }
+            if (searchForm.getClientId() > 0) {
+                searchClause = new SearchClause("CUSTOMER_ID", " = ", searchForm.getClientId());
+                clauseList.add(searchClause);
+            }
+        }
+        if (clauseList.size() > 0) {
+            return clauseList;
+        } else {
+            return null;
+        }
+    }
+
 }

@@ -1,7 +1,12 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF) {
+cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI) {
+
+    $scope.saleOrderSearchForm = {};
+    $scope.saleOrderSearchForm.clientId = -1;
+    $scope.includeSaleOrder = true;
+    $scope.includeQuote = true;
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
@@ -34,6 +39,13 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state, $timeout,baseData
     };
     getAllTxnSale();
     function getAllTxnSale() {
+
+        baseDataService.getBaseData(TXN_TYPE_SALE).then(function(response){
+            $scope.txnTypeSale = response.data;
+        });
+        baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){
+            $scope.txnTypeQuote = response.data;
+        });
         baseDataService.getBaseData(TXN_ALL_URI).then(function(response){
             var data = angular.copy(response.data);
             $scope.gridOptions.data = data;
@@ -80,6 +92,36 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state, $timeout,baseData
             var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
             baseDataService.setPdfContent(myPdfContent);
             $state.go('dashboard.pdfViewer');
+        });
+    }
+
+    $scope.searchCustomer = function () {
+        ngDialog.openConfirm({
+            template:'views/pages/customerSearch.html',
+            controller:'customerSearchCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false
+        }).then (function (value){
+                $scope.client = value;
+                $scope.saleOrderSearchForm.clientId = $scope.client.id;
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    };
+
+
+    $scope.search = function() {
+        $scope.saleOrderSearchForm.txnTypeList = [];
+        if ($scope.includeSaleOrder) {
+            $scope.saleOrderSearchForm.txnTypeList.push($scope.txnTypeSale.id);
+        }
+        if ($scope.includeQuote) {
+            $scope.saleOrderSearchForm.txnTypeList.push($scope.txnTypeQuote.id);
+        }
+        //$scope.saleOrderSearchForm.txnTypeList = angular.copy(txnTypeList);
+        baseDataService.addRow($scope.saleOrderSearchForm, TXN_SEARCH_URI).then(function(response){
+            $scope.gridOptions.data = response.data;
         });
     }
 

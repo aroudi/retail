@@ -1,6 +1,7 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.DebtorPaymentForm;
+import au.com.biztune.retail.domain.GeneralSearchForm;
 import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.form.TxnHeaderForm;
 import au.com.biztune.retail.response.CommonResponse;
@@ -89,4 +90,19 @@ public interface TransactionService {
      * @return CommonResponse
      */
     CommonResponse refundTransaction(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
+
+
+    /**
+     * search Sale Order and Quote per parameters.
+     * @param searchForm searchForm
+     * @return List of TxnHeader
+     */
+    List<TxnHeader> searchTxnHeader(GeneralSearchForm searchForm);
+
+    /**
+     * search Sale Order and Quote per parameters.
+     * @param searchForm searchForm
+     * @return List of TxnHeader
+     */
+    List<TxnHeader> searchInvoice(GeneralSearchForm searchForm);
 }

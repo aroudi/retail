@@ -1,16 +1,22 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF) {
+cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialog, baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, TXN_TYPE_INVOICE, TXN_TYPE_REFUND, INVOICE_SEARCH_URI) {
+
+    $scope.searchForm = {};
+    $scope.searchForm.clientId = -1;
+    $scope.includeInvoice = true;
+    $scope.includeRefund = true;
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
-            {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'25%'},
+            {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'15%'},
             {field:'txhdOrigTxnNr', displayName:'Sale Order No',enableCellEdit:false, width:'12.5%'},
-            {field:'txhdTxnNr', displayName:'Invoice No',enableCellEdit:false, width:'12.5%'},
+            {field:'txhdTxnNr', displayName:'No',enableCellEdit:false, width:'12.5%'},
+            {field:'invoiceTxnType.displayName', displayName:'Type',enableCellEdit:false, width:'10%'},
             {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
             {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'},
             {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-backward fa-2x" ng-click="grid.appScope.refundTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' }
@@ -29,6 +35,14 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout,baseData
     };
     getAllInvoice();
     function getAllInvoice() {
+
+        baseDataService.getBaseData(TXN_TYPE_INVOICE).then(function(response){
+            $scope.txnTypeInvoice = response.data;
+        });
+        baseDataService.getBaseData(TXN_TYPE_REFUND).then(function(response){
+            $scope.txnTypeRefund = response.data;
+        });
+
         baseDataService.getBaseData(INVOICE_ALL_URI).then(function(response){
             var data = angular.copy(response.data);
             $scope.gridOptions.data = data;
@@ -75,5 +89,36 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout,baseData
             $state.go('dashboard.pdfViewer');
         });
     }
+    $scope.searchCustomer = function () {
+        ngDialog.openConfirm({
+            template:'views/pages/customerSearch.html',
+            controller:'customerSearchCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false
+        }).then (function (value){
+                $scope.client = value;
+                $scope.searchForm.clientId = $scope.client.id;
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    };
+
+
+    $scope.search = function() {
+        $scope.searchForm.txnTypeList = [];
+        if ($scope.includeInvoice) {
+            $scope.searchForm.txnTypeList.push($scope.txnTypeInvoice.id);
+        }
+        if ($scope.includeRefund) {
+            $scope.searchForm.txnTypeList.push($scope.txnTypeRefund.id);
+        }
+        //$scope.saleOrderSearchForm.txnTypeList = angular.copy(txnTypeList);
+        baseDataService.addRow($scope.searchForm, INVOICE_SEARCH_URI).then(function(response){
+            $scope.gridOptions.data = response.data;
+        });
+    }
+
+
 
 });

@@ -117,8 +117,9 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
      * @return PohNumber
      */
     public String generateGrnNumber(long delnId) {
-        final Timestamp currentDate = new Timestamp(new Date().getTime());
-        return IdBConstant.GRN_PREFIX + DateUtil.dateToString(currentDate, "yyyy-MM-dd") + "-" + delnId;
+        //final Timestamp currentDate = new Timestamp(new Date().getTime());
+        //return IdBConstant.GRN_PREFIX + DateUtil.dateToString(currentDate, "yyyy-MM-dd") + "-" + delnId;
+        return String.valueOf(delnId);
     }
 
     /**

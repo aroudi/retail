@@ -371,8 +371,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
      * @return PohNumber
      */
     public String generatePohNumber(long pohId, String preFix) {
-        final Timestamp currentDate = new Timestamp(new Date().getTime());
-        return preFix + DateUtil.dateToString(currentDate, "yyyy-MM-dd") + "-" + pohId;
+        //final Timestamp currentDate = new Timestamp(new Date().getTime());
+        //return preFix + DateUtil.dateToString(currentDate, "yyyy-MM-dd") + "-" + pohId;
+        return String.valueOf(pohId);
     }
 
     /**

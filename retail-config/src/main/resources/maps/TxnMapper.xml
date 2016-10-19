@@ -791,6 +791,31 @@
 
     </select>
 
+
+    <select id="searchTxnHeader" resultMap="txnHeaderLightMap" >
+        SELECT
+        <include refid="txnHeaderColumns"><property name="alias" value="txhd"/></include>
+        FROM
+        TXN_HEADER txhd
+        WHERE txhd.STORE_ID=#{param1}
+        <if test="param2 != null">
+            AND txhd.TXHD_TXN_TYPE in
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="param3 != null">
+            AND
+            <foreach collection="param3" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                ${item.column} ${item.operator} #{item.value}
+            </foreach>
+        </if>
+        ORDER BY txhd.TXHD_TRADING_DATE DESC
+    </select>
+
     <select id="getTxnHeaderPerStoreIdAndCustomerIdAndTypeId" resultMap="txnHeaderLightMap" >
         SELECT
         <include refid="txnHeaderColumns"><property name="alias" value="txhd"/></include>

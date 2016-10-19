@@ -1,6 +1,7 @@
 package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.DebtorPaymentForm;
+import au.com.biztune.retail.domain.GeneralSearchForm;
 import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.form.TxnHeaderForm;
 import au.com.biztune.retail.report.TransactionRptMgr;
@@ -228,5 +229,33 @@ public class TransactionRest {
     public CommonResponse refundTxn (TxnHeaderForm txnHeaderForm) {
         return transactionService.refundTransaction(txnHeaderForm, securityContext);
     }
+    /**
+     * search invoice.
+     * @param searchForm searchForm
+     * @return CommonResponse
+     */
 
+    @Secured
+    @Path("/searchTxnHeader")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TxnHeader> searchTxnHeader (GeneralSearchForm searchForm) {
+        return transactionService.searchTxnHeader(searchForm);
+    }
+
+    /**
+     * search invoice.
+     * @param searchForm searchForm
+     * @return CommonResponse
+     */
+
+    @Secured
+    @Path("/searchInvoice")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TxnHeader> searchInvoice (GeneralSearchForm searchForm) {
+        return transactionService.searchInvoice(searchForm);
+    }
 }

@@ -129,4 +129,13 @@ public interface TxnDao {
      * @return TxnDetail
      */
     TxnDetail getTxnDetailPerId(long id);
+
+    /**
+     * search txn header per type and search parameters.
+     * @param storeId storeId
+     * @param txnTypeList txnTypeList
+     * @param clauseList clauseList
+     * @return List of txnHeader
+     */
+    List<TxnHeader> searchTxnHeader(long storeId, List txnTypeList, List clauseList);
 }
