@@ -7,9 +7,8 @@ import au.com.biztune.retail.form.TxnHeaderForm;
 import au.com.biztune.retail.form.TxnMediaForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.session.SessionState;
-import au.com.biztune.retail.util.DateUtil;
 import au.com.biztune.retail.util.IdBConstant;
-import au.com.biztune.retail.util.SearchClause;
+import au.com.biztune.retail.util.SearchClauseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -732,6 +731,7 @@ public class TransactionServiceImpl implements TransactionService {
             }
             if (txnType != null) {
                 txnHeader.setInvoiceTxnType(txnType);
+                txnHeader.setTxhdTxnType(txnType);
             }
             final Principal principal = securityContext.getUserPrincipal();
             AppUser appUser = null;
@@ -793,13 +793,16 @@ public class TransactionServiceImpl implements TransactionService {
                 invoiceDao.insertInvoiceDetail(txnDetail);
                 txnHeader.addTxnDetail(txnDetail);
                 //update refund amount on parent transaction
+                double newBalance = 0.00;
                 if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
                     invoiceDao.updateInvoiceRefundItem(txnDetailForm.getTxdeQtyTotalRefund() + txnDetailForm.getTxdeQtyRefund(), txnDetailForm.getId());
                     //update total refund on parent sale transaction.
                     final TxnDetail txnDetail1 = txnDao.getTxnDetailPerId(txnDetailForm.getParentId());
-                    txnDao.updateTxnSaleRefundItem(txnDetail1.getTxdeQtyTotalRefund() + txnDetailForm.getTxdeQtyRefund(), txnDetailForm.getParentId());
+                    newBalance = txnDetail1.getTxdeQuantitySold() - (txnDetail1.getTxdeQtyTotalInvoiced() - txnDetail1.getTxdeQtyTotalRefund() - txnDetailForm.getTxdeQtyRefund());
+                    txnDao.updateTxnSaleRefundItem(txnDetail1.getTxdeQtyTotalRefund() + txnDetailForm.getTxdeQtyRefund(), newBalance, txnDetailForm.getParentId());
                 } else if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
-                    txnDao.updateTxnSaleRefundItem(txnDetailForm.getTxdeQtyTotalRefund() + txnDetailForm.getTxdeQtyRefund(), txnDetailForm.getId());
+                    newBalance = txnDetailForm.getTxdeQtyBalance();
+                    txnDao.updateTxnSaleRefundItem(txnDetailForm.getTxdeQtyTotalRefund() + txnDetailForm.getTxdeQtyRefund(), newBalance, txnDetailForm.getId());
                 }
             }
             //calculate amount refund to account.
@@ -837,35 +840,19 @@ public class TransactionServiceImpl implements TransactionService {
             if (txnHeaderForm.getCustomer().getCustomerType().getCategoryCode().equals(IdBConstant.CUSTOMER_TYPE_ACCOUNT)
                     && (Math.abs(amountRefundToAccount) > 0))
             {
-                final CustomerAccountDebt customerAccountDebt = new CustomerAccountDebt();
-                customerAccountDebt.setCustomer(txnHeaderForm.getCustomer());
-                customerAccountDebt.setTxhdId(txnRefundId);
-                customerAccountDebt.setCadAmountDebt(amountRefundToAccount);
-                customerAccountDebt.setBalance(amountRefundToAccount);
-                customerAccountDebt.setCadPaid(false);
-                customerAccountDebt.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
-                Date startDate = null;
-                Calendar cal = null;
-                //calculate due date for payment
-                if (txnHeaderForm.getCustomer().isCreditStartEom()) {
-                    cal = Calendar.getInstance();
-                    cal.setTime(currentDate);
-                    cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-                    startDate = cal.getTime();
-                } else {
-                    startDate = new Date();
+                final CustomerAccountDebt customerAccountDebt =
+                        customerAccountDebtDao.getCustomerAccountDebtPerCustomerIdAndTxhdId(txnHeaderForm.getCustomer().getId(), txnHeaderForm.getId());
+                if (customerAccountDebt != null) {
+                    customerAccountDebt.setBalance(customerAccountDebt.getBalance() + amountRefundToAccount);
+                    if (customerAccountDebt.getBalance() <= 0) {
+                        customerAccountDebt.setCadPaid(true);
+                    }
+                    customerAccountDebtDao.update(customerAccountDebt);
+                    //update customer debt
+                    txnHeaderForm.getCustomer().setRemainCredit(txnHeaderForm.getCustomer().getRemainCredit() - amountRefundToAccount);
+                    txnHeaderForm.getCustomer().setOwing(txnHeaderForm.getCustomer().getOwing() + txnHeaderForm.getTxhdValueCredit());
+                    customerDao.updateCustomerDebt(txnHeaderForm.getCustomer());
                 }
-                customerAccountDebt.setCadStartDate(new Timestamp(startDate.getTime()));
-                //calculate due date
-                cal = Calendar.getInstance();
-                cal.setTime(startDate);
-                cal.add(Calendar.DATE, txnHeaderForm.getCustomer().getCreditDuration());
-                customerAccountDebt.setCadDueDate(new Timestamp(cal.getTime().getTime()));
-                customerAccountDebtDao.insert(customerAccountDebt);
-                //update customer debt
-                txnHeaderForm.getCustomer().setRemainCredit(txnHeaderForm.getCustomer().getRemainCredit() - amountRefundToAccount);
-                txnHeaderForm.getCustomer().setOwing(txnHeaderForm.getCustomer().getOwing() + txnHeaderForm.getTxhdValueCredit());
-                customerDao.updateCustomerDebt(txnHeaderForm.getCustomer());
             }
             response.setInfo(String.valueOf(txnRefundId));
             return response;
@@ -1111,7 +1098,7 @@ public class TransactionServiceImpl implements TransactionService {
             if (searchForm.getTxnTypeList() != null && searchForm.getTxnTypeList().size() > 0) {
                 txnType = searchForm.getTxnTypeList();
             }
-            return txnDao.searchTxnHeader(sessionState.getStore().getId(), txnType, buildSearchWhereCluase(searchForm, "TXN_HEADER"));
+            return txnDao.searchTxnHeader(sessionState.getStore().getId(), txnType, SearchClauseBuilder.buildSearchWhereCluase(searchForm, "TXN_HEADER"));
         } catch (Exception e) {
             logger.error("Exception in searching transaction: ", e);
             return null;
@@ -1133,70 +1120,12 @@ public class TransactionServiceImpl implements TransactionService {
             if (searchForm.getTxnTypeList() != null && searchForm.getTxnTypeList().size() > 0) {
                 txnType = searchForm.getTxnTypeList();
             }
-            return invoiceDao.searchInvoice(sessionState.getStore().getId(), txnType, buildSearchWhereCluase(searchForm, "INVOICE"));
+            return invoiceDao.searchInvoice(sessionState.getStore().getId(), txnType, SearchClauseBuilder.buildSearchWhereCluase(searchForm, "INVOICE"));
         } catch (Exception e) {
             logger.error("Exception in searching transaction: ", e);
             return null;
         }
     }
 
-    private List<SearchClause> buildSearchWhereCluase(GeneralSearchForm searchForm, String searchTable) {
-        List<SearchClause> clauseList = null;
-        SearchClause searchClause = null;
-        if (searchForm != null) {
-            clauseList = new ArrayList<SearchClause>();
-            Timestamp dateFrom = null;
-            Timestamp dateTo = null;
-            dateFrom = DateUtil.stringToDate(searchForm.getDateFrom(), "yyyy-MM-dd");
-            if (dateFrom != null) {
-                if ("TXN_HEADER".equals(searchTable)) {
-                    searchClause = new SearchClause("TXHD_TRADING_DATE", " >= ", dateFrom);
-                }
-                if ("INVOICE".equals(searchTable)) {
-                    searchClause = new SearchClause("TXIV_TRADING_DATE", " >= ", dateFrom);
-                }
-                clauseList.add(searchClause);
-            }
-
-            dateTo = DateUtil.stringToDate(searchForm.getDateTo(), "yyyy-MM-dd");
-            if (dateTo != null) {
-                if ("TXN_HEADER".equals(searchTable)) {
-                    searchClause = new SearchClause("TXHD_TRADING_DATE", " <= ", dateTo);
-                }
-                if ("INVOICE".equals(searchTable)) {
-                    searchClause = new SearchClause("TXIV_TRADING_DATE", " <= ", dateTo);
-                }
-                clauseList.add(searchClause);
-            }
-            if (searchForm.getNoFrom() != null && !searchForm.getNoFrom().isEmpty()) {
-                if ("TXN_HEADER".equals(searchTable)) {
-                    searchClause = new SearchClause("TXHD_TXN_NR", " >= ", searchForm.getNoFrom());
-                }
-                if ("INVOICE".equals(searchTable)) {
-                    searchClause = new SearchClause("TXIV_TXN_NR", " >= ", searchForm.getNoFrom());
-                }
-                clauseList.add(searchClause);
-            }
-            if (searchForm.getNoTo() != null && !searchForm.getNoTo().isEmpty()) {
-                if ("TXN_HEADER".equals(searchTable)) {
-                    searchClause = new SearchClause("TXHD_TXN_NR", " <= ", searchForm.getNoTo());
-                }
-                if ("INVOICE".equals(searchTable)) {
-                    searchClause = new SearchClause("TXIV_TXN_NR", " <= ", searchForm.getNoTo());
-                }
-                clauseList.add(searchClause);
-
-            }
-            if (searchForm.getClientId() > 0) {
-                searchClause = new SearchClause("CUSTOMER_ID", " = ", searchForm.getClientId());
-                clauseList.add(searchClause);
-            }
-        }
-        if (clauseList.size() > 0) {
-            return clauseList;
-        } else {
-            return null;
-        }
-    }
 
 }

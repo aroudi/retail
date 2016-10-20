@@ -92,9 +92,21 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 //{field: 'txdeValueLine', displayName: 'Cost', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 //{field: 'txdeValueProfit', displayName: 'Profit', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency', width: '10%'},
-                {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', width: '7%'},
+                {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', width: '7%',
+                    cellTooltip: function(row,col) {
+                        return 'Qty Ordered:' + row.entity.txdeQuantitySold + '\n' +
+                               'Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
+                               'Qty Refund:' +  row.entity.txdeQtyTotalRefund
+                    }
+                },
                 {field: 'txdeQtyInvoiced', displayName: 'Invoice', type: 'number', width: '7%'},
-                {field: 'txdeQtyBalance', displayName: 'Balance', type: 'number', width: '7%'},
+                {field: 'txdeQtyBalance', displayName: 'Balance', type: 'number', width: '7%',
+                    cellTooltip: function(row,col) {
+                        return 'Qty Ordered:' + row.entity.txdeQuantitySold + '\n' +
+                            'Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
+                            'Qty Refund:' +  row.entity.txdeQtyTotalRefund
+                    }
+                },
                 {field: 'calculatedLineValue', displayName: 'Aomount', enableCellEdit: false, cellFilter: 'currency', width: '9%'},
                 {field: 'calculatedLineTax', displayName: 'Tax', enableCellEdit: false, width: '7%'},
                 {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'},
@@ -190,13 +202,13 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     txnDetail['txdeValueGross'] = $scope.txdeValueGrossBeforeEditting;
                     return;
                 }
-                txnDetail['txdeQtyBalance'] = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
+                txnDetail['txdeQtyBalance'] = calculateBalance(txnDetail);//txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
             }
             if ( event.targetScope.col.field == 'txdeQtyInvoiced' && (txnDetail.invoiced==false)) {
                 //txnDetail.txdeQtyInvoice = $scope.txdeQtyInvoicedBeforeEditting;
                 txnDetail['txdeQtyInvoiced'] = $scope.txdeQtyInvoicedBeforeEditting;
                 //txnDetail.txdeQtyBalance = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
-                txnDetail['txdeQtyBalance'] = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
+                txnDetail['txdeQtyBalance'] = calculateBalance(txnDetail);//txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
                 return;
             }
 
@@ -205,7 +217,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             if (txnDetail['txdeQtyTotalInvoiced'] == undefined) {
                 txnDetail['txdeQtyTotalInvoiced'] = 0;
             }
-            var newBalance = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
+            var newBalance = calculateBalance(txnDetail);//txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
             if (newBalance < 0) {
                 baseDataService.displayMessage('info','Invalid Qty', 'Invoiced Quantity is higher than total Quantity !!!');
                 if (event.targetScope.col.field == 'txdeQuantitySold') {
@@ -356,7 +368,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         txnDetail.txdeValueProfit =  txnDetail.txdeValueLine*txnDetail.txdeProfitMargin;
         txnDetail.txdeValueGross =  txnDetail.txdeValueProfit*1 + txnDetail.txdeValueLine*1;
         txnDetail.txdeValueNet =  (txnDetail.txdeValueGross * txnDetail.txdeTax)*1 + txnDetail.txdeValueGross*1;
-        txnDetail.txdeQtyBalance = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1)
+        txnDetail.txdeQtyBalance = calculateBalance(txnDetail);//txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
 
         var quantity = 0;
         if ($scope.isInvoiceMode) {
@@ -796,5 +808,12 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
     $scope.maxPaymentAllowed = function() {
         return maxPaymentAllowed();
+    }
+
+    function calculateBalance(txnDetail) {
+        if (txnDetail.txdeQtyTotalRefund == undefined) {
+            txnDetail.txdeQtyTotalRefund = 0.00;
+        }
+        return txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 - txnDetail.txdeQtyTotalRefund*1 + txnDetail.txdeQtyInvoiced*1);
     }
 });

@@ -119,9 +119,10 @@ public interface TxnDao {
     /**
      * update refund amount on txn sale.
      * @param totalRefundAmount totalRefundAmount
+     * @param newBalance newBalance
      * @param id id
      */
-    void updateTxnSaleRefundItem(double totalRefundAmount, long id);
+    void updateTxnSaleRefundItem(double totalRefundAmount, double newBalance, long id);
 
     /**
      * get txn_detail per id.

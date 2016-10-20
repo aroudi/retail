@@ -1,6 +1,7 @@
 // Sydney Trains 2015
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.domain.GeneralSearchForm;
 import au.com.biztune.retail.report.PurchaseOrderRptMgr;
 import au.com.biztune.retail.domain.ProductPurchaseItem;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
@@ -169,4 +170,22 @@ public class PurchaseOrderRest {
         return purchaseOrderService.getAllPurchaseOrderHeaderPerOrguIdAndSupplierId(suppId);
     }
 
+    /**
+     * search purchase order header.
+     * @param generalSearchForm generalSearchForm
+     * @return list of purchase order header
+     */
+    @Secured
+    @Path("/header/search")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PurchaseOrderHeader> search(GeneralSearchForm generalSearchForm) {
+        try {
+            return purchaseOrderService.searchPurchaseOrderHeaders(generalSearchForm);
+        } catch (Exception e) {
+            logger.error ("Error in searching purchase order header List :", e);
+            return null;
+        }
+    }
 }

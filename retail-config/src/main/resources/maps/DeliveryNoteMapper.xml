@@ -537,6 +537,21 @@
         WHERE deln.ORGU_ID=#{value}
     </select>
 
+    <select id="searchDelNoteHeader" resultMap="deliveryNoteHeaderLiteMap" >
+        SELECT
+        <include refid="deliveryNoteHeaderColumns"><property name="alias" value="deln"/></include>
+        FROM
+        DELIVERY_NOTE_HEADER deln
+        WHERE deln.ORGU_ID=#{param1}
+        <if test="param2 != null">
+            AND
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                ${item.column} ${item.operator} #{item.value}
+            </foreach>
+        </if>
+    </select>
+
     <select id="getAllDelNoteHeaderPerOrguIdAndSupplierId" resultMap="deliveryNoteHeaderLiteMap" >
         SELECT
         <include refid="deliveryNoteHeaderColumns"><property name="alias" value="deln"/></include>

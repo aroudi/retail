@@ -6,6 +6,7 @@ import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.DateUtil;
 import au.com.biztune.retail.util.IdBConstant;
+import au.com.biztune.retail.util.SearchClauseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -372,6 +373,23 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             return deliveryNoteDao.getAllDelNoteHeaderPerOrguIdAndSupplierId(sessionState.getOrgUnit().getId(), supplierId);
         } catch (Exception e) {
             logger.error("Exception in getting supplier's delivery note list:", e);
+            return null;
+        }
+    }
+    /**
+     * search delivery note.
+     * @param searchForm searchForm
+     * @return List of delivery note
+     */
+    public List<DeliveryNoteHeader> searchDeliveryNote(GeneralSearchForm searchForm) {
+        try {
+            if (searchForm == null) {
+                logger.error("search form is null");
+                return null;
+            }
+            return deliveryNoteDao.searchDelNoteHeader(sessionState.getOrgUnit().getId(), SearchClauseBuilder.buildSearchWhereCluase(searchForm, "DELIVERY_NOTE_HEADER"));
+        } catch (Exception e) {
+            logger.error("Exception in searching delivery note:", e);
             return null;
         }
     }

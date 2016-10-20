@@ -1,7 +1,11 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants,purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI) {
+cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI) {
+
+    $scope.searchForm = {};
+    $scope.searchForm.supplierId = -1;
+
     $scope.gridOptions = {
         enableFiltering: true,
         enableSelectAll:true,
@@ -112,5 +116,27 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             ],
             data:line.linkedDelNotes
         }
+    }
+
+    $scope.searchSupplier = function () {
+        ngDialog.openConfirm({
+            template:'views/pages/supplierSearch.html',
+            controller:'supplierSearchCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false
+        }).then (function (value){
+                //alert('returned value = ' + value);
+                $scope.supplier = value;
+                $scope.searchForm.supplierId = $scope.supplier.id;
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    };
+
+    $scope.search = function() {
+        baseDataService.addRow($scope.searchForm, POH_SEARCH_URI).then(function(response){
+            $scope.gridOptions.data = response.data;
+        });
     }
 });

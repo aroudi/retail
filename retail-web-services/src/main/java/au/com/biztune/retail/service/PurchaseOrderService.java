@@ -1,9 +1,6 @@
 package au.com.biztune.retail.service;
 
-import au.com.biztune.retail.domain.AppUser;
-import au.com.biztune.retail.domain.BoqDetail;
-import au.com.biztune.retail.domain.ProductPurchaseItem;
-import au.com.biztune.retail.domain.PurchaseOrderHeader;
+import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.response.CommonResponse;
 
 import javax.ws.rs.core.SecurityContext;
@@ -80,4 +77,11 @@ public interface PurchaseOrderService {
      * @return List of PurchaseOrderHeader
      */
     List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierId(long supplierId);
+    /**
+     * search purchase order header.
+     * @param searchForm searchForm
+     * @return List of PurchaseOrderHeader
+     */
+    List<PurchaseOrderHeader> searchPurchaseOrderHeaders(GeneralSearchForm searchForm);
+
 }

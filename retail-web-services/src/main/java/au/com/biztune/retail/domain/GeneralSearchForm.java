@@ -12,6 +12,7 @@ public class GeneralSearchForm {
     private String noTo;
     private List<Long> txnTypeList;
     private long clientId;
+    private long supplierId;
 
     public String getDateFrom() {
         return dateFrom;
@@ -59,5 +60,13 @@ public class GeneralSearchForm {
 
     public void setTxnTypeList(List<Long> txnTypeList) {
         this.txnTypeList = txnTypeList;
+    }
+
+    public long getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(long supplierId) {
+        this.supplierId = supplierId;
     }
 }

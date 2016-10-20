@@ -2,6 +2,7 @@
 package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.DeliveryNoteHeader;
+import au.com.biztune.retail.domain.GeneralSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.DeliveryNoteService;
@@ -88,6 +89,24 @@ public class DeliveryNoteRest {
             return deliveryNoteService.getAllSuppliersDeliveryNotes(supplierId);
         } catch (Exception e) {
             logger.error ("Error in retrieving delivery note header List :", e);
+            return null;
+        }
+    }
+    /**
+     * search delivery note.
+     * @param generalSearchForm generalSearchForm
+     * @return list of purchase order header
+     */
+    @Secured
+    @Path("/header/search")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<DeliveryNoteHeader> search(GeneralSearchForm generalSearchForm) {
+        try {
+            return deliveryNoteService.searchDeliveryNote(generalSearchForm);
+        } catch (Exception e) {
+            logger.error ("Error in searching delivery notes:", e);
             return null;
         }
     }

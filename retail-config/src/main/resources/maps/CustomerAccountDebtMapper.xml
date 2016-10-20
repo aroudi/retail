@@ -143,4 +143,12 @@
         where CAD_PAIED = 0 and CUSTOMER_ID=#{value}
     </select>
 
+    <select id="getCustomerAccountDebtPerCustomerIdAndTxhdId" resultMap="customerAccountDebtMap" >
+        SELECT
+        <include refid="customerAccountDebtColumns"><property name="alias" value="cad"/></include>
+        FROM
+        CUSTOMER_ACCOUNT_DEBT cad
+        where CAD_PAIED = 0 and CUSTOMER_ID=#{param1} and TXHD_ID=#{param2}
+    </select>
+
 </mapper>

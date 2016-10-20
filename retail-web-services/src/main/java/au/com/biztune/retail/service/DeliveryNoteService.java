@@ -1,6 +1,7 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.DeliveryNoteHeader;
+import au.com.biztune.retail.domain.GeneralSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
 
 import javax.ws.rs.core.SecurityContext;
@@ -35,4 +36,12 @@ public interface DeliveryNoteService {
      * @return List of DeliveryNoteHeader
      */
     List<DeliveryNoteHeader> getAllSuppliersDeliveryNotes(long supplierId);
+
+    /**
+     * search purchase order header.
+     * @param searchForm searchForm
+     * @return List of PurchaseOrderHeader
+     */
+    List<DeliveryNoteHeader> searchDeliveryNote(GeneralSearchForm searchForm);
+
 }

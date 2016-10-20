@@ -662,8 +662,9 @@
 
     <update id="updateTxnSaleRefundItem" >
         UPDATE TXN_DETAIL SET
-          TXDE_QTY_TOTAL_REFUND = #{param1}
-        WHERE TXDE_ID = #{param2}
+          TXDE_QTY_TOTAL_REFUND = #{param1},
+          TXDE_QTY_BALANCE = #{param2}
+        WHERE TXDE_ID = #{param3}
     </update>
 
     <insert id="insertTxnMedia" parameterType="TxnMedia" useGeneratedKeys="true" keyProperty="id" keyColumn="TXMD_ID">

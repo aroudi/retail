@@ -41,4 +41,12 @@ public interface CustomerAccountDebtDao {
      */
     void insertTxnAccPayment(CustomerAccountDebt customerAccountDebt);
 
+    /**
+     * get customer account debt per customer id and txhd id.
+     * @param customerId customerId
+     * @param txhdId txhdId
+     * @return CustomerAccountDebt
+     */
+    CustomerAccountDebt getCustomerAccountDebtPerCustomerIdAndTxhdId(long customerId, long txhdId);
+
 }

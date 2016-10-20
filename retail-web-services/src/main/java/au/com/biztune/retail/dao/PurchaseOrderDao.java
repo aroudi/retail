@@ -118,4 +118,12 @@ public interface PurchaseOrderDao {
      * @return List of purchase order header for specific supplier.
      */
     List<PurchaseOrderHeader> getAllPurchaseOrderHeaderPerOrguIdAndSupplierId(long orgUid, long supplierId);
+
+    /**
+     * search purchase order header.
+     * @param orguId orguId
+     * @param clauseList clauseList
+     * @return List of purchase order headers
+     */
+    List<PurchaseOrderHeader> searchPurchaseOrderHeader(long orguId, List clauseList);
 }

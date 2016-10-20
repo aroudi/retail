@@ -87,4 +87,12 @@ public interface DeliveryNoteDao {
      * @return supplier delivery notes.
      */
     List<DeliveryNoteHeader> getAllDelNoteHeaderPerOrguIdAndSupplierId(long orguId, long suppId);
+
+    /**
+     * search delivery note.
+     * @param orguId orguId
+     * @param clauseList clauseList
+     * @return List of delivery note
+     */
+    List<DeliveryNoteHeader> searchDelNoteHeader(long orguId, List clauseList);
 }
