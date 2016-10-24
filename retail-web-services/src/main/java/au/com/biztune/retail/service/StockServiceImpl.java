@@ -59,6 +59,29 @@ public class StockServiceImpl implements StockService {
                 final StockEvent stockEvent = new StockEvent();
                 stockEvent.setTxnTypeConst(txnType);
                 if (txnType.equals(IdBConstant.TXN_TYPE_INVOICE)) {
+                    //for invoice we need to check if item original quantity has changed or not. if changed, we need to create 2 stock event. one for reseving goods and another for selling goods.
+                    if (txnDetail.getOriginalQuantity() != txnDetail.getTxdeQuantitySold()) {
+                        final StockEvent stockEvent2 = new StockEvent();
+                        stockEvent2.setStckQty(txnDetail.getTxdeQuantitySold() - txnDetail.getOriginalQuantity());
+                        //if item is voided then return the item to saleable stock.
+                        if (txnDetail.isTxdeItemVoid()) {
+                            stockEvent2.setStckQty(-txnDetail.getOriginalQuantity());
+                        }
+                        stockEvent2.setUnomId(txnDetail.getUnitOfMeasure().getId());
+                        //stockEvent.setSupplierId();
+                        stockEvent2.setCostPrice(txnDetail.getTxdeValueLine());
+                        stockEvent2.setProdId(txnDetail.getProduct().getId());
+                        stockEvent2.setSellPrice(txnDetail.getTxdeValueNet());
+                        stockEvent2.setStckEvntDate(currentTime);
+                        stockEvent2.setTxnDate(txnHeader.getTxhdTradingDate());
+                        stockEvent2.setTxnHeader(txnHeader.getId());
+                        stockEvent2.setTxnLine(txnDetail.getId());
+                        stockEvent2.setUserId(txnHeader.getUser().getId());
+                        stockEvent2.setTxnNumber(txnHeader.getTxhdTxnNr());
+                        stockEvent2.setOrguId(sessionState.getOrgUnit().getId());
+                        stockEvent2.setTxnTypeConst(IdBConstant.TXN_TYPE_SALE);
+                        processStockEvent(stockEvent2);
+                    }
                     stockEvent.setStckQty(txnDetail.getTxdeQtyInvoiced());
 
                 } else if (txnType.equals(IdBConstant.TXN_TYPE_SALE)) {

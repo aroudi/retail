@@ -32,11 +32,7 @@ public class TotalerServiceImpl implements TotalerService {
                 logger.debug("Totaller : transaction is empty");
                 return;
             }
-            if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)
-                    || txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_REFUND))
-            {
-                processTotalSale(txnHeader);
-            }
+            processTotalSale(txnHeader);
             //TOTAL MEDIA PROCESS
             processtotalMedia(txnHeader);
 
@@ -201,10 +197,18 @@ public class TotalerServiceImpl implements TotalerService {
                 totalMediaOperator.setMedtId(paymentMedia.getMediaType().getId());
                 totalMediaOperator.setPaymentMedia(paymentMedia);
                 totalMediaOperator.setTomoOperator(txnHeader.getUser());
-                totalMediaOperator.setTomoSaleQty(values[0]);
-                totalMediaOperator.setTomoSaleValue(values[1]);
-                totalMediaOperator.setTomoRefundQty(values[2]);
-                totalMediaOperator.setTomoRefundValue(values[3]);
+                if (values.length >= 1 && values[0] != null) {
+                    totalMediaOperator.setTomoSaleQty(values[0]);
+                }
+                if (values.length >= 2 && values[1] != null) {
+                    totalMediaOperator.setTomoSaleValue(values[1]);
+                }
+                if (values.length >= 3 && values[2] != null) {
+                    totalMediaOperator.setTomoRefundQty(values[2]);
+                }
+                if (values.length >= 4 && values[3] != null) {
+                    totalMediaOperator.setTomoRefundValue(values[3]);
+                }
                 totalMediaOperator.setTomoTradingDate(currentDate);
                 totalerDao.insertTotalMediaOperator(totalMediaOperator);
             }

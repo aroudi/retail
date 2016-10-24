@@ -404,9 +404,10 @@ public class CashSessionServiceImpl implements CashSessionService {
     /**
      * End cash session.
      * @param cashSession cashSession
+     * @param securityContext securityContext
      * @return common response.
      */
-    public CommonResponse endCashSession(CashSession cashSession) {
+    public CommonResponse endCashSession(CashSession cashSession, SecurityContext securityContext) {
         this.securityContext = securityContext;
         final Principal principal = securityContext.getUserPrincipal();
         AppUser appUser = null;

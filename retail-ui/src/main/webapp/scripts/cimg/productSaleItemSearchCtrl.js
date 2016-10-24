@@ -44,6 +44,7 @@ cimgApp.controller('productSaleItemSearchCtrl', function($scope, $state, $timeou
         gridApi.selection.on.rowSelectionChanged($scope, function(row) {
             //baseDataService.setRow(row.entity);
             $scope.selectedOption = row.entity;
+            gridApi.grid.clearAllFilters();
         });
     };
     getAllProductSaleItems();

@@ -96,7 +96,7 @@ public class CashSessionRest {
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResponse endSession(CashSession cashSession) {
         try {
-            return cashSessionService.endCashSession(cashSession);
+            return cashSessionService.endCashSession(cashSession, securityContext);
         } catch (Exception e) {
             logger.error ("Error in ending session :", e);
             return null;

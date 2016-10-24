@@ -655,9 +655,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     }
 
     $scope.isTxnLineVoidable = function (row) {
+        /* we dont have void at this point. we can only deleted a new added tender but not void tender.
         if ( ($scope.txnHeaderForm.txhdState.categoryCode != 'TXN_STATE_FINAL') && (row.entity.id > 0)) {
             return true;
         }
+        */
         return false;
     }
     $scope.isTxnSaleAndFinal = function () {

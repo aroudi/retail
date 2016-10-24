@@ -12,12 +12,12 @@ cimgApp.controller('saleSummaryReportCtrl', function($scope, $state, $timeout, b
 
     function initCharts() {
         $scope.totalSaleSummaryRptPolar = {
-            labels:['Total Items', 'Total Cost', 'Total Profit', 'Total Taxable', 'Total Tax', 'Total Sale'],
+            labels:['Total Items', 'Total Cost', 'Total Profit', 'Total Taxable', 'Total Tax', 'Total Sale', 'Total Refund'],
             data :[]
         }
 
         $scope.totalSaleSummaryRptBar = {
-            labels:['Total Items', 'Total Cost', 'Total Profit', 'Total Taxable', 'Total Tax', 'Total Sale'],
+            labels:['Total Items', 'Total Cost', 'Total Profit', 'Total Taxable', 'Total Tax', 'Total Sale', 'Total Refund'],
             series:['Summary'],
             data :[]
         }
@@ -40,11 +40,12 @@ cimgApp.controller('saleSummaryReportCtrl', function($scope, $state, $timeout, b
             {field:'toopOperator.usrFirstName', displayName:'First Name', enableCellEdit:false, width:'10%'},
             {field:'toopOperator.usrSurName', displayName:'SurName',enableCellEdit:false, width:'15%'},
             {field:'toopSaleQty', displayName:'Total Items', width:'10%',cellFilter: 'currency', footerCellFilter: 'currency'},
-            {field:'toopItemsValue', displayName:'Total Cost',enableCellEdit:false, width:'12%',cellFilter: 'currency', footerCellFilter: 'currency'},
-            {field:'toopProfitValue', displayName:'Total Profit',enableCellEdit:false, width:'12%',cellFilter: 'currency', footerCellFilter: 'currency'},
-            {field:'toopTaxedValue', displayName:'Total Taxable',enableCellEdit:false, width:'13%',cellFilter: 'currency', footerCellFilter: 'currency'},
-            {field:'toopTaxPaid', displayName:'Total Tax',enableCellEdit:false, width:'13%',cellFilter: 'currency', footerCellFilter: 'currency'},
-            {field:'toopSaleValue', displayName:'Total Sale',enableCellEdit:false, width:'15%',cellFilter: 'currency', footerCellFilter: 'currency'}
+            {field:'toopItemsValue', displayName:'Total Cost',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency'},
+            {field:'toopProfitValue', displayName:'Total Profit',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency'},
+            {field:'toopTaxedValue', displayName:'Total Taxable',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency'},
+            {field:'toopTaxPaid', displayName:'Total Tax',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency'},
+            {field:'toopSaleValue', displayName:'Total Sale',enableCellEdit:false, width:'15%',cellFilter: 'currency', footerCellFilter: 'currency'},
+            {field:'toopRefundValue', displayName:'Total Refund',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency'}
         ]
     }
     $scope.staffSaleSummary.enableRowSelection = true;
@@ -81,6 +82,7 @@ cimgApp.controller('saleSummaryReportCtrl', function($scope, $state, $timeout, b
             totalSaleSummaryData.push(saleSummaryReport.totalSaleFigures.toopTaxedValue);
             totalSaleSummaryData.push(saleSummaryReport.totalSaleFigures.toopTaxPaid);
             totalSaleSummaryData.push(saleSummaryReport.totalSaleFigures.toopSaleValue);
+            totalSaleSummaryData.push(saleSummaryReport.totalSaleFigures.toopRefundValue * (-1));
             $scope.totalSaleSummaryRptPolar.data = totalSaleSummaryData;
             $scope.totalSaleSummaryRptBar.data.push(totalSaleSummaryData)
         }

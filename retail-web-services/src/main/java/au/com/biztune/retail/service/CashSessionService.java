@@ -83,9 +83,10 @@ public interface CashSessionService {
     /**
      * End cash session.
      * @param cashSession cashSession
+     * @param securityContext securityContext
      * @return common response.
      */
-    CommonResponse endCashSession(CashSession cashSession);
+    CommonResponse endCashSession(CashSession cashSession, SecurityContext securityContext);
 
     /**
      * Reconcile Session.
