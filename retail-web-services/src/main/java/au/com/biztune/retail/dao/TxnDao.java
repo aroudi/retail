@@ -139,4 +139,23 @@ public interface TxnDao {
      * @return List of txnHeader
      */
     List<TxnHeader> searchTxnHeader(long storeId, List txnTypeList, List clauseList);
+
+    /**
+     * delete txnHeader per txhdId.
+     * @param txhdId txhdId
+     */
+    void deleteTxnHeaderPerTxhdId(long txhdId);
+
+    /**
+     * delete txnMedia per txhdId.
+     * @param txhdId txhdId
+     */
+    void deleteTxnMediaPerTxhdId(long txhdId);
+
+    /**
+     * delete txnDetail per txhdId.
+     * @param txhdId txhdId
+     */
+    void deleteTxnDetailPerTxhdId(long txhdId);
+
 }

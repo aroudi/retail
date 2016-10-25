@@ -112,6 +112,10 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
     }
 
     $scope.searchPurchaseOrder = function () {
+        if ($scope.deliveryNoteHeader.supplier === undefined) {
+            baseDataService.displayMessage('info','Warning!','Please select supplier');
+            return;
+        }
         ngDialog.openConfirm({
             template:'views/pages/purchaseOrderSearch.html',
             controller:'purchaseOrderSearchCtrl',

@@ -2,7 +2,7 @@
 
 package au.com.biztune.retail.rest;
 
-import au.com.biztune.retail.domain.Product;
+import au.com.biztune.retail.domain.ProductSaleItem;
 import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
@@ -77,14 +77,14 @@ public class ProductRest {
     /**
      * get supplier by Id.
      * @param skuCode skuCode.
-     * @return Product
+     * @return ProductSaleItem
      */
     @Secured
     @GET
-    @Path("/getBySku/{skuCode}")
+    @Path("/saleItem/getBySku/{skuCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Product getProductBySkuCode (@PathParam("skuCode") String skuCode) {
-        return productService.getProductPerSku(skuCode);
+    public ProductSaleItem getProductBySkuCode (@PathParam("skuCode") String skuCode) {
+        return productService.getProductSaleItemPerOrguIdAndSku(skuCode);
     }
 
     /**

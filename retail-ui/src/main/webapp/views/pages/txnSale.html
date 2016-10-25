@@ -62,8 +62,11 @@
                                 <div class="col-lg-12">
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
-                                            Products
-                                            <button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchProduct()">Add Product</button>
+                                                Products
+                                                <button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchProduct()">Add Product</button>
+                                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                                Search By Sku:
+                                                <input size="50" data-ng-model="searchBySku" ng-disabled="isTxnSaleAndFinal()" ng-keypress="searchProductBySku($event)" >
                                         </div>
                                         <div class="panel-body" ng-disabled="isTxnSaleAndFinal()">
                                             <div class="row">

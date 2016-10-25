@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED) {
+cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI) {
     var rowtpl='<div ng-class="{\'brown\':row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\'}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
     $scope.enableChangeStatus = function() {
         if ($scope.purchaseOrderHeader.pohStatus.categoryCode == 'POH_STATUS_IN_PROGRESS') {
@@ -178,6 +178,10 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
     }
 
     $scope.searchProduct = function () {
+        if ($scope.purchaseOrderHeader.supplier === undefined) {
+            baseDataService.displayMessage('info','Warning!','Please select supplier');
+            return;
+        }
         ngDialog.openConfirm({
             template:'views/pages/productSaleItemSearch.html',
             controller:'productPurchaseItemSearchCtrl',
@@ -447,6 +451,29 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             }
         }
         return false;
+    }
+
+    $scope.searchProductByCatalogNo = function(keyEvent) {
+        if (keyEvent.which != 13) {
+            return
+        }
+        if ($scope.purchaseOrderHeader.supplier === undefined) {
+            baseDataService.displayMessage('info','Warning!','Please select supplier');
+            return;
+        }
+        var searchUri = GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI + $scope.purchaseOrderHeader.supplier.id + '/' + $scope.searchByCatalog;
+        baseDataService.getBaseData(searchUri).then(function(response){
+            var selectedProduct = response.data;
+            if (selectedProduct === null || selectedProduct === undefined || selectedProduct.catalogueNo == undefined) {
+                baseDataService.displayMessage('info','Warning!','product not found!!!');
+                return;
+            }
+            if (checkIfProductHasBeenSelected(selectedProduct)) {
+                return;
+            }
+            var purchaseLine = createPurchaseLine(selectedProduct);
+            $scope.gridOptions.data.push(purchaseLine);
+        });
     }
 
 });

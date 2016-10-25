@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
@@ -441,7 +442,12 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetailForm.setTxdeTax(txnDetail.getTxdeTax());
                 txnDetailForm.setTxdeValueNet(txnDetail.getTxdeValueNet());
                 txnDetailForm.setTxdeQuantitySold(txnDetail.getTxdeQuantitySold());
-                txnDetailForm.setOriginalQuantity(txnDetail.getOriginalQuantity());
+                //for quote we need to set original quantity to 0 so when it changed to txn_sale, does not spoil the stock quantity
+                if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_QUOTE)) {
+                    txnDetailForm.setOriginalQuantity(0);
+                } else {
+                    txnDetailForm.setOriginalQuantity(txnDetail.getOriginalQuantity());
+                }
                 txnDetailForm.setTxdeQtyBalance(txnDetail.getTxdeQtyBalance());
                 txnDetailForm.setTxdeQtyTotalInvoiced(txnDetail.getTxdeQtyTotalInvoiced());
                 txnDetailForm.setTxdeQtyTotalRefund(txnDetail.getTxdeQtyTotalRefund());
@@ -1147,6 +1153,28 @@ public class TransactionServiceImpl implements TransactionService {
         } catch (Exception e) {
             logger.error("Exception in searching transaction: ", e);
             return null;
+        }
+    }
+
+    /**
+     * delete quote per id.
+     * @param txhdId txhdId
+     * @return CommonResponse
+     */
+    @Transactional
+    public CommonResponse deleteQuote(long txhdId) {
+        final CommonResponse response = new CommonResponse();
+        try {
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+            txnDao.deleteTxnDetailPerTxhdId(txhdId);
+            txnDao.deleteTxnMediaPerTxhdId(txhdId);
+            txnDao.deleteTxnHeaderPerTxhdId(txhdId);
+            return response;
+        } catch (Exception e) {
+            logger.error("Exception in deleting quote ", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("not able to delete qoute");
+            return response;
         }
     }
 

@@ -258,4 +258,17 @@ public class TransactionRest {
     public List<TxnHeader> searchInvoice (GeneralSearchForm searchForm) {
         return transactionService.searchInvoice(searchForm);
     }
+
+    /**
+     * delete quote by Id.
+     * @param id id.
+     * @return CommonResponse
+     */
+    @Secured
+    @GET
+    @Path("/deleteQuote/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse deleteQuoteById (@PathParam("id") long id) {
+        return transactionService.deleteQuote(id);
+    }
 }

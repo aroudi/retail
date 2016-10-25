@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI) {
+cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI) {
 
     $scope.saleOrderSearchForm = {};
     $scope.saleOrderSearchForm.clientId = -1;
@@ -23,7 +23,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
             {field:'txhdTxnType.displayName' , displayName:'Type', enableCellEdit:false, width:'10%'},
             {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
             {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'},
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' }
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)" ></i></a> </i></a>&nbsp;<a href=""><i tooltip="Delete" ng-show="row.entity.txhdTxnType.categoryCode ===\'TXN_TYPE_QUOTE\'" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeQuote(row)" ></i></a> ', width:'10%' }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -125,5 +125,22 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         });
     }
 
+    $scope.removeQuote = function(row) {
 
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete quote??').then(function(result){
+            if (result) {
+                var deleteUrl = QUOTE_DELETE_URI + row.entity.id;
+                baseDataService.getBaseData(deleteUrl).then(function(response){
+                    var deleteResponse = response.data;
+                    if (deleteResponse.status === SUCCESS) {
+                        $scope.gridApi.core.setRowInvisible(row);
+                    } else {
+                        baseDataService.displayMessage('info','Error!!','Error in deleting quote.');
+                    }
+                });
+            } else {
+                return;
+            }
+        });
+    }
 });

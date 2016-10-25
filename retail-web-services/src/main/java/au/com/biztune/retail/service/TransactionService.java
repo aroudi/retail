@@ -105,4 +105,11 @@ public interface TransactionService {
      * @return List of TxnHeader
      */
     List<TxnHeader> searchInvoice(GeneralSearchForm searchForm);
+
+    /**
+     * delete quote per id.
+     * @param txhdId txhdId
+     * @return CommonResponse
+     */
+    CommonResponse deleteQuote(long txhdId);
 }

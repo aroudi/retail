@@ -857,5 +857,25 @@
     <select id="getTxnHeaderAmountPaid" resultType="java.lang.Double" >
         select SUM(txmd_amount_local) from TXN_media where TXHD_ID = #{value} and TXMD_VOIDED = 0
     </select>
+    <delete id="deleteTxnDetailPerTxhdId" >
+        DELETE
+        From TXN_DETAIL
+        WHERE
+        TXHD_ID = #{value}
+    </delete>
+
+    <delete id="deleteTxnMediaPerTxhdId" >
+        DELETE
+        From TXN_MEDIA
+        WHERE
+        TXHD_ID = #{value}
+    </delete>
+
+    <delete id="deleteTxnHeaderPerTxhdId" >
+        DELETE
+        From TXN_HEADER
+        WHERE
+        TXHD_ID = #{value}
+    </delete>
 
 </mapper>

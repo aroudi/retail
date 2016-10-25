@@ -245,6 +245,16 @@
         WHERE prou.orgu_id = #{value}
     </select>
 
+    <select id="getProductSaleItemPerOrgUnitIdAndSku" resultMap="productSaleItemMap" >
+        SELECT
+        <include refid="productColumns"><property name="alias" value="prod"/></include>,
+        <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>
+        FROM
+        PRODUCT prod
+        INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
+        WHERE prou.orgu_id = #{param1} AND prod.prod_sku = #{param2}
+    </select>
+
     <insert id="insertProduct" parameterType="Product" useGeneratedKeys="true" keyProperty="id" keyColumn="PROD_ID">
         INSERT INTO PRODUCT(
             ORGU_ID_OWNING,

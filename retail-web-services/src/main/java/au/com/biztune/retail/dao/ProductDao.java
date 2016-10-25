@@ -120,4 +120,12 @@ public interface ProductDao {
      * @return List of ProductSaleItem
      */
     ProductSaleItem getProductSaleItemPerProdId(long prodId);
+
+    /**
+     * get product sale item per orguid and sku.
+     * @param orguId orguId
+     * @param sku sku
+     * @return ProductSaleItem
+     */
+    ProductSaleItem getProductSaleItemPerOrgUnitIdAndSku(long orguId, String sku);
 }

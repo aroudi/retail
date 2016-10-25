@@ -95,6 +95,10 @@
                             <div class="panel-heading">
                                 Lines:
                                 <button type="button" class="btn btn-success" ng-click="searchProduct()" ng-disabled="disablePage==true">Add Product</button>
+                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                Search By Catalogue No:
+                                <input size="50" data-ng-model="searchByCatalog" ng-disabled="disablePage==true" ng-keypress="searchProductByCatalogNo($event)" >
+
                             </div>
                             <div class="panel-body">
                                 <div class="row">

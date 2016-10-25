@@ -84,4 +84,11 @@ public interface PurchaseOrderService {
      */
     List<PurchaseOrderHeader> searchPurchaseOrderHeaders(GeneralSearchForm searchForm);
 
+    /**
+     * get product purchase item for specific supplier and catalog no.
+     * @param suppId suppId
+     * @param catalogNo catalogNo
+     * @return List of PruductPurchaseItem
+     */
+    ProductPurchaseItem getSupplierProductPurchaseItemPerCatalogNo(long suppId, String catalogNo);
 }

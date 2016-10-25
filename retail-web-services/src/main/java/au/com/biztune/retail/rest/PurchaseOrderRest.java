@@ -78,6 +78,21 @@ public class PurchaseOrderRest {
         return purchaseOrderService.getAllSupplierProductPurchaseItems(suppId);
     }
 
+
+    /**
+     * get Product Purchase Item per supplier id and catalog no.
+     * @param suppId suppId.
+     * @param catalogNo catalogNo.
+     * @return ProductPurchaseItem
+     */
+    @Secured
+    @GET
+    @Path("/detail/getPurchaseItem/{suppId}/{catalogNo}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ProductPurchaseItem getProductPurchaseItemPerSuppIdAndCatalogNo (@PathParam("suppId") long suppId, @PathParam("catalogNo") String catalogNo) {
+        return purchaseOrderService.getSupplierProductPurchaseItemPerCatalogNo(suppId, catalogNo);
+    }
+
     /**
      * add/edit a Purchase order.
      * @param purchaseOrderHeader purchaseOrderHeader

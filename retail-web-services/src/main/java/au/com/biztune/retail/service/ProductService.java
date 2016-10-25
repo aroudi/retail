@@ -55,4 +55,11 @@ public interface ProductService {
      * @return Product
      */
     ProductSaleItem getProductSaleItemPerReference(String reference);
+
+    /**
+     * get product sale item per sku.
+     * @param sku sku
+     * @return ProductSaleItem
+     */
+    ProductSaleItem getProductSaleItemPerOrguIdAndSku(String sku);
 }

@@ -301,6 +301,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * get product sale item per sku.
+     * @param sku sku
+     * @return ProductSaleItem
+     */
+    public ProductSaleItem getProductSaleItemPerOrguIdAndSku(String sku) {
+        try {
+            return productDao.getProductSaleItemPerOrgUnitIdAndSku(sessionState.getOrgUnit().getId(), sku);
+
+        } catch (Exception e) {
+            logger.error("Error in retrieving sale item per sku");
+            return null;
+        }
+    }
+
+    /**
      * get product object per sku.
      * @param skuCode skuCode
      * @return Product

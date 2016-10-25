@@ -420,6 +420,22 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             return null;
         }
     }
+
+    /**
+     * get product purchase item for specific supplier and catalog no.
+     * @param suppId suppId
+     * @param catalogNo catalogNo
+     * @return List of PruductPurchaseItem
+     */
+    public ProductPurchaseItem getSupplierProductPurchaseItemPerCatalogNo(long suppId, String catalogNo) {
+        try {
+            return suppProdPriceDao.getProductPurchaseItemPerOrgUnitIdAndSuppIdAndCatalogId(sessionState.getOrgUnit().getId(), suppId, catalogNo);
+        } catch (Exception e) {
+            logger.error("Exception in getting product purchase item per supplier and catalog no:", e);
+            return null;
+        }
+    }
+
     /**
      * get all purchase Order Header.
      * @param supplierId supplierId

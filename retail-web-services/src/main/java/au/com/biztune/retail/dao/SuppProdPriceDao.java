@@ -98,4 +98,13 @@ public interface SuppProdPriceDao {
      * @return List of SuppProdPrice.
      */
     List<SuppProdPrice> getAllSupplierProducts(long orguId, long suppId);
+
+    /**
+     * get product from specic supplier by catalog no.
+     * @param orguId orguId
+     * @param suppId suppId
+     * @param catalogueNo catalogueNo
+     * @return ProductPurchaseItem
+     */
+    ProductPurchaseItem getProductPurchaseItemPerOrgUnitIdAndSuppIdAndCatalogId(long orguId, long suppId, String catalogueNo);
 }

@@ -128,6 +128,15 @@
         sol.ORGU_ID= #{param1} AND sol.SUPP_ID = #{param2}
     </select>
 
+    <select id="getProductPurchaseItemPerOrgUnitIdAndSuppIdAndCatalogId" resultMap="suppPurchaseProdMap" >
+        SELECT
+        <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>
+        FROM
+        SUPP_PROD_PRICE spp INNER JOIN SUPP_ORGU_LINK sol ON (spp.sol_id = sol.sol_id)
+        WHERE
+        sol.ORGU_ID= #{param1} AND sol.SUPP_ID = #{param2} AND spp.CATALOGUE_NO = #{param3}
+    </select>
+
     <select id="getProductPurchaseItemPerSprcId" resultMap="suppPurchaseProdMap" >
         SELECT
         <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>
