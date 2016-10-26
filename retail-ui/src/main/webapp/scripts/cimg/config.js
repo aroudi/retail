@@ -259,6 +259,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/reconcileSession.html',
             access: "user"
         })
+        .state('dashboard.cashupReport',{
+            url:'/cashupReport',
+            controller: 'cashupRptCtrl',
+            templateUrl:'views/pages/cashupRpt.html',
+            access: "user"
+        })
 
         .state('dashboard.saleSummaryReport',{
             url:'/saleSummaryReport',

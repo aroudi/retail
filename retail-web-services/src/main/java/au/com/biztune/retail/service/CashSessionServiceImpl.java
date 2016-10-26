@@ -443,4 +443,17 @@ public class CashSessionServiceImpl implements CashSessionService {
             return commonResponse;
         }
     }
+
+    /**
+     * retreive reconciled sessions.
+     * @return List of reconciled sessions
+     */
+    public List<SessionEvent> getReconciledSessions() {
+        try {
+            return cashSessionDao.getReconciledSessionEvents();
+        } catch (Exception e) {
+            logger.error("Exception in retreiving reconciled sessions");
+            return null;
+        }
+    }
 }

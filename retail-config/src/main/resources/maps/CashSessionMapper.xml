@@ -45,7 +45,25 @@
         <result column="SEEV_PICKUP_NR" property="seevPickupNr" />
         <result column="SEEV_PAY_IN_SLIP" property="seevPayInSlip" />
         <association property="seevEventType" column="SEEV_EVENT_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="cashSession" column="CSSN_SESSION_ID" select="getCashSessionPerId" />
+        <collection property="eventDetails" javaType="ArrayList" column="SEEV_ID" ofType="SessionEventDetail" select="getSessionEventDetailsPerEventId"/>
+    </resultMap>
 
+    <resultMap id="SessionEventLiteMap" type="SessionEvent" >
+        <id column="SEEV_ID" property="id" />
+        <result column="CSSN_SESSION_ID" property="cssnSessionId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="SEEV_EVENT_DATE" property="seevEventDate" />
+        <result column="SEEV_OPERATOR" property="seevOperator" />
+        <result column="SEEV_REFERENCE" property="seevReference" />
+        <result column="SEEV_COMMENT" property="seevComment" />
+        <result column="SEEV_REASON" property="seevReason" />
+        <result column="SEEV_COLLECT_DATE" property="seevCollectDate" />
+        <result column="SEEV_COLLECT_REF" property="seevCollectRef" />
+        <result column="SEEV_PICKUP_NR" property="seevPickupNr" />
+        <result column="SEEV_PAY_IN_SLIP" property="seevPayInSlip" />
+        <association property="cashSession" column="CSSN_SESSION_ID" select="getCashSessionPerId" />
     </resultMap>
 
     <resultMap id="SessionMediaMap" type="SessionMedia" >
@@ -723,6 +741,13 @@
         CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED' ) AND CSSN_OPERATOR = #{value}
     </select>
 
+    <select id="getCashSessionPerId" resultMap="CashSessionMap">
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn WHERE CSSN_SESSION_ID = #{value}
+    </select>
+
     <select id="getAllCurrentCashSessions" resultMap="CashSessionMap" >
         SELECT
         <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
@@ -742,5 +767,27 @@
         <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
         FROM
         CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_METHOD_OPEN = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_ENDED')
+    </select>
+
+    <select id="getSessionEventDetailsPerEventId" resultMap="SessionEventDetailMap">
+        SELECT
+        <include refid="sessionEventDetailColumns"><property name="alias" value="sed"/></include>
+        FROM
+        SESSION_EVENT_DETAIL sed WHERE sed.SEEV_ID = #{value}
+    </select>
+
+    <select id="getSessionEventPerId" resultMap="SessionEventMap">
+        SELECT
+        <include refid="sessionEventColumns"><property name="alias" value="seev"/></include>
+        FROM
+        SESSION_EVENT seev WHERE seev.SEEV_ID = #{value}
+    </select>
+
+    <select id="getReconciledSessionEvents" resultMap="SessionEventLiteMap">
+        SELECT
+        <include refid="sessionEventColumns"><property name="alias" value="seev"/></include>
+        FROM
+        SESSION_EVENT seev INNER JOIN CONFIG_CATEGORY cc on (seev.SEEV_EVENT_TYPE = cc.CATEGORY_ID)
+        WHERE (cc.CATEGORY_CODE = 'SESSION_EVENT_TYPE_RECONCILE')
     </select>
 </mapper>

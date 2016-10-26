@@ -95,4 +95,10 @@ public interface CashSessionService {
      * @return CommonResponse
      */
     CommonResponse reconcileSession(ReconciliationForm reconciliationForm, SecurityContext securityContext);
+
+    /**
+     * retreive reconciled sessions.
+     * @return List of reconciled sessions
+     */
+    List<SessionEvent> getReconciledSessions();
 }

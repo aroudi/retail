@@ -1,9 +1,11 @@
 package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.CashSession;
+import au.com.biztune.retail.domain.SessionEvent;
 import au.com.biztune.retail.domain.SessionEventDetail;
 import au.com.biztune.retail.form.AddFloatForm;
 import au.com.biztune.retail.form.ReconciliationForm;
+import au.com.biztune.retail.report.ReconciliationRptMgr;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.CashSessionService;
@@ -30,6 +32,9 @@ public class CashSessionRest {
 
     @Autowired
     private CashSessionService cashSessionService;
+
+    @Autowired
+    private ReconciliationRptMgr reconciliationRptMgr;
 
     @Context
     private SecurityContext securityContext;
@@ -117,4 +122,34 @@ public class CashSessionRest {
         return cashSessionService.reconcileSession(reconciliationForm, securityContext);
     }
 
+    /**
+     * export reconciliation report as PDF.
+     * @param seevId seevId
+     * @return Stream output.
+     */
+    @Secured
+    @Path("/reconciliation/exportPdf/{seevId}")
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response exportReconciliRptToPdf(@PathParam("seevId") long seevId) {
+        final StreamingOutput streamingOutput = reconciliationRptMgr.createReconciliationRptPdfStream(seevId);
+        //purchaseOrderRptMgr.createPurchaseOrderPdfFile(pohId);
+        return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = PurchaseOrder" + seevId + ".pdf").build();
+    }
+    /**
+     * Returns list of reconciled sessions.
+     * @return list of reconciled sessions
+     */
+    @Secured
+    @Path("/getAllReconciledSessions")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<SessionEvent> getAllReconciledSessions() {
+        try {
+            return cashSessionService.getReconciledSessions();
+        } catch (Exception e) {
+            logger.error ("Error in retrieving reconciled sessions :", e);
+            return null;
+        }
+    }
 }

@@ -121,4 +121,31 @@ public interface CashSessionDao {
      * @return SessionTotal
      */
     SessionTotal getSessionTotalMediasPerSessionIdAndPaymId(long sessionId, long paymId);
+
+    /**
+     * get session event details for session id.
+     * @param eventId eventId
+     * @return SessionEventDetail
+     */
+    SessionEventDetail getSessionEventDetailsPerEventId(long eventId);
+
+    /**
+     * get cash session per id.
+     * @param id id
+     * @return Cash Session
+     */
+    CashSession getCashSessionPerId(long id);
+
+    /**
+     * get session event per id.
+     * @param seevId seevId
+     * @return session event.
+     */
+    SessionEvent getSessionEventPerId(long seevId);
+
+    /**
+     * get reconciled sessions.
+     * @return Session Event
+     */
+    List<SessionEvent> getReconciledSessionEvents();
 }

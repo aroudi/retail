@@ -38,13 +38,13 @@ var cimgApp = angular
   ]);
 
 //SIT
-/**
+/*
 var config_data = {
     'SERVER' : '10.0.0.17',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
- **/
+*/
 //DEV
 
 var config_data = {
@@ -52,7 +52,6 @@ var config_data = {
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
-
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -132,6 +131,8 @@ var service_uri = {
     'CASH_SESSION_FETCH_DATA_FOR_RECONCILIATION_URI' : 'cashSession/fetchSessionTotalForReconciliation/',
     'CASH_SESSION_RECONCILE_URI' : 'cashSession/reconcileSession',
     'CASH_SESSION_END_URI' : 'cashSession/endSession',
+    'CASH_SESSION_ALL_RECONCILED_URI' : 'cashSession/getAllReconciledSessions',
+    'CASH_SESSION_RECONCILIATION_TO_PDF_URI' : 'cashSession/reconciliation/exportPdf/',
     'SALE_SUMMARY_REPORT_URI' : 'saleSummaryReport/saleSummary'
 }
 

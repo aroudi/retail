@@ -21,5 +21,9 @@
         <property name="reportTxnLineFileName" value="txnLine" />
         <property name="reportTxnMediaFileName" value="txnMedia" />
     </bean>
-
+    <bean id="ReconciliationRptMgr" class="au.com.biztune.retail.report.ReconciliationRptMgr">
+        <property name="reportPath" value="classpath:reports" />
+        <property name="reportHeaderFileName" value="reconciliation" />
+        <property name="reportDetailFileName" value="reconciliationLine" />
+    </bean>
 </beans>

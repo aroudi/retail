@@ -1,6 +1,7 @@
 package au.com.biztune.retail.domain;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * Created by arash on 21/09/2016.
@@ -20,6 +21,8 @@ public class SessionEvent {
     private Timestamp seevCollectRef;
     private String seevPickupNr;
     private String seevPayInSlip;
+    private List<SessionEventDetail> eventDetails;
+    private CashSession cashSession;
 
     public long getId() {
         return id;
@@ -131,5 +134,21 @@ public class SessionEvent {
 
     public void setSeevComment(String seevComment) {
         this.seevComment = seevComment;
+    }
+
+    public List<SessionEventDetail> getEventDetails() {
+        return eventDetails;
+    }
+
+    public void setEventDetails(List<SessionEventDetail> eventDetails) {
+        this.eventDetails = eventDetails;
+    }
+
+    public CashSession getCashSession() {
+        return cashSession;
+    }
+
+    public void setCashSession(CashSession cashSession) {
+        this.cashSession = cashSession;
     }
 }
