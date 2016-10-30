@@ -1034,3 +1034,6 @@ go
 
 INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'cashupReport' ));
 go
+
+
+-- up to this point applied on jomon on 30/10/16
