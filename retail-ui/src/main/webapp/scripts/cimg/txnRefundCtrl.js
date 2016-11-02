@@ -50,7 +50,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
             rowTemplate : rowtpl,
             columnDefs: [
                 {field: 'id', visible: false, enableCellEdit: false},
-                {field: 'product.prodSku', displayName: 'SKU', enableCellEdit: false, width: '10%',
+                {field: 'product.prodSku', displayName: 'SKU', enableCellEdit: false, width: '13%',
                     cellTooltip: function(row,col) {
                         return row.entity.product.prodSku
                     }
@@ -60,14 +60,14 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
                         return row.entity.product.prodName
                     }
                 },
-                {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false, width: '10%'},
+                {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false, width: '7%'},
                 {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency', width: '10%'},
-                {field: 'txdeQtyTotalInvoiced', displayName: 'Qty Invoiced', enableCellEdit: false, type: 'number', width: '10%'},
-                {field: 'txdeQtyRefund', displayName: 'Qty Refund', type: 'number', width: '10%'},
-                {field: 'txdeQtyBalance', displayName: 'Balance',enableCellEdit: false, type: 'number', width: '10%'},
-                {field: 'calculatedLineValue', displayName: 'Aomount', enableCellEdit: false, cellFilter: 'currency', width: '10%'},
-                {field: 'calculatedLineTax', displayName: 'Tax', enableCellEdit: false, width: '10%'},
-                {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'}
+                {field: 'txdeQtyTotalInvoiced', displayName: 'Qty Invoiced', enableCellEdit: false, type: 'number', width: '8%'},
+                {field: 'txdeQtyRefund', displayName: 'Qty Refund', type: 'number', width: '7%'},
+                {field: 'txdeQtyBalance', displayName: 'Balance',enableCellEdit: false, type: 'number', width: '7%'},
+                {field: 'calculatedLineValue', displayName: 'Aomount', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
+                {field: 'calculatedLineTax', displayName: 'Tax', enableCellEdit: false, width: '7%'},
+                {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '8%'}
             ]
         }
         $scope.txnDetailList.enableRowSelection = true;

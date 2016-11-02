@@ -127,6 +127,19 @@ public class CustomerRest {
     }
 
     /**
+     * get customer account payment by  customer Id.
+     * @param id id.
+     * @return Customer
+     */
+    @Secured
+    @GET
+    @Path("/getAccountPayment/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<CustomerAccountDebt> getCustomerAccountPaymentByCustomerId (@PathParam("id") long id) {
+        return customerService.getCustomerAccountPaymentPerCustomerId(id);
+    }
+
+    /**
      * Returns All Customer Account Debt.
      * @return list of Customer account debt for all customers.
      */

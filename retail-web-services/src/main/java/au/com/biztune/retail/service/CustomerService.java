@@ -56,4 +56,10 @@ public interface CustomerService {
      * @return List of CustomerAccountDebt
      */
     List<CustomerAccountDebt> getCustomerAccountDebtPerCustomerId(long customerId);
+    /**
+     * get Customer Account Payment list per customer Id.
+     * @param customerId customerId
+     * @return List of CustomerAccountDebt
+     */
+    List<CustomerAccountDebt> getCustomerAccountPaymentPerCustomerId(long customerId);
 }

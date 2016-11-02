@@ -39,17 +39,19 @@
                                                     </div >
                                             </div>
                                             <div class="row">
-                                                <div class="col-lg-12" ng-show="txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' && !isPageNew">
-                                                    <label>Convert to sale transaction</label>
+                                                <div class="col-lg-6" ng-show="txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' && !isPageNew">
+                                                    <label>Convert to Sale Order</label>
                                                     <div class="form-group">
                                                         <label class="checkbox-inline">
                                                             <input type="checkbox" data-ng-model="txnHeaderForm.convertedToTxnSale" ng-click="convertToSaleTxn()" >
-                                                            <div class="alert alert-success" ng-show="txnHeaderForm.convertedToTxnSale">
-                                                                Sale Transaction
-                                                            </div>
-                                                            <div class="alert alert-info" ng-show="!txnHeaderForm.convertedToTxnSale">
-                                                                Quote
-                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6" ng-show="txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' && !isPageNew">
+                                                    <label>Convert to Invoice</label>
+                                                    <div class="form-group">
+                                                        <label class="checkbox-inline">
+                                                            <input type="checkbox" data-ng-model="txnHeaderForm.convertedToInvoice" ng-click="convertToInvoice()" >
                                                         </label>
                                                     </div>
                                                 </div>

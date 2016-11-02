@@ -105,6 +105,13 @@ public class TransactionServiceImpl implements TransactionService {
                     final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_SALE);
                     txnHeader.setTxhdTxnType(txnType);
                 }
+                if (txnHeaderForm.isConvertedToInvoice()) {
+                    txnHeader.setTxhdOrigTxnNr(txnHeaderForm.getTxhdTxnNr());
+                    txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.TXN_NUMBER_PREFIX));
+                    txnHeaderForm.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
+                    final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_INVOICE);
+                    txnHeader.setTxhdTxnType(txnType);
+                }
             } else {
                 txnHeader.setTxhdTradingDate(currentDate);
                 txnHeader.setTxhdVoided(false);
@@ -233,7 +240,12 @@ public class TransactionServiceImpl implements TransactionService {
             if (txnHeader.getTxhdValueDue() > 0) {
                 txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_DRAFT);
             } else {
-                txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_FINAL);
+                //if it is type of invoice we need to void it cause there is a record in invoice table.
+                if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
+                    txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_VOID);
+                } else {
+                    txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_FINAL);
+                }
             }
             if (txnState != null) {
                 txnHeader.setTxhdState(txnState);
@@ -513,7 +525,6 @@ public class TransactionServiceImpl implements TransactionService {
                 response.setMessage("transaction object or its related objects are null");
                 return response;
             }
-            final boolean isNew = txnHeaderForm.getId() > 0 ? false : true;
             //first update sale order
             final TxnHeader saleOrder = saveSaleOrder(txnHeaderForm, securityContext);
             if (saleOrder == null) {

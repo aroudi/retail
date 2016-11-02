@@ -1037,3 +1037,9 @@ go
 
 
 -- up to this point applied on jomon on 30/10/16
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Create Invoice', 'createInvoice', 'Create Invoice');
+go
+
+INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'createInvoice' ));
+go
+

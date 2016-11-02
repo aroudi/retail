@@ -25,6 +25,7 @@ public class TxnHeaderForm {
     private ConfigCategory txhdTxnType;
     private ConfigCategory txhdState;
     private boolean convertedToTxnSale;
+    private boolean convertedToInvoice;
     private double txhdValueCredit;
     private String txhdDlvAddress;
     private ConfigCategory invoiceTxnType;
@@ -196,5 +197,13 @@ public class TxnHeaderForm {
 
     public void setParentId(long parentId) {
         this.parentId = parentId;
+    }
+
+    public boolean isConvertedToInvoice() {
+        return convertedToInvoice;
+    }
+
+    public void setConvertedToInvoice(boolean convertedToInvoice) {
+        this.convertedToInvoice = convertedToInvoice;
     }
 }

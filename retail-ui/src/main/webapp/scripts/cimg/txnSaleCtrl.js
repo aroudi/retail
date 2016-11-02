@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI) {
 
     $scope.isPageNew = baseDataService.getIsPageNew();
     /*
@@ -28,6 +28,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.txnHeaderForm = {};
             $scope.txnHeaderForm.txhdValueCredit = 0.00;
             $scope.txnHeaderForm.id = -1;
+            $scope.txnHeaderForm.convertedToInvoice = false;
+            $scope.txnHeaderForm.convertedToTxnSale = false;
         } else {
             $scope.txnHeaderForm = angular.copy(baseDataService.getRow());
             $scope.customer = $scope.txnHeaderForm.customer;
@@ -45,6 +47,12 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             baseDataService.getBaseData(TXN_TYPE_SALE).then(function(response){
                 if ($scope.txnType == 'txnSale') {
                     $scope.txnHeaderForm.txhdTxnType = response.data;
+                }
+            });
+            baseDataService.getBaseData(TXN_TYPE_INVOICE).then(function(response){
+                if ($scope.txnType == 'txnInvoice') {
+                    $scope.txnHeaderForm.txhdTxnType = response.data;
+                    $scope.isInvoiceMode = true;
                 }
             });
             //DEFUALT STATE IS DRAFT.
@@ -100,6 +108,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     }
                 },
                 {field: 'txdeQtyInvoiced', displayName: 'Invoice', type: 'number', width: '7%'},
+                {field: 'originalQuantity', visible: false, type: 'number'},
                 {field: 'txdeQtyBalance', displayName: 'Balance', type: 'number', width: '7%',
                     cellTooltip: function(row,col) {
                         return 'Qty Ordered:' + row.entity.txdeQuantitySold + '\n' +
@@ -204,13 +213,6 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 }
                 txnDetail['txdeQtyBalance'] = calculateBalance(txnDetail);//txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
             }
-            if ( event.targetScope.col.field == 'txdeQtyInvoiced' && (txnDetail.invoiced==false)) {
-                //txnDetail.txdeQtyInvoice = $scope.txdeQtyInvoicedBeforeEditting;
-                txnDetail['txdeQtyInvoiced'] = $scope.txdeQtyInvoicedBeforeEditting;
-                //txnDetail.txdeQtyBalance = txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
-                txnDetail['txdeQtyBalance'] = calculateBalance(txnDetail);//txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
-                return;
-            }
 
             //cellData = txnDetail[event.targetScope.col.field];
             //if it has not been invoiced before and total invoiced is undefined:
@@ -222,20 +224,33 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 baseDataService.displayMessage('info','Invalid Qty', 'Invoiced Quantity is higher than total Quantity !!!');
                 if (event.targetScope.col.field == 'txdeQuantitySold') {
                     //txnDetail.txdeQuantitySold = $scope.txdeQuantitySoldBeforeEditting;
-                    txnDetail[event.targetScope.col.field] = $scope.txdeQuantitySoldBeforeEditting;
+                    //txnDetail[event.targetScope.col.field] = $scope.txdeQuantitySoldBeforeEditting;
+                    txnDetail[event.targetScope.col.field] = txnDetail['originalQuantity'];
                 }
                 if (event.targetScope.col.field == 'txdeQtyInvoiced') {
                     //txnDetail.txdeQtyInvoice = $scope.txdeQtyInvoicedBeforeEditting;
-                    txnDetail[event.targetScope.col.field] = $scope.txdeQtyInvoicedBeforeEditting;
+                    txnDetail['txdeQtyInvoiced'] = 0;
                 }
-                return;
+                //return;
             }
+            newBalance = calculateBalance(txnDetail);
+            if (txnDetail['txdeQtyInvoiced'] > 0) {
+                txnDetail['invoiced'] = true;
+            } else {
+                txnDetail['invoiced'] = false;
+            }
+            checkIfItemsInvoiced();
             //check the mode.
             var quantity = 0;
             if ($scope.isInvoiceMode) {
                 quantity = txnDetail.txdeQtyInvoiced;
             } else {
                 quantity = txnDetail.txdeQuantitySold;
+            }
+            if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') {
+                quantity = txnDetail.txdeQuantitySold;
+                txnDetail.txdeQtyInvoiced =  quantity;
+                txnDetail.txdeQtyBalance =  0;
             }
             txnDetail['txdeQtyBalance'] = newBalance;
             txnDetail['txdeValueNet'] =  (txnDetail.txdeValueGross * txnDetail.txdeTax)*1 + txnDetail.txdeValueGross*1;
@@ -320,14 +335,20 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         if (checkIfProductHasBeenSelected(selectedProduct)) {
                             continue;
                         }
-                        console.log('continue not work');
                         var txnDetail = createTxnDetail();
                         txnDetail.product = selectedProduct;
                         txnDetail.unitOfMeasure = txnDetail.product.sellPrice.unitOfMeasure;
                         txnDetail.txdeQtyTotalInvoiced =  0;
                         txnDetail.txdeQuantitySold =  1;
-                        txnDetail.txdeQtyInvoiced =  0;
-                        txnDetail.txdeQtyBalance =  txnDetail.txdeQuantitySold;
+                        txnDetail.originalQuantity =  1;
+                        if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') {
+                            txnDetail.txdeQtyInvoiced =  1;
+                            txnDetail.txdeQtyBalance =  0;
+                            txnDetail.invoiced = true;
+                        } else {
+                            txnDetail.txdeQtyInvoiced =  0;
+                            txnDetail.txdeQtyBalance =  txnDetail.txdeQuantitySold;
+                        }
                         evaluatRowItem(txnDetail);
                         $scope.txnDetailList.data.push(txnDetail);
                         totalTransaction();
@@ -403,7 +424,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         } else {
             quantity = txnDetail.txdeQuantitySold;
         }
-
+        if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') {
+            quantity = txnDetail.txdeQuantitySold;
+        }
         txnDetail.txdePriceSold =  quantity * txnDetail.txdeValueNet;
         txnDetail.calculatedLineValue = txnDetail.txdeValueGross * quantity;
         txnDetail.calculatedLineTax = txnDetail.calculatedLineValue * txnDetail.txdeTax;
@@ -523,11 +546,19 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 if ($scope.isPageNew && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' ) {
                     baseDataService.displayMessage("info","Quote Number", "Quote saved with number: " + addResponse.info);
                 }
+                if ($scope.isPageNew && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE' ) {
+                    baseDataService.displayMessage("info","Invoice Number", "Invoice saved with number: " + addResponse.info);
+                    $state.go('dashboard.listInvoice');
+                }
                 if ($scope.isPageNew && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE' ) {
-                    baseDataService.displayMessage("info","Txn Number", "Sale transaction saved with number: " + addResponse.info);
+                    baseDataService.displayMessage("info","Txn Number", "Sale Order saved with number: " + addResponse.info);
                 }
                 if (!$scope.isPageNew && $scope.txnHeaderForm.convertedToTxnSale) {
-                    baseDataService.displayMessage("info","Txn Number", "Sale transaction saved with number: " + addResponse.info);
+                    baseDataService.displayMessage("info","Txn Number", "Sale Order saved with number: " + addResponse.info);
+                }
+                if (!$scope.isPageNew && $scope.txnHeaderForm.convertedToInvoice) {
+                    baseDataService.displayMessage("info","Invoice Number", "Invoice saved with number: " + addResponse.info);
+                    $state.go('dashboard.listInvoice');
                 }
                 $state.go('dashboard.listSaleTransaction');
             } else {
@@ -569,9 +600,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         $scope.txnHeaderForm.txhdValueTax = valueTax;
         $scope.txnHeaderForm.txhdValueDue = valueNett - $scope.calculateAmountPaid();
         //check if amount due is less than 5 cents, then add it to rounding
-        console.log('Math.abs($scope.txnHeaderForm.txhdValueDue) =' + Math.abs($scope.txnHeaderForm.txhdValueDue));
         if (Math.abs($scope.txnHeaderForm.txhdValueDue) <= 0.05 ) {
-            console.log('set rounding value');
             $scope.txnHeaderForm.txhdValRounding = $scope.txnHeaderForm.txhdValueDue;
             $scope.txnHeaderForm.txhdValueDue = 0.00;
         }
@@ -608,7 +637,6 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             return;
         }
         baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to void this item??').then(function(result){
-            console.log('result :', result);
             if (result) {
                 if (row == undefined || row.entity == undefined) {
                     alert('item is undefined');
@@ -624,7 +652,6 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
     $scope.voidTender = function(row) {
         baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to void this tender?').then(function(result){
-            console.log('result :', result);
             if (result) {
                 if (row == undefined || row.entity == undefined) {
                     alert('tender is undefined');
@@ -642,7 +669,6 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     /** delete Txn Detail **/
     $scope.removeItem = function(row) {
         baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this item?').then(function(result){
-            console.log('result :', result);
             if (result) {
                 if (row == undefined || row.entity == undefined) {
                     alert('item is undefined');
@@ -673,6 +699,30 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             baseDataService.getBaseData(TXN_STATE_DRAFT).then(function(response){
                 $scope.txnHeaderForm.txhdState = response.data;
             });
+        } else {
+            baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){
+                $scope.txnHeaderForm.txhdTxnType = response.data;
+            });
+        }
+        $scope.txnDetailGridApi.core.refresh();
+    }
+
+    $scope.convertToInvoice = function() {
+        //when converting to invoice, we need to change the state to draft.
+        if ($scope.txnHeaderForm.convertedToInvoice) {
+            baseDataService.getBaseData(TXN_TYPE_INVOICE).then(function(response){
+                $scope.txnHeaderForm.txhdTxnType = response.data;
+                $scope.isInvoiceMode = true;
+            });
+            if ($scope.txnDetailList.data != undefined) {
+                for (var i=0; i<$scope.txnDetailList.data.length; i++) {
+                    var txnDetail = $scope.txnDetailList.data[i];
+                    var quantity = txnDetail.txdeQuantitySold;
+                    txnDetail.txdeQtyInvoiced =  quantity;
+                    txnDetail.txdeQtyBalance =  0;
+                    txnDetail.invoiced = true;
+                }
+            }
         } else {
             baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){
                 $scope.txnHeaderForm.txhdTxnType = response.data;
@@ -808,15 +858,35 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
     }
 
+    function checkIfItemsInvoiced(){
+        var invoiceModeBeforeSelection = $scope.isInvoiceMode;
+        var itemsInvoiced = false;
+        for (var i=0; i<$scope.txnDetailList.data.length; i++) {
+            var txnDetail = $scope.txnDetailList.data[i];
+            if (txnDetail.txdeQtyInvoiced > 0) {
+                itemsInvoiced = true;
+                break;
+            }
+        }
+        if (itemsInvoiced) {
+            $scope.isInvoiceMode = true;
+        } else {
+            $scope.isInvoiceMode = false;
+        }
+        if (invoiceModeBeforeSelection != $scope.isInvoiceMode) {
+            changeToInvoiceMode();
+        }
+    }
+
     $scope.showSubmitButtom = function() {
-        return (!$scope.isTxnSaleAndFinal()) && !($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE');
+        return (!$scope.isTxnSaleAndFinal()) && !($scope.isInvoiceMode || isInvoiceViewMode() );
     }
 
     $scope.showAddPaymentButtom = function() {
-        return (!$scope.isInvoiceMode)&&($scope.isTxnSaleAndFinal()) && !($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE');
+        return (!$scope.isInvoiceMode)&&($scope.isTxnSaleAndFinal()) && !(isInvoiceViewMode());
     }
     $scope.showInvoiceButtom = function() {
-        return $scope.isInvoiceMode && !($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE');
+        return ($scope.isInvoiceMode) && (!isInvoiceViewMode());
     }
 
     function checkIfProductHasBeenSelected(product) {
@@ -831,7 +901,6 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
     function maxPaymentAllowed() {
         var maxPayment = (Math.round($scope.txnHeaderForm.txhdValueDue*Math.pow(10,1))/Math.pow(10,1)).toFixed(2);
-        console.log("max payment = " + maxPayment);
         return maxPayment;
     }
 
@@ -843,6 +912,14 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         if (txnDetail.txdeQtyTotalRefund == undefined) {
             txnDetail.txdeQtyTotalRefund = 0.00;
         }
+        if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') {
+            return 0;
+        }
         return txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 - txnDetail.txdeQtyTotalRefund*1 + txnDetail.txdeQtyInvoiced*1);
+    }
+
+    //check if we are in invoice viewing mode.
+    function isInvoiceViewMode() {
+        return ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') && (!$scope.isPageNew) && (!$scope.txnHeaderForm.convertedToInvoice)
     }
 });

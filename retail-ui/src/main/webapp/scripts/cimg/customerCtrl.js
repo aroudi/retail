@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConstants, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_DEBT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI ) {
+cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConstants, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_PAYMENT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI ) {
 
     initContactList();
     initCustomerDebtList();
@@ -18,10 +18,23 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
             enableRowSelection:false,
             columnDefs: [
                 {field: 'id', visible: false, enableCellEdit: false},
-                {field: 'cadStartDate', displayName:'Start Date',enableCellEdit:false, width:'15%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
-                {field: 'cadDueDate', displayName:'Due Date',enableCellEdit:false, width:'15%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
-                {field: 'txhdTxnNr', displayName: 'Invoice No.', width: '25%'},
-                {field: 'cadAmountDebt', displayName: 'Amount Owing', enableCellEdit: false, cellFilter: 'currency', width: '25%', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum}
+                {field:'cadPaid', displayName:'Paid', cellFilter:'booleanFilter',
+                    cellClass:
+                        function(grid, row, col, rowRenderIndex, colRenderIndex) {
+                            if (grid.getCellValue(row, col) === true) {
+                                return 'green';
+                            } else {
+                                return 'red'
+                            }
+                        },
+                    enableCellEdit:false, width:'5%'
+                },
+                {field: 'cadStartDate', displayName:'Start Date',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+                {field: 'cadDueDate', displayName:'Due Date',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+                {field: 'cadPaymentDate', displayName:'Paid Date',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+                {field: 'txhdTxnNr', displayName: 'Invoice No.', width: '20%'},
+                {field: 'cadAmountDebt', displayName: 'Debt Amount', enableCellEdit: false, cellFilter: 'currency', width: '20%', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+                {field: 'balance', displayName: 'Balance', enableCellEdit: false, cellFilter: 'currency', width: '17.5%', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum}
             ]
         }
         $scope.debtList.enableRowSelection = false;
@@ -368,7 +381,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
 
 
     function initCustomerRelatedData(customer) {
-        baseDataService.getBaseData(CUSTOMER_GET_ACCOUNT_DEBT_URI + customer.id).then(function(response){
+        baseDataService.getBaseData(CUSTOMER_GET_ACCOUNT_PAYMENT_URI + customer.id).then(function(response){
             $scope.debtList.data = response.data;
         });
 

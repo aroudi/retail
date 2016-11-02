@@ -174,6 +174,15 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
                 txnType:null
             }
         })
+        .state('dashboard.createInvoice',{
+            url:'/createInvoice',
+            controller: 'txnSaleCtrl',
+            templateUrl:'views/pages/txnSale.html',
+            access: "user",
+            params: {
+                txnType:null
+            }
+        })
         .state('dashboard.refundTxn',{
             url:'/refundTxn',
             controller: 'txnRefundCtrl',

@@ -49,4 +49,11 @@ public interface CustomerAccountDebtDao {
      */
     CustomerAccountDebt getCustomerAccountDebtPerCustomerIdAndTxhdId(long customerId, long txhdId);
 
+    /**
+     * get customer account payment per customer id.
+     * @param customerId customerId
+     * @return customer account debt
+     */
+    List<CustomerAccountDebt> getCustomerAccountPaymentPerCustomerId (long customerId);
+
 }

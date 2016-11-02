@@ -188,4 +188,17 @@ public class CustomerServiceImpl implements CustomerService {
             return null;
         }
     }
+    /**
+     * get Customer Account Payment list per customer Id.
+     * @param customerId customerId
+     * @return List of CustomerAccountDebt
+     */
+    public List<CustomerAccountDebt> getCustomerAccountPaymentPerCustomerId(long customerId) {
+        try {
+            return customerAccountDebtDao.getCustomerAccountPaymentPerCustomerId(customerId);
+        } catch (Exception e) {
+            logger.error("Error in getting customer account payment list: ", e);
+            return null;
+        }
+    }
 }
