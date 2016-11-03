@@ -125,6 +125,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
         $scope.txnDetailList.enableRowSelection = true;
         $scope.txnDetailList.multiSelect = true;
+        $scope.txnDetailList.enableSelectAll = false;
         //$scope.txnDetailList.noUnselect = true;
         //
         $scope.txnDetailList.onRegisterApi = function (gridApi) {

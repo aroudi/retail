@@ -19,7 +19,7 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
             {field:'invoiceTxnType.displayName', displayName:'Type',enableCellEdit:false, width:'10%'},
             {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
             {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'},
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Refund" tooltip-placement="bottom" class="fa fa-backward fa-2x" ng-click="grid.appScope.refundTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' }
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>&nbsp;<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Refund" tooltip-placement="bottom" class="fa fa-backward fa-2x" ng-show="grid.appScope.displayRefundOption(row)" ng-click="grid.appScope.refundTransaction(row)"></i></a>', width:'10%' }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -59,7 +59,11 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
             baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
-            $state.go('dashboard.createSaleTransaction');
+            if (row.entity.invoiceTxnType.categoryCode === 'TXN_TYPE_INVOICE') {
+                $state.go('dashboard.createSaleTransaction');
+            } else {
+                $state.go('dashboard.refundTxn');
+            }
         });
     }
     $scope.refundTransaction = function(row) {
@@ -119,6 +123,12 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
         });
     }
 
+    $scope.displayRefundOption = function(row) {
+        if (row.entity.invoiceTxnType.categoryCode === 'TXN_TYPE_INVOICE') {
+            return true;
+        }
+        return false;
+    }
 
 
 });

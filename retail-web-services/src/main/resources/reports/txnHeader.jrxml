@@ -22,56 +22,69 @@
 	<field name="txhdValueDue" class="java.lang.Double"/>
 	<field name="txnDetails" class="java.util.List"/>
 	<field name="txnMedias" class="java.util.List"/>
+	<field name="txhdDlvAddress" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
 		<band height="168" splitType="Stretch">
-
-
-				<textField>
-    				<reportElement x="154" y="23" width="262" height="46" uuid="371cdd93-3faa-44ab-bbc2-e305fb273faf"/>
-                    <textFieldExpression><![CDATA[($F{txhdTxnType}.getCategoryCode().equals("TXN_TYPE_QUOTE"))?"Quote":(($F{txhdTxnType}.getCategoryCode().equals("TXN_TYPE_SALE"))?"Sale Order":"Tax Invoice")]]></textFieldExpression>
-                </textField>
+			<textField>
+				<reportElement x="172" y="8" width="262" height="46" uuid="371cdd93-3faa-44ab-bbc2-e305fb273faf"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{txhdTxnType}.getCategoryCode().equals("TXN_TYPE_QUOTE"))?"Quote":(($F{txhdTxnType}.getCategoryCode().equals("TXN_TYPE_SALE"))?"Sale Order":(($F{txhdTxnType}.getCategoryCode().equals("TXN_TYPE_INVOICE"))?"Invoice":"Refund") )]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement x="13" y="118" width="59" height="20" uuid="10d9aa5a-6740-4f54-994d-6b454160b053"/>
+				<reportElement x="13" y="66" width="59" height="20" uuid="10d9aa5a-6740-4f54-994d-6b454160b053"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[No:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="352" y="118" width="92" height="20" uuid="cfde9512-91ad-4a73-bd17-4712de0fd222"/>
+				<reportElement x="352" y="66" width="92" height="20" uuid="cfde9512-91ad-4a73-bd17-4712de0fd222"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Date:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="13" y="98" width="59" height="20" uuid="5be207ba-922b-4096-90f0-bf00f38ba3cd"/>
+				<reportElement x="13" y="87" width="59" height="20" uuid="5be207ba-922b-4096-90f0-bf00f38ba3cd"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Client:]]></text>
 			</staticText>
-			<line>
-				<reportElement x="11" y="154" width="533" height="1" uuid="4a493c18-4501-41ad-8ef2-8ee6ad9c6bcc"/>
-			</line>
 			<image>
 				<reportElement x="7" y="8" width="165" height="46" uuid="98363b9b-8e6d-4825-bc7d-926feeb5d3a8"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "logo.png"]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="72" y="117" width="153" height="20" uuid="c3a535cb-2a2f-4ca4-af61-d72a4cec4893"/>
+				<reportElement x="72" y="66" width="153" height="20" uuid="c3a535cb-2a2f-4ca4-af61-d72a4cec4893"/>
 				<textFieldExpression><![CDATA[$F{txhdTxnNr}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="72" y="97" width="472" height="20" uuid="c6a17c75-702a-440d-922c-66d1ad3a5d95"/>
+				<reportElement x="72" y="87" width="472" height="20" uuid="c6a17c75-702a-440d-922c-66d1ad3a5d95"/>
 				<textFieldExpression><![CDATA[$F{customer}.getCompanyName()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="444" y="117" width="100" height="20" uuid="727a8bb3-0b39-443d-a56a-5fe2929bea8c"/>
+				<reportElement x="444" y="66" width="100" height="20" uuid="727a8bb3-0b39-443d-a56a-5fe2929bea8c"/>
 				<textFieldExpression><![CDATA[$F{txhdTradingDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="13" y="121" width="59" height="20" uuid="3cafcdc9-a325-400f-ae6e-76575c829c72"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Address:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="72" y="121" width="472" height="20" uuid="187fdfc8-3829-48ca-a64f-340c04e19846"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{txhdDlvAddress}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

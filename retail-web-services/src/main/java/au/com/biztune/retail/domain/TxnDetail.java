@@ -45,6 +45,7 @@ public class TxnDetail {
     private boolean selected;
     // for invoice detail, parentId store txdeId of sale transaction.
     private long parentId;
+    private double txidSurcharge;
 
 
 
@@ -422,5 +423,13 @@ public class TxnDetail {
 
     public void setParentId(long parentId) {
         this.parentId = parentId;
+    }
+
+    public double getTxidSurcharge() {
+        return txidSurcharge;
+    }
+
+    public void setTxidSurcharge(double txidSurcharge) {
+        this.txidSurcharge = txidSurcharge;
     }
 }

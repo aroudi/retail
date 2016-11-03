@@ -55,13 +55,14 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
                         return row.entity.product.prodSku
                     }
                 },
-                {field: 'product.prodName', displayName: 'Name', enableCellEdit: false, width: '20%',
+                {field: 'product.prodName', displayName: 'Name', enableCellEdit: false, width: '18%',
                     cellTooltip: function(row,col) {
                         return row.entity.product.prodName
                     }
                 },
                 {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false, width: '7%'},
                 {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency', width: '10%'},
+                {field: 'txidSurcharge', displayName: 'Surcharge', cellFilter: 'number', width: '7%'},
                 {field: 'txdeQtyTotalInvoiced', displayName: 'Qty Invoiced', enableCellEdit: false, type: 'number', width: '8%'},
                 {field: 'txdeQtyRefund', displayName: 'Qty Refund', type: 'number', width: '7%'},
                 {field: 'txdeQtyBalance', displayName: 'Balance',enableCellEdit: false, type: 'number', width: '7%'},
@@ -72,6 +73,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         }
         $scope.txnDetailList.enableRowSelection = true;
         $scope.txnDetailList.multiSelect = true;
+        $scope.txnDetailList.enableSelectAll = false;
 
         //init data
         $scope.txnDetailList.data = angular.copy($scope.txnHeaderForm.txnDetailFormList);
@@ -129,7 +131,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
             var quantity = (-1)*txnDetail.txdeQtyRefund;
             txnDetail['txdeQtyBalance'] = newBalance;
             //txnDetail['txdeValueNet'] =  (txnDetail.txdeValueGross * txnDetail.txdeTax)*1 + txnDetail.txdeValueGross*1;
-            txnDetail['txdePriceSold'] = quantity * txnDetail.txdeValueNet;
+            txnDetail['txdePriceSold'] = quantity * (txnDetail.txdeValueNet - calculateItemSurcharge(txnDetail));
             txnDetail['calculatedLineValue'] = txnDetail.txdeValueGross * quantity;
             txnDetail['calculatedLineTax'] = txnDetail.calculatedLineValue * txnDetail.txdeTax;
             totalTransaction();
@@ -184,8 +186,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
             txnDetail.txdeQtyBalance = txnDetail.txdeQtyTotalInvoiced*1 - txnDetail.txdeQtyTotalRefund*1;
             quantity = txnDetail.txdeQtyTotalInvoiced*1;
         }
-
-        txnDetail.txdePriceSold =  quantity * txnDetail.txdeValueNet;
+        txnDetail.txdePriceSold =  quantity * (txnDetail.txdeValueNet - calculateItemSurcharge(txnDetail)*1);
         txnDetail.calculatedLineValue = txnDetail.txdeValueGross * quantity;
         txnDetail.calculatedLineTax = txnDetail.calculatedLineValue * txnDetail.txdeTax;
 
@@ -481,5 +482,22 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
             evaluatRowItem($scope.txnDetailList.data[i]);
         }
         totalTransaction();
+    }
+
+    function calculateItemSurcharge(txnDetail) {
+        if (txnDetail == undefined) {
+            return 0.00;
+        }
+        if (txnDetail.txidSurcharge == undefined) {
+            return 0.00;
+        }
+        if ($scope.refundMode) {
+            return (txnDetail.txidSurcharge * txnDetail.txdeValueGross)/100;
+        }
+        return 0.00;
+    }
+
+    $scope.enableRefundButton = function() {
+        return $scope.refundMode && ($scope.txnHeaderForm.invoiceTxnType.categoryCode === 'TXN_TYPE_INVOICE');
     }
 });

@@ -43,6 +43,7 @@
         <result column="TXIV_RECEIPT_ID" property="txhdReceiptId" />
         <result column="TXIV_REFUND_EXPIRY" property="txhdRefundExpiry" />
         <result column="TXIV_COLLECT_DATE" property="txhdCollectDate" />
+        <result column="TXIV_DLV_ADDRESS" property="txhdDlvAddress" />
         <!--association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" /-->
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="invoiceTxnType" column="TXIV_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -71,9 +72,10 @@
         <result column="TXDE_DETAIL_LEVEL" property="txdeDetailLevel" />
         <result column="TXDE_ID" property="txdeParentDetail" />
         <result column="TXDE_DISC_PRICE" property="txdeDiscPrice" />
+        <result column="TXID_SURCHARGE" property="txidSurcharge" />
         <association property="product" column="TXDE_PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductSaleItemPerProdId" />
         <association property="unitOfMeasure" column="TXDE_UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
-        <association property="txdeDetailType" column="TXDE_DETAIL_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="txdeDetailType" column="TXID_LINE_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
     <resultMap id="invoiceMediaMap" type="TxnMedia" >
@@ -106,7 +108,8 @@
         ${alias}.CUSTOMER_ID,
         ${alias}.TXIV_REFUND_EXPIRY,
         ${alias}.TXIV_COLLECT_DATE,
-        ${alias}.TXIV_TXN_TYPE
+        ${alias}.TXIV_TXN_TYPE,
+        ${alias}.TXIV_DLV_ADDRESS
     </sql>
 
     <sql id="invoiceDetailColumns">
@@ -115,7 +118,9 @@
         ${alias}.TXDE_ID as PARENT_ID,
         ${alias}.TXID_QTY_INVOICED,
         ${alias}.TXID_QTY_REFUND,
-        ${alias}.TXID_PRICE_SOLD
+        ${alias}.TXID_SURCHARGE,
+        ${alias}.TXID_PRICE_SOLD,
+        ${alias}.TXID_LINE_TYPE
     </sql>
 
     <sql id="invoiceMediaColumns">
@@ -145,7 +150,8 @@
         CUSTOMER_ID,
         TXIV_REFUND_EXPIRY,
         TXIV_COLLECT_DATE,
-        TXIV_TXN_TYPE
+        TXIV_TXN_TYPE,
+        TXIV_DLV_ADDRESS
         ) VALUES (
         #{parentId},
         #{orgUnit.id},
@@ -242,6 +248,12 @@
         <if test="invoiceTxnType == null">
             ,null
         </if>
+        <if test="txhdDlvAddress != null">
+            ,#{txhdDlvAddress}
+        </if>
+        <if test="txhdDlvAddress == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -254,8 +266,8 @@
         TXID_QTY_INVOICED,
         TXID_QTY_REFUND,
         TXID_PRICE_SOLD,
-        TXID_LINE_TYPE
-
+        TXID_LINE_TYPE,
+        TXID_SURCHARGE
         ) VALUES (
         #{txhdId},
         #{txdeParentDetail},
@@ -281,10 +293,16 @@
         <if test="txdePriceSold == null">
             ,null
         </if>
-        <if test="invoiceDetailType != null">
-            ,#{invoiceDetailType.id}
+        <if test="txdeDetailType != null">
+            ,#{txdeDetailType.id}
         </if>
-        <if test="invoiceDetailType == null">
+        <if test="txdeDetailType == null">
+            ,null
+        </if>
+        <if test="txidSurcharge != null">
+            ,#{txidSurcharge}
+        </if>
+        <if test="txidSurcharge == null">
             ,null
         </if>
         )

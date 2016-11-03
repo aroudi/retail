@@ -433,7 +433,7 @@ public class TransactionServiceImpl implements TransactionService {
         txnHeaderForm.setCustomer(txnHeader.getCustomer());
         txnHeaderForm.setTxhdDlvAddress(txnHeader.getTxhdDlvAddress());
         txnHeaderForm.setParentId(txnHeader.getParentId());
-
+        txnHeaderForm.setInvoiceTxnType(txnHeader.getInvoiceTxnType());
         if (txnHeader.getTxnDetails() != null) {
             TxnDetailForm txnDetailForm;
             final List<TxnDetailForm> txnDetailFormList = new ArrayList<TxnDetailForm>();
@@ -469,6 +469,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetailForm.setTxdeDetailType(txnDetail.getTxdeDetailType());
                 txnDetailForm.setCalculatedLineValue(txnDetailForm.getTxdeQuantitySold() * txnDetailForm.getTxdeValueGross());
                 txnDetailForm.setCalculatedLineTax(txnDetailForm.getTxdeTax() * txnDetailForm.getCalculatedLineValue());
+                txnDetailForm.setTxidSurcharge(txnDetail.getTxidSurcharge());
                 txnDetailFormList.add(txnDetailForm);
             }
             txnHeaderForm.setTxnDetailFormList(txnDetailFormList);
@@ -547,6 +548,7 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setCustomer(txnHeaderForm.getCustomer());
             txnHeader.setTxhdOrigTxnNr(txnHeaderForm.getTxhdTxnNr());
             txnHeader.setParentId(txnHeaderForm.getId());
+            txnHeader.setTxhdDlvAddress(txnHeaderForm.getTxhdDlvAddress());
             final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_INVOICE);
             if (txnType != null) {
                 txnHeader.setInvoiceTxnType(txnType);
@@ -576,6 +578,7 @@ public class TransactionServiceImpl implements TransactionService {
 
             TxnDetail txnDetail = null;
             TxnDetail txnDetailMain = null;
+            final ConfigCategory txnLineType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_LINE_TYPE, IdBConstant.TXN_LINE_TYPE_SALE);
             for (TxnDetailForm txnDetailForm: txnHeaderForm.getTxnDetailFormList()) {
                 if (txnDetailForm == null) {
                     continue;
@@ -605,6 +608,10 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeLineRefund(txnDetailForm.isTxdeLineRefund());
                 txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
                 txnDetail.setTxdeParentDetail(txnDetailForm.getId());
+                txnDetail.setTxidSurcharge(txnDetailForm.getTxidSurcharge());
+                if (txnLineType != null) {
+                    txnDetail.setTxdeDetailType(txnLineType);
+                }
                 invoiceDao.insertInvoiceDetail(txnDetail);
                 //update balance on Sale Order
                 txnDetailMain = new TxnDetail();
@@ -772,6 +779,7 @@ public class TransactionServiceImpl implements TransactionService {
             final ConfigCategory txnItemType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_LINE_TYPE, IdBConstant.TXN_LINE_TYPE_REFUND);
 
             TxnDetail txnDetail = null;
+            final ConfigCategory txnLineType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_LINE_TYPE, IdBConstant.TXN_LINE_TYPE_REFUND);
             for (TxnDetailForm txnDetailForm: txnHeaderForm.getTxnDetailFormList()) {
                 if (txnDetailForm == null) {
                     continue;
@@ -802,6 +810,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeQtyRefund(txnDetailForm.getTxdeQtyRefund());
                 txnDetail.setTxdePriceSold(txnDetailForm.getTxdePriceSold());
                 txnDetail.setTxdeLineRefund(true);
+                txnDetail.setTxidSurcharge(txnDetailForm.getTxidSurcharge());
                 //txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
                 if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
                     txnDetail.setTxdeParentDetail(txnDetailForm.getParentId());
@@ -810,6 +819,9 @@ public class TransactionServiceImpl implements TransactionService {
                 }
                 if (txnItemType != null) {
                     txnDetail.setTxdeDetailType(txnItemType);
+                }
+                if (txnLineType != null) {
+                    txnDetail.setTxdeDetailType(txnLineType);
                 }
                 invoiceDao.insertInvoiceDetail(txnDetail);
                 txnHeader.addTxnDetail(txnDetail);

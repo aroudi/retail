@@ -1043,3 +1043,11 @@ go
 INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'createInvoice' ));
 go
 
+alter table INVOICE_DETAIL
+  add  TXID_SURCHARGE DECIMAL(31,6) DEFAULT 0.00
+go
+
+alter table INVOICE
+  add  TXIV_DLV_ADDRESS varchar(2000)
+go
+

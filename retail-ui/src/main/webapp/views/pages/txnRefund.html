@@ -44,7 +44,7 @@
                                         <div class="panel-heading">
                                             Products
                                             <button type="button" class="btn btn-primary" ng-click="toggleAllRowSelection()" ng-show="allItemsSelected">Unselect Items</button>
-                                            <button type="button" class="btn btn-primary" ng-click="toggleAllRowSelection()" ng-show="!allItemsSelected">Select Items</button>
+                                            <button type="button" class="btn btn-primary" ng-click="toggleAllRowSelection()" ng-show="!allItemsSelected">Refund All Items</button>
                                         </div>
                                         <div class="panel-body">
                                             <div class="row">
@@ -149,7 +149,7 @@
                             <div class="row">
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                 <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                                <button type="button" class="btn btn-success" ng-click="createTransactionRefund()" ng-disabled="!refundMode">Refund</button>
+                                <button type="button" class="btn btn-success" ng-click="createTransactionRefund()" ng-disabled="!enableRefundButton()">Refund</button>
                             </div>
                         </form>
                     </div>

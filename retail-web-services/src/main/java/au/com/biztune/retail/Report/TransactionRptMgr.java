@@ -76,15 +76,11 @@ public class TransactionRptMgr {
         try {
             final List<TxnHeader> txnHeaders = new ArrayList<TxnHeader>();
             final TxnHeader txnHeader = invoiceDao.getInvoiceHeaderPerInvoiceId(inoiceId);
-            //set txn_type to invoice
-            final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_INVOICE);
-            if (txnType != null) {
-                txnHeader.setTxhdTxnType(txnType);
-            }
+            txnHeader.setTxhdTxnType(txnHeader.getInvoiceTxnType());
             //set txn_state to invoice
             final ConfigCategory txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_FINAL);
             if (txnState != null) {
-                txnHeader.setTxhdState(txnType);
+                txnHeader.setTxhdState(txnState);
             }
             txnHeaders.add(txnHeader);
             return createTransactionPdfStream(txnHeaders);
