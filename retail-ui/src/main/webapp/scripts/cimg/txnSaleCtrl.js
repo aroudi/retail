@@ -342,7 +342,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                             var product = response.data;
                             if (response.data === null || response.data === undefined ) {
                                 baseDataService.displayMessage('info','Warning!','product not found!!!');
-                                return;
+                                //continue;
                             }
                             var txnDetail = createTxnDetail();
                             txnDetail.product = product;

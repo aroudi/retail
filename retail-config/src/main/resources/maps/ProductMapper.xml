@@ -145,7 +145,6 @@
         <result column="PROD_URL_THUMB" property="prodUrlThumb" />
         <result column="PROD_CLASS" property="prodClass" />
         <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
-        <association resultMap="prodOrguLinkDetailMap" property="prodOrguLink" />
     </resultMap>
 
     <sql id="productColumns">
@@ -290,12 +289,9 @@
 
     <select id="getAllProductSaleItemsPerOrgUnitId" resultMap="productSaleItemLiteMap" >
         SELECT
-        <include refid="productColumns"><property name="alias" value="prod"/></include>,
-        <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>
+        <include refid="productColumns"><property name="alias" value="prod"/></include>
         FROM
         PRODUCT prod
-        INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
-        WHERE prou.orgu_id = #{value}
     </select>
 
     <select id="getProductSaleItemPerOrgUnitIdAndSku" resultMap="productSaleItemMap" >

@@ -87,7 +87,7 @@ var service_uri = {
     'PAYMENT_MEDIA_OF_TYPE_URI' : 'paymentMedia/getOfMediatype/',
     'PRODUCT_SALE_ITEM_ALL_URI' : 'product/allProductSaleItem',
     'PRODUCT_SALE_ITEM_GET_BY_SKU_URI' : 'product/saleItem/getBySku/',
-    'PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI' :'saleItem/getByProdId/',
+    'PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI' :'product/saleItem/getByProdId/',
     'TXN_ALL_URI' : 'transaction/all',
     'TXN_ADD_URI' : 'transaction/add',
     'TXN_ADD_ACC_PAYMENT' : 'transaction/txnAccPayment/add',
