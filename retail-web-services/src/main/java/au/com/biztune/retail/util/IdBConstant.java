@@ -48,6 +48,11 @@ public interface IdBConstant {
      */
     String SUPPLIER_STATUS_IMPORTED = "IMPORTED";
 
+    /**
+     * PRODUCT STATE.
+     */
+    String TYPE_PRODUCT_TYPE = "PRODUCT_TYPE";
+
 
     /**
      * TRANSACTION STATE.

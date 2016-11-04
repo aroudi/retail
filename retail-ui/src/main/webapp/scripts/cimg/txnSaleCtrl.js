@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI) {
 
     $scope.isPageNew = baseDataService.getIsPageNew();
     /*
@@ -336,23 +336,32 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         if (checkIfProductHasBeenSelected(selectedProduct)) {
                             continue;
                         }
-                        var txnDetail = createTxnDetail();
-                        txnDetail.product = selectedProduct;
-                        txnDetail.unitOfMeasure = txnDetail.product.sellPrice.unitOfMeasure;
-                        txnDetail.txdeQtyTotalInvoiced =  0;
-                        txnDetail.txdeQuantitySold =  1;
-                        txnDetail.originalQuantity =  1;
-                        if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') {
-                            txnDetail.txdeQtyInvoiced =  1;
-                            txnDetail.txdeQtyBalance =  0;
-                            txnDetail.invoiced = true;
-                        } else {
-                            txnDetail.txdeQtyInvoiced =  0;
-                            txnDetail.txdeQtyBalance =  txnDetail.txdeQuantitySold;
-                        }
-                        evaluatRowItem(txnDetail);
-                        $scope.txnDetailList.data.push(txnDetail);
-                        totalTransaction();
+                        //get product detail from server
+                        var searchUri = PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI + selectedProduct.id;
+                        baseDataService.getBaseData(searchUri).then(function(response){
+                            var product = response.data;
+                            if (response.data === null || response.data === undefined ) {
+                                baseDataService.displayMessage('info','Warning!','product not found!!!');
+                                return;
+                            }
+                            var txnDetail = createTxnDetail();
+                            txnDetail.product = product;
+                            txnDetail.unitOfMeasure = txnDetail.product.sellPrice.unitOfMeasure;
+                            txnDetail.txdeQtyTotalInvoiced =  0;
+                            txnDetail.txdeQuantitySold =  1;
+                            txnDetail.originalQuantity =  1;
+                            if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') {
+                                txnDetail.txdeQtyInvoiced =  1;
+                                txnDetail.txdeQtyBalance =  0;
+                                txnDetail.invoiced = true;
+                            } else {
+                                txnDetail.txdeQtyInvoiced =  0;
+                                txnDetail.txdeQtyBalance =  txnDetail.txdeQuantitySold;
+                            }
+                            evaluatRowItem(txnDetail);
+                            $scope.txnDetailList.data.push(txnDetail);
+                            totalTransaction();
+                        });
                     }
                 }
             }, function(reason) {

@@ -1051,3 +1051,7 @@ alter table INVOICE
   add  TXIV_DLV_ADDRESS varchar(2000)
 go
 
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Import Product', 'importProduct', 'import product');
+go
+INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'importProduct' ));
+go

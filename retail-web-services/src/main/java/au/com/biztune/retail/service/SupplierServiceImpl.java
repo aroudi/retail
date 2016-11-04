@@ -1,5 +1,6 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.dao.ConfigCategoryDao;
 import au.com.biztune.retail.dao.ContactDao;
 import au.com.biztune.retail.dao.SuppProdPriceDao;
 import au.com.biztune.retail.dao.SupplierDao;
@@ -37,6 +38,8 @@ public class SupplierServiceImpl implements SupplierService {
     @Autowired
     private SuppProdPriceDao suppProdPriceDao;
 
+    @Autowired
+    private ConfigCategoryDao configCategoryDao;
     /**
      * return all Suppliers.
      * @return list of Supplier
@@ -164,5 +167,63 @@ public class SupplierServiceImpl implements SupplierService {
         }
     }
 
+    /**
+     * import supplier.
+     * @param supplierCode supplierCode
+     * @param supplierName supplierName
+     * @param leadTime leadTime
+     * @param stockCover stockCover
+     * @param minOrderValue minOrderValue
+     * @param creditLimit creditLimit
+     * @param maxAdvOrder maxAdvOrder
+     * @param solOrderingCode solOrderingCode
+     * @param solMinPoQty solMinPoQty
+     * @param solAccCode solAccCode
+     * @return Supplier.
+     */
+    public Supplier addSupplier(String supplierCode
+            , String supplierName
+            , int leadTime
+            , int stockCover
+            , double minOrderValue
+            , double creditLimit
+            , int maxAdvOrder
+            , String solOrderingCode
+            , double solMinPoQty
+            , String solAccCode
+    )
+    {
+        try {
+            final Timestamp currentTime = new Timestamp(new Date().getTime());
+            Supplier supplier = supplierDao.getSupplierByOrgUnitIdAndSuppName(sessionState.getOrgUnit().getId(), supplierName);
+            if (supplier == null) {
+                supplier = new Supplier();
+                supplier.setSupplierName(supplierName);
+                supplier.setSupplierCode(supplierCode);
+                supplier.setCreateDate(currentTime);
+                supplier.setLeadTime(leadTime);
+                supplier.setStockCover(stockCover);
+                supplier.setMinOrderValue(minOrderValue);
+                supplier.setCreditLimit(creditLimit);
+                supplier.setMaxAdvOrder(maxAdvOrder);
+                supplierDao.insertSupplier(supplier);
+
+                final ConfigCategory supplierStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.CONFIG_SUPLIER_STATUS, IdBConstant.SUPPLIER_STATUS_IMPORTED);
+                final SuppOrguLink suppOrguLink = new SuppOrguLink();
+                suppOrguLink.setOrguId(sessionState.getOrgUnit().getId());
+                suppOrguLink.setSuppId(supplier.getId());
+                suppOrguLink.setStatus(supplierStatus);
+                suppOrguLink.setSolOrderingCode(solOrderingCode);
+                suppOrguLink.setSolMinPoQty(solMinPoQty);
+                suppOrguLink.setSolAccCode(solAccCode);
+                supplierDao.insertSuppOrguLink(suppOrguLink);
+                supplier.setSuppOrguLink(suppOrguLink);
+            }
+            return supplier;
+        } catch (Exception e) {
+            logger.error("Error in importing supplier", e);
+            return null;
+        }
+    }
 
 }

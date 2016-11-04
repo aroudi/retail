@@ -70,6 +70,28 @@
         <association resultMap="prodOrguLinkListMap" property="prodOrguLink" />
     </resultMap>
 
+    <resultMap id="productListLiteMap" type="Product" >
+        <id column="PROD_ID" property="id" />
+        <result column="PROD_SKU" property="prodSku" />
+        <result column="REFERENCE" property="reference" />
+        <result column="ORGU_ID_OWNING" property="orguIdOwning" />
+        <result column="PROD_NAME" property="prodName" />
+        <result column="PROD_DESC" property="prodDesc" />
+        <result column="PROD_OWN_BRAND" property="prodOwnBrand" />
+        <result column="PROD_URL" property="prodUrl" />
+        <result column="PROD_CREATED" property="prodCreated" />
+        <result column="PROD_MODIFIED" property="prodModified" />
+        <result column="PROD_RECEIPT_DESC" property="prodReceiptDesc" />
+        <result column="PROD_WARRANTY_TERM" property="prodWarrantyTerm" />
+        <result column="PROD_BRAND" property="prodBrand" />
+        <result column="PROD_IMAGE_DESC" property="prodImageDesc" />
+        <result column="PROD_URL_THUMB" property="prodUrlThumb" />
+        <result column="PROD_CLASS" property="prodClass" />
+        <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
+        <result column="PROD_LOCATION" property="prodLocation" />
+        <association resultMap="prodOrguLinkListMap" property="prodOrguLink" />
+    </resultMap>
+
     <resultMap id="prodOrguLinkListMap" type="ProdOrguLink" >
         <id column="PROU_ID" property="id" />
         <result column="PROD_ID" property="prodId" />
@@ -103,6 +125,27 @@
         <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
         <association resultMap="prodOrguLinkDetailMap" property="prodOrguLink" />
         <association property="sellPrice" column="PROD_ID" select="au.com.biztune.retail.dao.PriceDao.getProductSellPricePerProdId" />
+    </resultMap>
+
+    <resultMap id="productSaleItemLiteMap" type="ProductSaleItem" >
+        <id column="PROD_ID" property="id" />
+        <result column="PROD_SKU" property="prodSku" />
+        <result column="REFERENCE" property="reference" />
+        <result column="ORGU_ID_OWNING" property="orguIdOwning" />
+        <result column="PROD_NAME" property="prodName" />
+        <result column="PROD_DESC" property="prodDesc" />
+        <result column="PROD_OWN_BRAND" property="prodOwnBrand" />
+        <result column="PROD_URL" property="prodUrl" />
+        <result column="PROD_CREATED" property="prodCreated" />
+        <result column="PROD_MODIFIED" property="prodModified" />
+        <result column="PROD_RECEIPT_DESC" property="prodReceiptDesc" />
+        <result column="PROD_WARRANTY_TERM" property="prodWarrantyTerm" />
+        <result column="PROD_BRAND" property="prodBrand" />
+        <result column="PROD_IMAGE_DESC" property="prodImageDesc" />
+        <result column="PROD_URL_THUMB" property="prodUrlThumb" />
+        <result column="PROD_CLASS" property="prodClass" />
+        <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
+        <association resultMap="prodOrguLinkDetailMap" property="prodOrguLink" />
     </resultMap>
 
     <sql id="productColumns">
@@ -139,7 +182,7 @@
     </sql>
 
 
-    <select id="getAllProductsPerOrgUnitId" resultMap="productListMap" >
+    <!--select id="getAllProductsPerOrgUnitId" resultMap="productListMap" >
         SELECT
             <include refid="productColumns"><property name="alias" value="prod"/></include>,
             <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>,
@@ -149,6 +192,16 @@
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
         LEFT OUTER JOIN
           CONFIG_CATEGORY prodStatus on (prou.CAT_ID_STATUS = prodStatus.CATEGORY_ID)
+        WHERE prou.orgu_id = #{value}
+    </select -->
+
+    <select id="getAllProductsPerOrgUnitId" resultMap="productListLiteMap" >
+        SELECT
+        <include refid="productColumns"><property name="alias" value="prod"/></include>,
+        <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>
+        FROM
+        PRODUCT prod
+        INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
         WHERE prou.orgu_id = #{value}
     </select>
 
@@ -201,7 +254,7 @@
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
         LEFT OUTER JOIN
         CONFIG_CATEGORY prodStatus on (prou.CAT_ID_STATUS = prodStatus.CATEGORY_ID)
-        WHERE prod.SKU = #{value}
+        WHERE prod.PROD_SKU = #{value}
     </select>
 
     <select id="getProductSaleItemPerSku" resultMap="productSaleItemMap" >
@@ -235,7 +288,7 @@
     </select>
 
 
-    <select id="getAllProductSaleItemsPerOrgUnitId" resultMap="productSaleItemMap" >
+    <select id="getAllProductSaleItemsPerOrgUnitId" resultMap="productSaleItemLiteMap" >
         SELECT
         <include refid="productColumns"><property name="alias" value="prod"/></include>,
         <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>

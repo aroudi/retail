@@ -43,8 +43,8 @@ public class StringUtil {
         try {
             return Integer.valueOf(str.trim());
         } catch (Exception e) {
-            COMMON_LOGGER.error("Can't convert string to int :", e);
-            return -1;
+            //COMMON_LOGGER.error("Can't convert string to int :", e);
+            return 0;
         }
     }
 
@@ -57,7 +57,7 @@ public class StringUtil {
         try {
             return String.valueOf(input);
         } catch (Exception e) {
-            COMMON_LOGGER.error("Can't convert int to str :", e);
+            //COMMON_LOGGER.error("Can't convert int to str :", e);
             return "";
         }
     }
@@ -71,8 +71,8 @@ public class StringUtil {
         try {
             return Double.valueOf(str.trim());
         } catch (Exception e) {
-            COMMON_LOGGER.error("Can't convert string to int :", e);
-            return -1;
+            //COMMON_LOGGER.error("Can't convert string to int :", e);
+            return 0;
         }
     }
 
@@ -93,7 +93,7 @@ public class StringUtil {
             final String[] result = sourceStr.split(splitter);
             return result;
         } catch (Exception e) {
-            COMMON_LOGGER.error("Error in splittring String :", e);
+            //COMMON_LOGGER.error("Error in splittring String :", e);
             return null;
         }
     }
@@ -132,7 +132,7 @@ public class StringUtil {
         try {
             return String.valueOf(input);
         } catch (Exception e) {
-            COMMON_LOGGER.error("Can't convert int to str :", e);
+            //COMMON_LOGGER.error("Can't convert int to str :", e);
             return "";
         }
     }

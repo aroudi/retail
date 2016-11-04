@@ -1,6 +1,7 @@
 package au.com.biztune.retail.dao;
 
 import au.com.biztune.retail.domain.ConfigCategory;
+import au.com.biztune.retail.domain.ConfigType;
 
 import java.util.List;
 
@@ -30,4 +31,16 @@ public interface ConfigCategoryDao {
      */
     ConfigCategory getCategoryById(long categoryId);
 
+    /**
+     * insert configCategory.
+     * @param configCategory configCategory
+     */
+    void insertConfigCategory(ConfigCategory configCategory);
+
+    /**
+     * get config type by code.
+     * @param typeCode typeCode
+     * @return ConfigType
+     */
+    ConfigType getConfigTypeByCode(String typeCode);
 }

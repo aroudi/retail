@@ -6,7 +6,9 @@ import au.com.biztune.retail.domain.ProductSaleItem;
 import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
+import au.com.biztune.retail.service.ProductImportServiceImpl;
 import au.com.biztune.retail.service.ProductService;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -36,6 +39,8 @@ public class ProductRest {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private ProductImportServiceImpl productImportService;
     /**
      * Get All Unit Of Measures as JSON.
      * @return List of categories
@@ -88,6 +93,19 @@ public class ProductRest {
     }
 
     /**
+     * get product sale item by Id.
+     * @param prodId prodId.
+     * @return ProductSaleItem
+     */
+    @Secured
+    @GET
+    @Path("/saleItem/getByProdId/{prodId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ProductSaleItem getProductByProdId (@PathParam("prodId") long prodId) {
+        return productService.getProductSaleItemPerProdId(prodId);
+    }
+
+    /**
      * Get All Product Item Sales.
      * @return List ProductSaleItem
      */
@@ -99,4 +117,21 @@ public class ProductRest {
         return productService.getAllProductsAsSaleItem();
     }
 
+    /**
+     * upload product from csv.
+     * @param uploadedInputStream uploadedInputStream
+     * @return Response
+     */
+    @Secured
+    @POST
+    @Path("/uploadCsv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public CommonResponse uploadPorductsFromCsv(@FormDataParam("file")InputStream uploadedInputStream) {
+        try {
+            return productImportService.importProductsFromCsvInputStream(uploadedInputStream);
+        } catch (Exception e) {
+            logger.error("Exception in importing products from csv.", e);
+            return null;
+        }
+    }
 }

@@ -2,6 +2,8 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.Product;
 import au.com.biztune.retail.domain.ProductSaleItem;
+import au.com.biztune.retail.domain.Supplier;
+import au.com.biztune.retail.domain.UnitOfMeasure;
 import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.response.CommonResponse;
 
@@ -62,4 +64,42 @@ public interface ProductService {
      * @return ProductSaleItem
      */
     ProductSaleItem getProductSaleItemPerOrguIdAndSku(String sku);
+    /**
+     * import product.
+     * @param prodSku prodSku
+     * @param prodName prodName
+     * @param prodDesc prodDesc
+     * @param reference reference
+     * @param taxName taxName
+     * @param prodBrand prodBrand
+     * @param prodClass prodClass
+     * @param prodType prodType
+     * @param supplier supplier
+     * @param catalogueNo catalogueNo
+     * @param unitOfMeasure unitOfMeasure
+     * @param cost cost
+     * @param price price
+     * @param bulkPrice bulkPrice
+     * @return Product
+     */
+    Product addProduct(String prodSku
+            , String prodName
+            , String prodDesc
+            , String reference
+            , String taxName
+            , String prodBrand
+            , String prodClass
+            , String prodType
+            , Supplier supplier
+            , String catalogueNo
+            , UnitOfMeasure unitOfMeasure
+            , double cost
+            , double price
+            , double bulkPrice);
+    /**
+     * get product object per sku.
+     * @param prodId prodId
+     * @return Product
+     */
+    ProductSaleItem getProductSaleItemPerProdId(long prodId);
 }

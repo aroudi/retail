@@ -44,4 +44,29 @@ public interface SupplierService {
      */
     List<SuppProdPrice> getSupplierProducts(long supplierId);
 
+    /**
+     * import supplier.
+     * @param supplierCode supplierCode
+     * @param supplierName supplierName
+     * @param leadTime leadTime
+     * @param stockCover stockCover
+     * @param minOrderValue minOrderValue
+     * @param creditLimit creditLimit
+     * @param maxAdvOrder maxAdvOrder
+     * @param solOrderingCode solOrderingCode
+     * @param solMinPoQty solMinPoQty
+     * @param solAccCode solAccCode
+     * @return Supplier.
+     */
+    Supplier addSupplier(String supplierCode
+            , String supplierName
+            , int leadTime
+            , int stockCover
+            , double minOrderValue
+            , double creditLimit
+            , int maxAdvOrder
+            , String solOrderingCode
+            , double solMinPoQty
+            , String solAccCode
+    );
 }

@@ -123,6 +123,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/productList.html',
             access: "user"
         })
+        .state('dashboard.importProduct',{
+            url:'/importProduct',
+            controller: 'uploadProductCtrl',
+            templateUrl:'views/pages/uploadProduct.html',
+            access: "user"
+        })
         .state('dashboard.uploadFile',{
             url:'/uploadFile',
             controller: 'UploadController',

@@ -14,6 +14,57 @@
         <result column="CATEGORY_ORDER" property="categoryOrder" />
     </resultMap>
 
+    <resultMap id="configTypeMap" type="ConfigType" >
+        <id column="CONFIG_TYPE_ID" property="id" />
+        <result column="CONFIG_CODE" property="configCode" />
+        <result column="DISPLAY_NAME" property="displayName" />
+        <result column="DESCRIPTION" property="description" />
+        <result column="CATEGORY_ORDER" property="categoryOrder" />
+    </resultMap>
+
+    <insert id="insertConfigCategory" parameterType="ConfigCategory" useGeneratedKeys="true" keyProperty="id" keyColumn="CATEGORY_ID">
+        INSERT INTO CONFIG_CATEGORY(
+        CONFIG_TYPE_ID,
+        CATEGORY_CODE,
+        DISPLAY_NAME,
+        DESCRIPTION,
+        CATEGORY_ORDER,
+        COLOR
+        ) VALUES (
+        #{configTypeId}
+        <if test="categoryCode != null">
+            ,#{categoryCode}
+        </if>
+        <if test="categoryCode == null">
+            ,null
+        </if>
+        <if test="displayName != null">
+            ,#{displayName}
+        </if>
+        <if test="displayName == null">
+            ,null
+        </if>
+        <if test="description != null">
+            ,#{description}
+        </if>
+        <if test="description == null">
+            ,null
+        </if>
+        <if test="categoryOrder != null">
+            ,#{categoryOrder}
+        </if>
+        <if test="categoryOrder == null">
+            ,null
+        </if>
+        <if test="color != null">
+            ,#{color}
+        </if>
+        <if test="color == null">
+            ,null
+        </if>
+        )
+    </insert>
+
     <sql id="configCategoryColumns">
         ${alias}.CATEGORY_ID,
         ${alias}.CONFIG_TYPE_ID,
@@ -21,6 +72,14 @@
         ${alias}.DISPLAY_NAME,
         ${alias}.DESCRIPTION,
         ${alias}.COLOR
+    </sql>
+
+    <sql id="configTypeColumns">
+        ${alias}.CONFIG_TYPE_ID,
+        ${alias}.CONFIG_CODE,
+        ${alias}.DISPLAY_NAME,
+        ${alias}.DESCRIPTION,
+        ${alias}.CATEGORY_ORDER
     </sql>
 
 
@@ -52,6 +111,15 @@
           CONFIG_CATEGORY cat
         WHERE
           cat.CATEGORY_ID=#{value}
+    </select>
+
+    <select id="getConfigTypeByCode" resultMap="configTypeMap" >
+        SELECT
+        <include refid="configTypeColumns"><property name="alias" value="ct"/></include>
+        FROM
+          CONFIG_TYPE ct
+        WHERE
+          ct.CONFIG_CODE=#{value}
     </select>
 
 </mapper>

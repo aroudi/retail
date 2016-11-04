@@ -60,6 +60,7 @@
         <typeAlias type="au.com.biztune.retail.domain.TotalMediaOperator" alias="TotalMediaOperator" />
         <typeAlias type="au.com.biztune.retail.domain.TotalSaleOperator" alias="TotalSaleOperator" />
         <typeAlias type="au.com.biztune.retail.domain.TotalTaxGroup" alias="TotalTaxGroup" />
+        <typeAlias type="au.com.biztune.retail.domain.ConfigType" alias="ConfigType" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />

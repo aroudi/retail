@@ -2,6 +2,7 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.ConfigCategoryDao;
 import au.com.biztune.retail.domain.ConfigCategory;
+import au.com.biztune.retail.domain.ConfigType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +48,47 @@ public class ConfigCategoryServiceImpl implements ConfigCategoryService {
             logger.error("Exception in retrieving category: ", e);
             return null;
         }
+    }
+
+    /**
+     * Add ConfigCategory.
+     * @param configTypeCode configTypeCode
+     * @param categoryCode categoryCode
+     * @param displayName displayName
+     * @param description description
+     * @param categoryOrder categoryOrder
+     * @param color color
+     * @return ConfigCategory
+     */
+    public ConfigCategory addConfigCategory(String configTypeCode
+            , String categoryCode
+            , String displayName
+            , String description
+            , int categoryOrder
+            , String color)
+    {
+        try {
+            final ConfigType configType = categoryDao.getConfigTypeByCode(configTypeCode);
+            if (configType == null) {
+                logger.error("Config Type not found.");
+                return null;
+            }
+            ConfigCategory configCategory = categoryDao.getCategoryOfTypeAndCode(configTypeCode, categoryCode);
+            if (configCategory == null) {
+                configCategory = new ConfigCategory();
+                configCategory.setCategoryCode(categoryCode);
+                configCategory.setConfigTypeId((int) configType.getId());
+                configCategory.setColor(color);
+                configCategory.setCategoryOrder(categoryOrder);
+                configCategory.setDisplayName(displayName);
+                configCategory.setDescription(description);
+                categoryDao.insertConfigCategory(configCategory);
+            }
+            return configCategory;
+        } catch (Exception e) {
+            logger.error("Exception in creating config category: ", e);
+            return null;
+        }
+
     }
 }

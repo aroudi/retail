@@ -32,7 +32,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseData
             },
             {field:'stockQty', displayName:'Available Qty',enableCellEdit:false, width:'10%'},
             {field:'reservedQty', displayName:'Reserved Qty',enableCellEdit:false, width:'10%'},
-            {field:'sellPrice.prcePrice', displayName:'Cost',enableCellEdit:false, cellFilter: 'currency', width:'10%'},
+            //{field:'sellPrice.prcePrice', displayName:'Cost',enableCellEdit:false, cellFilter: 'currency', width:'10%'},
             {field:'prodOrguLink.status.displayName', displayName:'Status',enableCellEdit:false, width:'10%',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     if (grid.getCellValue(row, col) === 'IMPORTED') {

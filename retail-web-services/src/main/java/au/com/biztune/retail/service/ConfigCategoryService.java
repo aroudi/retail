@@ -22,4 +22,21 @@ public interface ConfigCategoryService {
      * @return ConfigCategory
      */
     ConfigCategory getCategoryOfTypeAndCode(String type, String code);
+
+    /**
+     * Add ConfigCategory.
+     * @param configTypeCode configTypeCode
+     * @param categoryCode categoryCode
+     * @param displayName displayName
+     * @param description description
+     * @param categoryOrder categoryOrder
+     * @param color color
+     * @return ConfigCategory
+     */
+    ConfigCategory addConfigCategory(String configTypeCode
+            , String categoryCode
+            , String displayName
+            , String description
+            , int categoryOrder
+            , String color);
 }

@@ -21,4 +21,11 @@ public interface UnitOfMeasureService {
      */
     List<UnitOfMeasure> getAllUnom();
 
+    /**
+     * import Unit Of Measure Code. check if unom code exists otherwise create new one.
+     * @param unomCode unomCode
+     * @param unomDesc unomDesc
+     * @return UnitOfMeasure
+     */
+    UnitOfMeasure addUnitOfMeasure(String unomCode, String unomDesc);
 }

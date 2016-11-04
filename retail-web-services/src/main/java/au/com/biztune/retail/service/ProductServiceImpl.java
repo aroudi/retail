@@ -55,6 +55,11 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private PriceDao priceDao;
 
+    @Autowired
+    private ConfigCategoryDao configCategoryDao;
+
+    @Autowired
+    private ConfigCategoryService configCategoryService;
     /**
      * add product and its related objects.
      * @param productForm productForm
@@ -332,6 +337,21 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * get product object per sku.
+     * @param prodId prodId
+     * @return Product
+     */
+    public ProductSaleItem getProductSaleItemPerProdId(long prodId) {
+        try {
+            return productDao.getProductSaleItemPerProdId(prodId);
+
+        } catch (Exception e) {
+            logger.error("Error in getting product sale item per prod id:", e);
+            return null;
+        }
+    }
+
+    /**
+     * get product object per sku.
      * @param reference reference
      * @return Product
      */
@@ -341,6 +361,130 @@ public class ProductServiceImpl implements ProductService {
 
         } catch (Exception e) {
             logger.error("Error in getting product sale item per sku:", e);
+            return null;
+        }
+    }
+
+    /**
+     * import product.
+     * @param prodSku prodSku
+     * @param prodName prodName
+     * @param prodDesc prodDesc
+     * @param reference reference
+     * @param taxName taxName
+     * @param prodBrand prodBrand
+     * @param prodClass prodClass
+     * @param prodType prodType
+     * @param supplier supplier
+     * @param catalogueNo catalogueNo
+     * @param unitOfMeasure unitOfMeasure
+     * @param cost cost
+     * @param price price
+     * @param bulkPrice bulkPrice
+     * @return Product
+     */
+    public Product addProduct(String prodSku
+            , String prodName
+            , String prodDesc
+            , String reference
+            , String taxName
+            , String prodBrand
+            , String prodClass
+            , String prodType
+            , Supplier supplier
+            , String catalogueNo
+            , UnitOfMeasure unitOfMeasure
+            , double cost
+            , double price
+            , double bulkPrice)
+    {
+        try {
+            final Timestamp currentTime = new Timestamp(new Date().getTime());
+            final ConfigCategory configProdType = configCategoryService.addConfigCategory(IdBConstant.TYPE_PRODUCT_TYPE
+                    , prodType, prodType, prodType, 0, "blue");
+            //insert product
+            Product product = productDao.getProductPerSku(prodSku);
+            if (product == null) {
+                product = new Product();
+                product.setOrguIdOwning(sessionState.getOrgUnit().getId());
+                product.setProdSku(prodSku);
+                product.setReference(reference);
+                product.setProdName(prodName);
+                product.setProdDesc(prodDesc);
+                product.setProdBrand(prodBrand);
+                product.setProdClass(prodClass);
+                product.setProdOwnBrand(false);
+                if (configProdType != null) {
+                    product.setProdType(configProdType);
+                }
+                productDao.insertProduct(product);
+
+                //insert prod orgunit
+                final ProdOrguLink prodOrguLink = new ProdOrguLink();
+                prodOrguLink.setId(product.getId());
+                prodOrguLink.setOrguId(sessionState.getOrgUnit().getId());
+                //get product status IMPORTED
+                final ConfigCategory productStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.CONFIG_PRODUCT_STATUS, IdBConstant.PRODUCT_STATUS_IMPORTED);
+                prodOrguLink.setStatus(productStatus);
+                prodOrguLink.setProdId(product.getId());
+                productDao.insertProdOrguLink(prodOrguLink);
+
+                //insert product tax rule
+                final TaxRule taxRule = taxRuleDao.getTaxRuleByCode(taxName);
+                if (taxRule != null) {
+                    final ProuTxrlLink prouTxrlLink = new ProuTxrlLink();
+                    prouTxrlLink.setProuId(prodOrguLink.getId());
+                    prouTxrlLink.setTxrlId(taxRule.getId());
+                    productDao.insertProdTaxLink(prouTxrlLink);
+                }
+                //get supplier legal tender
+
+                final LegalTender legalTender = legalTenderDao.getLegalTenderByCode(IdBConstant.LEGAL_TENDER_AU);
+                final SuppProdPrice suppProdPrice = new SuppProdPrice();
+                suppProdPrice.setSolId(supplier.getSuppOrguLink().getId());
+                suppProdPrice.setCatalogueNo(catalogueNo);
+                suppProdPrice.setUnitOfMeasure(unitOfMeasure);
+                suppProdPrice.setUnitOfMeasureContent(unitOfMeasure);
+                suppProdPrice.setUnomQty(1);
+                suppProdPrice.setLegalTender(legalTender);
+                suppProdPrice.setPrice(cost);
+                suppProdPrice.setSprcCreated(currentTime);
+                suppProdPrice.setSprcModified(currentTime);
+                suppProdPrice.setProdId(product.getId());
+                suppProdPrice.setBulkPrice(bulkPrice);
+                suppProdPriceDao.insert(suppProdPrice);
+
+                //import product price
+                //get price band
+                final PriceBand priceBand = priceBandDao.getPriceBandPerCode(IdBConstant.PRICE_BAND_CODE);
+
+                //
+                final Price prodPrice = new Price();
+                //get price code
+
+                final PriceCode priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.SELL_PRICE_CODE);
+
+
+                final Price price1 = new Price();
+                //TODO: we need to set Quantity and price for each of imported BOQ in Price table
+                price1.setUnomQty(1);
+                //price1.setMargin(margin);
+                price1.setPrcePrice(price);
+                //price1.setPrceTaxIncluded(taxInclude);
+                price1.setPriceBand(priceBand);
+                price1.setPriceCode(priceCode);
+                price1.setProdId(product.getId());
+                price1.setUnitOfMeasure(unitOfMeasure);
+                price1.setPrceCreated(currentTime);
+                price1.setPrceModified(currentTime);
+                price1.setPrceFromDate(currentTime);
+                price1.setPrceToDate(currentTime);
+                price1.setPrceSetCentral(false);
+                priceDao.insert(price1);
+            }
+            return product;
+        } catch (Exception e) {
+            logger.error("Exception in importing product:", e);
             return null;
         }
     }
