@@ -30,6 +30,9 @@ public class TxnHeaderForm {
     private String txhdDlvAddress;
     private ConfigCategory invoiceTxnType;
     private long parentId;
+    private String txhdContactPerson;
+    private String txhdContactPhone;
+
 
     public long getId() {
         return id;
@@ -205,5 +208,21 @@ public class TxnHeaderForm {
 
     public void setConvertedToInvoice(boolean convertedToInvoice) {
         this.convertedToInvoice = convertedToInvoice;
+    }
+
+    public String getTxhdContactPerson() {
+        return txhdContactPerson;
+    }
+
+    public void setTxhdContactPerson(String txhdContactPerson) {
+        this.txhdContactPerson = txhdContactPerson;
+    }
+
+    public String getTxhdContactPhone() {
+        return txhdContactPhone;
+    }
+
+    public void setTxhdContactPhone(String txhdContactPhone) {
+        this.txhdContactPhone = txhdContactPhone;
     }
 }

@@ -37,6 +37,8 @@ public class TxnHeader {
     //this is used for invoice only. it contains parent sale order id
     private long parentId;
     private String txhdDlvAddress;
+    private String txhdContactPerson;
+    private String txhdContactPhone;
     private AppUser user;
     private ConfigCategory invoiceTxnType;
 
@@ -300,5 +302,21 @@ public class TxnHeader {
 
     public void setInvoiceTxnType(ConfigCategory invoiceTxnType) {
         this.invoiceTxnType = invoiceTxnType;
+    }
+
+    public String getTxhdContactPerson() {
+        return txhdContactPerson;
+    }
+
+    public void setTxhdContactPerson(String txhdContactPerson) {
+        this.txhdContactPerson = txhdContactPerson;
+    }
+
+    public String getTxhdContactPhone() {
+        return txhdContactPhone;
+    }
+
+    public void setTxhdContactPhone(String txhdContactPhone) {
+        this.txhdContactPhone = txhdContactPhone;
     }
 }

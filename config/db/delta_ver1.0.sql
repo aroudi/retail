@@ -1055,3 +1055,21 @@ INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Import Produ
 go
 INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'importProduct' ));
 go
+
+-- up to this point applied on jomon on 01/11/16
+
+alter table TXN_HEADER
+  add    TXHD_CONTACT_PERSON VARCHAR(500)
+go
+
+alter table TXN_HEADER
+  add TXHD_CONTACT_PHONE VARCHAR(50)
+go
+
+alter table INVOICE
+  add TXIV_CONTACT_PERSON VARCHAR(500)
+go
+
+alter table INVOICE
+  add TXIV_CONTACT_PHONE VARCHAR(50)
+go

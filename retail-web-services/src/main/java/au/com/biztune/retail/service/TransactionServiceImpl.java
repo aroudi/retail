@@ -127,6 +127,8 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdValueTax(txnHeaderForm.getTxhdValueTax());
             txnHeader.setCustomer(txnHeaderForm.getCustomer());
             txnHeader.setTxhdDlvAddress(txnHeaderForm.getTxhdDlvAddress());
+            txnHeader.setTxhdContactPerson(txnHeaderForm.getTxhdContactPerson());
+            txnHeader.setTxhdContactPhone(txnHeaderForm.getTxhdContactPhone());
             final Principal principal = securityContext.getUserPrincipal();
             AppUser appUser = null;
             if (principal instanceof AppUser) {
@@ -434,6 +436,8 @@ public class TransactionServiceImpl implements TransactionService {
         txnHeaderForm.setTxhdDlvAddress(txnHeader.getTxhdDlvAddress());
         txnHeaderForm.setParentId(txnHeader.getParentId());
         txnHeaderForm.setInvoiceTxnType(txnHeader.getInvoiceTxnType());
+        txnHeaderForm.setTxhdContactPerson(txnHeader.getTxhdContactPerson());
+        txnHeaderForm.setTxhdContactPhone(txnHeader.getTxhdContactPhone());
         if (txnHeader.getTxnDetails() != null) {
             TxnDetailForm txnDetailForm;
             final List<TxnDetailForm> txnDetailFormList = new ArrayList<TxnDetailForm>();
@@ -549,6 +553,8 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdOrigTxnNr(txnHeaderForm.getTxhdTxnNr());
             txnHeader.setParentId(txnHeaderForm.getId());
             txnHeader.setTxhdDlvAddress(txnHeaderForm.getTxhdDlvAddress());
+            txnHeader.setTxhdContactPerson(txnHeaderForm.getTxhdContactPerson());
+            txnHeader.setTxhdContactPhone(txnHeaderForm.getTxhdContactPhone());
             final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_INVOICE);
             if (txnType != null) {
                 txnHeader.setInvoiceTxnType(txnType);

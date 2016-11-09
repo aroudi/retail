@@ -44,6 +44,8 @@
         <result column="TXIV_REFUND_EXPIRY" property="txhdRefundExpiry" />
         <result column="TXIV_COLLECT_DATE" property="txhdCollectDate" />
         <result column="TXIV_DLV_ADDRESS" property="txhdDlvAddress" />
+        <result column="TXIV_CONTACT_PERSON" property="txhdContactPerson" />
+        <result column="TXIV_CONTACT_PHONE" property="txhdContactPhone" />
         <!--association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" /-->
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="invoiceTxnType" column="TXIV_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -109,7 +111,9 @@
         ${alias}.TXIV_REFUND_EXPIRY,
         ${alias}.TXIV_COLLECT_DATE,
         ${alias}.TXIV_TXN_TYPE,
-        ${alias}.TXIV_DLV_ADDRESS
+        ${alias}.TXIV_DLV_ADDRESS,
+        ${alias}.TXIV_CONTACT_PERSON,
+        ${alias}.TXIV_CONTACT_PHONE
     </sql>
 
     <sql id="invoiceDetailColumns">
@@ -151,7 +155,9 @@
         TXIV_REFUND_EXPIRY,
         TXIV_COLLECT_DATE,
         TXIV_TXN_TYPE,
-        TXIV_DLV_ADDRESS
+        TXIV_DLV_ADDRESS,
+        TXIV_CONTACT_PERSON,
+        TXIV_CONTACT_PHONE
         ) VALUES (
         #{parentId},
         #{orgUnit.id},
@@ -252,6 +258,18 @@
             ,#{txhdDlvAddress}
         </if>
         <if test="txhdDlvAddress == null">
+            ,null
+        </if>
+        <if test="txhdContactPerson != null">
+            ,#{txhdContactPerson}
+        </if>
+        <if test="txhdContactPerson == null">
+            ,null
+        </if>
+        <if test="txhdContactPhone != null">
+            ,#{txhdContactPhone}
+        </if>
+        <if test="txhdContactPhone == null">
             ,null
         </if>
         )

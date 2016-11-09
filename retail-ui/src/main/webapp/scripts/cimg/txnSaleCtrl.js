@@ -10,6 +10,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
      */
     $scope.isInvoiceMode = false;
     $scope.exportSaleOrderToPdfUrl = TXN_EXPORT_PDF;
+    $scope.allItemsSelected = false;
     $scope.exportInvoiceToPdfUrl = INVOICE_EXPORT_PDF;
     initPageData();
     initTxnDetail();
@@ -150,7 +151,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     row.entity.txdeQtyInvoiced = 0;
                 }
                 checkIfItemSelected();
-                evaluatRowItem(row.entity);
+                evaluatRowItem(row.entity, false);
                 totalTransaction();
             });
             gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef){
@@ -358,7 +359,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                                 txnDetail.txdeQtyInvoiced =  0;
                                 txnDetail.txdeQtyBalance =  txnDetail.txdeQuantitySold;
                             }
-                            evaluatRowItem(txnDetail);
+                            evaluatRowItem(txnDetail, true);
                             $scope.txnDetailList.data.push(txnDetail);
                             totalTransaction();
                         });
@@ -392,7 +393,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             txnDetail.txdeQuantitySold =  1;
             txnDetail.txdeQtyInvoiced =  0;
             txnDetail.txdeQtyBalance =  txnDetail.txdeQuantitySold;
-            evaluatRowItem(txnDetail);
+            evaluatRowItem(txnDetail, true);
             $scope.txnDetailList.data.push(txnDetail);
             totalTransaction();
         });
@@ -419,12 +420,14 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
         return txnDetailObject;
     }
-    function evaluatRowItem (txnDetail) {
+    function evaluatRowItem (txnDetail, newAdded) {
         txnDetail.txdeTax = calculateTaxRate(txnDetail.product);
         txnDetail.txdeValueLine = txnDetail.product.sellPrice.prcePrice;
         txnDetail.txdeProfitMargin = getProfitMargin();
         txnDetail.txdeValueProfit =  txnDetail.txdeValueLine*txnDetail.txdeProfitMargin;
-        txnDetail.txdeValueGross =  txnDetail.txdeValueProfit*1 + txnDetail.txdeValueLine*1;
+        if (newAdded == true) {
+            txnDetail.txdeValueGross =  txnDetail.txdeValueProfit*1 + txnDetail.txdeValueLine*1;
+        }
         txnDetail.txdeValueNet =  (txnDetail.txdeValueGross * txnDetail.txdeTax)*1 + txnDetail.txdeValueGross*1;
         txnDetail.txdeQtyBalance = calculateBalance(txnDetail);//txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
 
@@ -755,6 +758,12 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
         return false;
     }
+    $scope.isTxnSaleAndPending = function () {
+        if ((!$scope.isPageNew) && $scope.txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT' && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
+            return true;
+        }
+        return false;
+    }
     $scope.exportToPdf = function(url) {
 
         var exportUrl = url + $scope.txnHeaderForm.id;
@@ -792,7 +801,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
         //recalculate txnDetail rows.
         $scope.txnDetailList.data.forEach(function (row){
-            evaluatRowItem(row);
+            evaluatRowItem(row, false);
         })
 
         if (mode) {
@@ -893,7 +902,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     }
 
     $scope.showAddPaymentButtom = function() {
-        return (!$scope.isInvoiceMode)&&($scope.isTxnSaleAndFinal()) && !(isInvoiceViewMode());
+        return (!$scope.isInvoiceMode)&&($scope.isTxnSaleAndPending()) && !(isInvoiceViewMode());
     }
     $scope.showInvoiceButtom = function() {
         return ($scope.isInvoiceMode) && (!isInvoiceViewMode());
@@ -932,4 +941,47 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     function isInvoiceViewMode() {
         return ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') && (!$scope.isPageNew) && (!$scope.txnHeaderForm.convertedToInvoice)
     }
+    function selectAllRowsForInvoice() {
+        $scope.isInvoiceMode = true;
+        if ($scope.txnDetailList === undefined) {
+            return;
+        }
+        //$scope.txnDetailGridApi.selection.selectAllRows();
+        for (var i = 0; i < $scope.txnDetailList.data.length; i++) {
+            //we can refund only invoiced items.
+            if ($scope.txnDetailList.data[i].txdeQtyBalance == 0) {
+                continue;
+            }
+            $scope.txnDetailGridApi.selection.selectRow($scope.txnDetailList.data[i]);
+            $scope.txnDetailList.data[i].invoiced = true;
+            $scope.txnDetailList.data[i].txdeQtyInvoiced = $scope.txnDetailList.data[i].txdeQtyBalance;
+            //evaluatRowItem($scope.txnDetailList.data[i]);
+        }
+        //totalTransaction();
+        $scope.allItemsSelected=true;
+        changeToInvoiceMode();
+    }
+    function unSelectAllRows() {
+        $scope.isInvoiceMode = false;
+        if ($scope.txnDetailList === undefined) {
+            return;
+        }
+        $scope.txnDetailGridApi.selection.clearSelectedRows();
+        for (var i = 0; i < $scope.txnDetailList.data.length; i++) {
+            $scope.txnDetailList.data[i].invoiced = false;
+            $scope.txnDetailList.data[i].txdeQtyInvoiced = 0;
+            //evaluatRowItem($scope.txnDetailList.data[i]);
+        }
+        //totalTransaction();
+        $scope.allItemsSelected=false;
+        changeToInvoiceMode();
+    }
+    $scope.toggleAllRowSelection = function() {
+        if ($scope.allItemsSelected) {
+            unSelectAllRows();
+        } else {
+            selectAllRowsForInvoice();
+        }
+    }
+
 });

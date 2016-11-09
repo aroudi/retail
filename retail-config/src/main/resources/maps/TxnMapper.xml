@@ -51,6 +51,8 @@
         <result column="TXHD_REFUND_EXPIRY" property="txhdRefundExpiry" />
         <result column="TXHD_COLLECT_DATE" property="txhdCollectDate" />
         <result column="TXHD_DLV_ADDRESS" property="txhdDlvAddress" />
+        <result column="TXHD_CONTACT_PERSON" property="txhdContactPerson" />
+        <result column="TXHD_CONTACT_PHONE" property="txhdContactPhone" />
         <association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" />
         <association property="txhdState" column="TXHD_STATE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="txhdTxnType" column="TXHD_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -122,7 +124,9 @@
         ${alias}.TXHD_COLLECT_DATE,
         ${alias}.CUSTOMER_ID,
         ${alias}.TXHD_STATE,
-        ${alias}.TXHD_DLV_ADDRESS
+        ${alias}.TXHD_DLV_ADDRESS,
+        ${alias}.TXHD_CONTACT_PERSON,
+        ${alias}.TXHD_CONTACT_PHONE
 
     </sql>
 
@@ -191,7 +195,10 @@
         TXHD_TAX_EXEMPT,
         TXHD_REFUND_EXPIRY,
         TXHD_COLLECT_DATE,
-        TXHD_DLV_ADDRESS
+        TXHD_DLV_ADDRESS,
+        TXHD_CONTACT_PERSON,
+        TXHD_CONTACT_PHONE
+
         ) VALUES (
         #{orgUnit.id},
         #{store.id},
@@ -323,6 +330,20 @@
         <if test="txhdDlvAddress == null">
             ,null
         </if>
+
+        <if test="txhdContactPerson != null">
+            ,#{txhdContactPerson}
+        </if>
+        <if test="txhdContactPerson == null">
+            ,null
+        </if>
+
+        <if test="txhdContactPhone != null">
+            ,#{txhdContactPhone}
+        </if>
+        <if test="txhdContactPhone == null">
+            ,null
+        </if>
         )
     </insert>
     <update id="updateTxnHeader" parameterType="TxnHeader" >
@@ -384,6 +405,12 @@
         </if>
         <if test="txhdDlvAddress != null">
             ,TXHD_DLV_ADDRESS = #{txhdDlvAddress}
+        </if>
+        <if test="txhdContactPerson != null">
+            ,TXHD_CONTACT_PERSON = #{txhdContactPerson}
+        </if>
+        <if test="txhdContactPhone != null">
+            ,TXHD_CONTACT_PHONE = #{txhdContactPhone}
         </if>
         WHERE TXHD_ID = #{id}
     </update>
