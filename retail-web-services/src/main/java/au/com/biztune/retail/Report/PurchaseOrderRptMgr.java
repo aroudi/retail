@@ -3,6 +3,7 @@ package au.com.biztune.retail.report;
 import au.com.biztune.retail.dao.ConfigCategoryDao;
 import au.com.biztune.retail.dao.PurchaseOrderDao;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
+import au.com.biztune.retail.util.IdBConstant;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
@@ -78,6 +79,9 @@ public class PurchaseOrderRptMgr {
                 output.flush();
             }
             };
+            if (!purchaseOrderHeader.getPohStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_IN_PROGRESS)) {
+                purchaseOrderDao.updatePohPrintStatus(pohId);
+            }
             return streamingOutput;
         } catch (Exception e) {
             logger.error("Exception in exporting PurchaseOrder as pdf: ", e);

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI) {
+cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI, POH_EXPORT_PDF) {
 
     $scope.searchForm = {};
     $scope.searchForm.supplierId = -1;
@@ -39,7 +39,8 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
         } ,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'15%'},
+            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'10%'},
+            {field:'pohRevision', displayName:'Rev.',enableCellEdit:false, width:'5%'},
             {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'30%',
                 cellTooltip: function(row,col) {
                     return row.entity.supplier.supplierName
@@ -54,7 +55,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
                    return grid.getCellValue(row, col).color
                 }
             },
-            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewPohDetail(row)"></i></a>', width:'5%' }
+            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewPohDetail(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'5%' }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -138,5 +139,15 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
         baseDataService.addRow($scope.searchForm, POH_SEARCH_URI).then(function(response){
             $scope.gridOptions.data = response.data;
         });
+    }
+    $scope.exportToPdf = function(row) {
+        var exportUrl = POH_EXPORT_PDF + row.entity.id;
+        baseDataService.getStreamData(exportUrl).then(function(response){
+            var blob = new Blob([response.data], {'type': 'application/pdf'});
+            var myPdfContent = window.URL.createObjectURL(blob);
+            baseDataService.setPdfContent(myPdfContent);
+            $state.go('dashboard.pdfViewer');
+        });
+
     }
 });

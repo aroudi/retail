@@ -101,6 +101,7 @@ public class TransactionServiceImpl implements TransactionService {
                 if (txnHeaderForm.isConvertedToTxnSale()) {
                     txnHeader.setTxhdOrigTxnNr(txnHeaderForm.getTxhdTxnNr());
                     txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.TXN_NUMBER_PREFIX));
+                    txnHeader.setTxhdPrinted(false);
                     txnHeaderForm.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
                     final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_SALE);
                     txnHeader.setTxhdTxnType(txnType);

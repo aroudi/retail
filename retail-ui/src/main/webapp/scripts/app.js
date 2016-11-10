@@ -865,6 +865,15 @@ cimgApp.directive('ngAppMax', function(){
     }
 });
 
+cimgApp.directive('focusOn', function() {
+    return function(scope, elem, attr) {
+        scope.$on(attr.focusOn, function(e) {
+            console.log('set focused called for ' + elem[0]);
+            elem[0].focus();
+        });
+    };
+});
+
 /*
 cimgApp.config(['ChartJsProvider', function(ChartJsProvider){
     ChartJsProvider.setOptions({ chartColors : [ '#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'],

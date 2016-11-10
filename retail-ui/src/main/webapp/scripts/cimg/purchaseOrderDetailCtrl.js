@@ -3,13 +3,6 @@
  */
 cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI) {
     var rowtpl='<div ng-class="{\'brown\':row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\'}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
-    $scope.enableChangeStatus = function() {
-        if ($scope.purchaseOrderHeader.pohStatus.categoryCode == 'POH_STATUS_IN_PROGRESS') {
-            return true;
-        } else {
-            return false;
-        }
-    }
     $scope.gridOptions = {
         enableFiltering: true,
         showGridFooter: true,
@@ -51,7 +44,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                     return grid.getCellValue(row, col).color
                 }
             },
-            {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeItem(row)" ng-disabled="disablePage"></i></a> <a href=""><i tooltip="update BOQ" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-show="row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\' || row.entity.polStatus.categoryCode==\'POH_STATUS_PARTIAL_REC\'" ng-click="grid.appScope.updateBoqQtyRcvd(row)"></i></a>', width: '5%'}
+            {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a> <a href=""><i tooltip="update BOQ" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-show="row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\' || row.entity.polStatus.categoryCode==\'POH_STATUS_PARTIAL_REC\'" ng-click="grid.appScope.updateBoqQtyRcvd(row)"></i></a>', width: '5%'}
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -146,23 +139,20 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             $scope.purchaseOrderHeader.pohStatus = baseDataService.populateSelectList($scope.purchaseOrderHeader.pohStatus,$scope.pohStatusSet);
             managePoStatusDisplay();
         });
-        $scope.disablePage = false;
         if ( baseDataService.getIsPageNew()) {
             $scope.purchaseOrderHeader = {};
             $scope.purchaseOrderHeader.pohStatus = $scope.statusOnProgress;
             //$scope.purchaseOrderHeader.pohCreatedDate = new Date().getTime();
             $scope.purchaseOrderHeader.pohExpDeliveryStr = new Date();
+            $scope.purchaseOrderHeader.pohCreatedDateStr = new Date();
             $scope.purchaseOrderHeader.id = -1;
             $scope.pageIsNew = true;
         } else {
             $scope.purchaseOrderHeader = angular.copy(baseDataService.getRow());
             $scope.gridOptions.data = $scope.purchaseOrderHeader.lines;
-            if (!$scope.enableChangeStatus()) {
-                $scope.disablePage = true;
-            } else {
-                $scope.disablePage = false;
-            }
             $scope.purchaseOrderHeader.pohExpDeliveryStr = new Date($scope.purchaseOrderHeader.pohExpDeliveryStr);
+            $scope.purchaseOrderHeader.pohCreatedDateStr = new Date($scope.purchaseOrderHeader.pohCreatedDateStr);
+
             for (i=0; i<$scope.gridOptions.data.length; i++) {
                 displayLinkedBoqs($scope.gridOptions.data[i])
             }
@@ -249,14 +239,19 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         }
         line.polValueOrdered = line.polUnitCost * line.polQtyOrdered;
     }
-    $scope.savePurchaseOrder = function () {
 
-        //CHECK STATUS
-        if ($scope.poIsConfirmed) {
-            $scope.purchaseOrderHeader.pohStatus = $scope.statusConfirmed;
-        }else if ($scope.poIsCancelled) {
-            $scope.purchaseOrderHeader.pohStatus = $scope.statusCancelled;
-        }
+    $scope.savePoAsDraft = function() {
+        $scope.purchaseOrderHeader.pohStatus = $scope.statusOnProgress;
+        savePurchaseOrder('draft');
+    }
+
+    $scope.submitPo = function() {
+        $scope.purchaseOrderHeader.pohStatus = $scope.statusConfirmed;
+        savePurchaseOrder('submit');
+    }
+
+    function savePurchaseOrder(mode) {
+
         //$scope.facility.lastModifiedBy = userId;
         var rowObject = $scope.purchaseOrderHeader;
         if ($scope.pageIsNew) {
@@ -275,7 +270,11 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                 if ($scope.pageIsNew) {
                     baseDataService.displayMessage("info","Order Number", "Purhcase order saved with number: " + addResponse.info);
                 }
-                $state.go('dashboard.purchaseOrderList');
+                if (mode == 'draft') {
+                    $state.go('dashboard.purchaseOrderList');
+                } else {
+                    exportToPdf();
+                }
             } else {
                 alert('Not able to save purchase order. ' + addResponse.message);
             }
@@ -412,8 +411,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         );
     }
 
-    $scope.exportToPdf = function() {
-        var hiddenElement = document.createElement('a');
+    function exportToPdf () {
         var exportUrl = POH_EXPORT_PDF + $scope.purchaseOrderHeader.id;
         baseDataService.getStreamData(exportUrl).then(function(response){
             var blob = new Blob([response.data], {'type': 'application/pdf'});

@@ -30,6 +30,12 @@
         <result column="POH_TOTAL_QTY" property="pohTotalQty" />
         <result column="POH_TOTAL_LINES" property="pohTotalLines" />
         <result column="POH_COMMENT" property="pohComment" />
+        <result column="POH_REVISION" property="pohRevision" />
+        <result column="POH_DLV_ADDRESS" property="pohDlvAddress" />
+        <result column="POH_CONTACT_PERSON" property="pohContactPerson" />
+        <result column="POH_CONTACT_PHONE" property="pohContactPhone" />
+        <result column="POH_PREFIX" property="pohPrefix" />
+        <result column="POH_PRINTED" property="pohPrinted" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="user" column="POH_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="pohStatus" column="POH_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -62,6 +68,12 @@
         <result column="POH_TOTAL_QTY" property="pohTotalQty" />
         <result column="POH_TOTAL_LINES" property="pohTotalLines" />
         <result column="POH_COMMENT" property="pohComment" />
+        <result column="POH_REVISION" property="pohRevision" />
+        <result column="POH_DLV_ADDRESS" property="pohDlvAddress" />
+        <result column="POH_CONTACT_PERSON" property="pohContactPerson" />
+        <result column="POH_CONTACT_PHONE" property="pohContactPhone" />
+        <result column="POH_PREFIX" property="pohPrefix" />
+        <result column="POH_PRINTED" property="pohPrinted" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="pohStatus" column="POH_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <collection property="lines" javaType="ArrayList" column="POH_ID" ofType="PurchaseLine" select="getPurchaseLinesPerPohId"/>
@@ -125,7 +137,13 @@
         ${alias}.POH_STATUS,
         ${alias}.POH_CREATION_TYPE,
         ${alias}.POH_COMMENT,
-        ${alias}.POH_EXP_DELIVERY
+        ${alias}.POH_EXP_DELIVERY,
+        ${alias}.POH_PREFIX,
+        ${alias}.POH_DLV_ADDRESS,
+        ${alias}.POH_CONTACT_PERSON,
+        ${alias}.POH_CONTACT_PHONE,
+        ${alias}.POH_REVISION,
+        ${alias}.POH_PRINTED
     </sql>
 
     <sql id="purchaseLineColumns">
@@ -188,7 +206,12 @@
          POH_STATUS,
          POH_CREATION_TYPE,
          POH_EXP_DELIVERY,
-         POH_COMMENT
+         POH_COMMENT,
+         POH_PREFIX,
+         POH_DLV_ADDRESS,
+         POH_CONTACT_PERSON,
+         POH_CONTACT_PHONE,
+         POH_REVISION
         ) VALUES (
         #{orgUnit.id},
         #{pohOrderNumber}
@@ -371,6 +394,36 @@
             ,null
         </if>
 
+        <if test="pohPrefix != null">
+            ,#{pohPrefix}
+        </if>
+        <if test="pohPrefix == null">
+            ,null
+        </if>
+        <if test="pohDlvAddress != null">
+            ,#{pohDlvAddress}
+        </if>
+        <if test="pohDlvAddress == null">
+            ,null
+        </if>
+        <if test="pohContactPerson != null">
+            ,#{pohContactPerson}
+        </if>
+        <if test="pohContactPerson == null">
+            ,null
+        </if>
+        <if test="pohContactPhone != null">
+            ,#{pohContactPhone}
+        </if>
+        <if test="pohContactPhone == null">
+            ,null
+        </if>
+        <if test="pohRevision != null">
+            ,#{pohRevision}
+        </if>
+        <if test="pohRevision == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -451,6 +504,21 @@
         </if>
         <if test="pohComment != null">
             ,POH_COMMENT = #{pohComment}
+        </if>
+        <if test="pohRevision != null">
+            ,POH_REVISION = #{pohRevision}
+        </if>
+        <if test="pohPrefix != null">
+            ,POH_PREFIX = #{pohPrefix}
+        </if>
+        <if test="pohDlvAddress != null">
+            ,POH_DLV_ADDRESS = #{pohDlvAddress}
+        </if>
+        <if test="pohContactPerson != null">
+            ,POH_CONTACT_PERSON = #{pohContactPerson}
+        </if>
+        <if test="pohContactPhone != null">
+            ,POH_CONTACT_PHONE = #{pohContactPhone}
         </if>
         WHERE POH_ID = #{id}
     </update>
@@ -887,5 +955,8 @@
         PURCHASE_LINE where POL_ID = #{value}
     </delete>
 
+    <update id="updatePohPrintStatus" >
+        UPDATE PURCHASE_ORDER_HEADER SET POH_PRINTED = 1 WHERE POH_ID = #{value}
+    </update>
 
 </mapper>

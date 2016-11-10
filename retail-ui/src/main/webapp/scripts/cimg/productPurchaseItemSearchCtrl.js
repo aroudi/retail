@@ -14,6 +14,7 @@ cimgApp.controller('productPurchaseItemSearchCtrl', function($scope, $state, $ti
             {field:'solId', visible:false, enableCellEdit:false},
             {field:'prodId', visible:false, enableCellEdit:false},
             {field:'catalogueNo', enableCellEdit:false, width:'20%',
+                headerCellTemplate: '<div ng-class="{ \'sortable\': sortable }"><div class="ui-grid-vertical-bar">&nbsp;</div><div class="ui-grid-cell-contents" col-index="renderIndex"><span>        {{ col.displayName CUSTOM_FILTERS }}</span><span ui-grid-visible="col.sort.direction" ng-class="{ \'ui-grid-icon-up-dir\': col.sort.direction == asc, \'ui-grid-icon-down-dir\': col.sort.direction == desc, \'ui-grid-icon-blank\': !col.sort.direction }">&nbsp;</span></div><div class="ui-grid-column-menu-button" ng-if="grid.options.enableColumnMenus && !col.isRowHeader  && col.colDef.enableColumnMenu !== false" class="ui-grid-column-menu-button" ng-click="toggleMenu($event)"><i class="ui-grid-icon-angle-down">&nbsp;</i></div><div ng-if="filterable" class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><input type="text" focus-on="focusOnCatalogue" autofocus class="ui-grid-filter-input" ng-model="colFilter.term" ng-click="$event.stopPropagation()" ng-attr-placeholder="{{colFilter.placeholder || \'\'}}" /><div class="ui-grid-filter-button" ng-click="colFilter.term = null"><i class="ui-grid-icon-cancel" ng-show="!!colFilter.term">&nbsp;</i> <!-- use !! because angular interprets \'f\' as false --></div></div></div>',
                 cellTooltip: function(row,col) {
                     return row.entity.catalogueNo
                 }
@@ -36,10 +37,14 @@ cimgApp.controller('productPurchaseItemSearchCtrl', function($scope, $state, $ti
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
+        $scope.gridApi.core.on.sortChanged( $scope, function( grid, sort ) {
+            $scope.gridApi.core.notifyDataChange( $scope.gridApi.grid, uiGridConstants.dataChange.COLUMN );
+        })
         gridApi.selection.on.rowSelectionChanged($scope, function(row) {
             //baseDataService.setRow(row.entity);
             $scope.selectedOption = row.entity;
             gridApi.grid.clearAllFilters();
+            $scope.setFocusOnCatalogNo();
         });
     };
     getAllProductPurchaseItems();
@@ -47,6 +52,7 @@ cimgApp.controller('productPurchaseItemSearchCtrl', function($scope, $state, $ti
         baseDataService.getBaseData(GET_PURCHASE_ITEMS_PER_SUPPLIER_URI+supplier.id).then(function(response){
             var data = angular.copy(response.data);
             $scope.gridOptions.data = data;
+            $scope.setFocusOnCatalogNo();
         });
     }
 
@@ -60,5 +66,9 @@ cimgApp.controller('productPurchaseItemSearchCtrl', function($scope, $state, $ti
     $scope.cancel = function() {
         $scope.closeThisDialog('button');
     }
+    $scope.setFocusOnCatalogNo = function () {
+        /* stuff here to add a new item... */
+        $scope.$broadcast('focusOnCatalogue');
+    };
 
 });

@@ -41,6 +41,7 @@ public class TxnHeader {
     private String txhdContactPhone;
     private AppUser user;
     private ConfigCategory invoiceTxnType;
+    private boolean txhdPrinted;
 
     /**
      * add txn detail to txn header.
@@ -318,5 +319,13 @@ public class TxnHeader {
 
     public void setTxhdContactPhone(String txhdContactPhone) {
         this.txhdContactPhone = txhdContactPhone;
+    }
+
+    public boolean isTxhdPrinted() {
+        return txhdPrinted;
+    }
+
+    public void setTxhdPrinted(boolean txhdPrinted) {
+        this.txhdPrinted = txhdPrinted;
     }
 }

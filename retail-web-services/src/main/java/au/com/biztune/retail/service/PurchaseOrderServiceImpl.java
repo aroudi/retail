@@ -83,12 +83,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 purchaseOrderHeader.setPohApproved(true);
             }
             purchaseOrderHeader.setPohExpDelivery(DateUtil.stringToDate(purchaseOrderHeader.getPohExpDeliveryStr(), "yyyy-MM-dd"));
+            purchaseOrderHeader.setPohCreatedDate(DateUtil.stringToDate(purchaseOrderHeader.getPohCreatedDateStr(), "yyyy-MM-dd"));
 
             if (isNew) {
                 final ConfigCategory creationType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_CREATION_TYPE, IdBConstant.POH_CREATION_TYPE_MANUAL);
                 purchaseOrderHeader.setPohCreationType(creationType);
                 purchaseOrderHeader.setPohCreatedDate(currentDate);
                 purchaseOrderHeader.setPohLastModifiedDate(currentDate);
+                purchaseOrderHeader.setPohRevision(0);
                 //final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_IN_PROGRESS);
                 //purchaseOrderHeader.setPohStatus(status);
                 purchaseOrderDao.insertPurchaseOrderHeader(purchaseOrderHeader);
@@ -98,6 +100,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
 
             } else {
+                if (purchaseOrderHeader.getPohStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_CONFIRMED)) {
+                    purchaseOrderHeader.setPohRevision(purchaseOrderHeader.getPohRevision() + 1);
+                }
                 purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
             }
             for (PurchaseLine purchaseLine : purchaseOrderHeader.getLines()) {
@@ -399,6 +404,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         try {
             final PurchaseOrderHeader purchaseOrderHeader = purchaseOrderDao.getPurchaseOrderWholePerPohId(pohId);
             purchaseOrderHeader.setPohExpDeliveryStr(DateUtil.dateToString(purchaseOrderHeader.getPohExpDelivery(), "yyyy-MM-dd"));
+            purchaseOrderHeader.setPohCreatedDateStr(DateUtil.dateToString(purchaseOrderHeader.getPohCreatedDate(), "yyyy-MM-dd"));
             return purchaseOrderHeader;
 
         } catch (Exception e) {

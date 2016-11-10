@@ -21,6 +21,7 @@
         <result column="TXIV_RECEIPT_ID" property="txhdReceiptId" />
         <result column="TXIV_REFUND_EXPIRY" property="txhdRefundExpiry" />
         <result column="TXIV_COLLECT_DATE" property="txhdCollectDate" />
+        <result column="TXIV_PRINTED" property="txhdPrinted" />
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="user" column="TXIV_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="invoiceTxnType" column="TXIV_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -46,6 +47,7 @@
         <result column="TXIV_DLV_ADDRESS" property="txhdDlvAddress" />
         <result column="TXIV_CONTACT_PERSON" property="txhdContactPerson" />
         <result column="TXIV_CONTACT_PHONE" property="txhdContactPhone" />
+        <result column="TXIV_PRINTED" property="txhdPrinted" />
         <!--association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" /-->
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="invoiceTxnType" column="TXIV_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -113,7 +115,8 @@
         ${alias}.TXIV_TXN_TYPE,
         ${alias}.TXIV_DLV_ADDRESS,
         ${alias}.TXIV_CONTACT_PERSON,
-        ${alias}.TXIV_CONTACT_PHONE
+        ${alias}.TXIV_CONTACT_PHONE,
+        ${alias}.TXIV_PRINTED
     </sql>
 
     <sql id="invoiceDetailColumns">
@@ -427,6 +430,10 @@
         UPDATE INVOICE
         SET TXIV_TXN_NR = #{txhdTxnNr}
         WHERE TXIV_ID = #{id}
+    </update>
+
+    <update id="updateTxnPrintStatus" >
+        UPDATE INVOICE SET TXIV_PRINTED = #{param2} WHERE TXIV_ID = #{param1}
     </update>
 
 </mapper>

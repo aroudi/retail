@@ -91,4 +91,11 @@ public interface InvoiceDao {
      * @return List of invoices
      */
     List<TxnHeader> searchInvoice(long storeId, List txnTypeList, List clauseList);
+
+    /**
+     * update print status.
+     * @param invoiceId invoiceId
+     * @param printed printed
+     */
+    void updateTxnPrintStatus(long invoiceId, boolean printed);
 }

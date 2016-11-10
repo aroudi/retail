@@ -158,4 +158,10 @@ public interface TxnDao {
      */
     void deleteTxnDetailPerTxhdId(long txhdId);
 
+    /**
+     * update print status.
+     * @param txhdId txhdId
+     * @param printed printed
+     */
+    void updateTxnPrintStatus(long txhdId, boolean printed);
 }

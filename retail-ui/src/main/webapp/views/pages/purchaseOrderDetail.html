@@ -21,70 +21,66 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-lg-12">
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label>Order Number:</label>
-                                    <input class="form-control" data-ng-model="purchaseOrderHeader.pohOrderNumber" ng-disabled="true" >
-                                </div >
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label>Prefix</label>
+                                <input class="form-control" data-ng-model="purchaseOrderHeader.pohPrefix">
                             </div >
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label>Date Created:</label>
-                                    <span class="form-control"> {{formatDate(purchaseOrderHeader.pohCreatedDate)}} </span>
-                                </div >
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="form-group">
+                                <label>Delivery Address</label>
+                                <input class="form-control" data-ng-model="purchaseOrderHeader.pohDlvAddress">
                             </div >
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label>Expected Delivery Date:</label>
-                                    <input type="date" class="form-control" data-ng-model="purchaseOrderHeader.pohExpDeliveryStr" >
-                                </div >
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label>Contact Person</label>
+                                <input class="form-control" data-ng-model="purchaseOrderHeader.pohContactPerson">
                             </div >
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label>Status:</label>
-                                    <select class="form-control" data-ng-model="purchaseOrderHeader.pohStatus" ng-disabled="true"
-                                            ng-options="type.displayName for type in pohStatusSet"  ng-disabled="disablePage==true">
-                                    </select>
-                                </div >
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label>Contact No</label>
+                                <input class="form-control" data-ng-model="purchaseOrderHeader.pohContactPhone">
                             </div >
                         </div>
                     </div>
-                    <div class="row" ng-show="enableChangeStatus()">
-                        <div class="col-lg-4" >
-                            <label>Confirm Purchase Order</label>
+
+                    <div class="row">
+                        <div class="col-lg-3">
                             <div class="form-group">
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" data-ng-model="poIsConfirmed" ng-disabled="poIsCancelled || purchaseOrderHeader.pohStatus.configCode == 'POH_STATUS_CANCELLED' || purchaseOrderHeader.pohStatus.configCode == 'POH_STATUS_CONFIRMED' ">
-                                    <div class="alert alert-success" ng-show="poIsConfirmed">
-                                        CONFIRMED
-                                    </div>
-                                    <div class="alert alert-info" ng-show="!poIsConfirmed">
-                                        {{purchaseOrderHeader.pohStatus.displayName}}
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <label>Cancel Purchase Order</label>
+                                <label>Order Number:</label>
+                                <input class="form-control" data-ng-model="purchaseOrderHeader.pohOrderNumber" ng-disabled="true" >
+                            </div >
+                        </div >
+                        <div class="col-lg-3">
                             <div class="form-group">
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" data-ng-model="poIsCancelled" ng-disabled="poIsConfirmed || purchaseOrderHeader.pohStatus.configCode == 'POH_STATUS_CANCELLED' || purchaseOrderHeader.pohStatus.configCode == 'POH_STATUS_CONFIRMED'">
-                                    <div class="alert alert-danger" ng-show="poIsCancelled">
-                                        CANCELLED
-                                    </div>
-                                    <div class="alert alert-info" ng-show="!poIsCancelled">
-                                        {{purchaseOrderHeader.pohStatus.displayName}}
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
+                                <label>Date Created:</label>
+                                <input type="date" class="form-control" data-ng-model="purchaseOrderHeader.pohCreatedDateStr" ng-disabled="true">
+                            </div >
+                        </div >
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label>Expected Delivery Date:</label>
+                                <input type="date" class="form-control" data-ng-model="purchaseOrderHeader.pohExpDeliveryStr" >
+                            </div >
+                        </div >
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label>Status:</label>
+                                <select class="form-control" data-ng-model="purchaseOrderHeader.pohStatus" ng-disabled="true"
+                                        ng-options="type.displayName for type in pohStatusSet" >
+                                </select>
+                            </div >
+                        </div >
                     </div>
                     <div class="row">
                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                         <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                        <button type="button" class="btn btn-success" ng-click="savePurchaseOrder()" ng-disabled="disablePage == true">Submit</button>
-                        <button type="button" class="btn btn-success" ng-click="exportToPdf()" ng-show="!pageIsNew">Export to PDF</button>
+                        <button type="button" class="btn btn-success" ng-click="submitPo()">Submit</button>
+                        <button type="button" class="btn btn-success" ng-click="savePoAsDraft()" ng-show="purchaseOrderHeader.pohStatus.categoryCode === 'POH_STATUS_IN_PROGRESS'">Save As Draft</button>
+                        <!--button type="button" class="btn btn-success" ng-click="exportToPdf()" ng-show="!pageIsNew">Export to PDF</button-->
                         <button type="button" class="btn btn-info" ng-click="updateLinkedBoqs()" ng-show="purchaseOrderHeader.pohStatus.categoryCode=='POH_STATUS_GOOD_RECEIVED' || purchaseOrderHeader.pohStatus.categoryCode=='POH_STATUS_PARTIAL_REC'">Update Linked BOQs</button>
                     </div>
                     <div class="row">
@@ -94,10 +90,10 @@
                         <div class="panel  panel-info">
                             <div class="panel-heading">
                                 Lines:
-                                <button type="button" class="btn btn-success" ng-click="searchProduct()" ng-disabled="disablePage==true">Add Product</button>
+                                <button type="button" class="btn btn-success" ng-click="searchProduct()">Add Product</button>
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                 Search By Catalogue No:
-                                <input size="50" data-ng-model="searchByCatalog" ng-disabled="disablePage==true" ng-keypress="searchProductByCatalogNo($event)" >
+                                <input size="50" data-ng-model="searchByCatalog"  ng-keypress="searchProductByCatalogNo($event)" >
 
                             </div>
                             <div class="panel-body">

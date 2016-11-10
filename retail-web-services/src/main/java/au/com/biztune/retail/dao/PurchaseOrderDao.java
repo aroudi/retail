@@ -126,4 +126,10 @@ public interface PurchaseOrderDao {
      * @return List of purchase order headers
      */
     List<PurchaseOrderHeader> searchPurchaseOrderHeader(long orguId, List clauseList);
+
+    /**
+     * update flag to printed.
+     * @param pohId pohId
+     */
+    void updatePohPrintStatus(long pohId);
 }

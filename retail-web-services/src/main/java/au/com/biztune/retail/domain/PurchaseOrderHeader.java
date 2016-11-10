@@ -41,6 +41,13 @@ public class PurchaseOrderHeader {
     private String pohExpDeliveryStr;
     private AppUser user;
     private String pohComment;
+    private String pohPrefix;
+    private String pohDlvAddress;
+    private String pohContactPerson;
+    private String pohContactPhone;
+    private long pohRevision;
+    private String pohCreatedDateStr;
+    private boolean pohPrinted;
 
     /**
      * constructor.
@@ -328,5 +335,61 @@ public class PurchaseOrderHeader {
 
     public void setPohComment(String pohComment) {
         this.pohComment = pohComment;
+    }
+
+    public String getPohPrefix() {
+        return pohPrefix;
+    }
+
+    public void setPohPrefix(String pohPrefix) {
+        this.pohPrefix = pohPrefix;
+    }
+
+    public String getPohDlvAddress() {
+        return pohDlvAddress;
+    }
+
+    public void setPohDlvAddress(String pohDlvAddress) {
+        this.pohDlvAddress = pohDlvAddress;
+    }
+
+    public String getPohContactPerson() {
+        return pohContactPerson;
+    }
+
+    public void setPohContactPerson(String pohContactPerson) {
+        this.pohContactPerson = pohContactPerson;
+    }
+
+    public String getPohContactPhone() {
+        return pohContactPhone;
+    }
+
+    public void setPohContactPhone(String pohContactPhone) {
+        this.pohContactPhone = pohContactPhone;
+    }
+
+    public long getPohRevision() {
+        return pohRevision;
+    }
+
+    public void setPohRevision(long pohRevision) {
+        this.pohRevision = pohRevision;
+    }
+
+    public String getPohCreatedDateStr() {
+        return pohCreatedDateStr;
+    }
+
+    public void setPohCreatedDateStr(String pohCreatedDateStr) {
+        this.pohCreatedDateStr = pohCreatedDateStr;
+    }
+
+    public boolean isPohPrinted() {
+        return pohPrinted;
+    }
+
+    public void setPohPrinted(boolean pohPrinted) {
+        this.pohPrinted = pohPrinted;
     }
 }

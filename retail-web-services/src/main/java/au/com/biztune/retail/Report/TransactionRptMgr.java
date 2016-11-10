@@ -60,6 +60,7 @@ public class TransactionRptMgr {
             }
             final List<TxnHeader> txnHeaders = new ArrayList<TxnHeader>();
             txnHeaders.add(txnHeader);
+            txnDao.updateTxnPrintStatus(txhdId, true);
             return createTransactionPdfStream(txnHeaders);
         } catch (Exception e) {
             logger.error("Exception in returning transaction header");
@@ -83,6 +84,7 @@ public class TransactionRptMgr {
                 txnHeader.setTxhdState(txnState);
             }
             txnHeaders.add(txnHeader);
+            invoiceDao.updateTxnPrintStatus(inoiceId, true);
             return createTransactionPdfStream(txnHeaders);
         } catch (Exception e) {
             logger.error("Exception in returning transaction header");
