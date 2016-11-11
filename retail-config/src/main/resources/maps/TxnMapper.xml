@@ -55,13 +55,13 @@
         <result column="TXHD_CONTACT_PERSON" property="txhdContactPerson" />
         <result column="TXHD_CONTACT_PHONE" property="txhdContactPhone" />
         <result column="TXHD_PRINTED" property="txhdPrinted" />
+        <association property="user" column="TXHD_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" />
         <association property="txhdState" column="TXHD_STATE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="txhdTxnType" column="TXHD_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <collection property="txnDetails" javaType="ArrayList" column="TXHD_ID" ofType="TxnDetail" select="getTxnDetailPerTxhdId"/>
         <collection property="txnMedias" javaType="ArrayList" column="TXHD_ID" ofType="TxnMedia" select="getTxnMediaPerTxhdId"/>
-
     </resultMap>
 
 

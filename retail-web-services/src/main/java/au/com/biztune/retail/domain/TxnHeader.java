@@ -42,6 +42,7 @@ public class TxnHeader {
     private AppUser user;
     private ConfigCategory invoiceTxnType;
     private boolean txhdPrinted;
+    private CustomerAccountDebt customerAccountDebt;
 
     /**
      * add txn detail to txn header.
@@ -327,5 +328,13 @@ public class TxnHeader {
 
     public void setTxhdPrinted(boolean txhdPrinted) {
         this.txhdPrinted = txhdPrinted;
+    }
+
+    public CustomerAccountDebt getCustomerAccountDebt() {
+        return customerAccountDebt;
+    }
+
+    public void setCustomerAccountDebt(CustomerAccountDebt customerAccountDebt) {
+        this.customerAccountDebt = customerAccountDebt;
     }
 }

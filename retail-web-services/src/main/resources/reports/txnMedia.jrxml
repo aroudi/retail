@@ -17,37 +17,37 @@
 		<band height="5" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="28" splitType="Stretch">
+		<band height="23" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="282" height="20" uuid="20865499-025c-41af-a732-334f8f6896e2"/>
+				<reportElement x="5" y="0" width="104" height="20" uuid="20865499-025c-41af-a732-334f8f6896e2"/>
 				<textElement>
 					<font fontName="SansSerif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tender]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="282" y="0" width="50" height="20" uuid="28b2fa4b-b751-4742-9fd5-da5829bdfbe0"/>
+				<reportElement x="134" y="1" width="50" height="20" uuid="28b2fa4b-b751-4742-9fd5-da5829bdfbe0"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
 			<line>
-				<reportElement x="1" y="21" width="492" height="1" uuid="b22075e6-cc95-4c50-9c07-5c4c6bc11917"/>
+				<reportElement x="1" y="21" width="183" height="1" uuid="b22075e6-cc95-4c50-9c07-5c4c6bc11917"/>
 			</line>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
 			<line>
-				<reportElement mode="Opaque" x="1" y="18" width="492" height="1" uuid="af4e9b8c-e319-44da-ae87-2fff70f14f25"/>
+				<reportElement mode="Opaque" x="1" y="18" width="183" height="1" uuid="af4e9b8c-e319-44da-ae87-2fff70f14f25"/>
 			</line>
-			<textField>
-				<reportElement x="3" y="2" width="269" height="13" uuid="905c75f8-e7e9-4678-8cbb-98b359cccbcb"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="8" y="2" width="101" height="13" uuid="905c75f8-e7e9-4678-8cbb-98b359cccbcb"/>
 				<textFieldExpression><![CDATA[$F{paymentMedia}.getPaymName()]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="282" y="2" width="201" height="13" uuid="aac94a9d-1142-4ff1-9ccd-7c291216cfe7"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="134" y="2" width="50" height="13" uuid="aac94a9d-1142-4ff1-9ccd-7c291216cfe7"/>
 				<textFieldExpression><![CDATA[$F{txmdAmountLocal}]]></textFieldExpression>
 			</textField>
 		</band>

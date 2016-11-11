@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
+	<property name="ireport.zoom" value="1.3310000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="265"/>
+	<subDataset name="Table Dataset 1" uuid="34d645cf-a029-4a91-b796-5f67f4c09de0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
+	</parameter>
+	<field name="txhdTxnNr" class="java.lang.String"/>
+	<field name="txhdOrigTxnNr" class="java.lang.String"/>
+	<field name="txhdState" class="au.com.biztune.retail.domain.ConfigCategory">
+		<fieldDescription><![CDATA[txhdState]]></fieldDescription>
+	</field>
+	<field name="txhdTxnType" class="au.com.biztune.retail.domain.ConfigCategory">
+		<fieldDescription><![CDATA[txhdTxnType]]></fieldDescription>
+	</field>
+	<field name="customer" class="au.com.biztune.retail.domain.Customer">
+		<fieldDescription><![CDATA[customer]]></fieldDescription>
+	</field>
+	<field name="appUser" class="au.com.biztune.retail.domain.AppUser">
+		<fieldDescription><![CDATA[user]]></fieldDescription>
+	</field>
+	<field name="customerAccountDebt" class="au.com.biztune.retail.domain.CustomerAccountDebt">
+		<fieldDescription><![CDATA[customerAccountDebt]]></fieldDescription>
+	</field>
+	<field name="txhdTradingDate" class="java.sql.Timestamp"/>
+	<field name="txhdValueGross" class="java.lang.Double"/>
+	<field name="txhdValueNett" class="java.lang.Double"/>
+	<field name="txhdValueDue" class="java.lang.Double"/>
+	<field name="txhdValRounding" class="java.lang.Double"/>
+	<field name="txhdValueTax" class="java.lang.Double"/>
+	<field name="txnDetails" class="java.util.List"/>
+	<field name="txnMedias" class="java.util.List"/>
+	<field name="txhdDlvAddress" class="java.lang.String"/>
+	<field name="txhdContactPerson" class="java.lang.String"/>
+	<field name="txhdContactPhone" class="java.lang.String"/>
+	<field name="txhdPrinted" class="java.lang.Boolean"/>
+	<variable name="Today" class="java.lang.String">
+		<variableExpression><![CDATA[(new SimpleDateFormat("yyyy/MM/dd")).format(new Date())]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="298" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="3" y="161" width="544" height="69" uuid="fd08622a-89f2-40f4-bd68-1b51a5d0479b"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="185" y="127" width="39" height="20" backcolor="#CCCCCC" uuid="79611a70-47fd-4f2a-965b-b288bc3c197f"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="3" y="127" width="69" height="20" backcolor="#CCCCCC" uuid="1a59dd21-01c6-4cc5-a402-07b4c2b4cc0b"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="73" y="127" width="99" height="20" uuid="ebf3d317-de8f-4afd-9b3b-37e37c8293ee"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="188" y="129" width="33" height="20" uuid="cfde9512-91ad-4a73-bd17-4712de0fd222"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="164" width="70" height="20" uuid="5be207ba-922b-4096-90f0-bf00f38ba3cd"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ordered By:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="77" y="129" width="95" height="20" uuid="c3a535cb-2a2f-4ca4-af61-d72a4cec4893"/>
+				<textFieldExpression><![CDATA[$F{txhdTxnNr}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="77" y="164" width="478" height="20" uuid="c6a17c75-702a-440d-922c-66d1ad3a5d95"/>
+				<textFieldExpression><![CDATA[$F{customer}.getCompanyName()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="3" y="25" width="552" height="1" uuid="d7a4a462-b8a3-4239-a3c0-b7841365da18"/>
+			</line>
+			<staticText>
+				<reportElement x="3" y="4" width="335" height="27" uuid="b568ab6b-9d22-41b1-8c8b-51162e99edec"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JOMON ARCHITECTURAL HARDWARE PTY LTD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="32" width="34" height="15" uuid="2494cd86-c344-4f03-be21-e23dc26f49c2"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[A.B.N.:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="44" y="33" width="90" height="15" uuid="32e3079d-2ef2-4432-b404-cdea73be7b2a"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[ 92 084 941 266]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="46" width="180" height="15" uuid="1e14c108-956d-4d59-9f72-144dbe9b2d33"/>
+				<text><![CDATA[32 Spencer St, Five Dock NSW 2046]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="61" width="203" height="17" uuid="fabb39e3-fbd3-4eef-b2cb-1a53b930918d"/>
+				<text><![CDATA[PH: +61 2  9747 0088     FAX: +61 2 9747 4488]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="128" width="69" height="20" uuid="10d9aa5a-6740-4f54-994d-6b454160b053"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Order No:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="224" y="127" width="128" height="20" uuid="22c266ce-e128-4022-a132-0ac4e0325675"/>
+			</rectangle>
+			<textField isBlankWhenNull="true">
+				<reportElement x="227" y="129" width="128" height="20" uuid="727a8bb3-0b39-443d-a56a-5fe2929bea8c"/>
+				<textFieldExpression><![CDATA[$F{txhdTradingDate}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="363" y="127" width="69" height="20" backcolor="#CCCCCC" uuid="5ddf472e-18cd-4f75-a068-e19be2d8be95"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="431" y="127" width="116" height="20" uuid="631e521c-3a1b-4745-b1e4-b1022d75a8e2"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="363" y="129" width="69" height="20" uuid="0e5b2791-bc90-47af-9716-92e3d02384ce"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Served By:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="37" y="185" width="507" height="20" uuid="6d8c9d4f-6b3e-44ff-a1fd-b37382661c7d"/>
+				<textFieldExpression><![CDATA[$F{customer}.getAddress()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="7" y="207" width="92" height="20" uuid="cadf6c3b-5b44-4fb7-85f5-861b5335536f"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Customer ABN:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="105" y="209" width="132" height="18" uuid="c7629489-ee70-43a6-8d66-12f5cbd3b5f6"/>
+				<textFieldExpression><![CDATA[$F{customer}.getCode()]]></textFieldExpression>
+			</textField>
+			<rectangle radius="10">
+				<reportElement x="3" y="234" width="544" height="60" uuid="24313f60-8b60-4e81-a4cc-0bd891fbbe80"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="8" y="234" width="59" height="20" uuid="8416f0f6-c6ba-4e14-b44d-03cdf165a9ea"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Deliver To]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="75" y="234" width="109" height="20" uuid="67ceddfd-2bd2-409a-bb0a-2b553252efd5"/>
+				<textFieldExpression><![CDATA[$F{txhdContactPerson}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="37" y="254" width="510" height="20" uuid="77aae85e-f29b-4b77-a06a-81b75cdd9cf8"/>
+				<textFieldExpression><![CDATA[$F{txhdDlvAddress}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="40" y="273" width="311" height="20" uuid="e9d06ae5-8d30-450e-a84f-7119add2f369"/>
+				<textFieldExpression><![CDATA[$F{txhdContactPhone}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="273" width="28" height="20" uuid="5b9c040a-67b7-485e-b407-dd6c9568fd9c"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PH:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="255" y="207" width="22" height="20" uuid="1f16e6b9-ade6-472c-9193-b345cb91aec0"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PH:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="407" y="207" width="40" height="20" uuid="0cdea0dc-80b4-400a-9ede-58f19a785196"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fax:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="279" y="209" width="121" height="18" uuid="4cabeab9-dec1-4dcb-bf09-8fc12230355f"/>
+				<textFieldExpression><![CDATA[$F{customer}.getPhone()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="447" y="209" width="100" height="18" uuid="e832895b-1e24-4baa-b7ca-dc52fdcee83f"/>
+				<textFieldExpression><![CDATA[$F{customer}.getFax()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="439" y="129" width="100" height="20" uuid="bc5ce2cd-5c07-4961-847d-a421dd5c66fb"/>
+				<textFieldExpression><![CDATA[$F{appUser} == null ? " " : $F{appUser}.getUsrFirstName() + " " + $F{appUser}.getUsrSurName()]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="363" y="98" width="69" height="20" backcolor="#CCCCCC" uuid="71741faa-acd2-4c52-8730-b72025dd6ad3"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="432" y="98" width="116" height="20" uuid="cd132aed-c4cf-4b00-bea5-0f54ce8d3fdf"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="365" y="99" width="69" height="20" uuid="b3940ea8-e7c6-483e-96d1-cda85db711b7"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="436" y="100" width="113" height="20" uuid="9d79cd44-b0bd-4e44-bcc0-b50bece8b125"/>
+				<textFieldExpression><![CDATA[$F{txhdState}.getDisplayName()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="7" y="83" width="317" height="38" uuid="ddac7a03-e7d8-49b3-bd88-bc4c94e9e7f3"/>
+				<textElement>
+					<font size="20" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{txhdTxnType}.getCategoryCode().equals("TXN_TYPE_QUOTE")?"Quote":"Sale Order"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="150" splitType="Stretch">
+			<subreport>
+				<reportElement x="11" y="12" width="536" height="126" uuid="3141b3cf-f686-4318-a72a-aa51bccee833"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
+                      ($F{txnDetails})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "txnLine.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="200" splitType="Stretch">
+			<rectangle>
+				<reportElement x="12" y="12" width="259" height="182" uuid="a211eed2-5cb1-411a-9513-623e50dc5fca"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="12" y="12" width="259" height="23" backcolor="#CCCCCC" uuid="5284379e-5b99-40c2-a5f3-a63c88f88073"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="279" y="12" width="265" height="182" uuid="f3c26329-f8b4-4173-96e9-c09a03e5047a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="279" y="12" width="265" height="24" backcolor="#CCCCCC" uuid="722ca04d-7419-4038-94e5-d34ccee836c0"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="86" y="16" width="97" height="20" uuid="9788c33e-25e3-4534-975a-eaecca5c33cc"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Payment Detail]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="389" y="15" width="97" height="20" uuid="ce22ab1d-f837-4b01-b98b-de7e4b23729f"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="286" y="42" width="59" height="20" uuid="d241d7bb-a5e0-41db-8455-165001428752"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Subtotal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="286" y="64" width="59" height="20" uuid="d68ab41f-1e43-4f0e-abed-10808c271256"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rounding]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="286" y="86" width="59" height="20" uuid="a06db3d4-384d-4ece-a0f3-2063802ed5f5"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tax]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="286" y="107" width="91" height="20" uuid="de5f702d-ee91-4427-aabc-9d361596c316"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Inc GST]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="286" y="142" width="91" height="20" uuid="c52b378e-fc64-4ac3-9c66-0a7b9a76aaff"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total paid to date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="287" y="170" width="91" height="20" uuid="4091106c-07ee-43ca-9348-57fa60456549"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Balance]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="394" y="170" width="137" height="20" uuid="097a9b9c-e07b-4050-9038-58dc199ce355"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txhdValueDue})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="394" y="86" width="137" height="20" uuid="2058445d-53d8-4e53-aaee-8ebd6fd9a6f1"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txhdValueNett} - $F{txhdValueGross})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="394" y="42" width="138" height="20" uuid="dc391738-a783-4898-be7c-c0a5963b246f"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txhdValueGross})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="394" y="64" width="137" height="20" uuid="58339031-5ea7-439e-9662-49a4c5f26ce9"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txhdValRounding})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="394" y="107" width="137" height="20" uuid="d8a6b86d-ca4b-41c7-ab0d-7f1fb1894145"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txhdValueNett})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="394" y="142" width="137" height="20" uuid="858e75d3-c935-45a0-9f30-b6a3db1c6405"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txhdValueNett} - $F{txhdValueDue})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="290" y="132" width="244" height="1" uuid="854d81e1-2cb9-48c0-8e80-fdd8fc246e4c"/>
+			</line>
+			<subreport>
+				<reportElement x="21" y="40" width="242" height="144" uuid="3141b3cf-f686-4318-a72a-aa51bccee833"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
+                      ($F{txnMedias})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "txnMedia.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="44" splitType="Stretch">
+			<textField>
+				<reportElement x="5" y="4" width="155" height="20" uuid="81f3a429-edda-4822-b3e7-427cea82603e"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{txhdPrinted})?"Duplicate copy ":""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="449" y="4" width="100" height="20" uuid="246638a7-3756-4056-8797-067841ceff56"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Printed " + $V{Today}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="234" y="22" width="40" height="20" uuid="50dfc2d8-de6c-4a97-8b06-6966d931fdff"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Page:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="275" y="22" width="100" height="20" uuid="08e6cd97-fdfa-4560-bf9d-7b5cb99417d0"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="4" splitType="Stretch"/>
+	</summary>
+</jasperReport>

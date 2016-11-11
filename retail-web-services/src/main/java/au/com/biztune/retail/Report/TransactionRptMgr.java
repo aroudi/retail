@@ -1,9 +1,11 @@
 package au.com.biztune.retail.report;
 
 import au.com.biztune.retail.dao.ConfigCategoryDao;
+import au.com.biztune.retail.dao.CustomerAccountDebtDao;
 import au.com.biztune.retail.dao.InvoiceDao;
 import au.com.biztune.retail.dao.TxnDao;
 import au.com.biztune.retail.domain.ConfigCategory;
+import au.com.biztune.retail.domain.CustomerAccountDebt;
 import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.util.IdBConstant;
 import net.sf.jasperreports.engine.*;
@@ -40,10 +42,13 @@ public class TransactionRptMgr {
     private InvoiceDao invoiceDao;
 
     private Resource reportPath;
-    private String reportHeaderFileName;
+    private String invoiceHeaderFileName;
+    private String saleOrderHeaderFileName;
     private String reportTxnLineFileName;
     private String reportTxnMediaFileName;
 
+    @Autowired
+    private CustomerAccountDebtDao customerAccountDebtDao;
 
     /**
      * convert SaleOrder to PDF and return Outputstream.
@@ -61,7 +66,7 @@ public class TransactionRptMgr {
             final List<TxnHeader> txnHeaders = new ArrayList<TxnHeader>();
             txnHeaders.add(txnHeader);
             txnDao.updateTxnPrintStatus(txhdId, true);
-            return createTransactionPdfStream(txnHeaders);
+            return createTransactionPdfStream(txnHeaders, IdBConstant.TXN_TYPE_SALE);
         } catch (Exception e) {
             logger.error("Exception in returning transaction header");
             return null;
@@ -83,9 +88,15 @@ public class TransactionRptMgr {
             if (txnState != null) {
                 txnHeader.setTxhdState(txnState);
             }
+            //get account debt for customer on this transaction
+            final CustomerAccountDebt customerAccountDebt = customerAccountDebtDao.getCustomerAccountDebtPerCustomerIdAndTxhdId(txnHeader.getCustomer().getId(), inoiceId);
+
+            if (customerAccountDebt != null) {
+                txnHeader.setCustomerAccountDebt(customerAccountDebt);
+            }
             txnHeaders.add(txnHeader);
             invoiceDao.updateTxnPrintStatus(inoiceId, true);
-            return createTransactionPdfStream(txnHeaders);
+            return createTransactionPdfStream(txnHeaders, IdBConstant.TXN_TYPE_INVOICE);
         } catch (Exception e) {
             logger.error("Exception in returning transaction header");
             return null;
@@ -95,9 +106,10 @@ public class TransactionRptMgr {
     /**
      * export Transaction to PDF.
      * @param txnHeaders txnHeaders
+     * @param txnType txnType
      * @return StreamingOutput
      */
-    public StreamingOutput createTransactionPdfStream(List<TxnHeader> txnHeaders) {
+    public StreamingOutput createTransactionPdfStream(List<TxnHeader> txnHeaders, String txnType) {
         StreamingOutput streamingOutput = null;
         try {
             final String pathStr = reportPath.getURL().getPath();
@@ -107,8 +119,15 @@ public class TransactionRptMgr {
             final String reportTxnLineJasperName = pathStr + "/" + reportTxnLineFileName + ".jasper";
             final String reportTxnMediaJrxmlName = pathStr + "/" + reportTxnMediaFileName + ".jrxml";
             final String reportTxnMediaJasperName = pathStr + "/" + reportTxnMediaFileName + ".jasper";
-            final String reportHeaderJrxmlName = pathStr + "/" + reportHeaderFileName + ".jrxml";
-            final String outputFile = pathStr + "/" + reportHeaderFileName + ".pdf";
+            String reportHeaderJrxmlName = "";
+            String outputFile = "";
+            if (txnType.equals(IdBConstant.TXN_TYPE_INVOICE)) {
+                reportHeaderJrxmlName = pathStr + "/" + invoiceHeaderFileName + ".jrxml";
+                outputFile = pathStr + "/" + invoiceHeaderFileName + ".pdf";
+            } else {
+                reportHeaderJrxmlName = pathStr + "/" + saleOrderHeaderFileName + ".jrxml";
+                outputFile = pathStr + "/" + saleOrderHeaderFileName + ".pdf";
+            }
             /* Compile the master and sub report */
             JasperCompileManager.compileReportToFile(reportTxnLineJrxmlName, reportTxnLineJasperName);
             JasperCompileManager.compileReportToFile(reportTxnMediaJrxmlName, reportTxnMediaJasperName);
@@ -148,14 +167,6 @@ public class TransactionRptMgr {
         this.reportPath = reportPath;
     }
 
-    public String getReportHeaderFileName() {
-        return reportHeaderFileName;
-    }
-
-    public void setReportHeaderFileName(String reportHeaderFileName) {
-        this.reportHeaderFileName = reportHeaderFileName;
-    }
-
     public String getReportTxnLineFileName() {
         return reportTxnLineFileName;
     }
@@ -170,5 +181,21 @@ public class TransactionRptMgr {
 
     public void setReportTxnMediaFileName(String reportTxnMediaFileName) {
         this.reportTxnMediaFileName = reportTxnMediaFileName;
+    }
+
+    public String getSaleOrderHeaderFileName() {
+        return saleOrderHeaderFileName;
+    }
+
+    public void setSaleOrderHeaderFileName(String saleOrderHeaderFileName) {
+        this.saleOrderHeaderFileName = saleOrderHeaderFileName;
+    }
+
+    public String getInvoiceHeaderFileName() {
+        return invoiceHeaderFileName;
+    }
+
+    public void setInvoiceHeaderFileName(String invoiceHeaderFileName) {
+        this.invoiceHeaderFileName = invoiceHeaderFileName;
     }
 }

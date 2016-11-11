@@ -38,28 +38,28 @@
 				<text><![CDATA[Product]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="170" y="0" width="50" height="20" uuid="28b2fa4b-b751-4742-9fd5-da5829bdfbe0"/>
+				<reportElement x="189" y="0" width="57" height="20" uuid="28b2fa4b-b751-4742-9fd5-da5829bdfbe0"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Size]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="220" y="0" width="53" height="20" uuid="27de64bb-47e4-495b-bd02-6018465554ca"/>
+				<reportElement x="246" y="0" width="53" height="20" uuid="27de64bb-47e4-495b-bd02-6018465554ca"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Price]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="321" y="0" width="39" height="20" uuid="5829bccb-db88-45fe-af29-b3f4d9fe9968"/>
+				<reportElement x="369" y="0" width="39" height="20" uuid="5829bccb-db88-45fe-af29-b3f4d9fe9968"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Qty]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="430" y="0" width="67" height="20" uuid="50285ddb-bd42-48a6-940f-738486f3d361"/>
+				<reportElement x="409" y="0" width="84" height="20" uuid="50285ddb-bd42-48a6-940f-738486f3d361"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -69,18 +69,11 @@
 				<reportElement x="1" y="21" width="492" height="1" uuid="b22075e6-cc95-4c50-9c07-5c4c6bc11917"/>
 			</line>
 			<staticText>
-				<reportElement x="272" y="0" width="48" height="20" uuid="bcf6ebcb-139a-4f95-a5c9-32302fb218f7"/>
+				<reportElement x="305" y="0" width="62" height="20" uuid="bcf6ebcb-139a-4f95-a5c9-32302fb218f7"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tax]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="359" y="0" width="57" height="20" uuid="6bb5c7b2-20fa-4797-bb6a-6ecb9a0aa95b"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Surcharg]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -89,33 +82,29 @@
 			<line>
 				<reportElement mode="Opaque" x="1" y="15" width="492" height="1" uuid="af4e9b8c-e319-44da-ae87-2fff70f14f25"/>
 			</line>
-			<textField>
-				<reportElement x="3" y="0" width="169" height="13" uuid="905c75f8-e7e9-4678-8cbb-98b359cccbcb"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="3" y="0" width="186" height="13" uuid="905c75f8-e7e9-4678-8cbb-98b359cccbcb"/>
 				<textFieldExpression><![CDATA[$F{product}.getProdName()]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="170" y="0" width="52" height="13" uuid="aac94a9d-1142-4ff1-9ccd-7c291216cfe7"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="189" y="0" width="57" height="13" uuid="aac94a9d-1142-4ff1-9ccd-7c291216cfe7"/>
 				<textFieldExpression><![CDATA[$F{unitOfMeasure}.getUnomDesc()]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="272" y="0" width="48" height="13" uuid="c3eaedc5-045f-437a-9c53-8082335d24eb"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="305" y="0" width="62" height="13" uuid="c3eaedc5-045f-437a-9c53-8082335d24eb"/>
 				<textFieldExpression><![CDATA[$F{txdeTax} * $F{txdeValueGross}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="430" y="0" width="70" height="13" uuid="525ca675-4786-491a-bca8-56c862ac11ca"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="409" y="0" width="83" height="13" uuid="525ca675-4786-491a-bca8-56c862ac11ca"/>
 				<textFieldExpression><![CDATA[$F{txdePriceSold}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="220" y="0" width="55" height="13" uuid="8baf56cd-29ae-4278-9eb6-c2c937734a3d"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="247" y="0" width="55" height="13" uuid="8baf56cd-29ae-4278-9eb6-c2c937734a3d"/>
 				<textFieldExpression><![CDATA[$F{txdeValueGross}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="321" y="0" width="39" height="13" uuid="0d27deda-aaa7-49a1-a3e1-0ff46fab9851"/>
-    			<textFieldExpression><![CDATA[ ($F{txdeDetailType}.getCategoryCode().equals("TXN_LINE_SALE")) ? ($F{txdeQuantitySold}) : ($F{txdeQtyTotalRefund})]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="360" y="0" width="56" height="13" uuid="64c5292c-6a80-4e2f-b882-9667296013ab"/>
-				<textFieldExpression><![CDATA[ ($F{txidSurcharge} * $F{txdeValueGross})/100]]></textFieldExpression>
+			<textField isBlankWhenNull="true">
+				<reportElement x="369" y="0" width="39" height="13" uuid="0d27deda-aaa7-49a1-a3e1-0ff46fab9851"/>
+				<textFieldExpression><![CDATA[($F{txdeDetailType}.getCategoryCode().equals("TXN_LINE_SALE")) ? ($F{txdeQuantitySold}) : ($F{txdeQtyTotalRefund})]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
