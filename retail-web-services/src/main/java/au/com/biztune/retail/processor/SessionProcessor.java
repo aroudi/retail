@@ -3,6 +3,7 @@ package au.com.biztune.retail.processor;
 import au.com.biztune.retail.dao.CashSessionDao;
 import au.com.biztune.retail.dao.ConfigCategoryDao;
 import au.com.biztune.retail.domain.*;
+import au.com.biztune.retail.service.AccountingExtractService;
 import au.com.biztune.retail.service.CashSessionService;
 import au.com.biztune.retail.service.StockService;
 import au.com.biztune.retail.service.TotalerService;
@@ -42,6 +43,9 @@ public class SessionProcessor implements Processor {
 
     @Autowired
     private StockService stockService;
+
+    @Autowired
+    private AccountingExtractService accountingExtractService;
     /**
      * process the incoming session requests.
      * @param request request
@@ -66,6 +70,9 @@ public class SessionProcessor implements Processor {
 
             //update stock
             stockService.processTxnForStockUpdate(sessionRequest.getTxnHeader());
+
+            //extract accounting journal entries
+            accountingExtractService.extractAccountingFiguresFromTxn(sessionRequest.getTxnHeader());
 
             response.setSucceeded(true);
             return response;

@@ -61,6 +61,10 @@
         <typeAlias type="au.com.biztune.retail.domain.TotalSaleOperator" alias="TotalSaleOperator" />
         <typeAlias type="au.com.biztune.retail.domain.TotalTaxGroup" alias="TotalTaxGroup" />
         <typeAlias type="au.com.biztune.retail.domain.ConfigType" alias="ConfigType" />
+        <typeAlias type="au.com.biztune.retail.domain.Account" alias="Account" />
+        <typeAlias type="au.com.biztune.retail.domain.JournalEntry" alias="JournalEntry" />
+        <typeAlias type="au.com.biztune.retail.domain.JournalSupport" alias="JournalSupport" />
+        <typeAlias type="au.com.biztune.retail.domain.JournalRule" alias="JournalRule" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />
@@ -92,5 +96,6 @@
         <mapper resource="maps/CustomerAccountDebtMapper.xml" />
         <mapper resource="maps/CashSessionMapper.xml" />
         <mapper resource="maps/TotalerMapper.xml" />
+        <mapper resource="maps/AccountingMapper.xml" />
     </mappers>
 </configuration>
