@@ -1,5 +1,6 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.dao.AccountingDao;
 import au.com.biztune.retail.dao.CashSessionDao;
 import au.com.biztune.retail.dao.ConfigCategoryDao;
 import au.com.biztune.retail.dao.PaymentMediaDao;
@@ -50,6 +51,9 @@ public class CashSessionServiceImpl implements CashSessionService {
 
     @Autowired
     private PaymentMediaDao paymentMediaDao;
+
+    @Autowired
+    private AccountingDao accountingDao;
 
     /**
      * create cash session for user.
@@ -338,10 +342,10 @@ public class CashSessionServiceImpl implements CashSessionService {
             final Timestamp currentDate = new Timestamp(new Date().getTime());
             reconciliationForm.getCashSession().setCssnReconcileDate(currentDate);
             cashSessionDao.updateCashSessionStatus(reconciliationForm.getCashSession());
-
+            //enter journal entry
+            processReconciliationDataForJournalEntry(appUser.getId(), reconciliationForm.getSessionEventDetailList());
             //return response
             return commonResponse;
-
         } catch (Exception e) {
             logger.error("Exception in Reconciliation session", e);
             commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
@@ -358,7 +362,7 @@ public class CashSessionServiceImpl implements CashSessionService {
     public List<SessionEventDetail> fetchSessionDataForReconciliation(long cashSessionId) {
         try {
             //first fetch all payment medias.
-            final List<PaymentMedia> paymentMedias = paymentMediaDao.getAllPaymentMedias();
+            final List<PaymentMedia> paymentMedias = paymentMediaDao.getPaymentMediasForReconciliation();
             if (paymentMedias == null) {
                 logger.error("not able to find any payment media. something goes wrong");
                 return null;
@@ -377,7 +381,6 @@ public class CashSessionServiceImpl implements CashSessionService {
                 sessionEventDetail.setCssnSessionId(cashSessionId);
                 //fetch payment media data for session.
                 sessionTotal = cashSessionDao.getSessionTotalPerSessionIdAndPaymentMediaId(cashSessionId, paymentMedia.getId());
-
                 if (sessionTotal == null) {
                     sessionEventDetail.setMediaCountExpected(0.00);
                     sessionEventDetail.setMediaValueExpected(0.00);
@@ -385,7 +388,6 @@ public class CashSessionServiceImpl implements CashSessionService {
                     sessionEventDetail.setMediaCountExpected(sessionTotal.getMediaTotalCount());
                     sessionEventDetail.setMediaValueExpected(sessionTotal.getMediaTotalValue());
                 }
-
                 sessionEventDetail.setMediaValueActual(0.00);
                 sessionEventDetail.setMediaCountActual(0.00);
                 sessionEventDetail.setMediaType(paymentMedia.getMediaType());
@@ -454,6 +456,92 @@ public class CashSessionServiceImpl implements CashSessionService {
         } catch (Exception e) {
             logger.error("Exception in retreiving reconciled sessions");
             return null;
+        }
+    }
+
+    private void processReconciliationDataForJournalEntry(long userid, List<SessionEventDetail> sessionEventDetailList) {
+        try {
+            double actualTotal = 0.00;
+            double expectedTotal = 0.00;
+            boolean credit = true;
+            long cashSessionId = 0;
+            long sessionEventId = 0;
+            long orguId = 0;
+            final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SESSION_EVENT, IdBConstant.SESSION_EVENT_TYPE_RECONCILE);
+            //process each session event.
+            for (SessionEventDetail sessionEventDetail : sessionEventDetailList) {
+                if (sessionEventDetail == null) {
+                    continue;
+                }
+                cashSessionId = sessionEventDetail.getCssnSessionId();
+                sessionEventId = sessionEventDetail.getSeevId();
+                orguId = sessionEventDetail.getOrguId();
+                if (sessionEventDetail.getMediaValueActual() != 0) {
+                    if (sessionEventDetail.getMediaValueActual() > 0) {
+                        credit = false;
+                    } else {
+                        credit = true;
+                    }
+                    insertJournalEntry(orguId, userid, cashSessionId,
+                            txnType, sessionEventId, IdBConstant.JOURNAL_ACTION_ACTUAL_BANK_ACCOUNT,
+                            sessionEventDetail.getPaymentMedia().getPaymName(), Math.abs(sessionEventDetail.getMediaValueActual()), credit);
+                }
+                actualTotal = actualTotal + sessionEventDetail.getMediaValueActual();
+                expectedTotal = expectedTotal + sessionEventDetail.getMediaValueExpected();
+            }
+            if (actualTotal - expectedTotal > 0) {
+                credit = true;
+            } else {
+                credit = false;
+            }
+            insertJournalEntry(orguId, userid, cashSessionId,
+                    txnType, sessionEventId, IdBConstant.JOURNAL_ACTION_TILL_ADJUSTMENT, "", Math.abs(actualTotal - expectedTotal), credit);
+
+        } catch (Exception e) {
+            logger.error("Error in extracting journal entry from reconciliation", e);
+        }
+    }
+
+    /**
+     * insert journal entry.
+     * @param orguId orguId
+     * @param userId userId
+     * @param cashSessionId cashSessionId
+     * @param txnType txnType
+     * @param seevId seevId
+     * @param journalAction journalAction
+     * @param amount amount
+     * @param isCredit isCredit
+     */
+    private void insertJournalEntry(long orguId, long userId, long cashSessionId, ConfigCategory txnType,
+                                                  long seevId, String journalAction, String accountName, double amount, boolean isCredit)
+    {
+        JournalEntry journalEntry = null;
+        JournalRule journalRule;
+        final List<JournalRule> journalRuleList = accountingDao.getJournalRuleByOrguIdAndTxnTypeAndAction(orguId
+                , txnType.getCategoryCode(), journalAction);
+        if (journalRuleList != null && journalRuleList.size() > 0) {
+            journalRule = journalRuleList.get(0);
+            journalEntry = new JournalEntry();
+            journalEntry.setSrcTxnType(txnType.getId());
+            journalEntry.setSrcTxnId(seevId);
+            journalEntry.setAppUserId(userId);
+            journalEntry.setOrguId(orguId);
+            journalEntry.setCssnSessionId(cashSessionId);
+            journalEntry.setJrnActual(journalRule.isJrnrActual());
+            journalEntry.setAccId(journalRule.getAccount().getId());
+            journalEntry.setJrnAccCode(journalRule.getJrnrAccCode());
+            if (!accountName.isEmpty()) {
+                journalEntry.setJrnAccDesc(accountName);
+            } else {
+                journalEntry.setJrnAccDesc(journalRule.getJrnrAccDesc());
+            }
+            if (isCredit) {
+                journalEntry.setJrnCredit(amount);
+            } else {
+                journalEntry.setJrnDebit(amount);
+            }
+            accountingDao.insertJournalEntry(journalEntry);
         }
     }
 }

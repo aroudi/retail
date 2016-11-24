@@ -26,6 +26,7 @@
         <result column="JRN_ACC_DESC" property="jrnAccDesc" />
         <result column="JRN_DEBIT" property="jrnDebit" />
         <result column="JRN_CREDIT" property="jrnCredit" />
+        <result column="JRN_ACTUAL" property="jrnActual" />
     </resultMap>
 
     <resultMap id="journalSupportMap" type="JournalSupport" >
@@ -42,6 +43,7 @@
         <result column="JRNR_ACC_DESC" property="jrnrAccDesc" />
         <result column="JRNR_DEBIT" property="jrnrDebit" />
         <result column="JRNR_CREDIT" property="jrnrCredit" />
+        <result column="JRNR_ACTUAL" property="jrnrActual" />
         <association property="account" column="ACC_ID" select="getAccountById" />
     </resultMap>
 
@@ -65,7 +67,8 @@
         ${alias}.JRN_ACC_CODE,
         ${alias}.JRN_ACC_DESC,
         ${alias}.JRN_DEBIT,
-        ${alias}.JRN_CREDIT
+        ${alias}.JRN_CREDIT,
+        ${alias}.JRN_ACTUAL
     </sql>
 
     <sql id="journalSupportColumns">
@@ -82,7 +85,8 @@
         ${alias}.JRNR_ACC_CODE,
         ${alias}.JRNR_ACC_DESC,
         ${alias}.JRNR_DEBIT,
-        ${alias}.JRNR_CREDIT
+        ${alias}.JRNR_CREDIT,
+        ${alias}.JRNR_ACTUAL
     </sql>
 
     <insert id="insertAccount" parameterType="Account" useGeneratedKeys="true" keyProperty="id" keyColumn="ACC_ID">
@@ -132,7 +136,8 @@
         JRN_ACC_CODE,
         JRN_ACC_DESC,
         JRN_DEBIT,
-        JRN_CREDIT
+        JRN_CREDIT,
+        JRN_ACTUAL
         ) VALUES (
         #{orguId}
         <if test="cssnSessionId != null">
@@ -190,6 +195,12 @@
         <if test="jrnCredit == null">
             ,null
         </if>
+        <if test="jrnActual != null">
+            ,#{jrnActual}
+        </if>
+        <if test="jrnActual == null">
+            ,1
+        </if>
         )
     </insert>
 
@@ -213,7 +224,8 @@
         JRNR_ACC_CODE,
         JRNR_ACC_DESC,
         JRNR_DEBIT,
-        JRNR_CREDIT
+        JRNR_CREDIT,
+        JRNR_ACTUAL
         ) VALUES (
         #{orguId}
         <if test="txnType != null">
@@ -264,6 +276,12 @@
         <if test="jrnrCredit == null">
             ,null
         </if>
+        <if test="jrnActual != null">
+            ,#{jrnActual}
+        </if>
+        <if test="jrnActual == null">
+            ,1
+        </if>
         )
     </insert>
 
@@ -287,5 +305,20 @@
             jr.ORGU_ID=#{param1} and txnType.CATEGORY_CODE = #{param2} and jrAction.CATEGORY_CODE = #{param3}
     </select>
 
-
+    <select id="accountingExportRpt" resultMap="journalEntryMap" >
+        SELECT
+        <include refid="journalEntryColumns"><property name="alias" value="je"/></include>
+        FROM
+          JOURNAL_ENTRY je INNER JOIN CASH_SESSION cs ON (je.CSSN_SESSION_ID = cs.CSSN_SESSION_ID)
+          INNER JOIN CONFIG_CATEGORY cc ON (cs.CSSN_STATUS = cc.CATEGORY_ID)
+        WHERE
+          cc.CATEGORY_CODE = 'SESSION_STATE_RECONCILED'
+        <if test="param1 != null">
+            AND
+            <foreach collection="param1" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                cs.${item.column} ${item.operator} #{item.value}
+            </foreach>
+        </if>
+    </select>
 </mapper>

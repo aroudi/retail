@@ -11,12 +11,14 @@ import java.util.List;
 public interface PaymentMediaDao {
     /**
      * get all Media types.
+     *
      * @return List of MediaType
      */
     List<MediaType> getAllMediaTypes();
 
     /**
      * get AllPaymentMedia Of Media Type with id.
+     *
      * @param mediaTypeId mediaTypeId
      * @return List of PaymentMedia
      */
@@ -24,6 +26,7 @@ public interface PaymentMediaDao {
 
     /**
      * get PaymentMedia Per Id.
+     *
      * @param paymId paymId
      * @return PaymentMedia
      */
@@ -31,6 +34,7 @@ public interface PaymentMediaDao {
 
     /**
      * get payment media by code.
+     *
      * @param paymentCode paymentCode
      * @return payment media.
      */
@@ -38,7 +42,15 @@ public interface PaymentMediaDao {
 
     /**
      * get all payment medias.
+     *
      * @return List of Payment Media.
      */
     List<PaymentMedia> getAllPaymentMedias();
+
+    /**
+     * get all payment medias for reconciliation.
+     *
+     * @return List of Payment Media.
+     */
+    List<PaymentMedia> getPaymentMediasForReconciliation();
 }

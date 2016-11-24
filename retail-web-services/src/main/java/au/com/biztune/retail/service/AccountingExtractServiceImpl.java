@@ -236,6 +236,7 @@ public class AccountingExtractServiceImpl implements AccountingExtractService {
                 journalEntry.setAppUserId(txnHeader.getUser().getId());
                 journalEntry.setOrguId(txnHeader.getOrgUnit().getId());
                 journalEntry.setCssnSessionId(cashSession.getId());
+                journalEntry.setJrnActual(journalRule.isJrnrActual());
                 if (journalRule.isJrnrDebit()) {
                     journalEntry.setAccId(journalRule.getAccount().getId());
                     journalEntry.setJrnAccCode(journalRule.getJrnrAccCode());

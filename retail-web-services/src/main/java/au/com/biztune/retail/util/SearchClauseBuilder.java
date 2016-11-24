@@ -37,6 +37,9 @@ public class SearchClauseBuilder {
                 if ("DELIVERY_NOTE_HEADER".equals(searchTable)) {
                     searchClause = new SearchClause("DELN_DELIVERY_DATE", " >= ", dateFrom);
                 }
+                if ("CASH_SESSION".equals(searchTable)) {
+                    searchClause = new SearchClause("CSSN_RECOCILE_DATE", " >= ", dateFrom);
+                }
                 clauseList.add(searchClause);
             }
 
@@ -54,6 +57,9 @@ public class SearchClauseBuilder {
                 if ("DELIVERY_NOTE_HEADER".equals(searchTable)) {
                     searchClause = new SearchClause("DELN_DELIVERY_DATE", " <= ", dateTo);
                 }
+                if ("CASH_SESSION".equals(searchTable)) {
+                    searchClause = new SearchClause("CSSN_RECOCILE_DATE", " <= ", dateTo);
+                }
                 clauseList.add(searchClause);
             }
             if (searchForm.getNoFrom() != null && !searchForm.getNoFrom().isEmpty()) {
@@ -69,6 +75,9 @@ public class SearchClauseBuilder {
                 if ("DELIVERY_NOTE_HEADER".equals(searchTable)) {
                     searchClause = new SearchClause("DELN_GRN", " >= ", searchForm.getNoFrom());
                 }
+                if ("CASH_SESSION".equals(searchTable)) {
+                    searchClause = new SearchClause("CSSN_SESSION_ID", " >= ", searchForm.getNoFrom());
+                }
                 clauseList.add(searchClause);
             }
             if (searchForm.getNoTo() != null && !searchForm.getNoTo().isEmpty()) {
@@ -83,6 +92,9 @@ public class SearchClauseBuilder {
                 }
                 if ("DELIVERY_NOTE_HEADER".equals(searchTable)) {
                     searchClause = new SearchClause("DELN_GRN", " <= ", searchForm.getNoTo());
+                }
+                if ("CASH_SESSION".equals(searchTable)) {
+                    searchClause = new SearchClause("CSSN_SESSION_ID", " <= ", searchForm.getNoTo());
                 }
                 clauseList.add(searchClause);
 

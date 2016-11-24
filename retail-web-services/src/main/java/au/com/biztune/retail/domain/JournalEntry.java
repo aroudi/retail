@@ -15,6 +15,7 @@ public class JournalEntry {
     private String jrnAccDesc;
     private double jrnDebit;
     private double jrnCredit;
+    private boolean jrnActual;
 
     public long getId() {
         return id;
@@ -102,5 +103,13 @@ public class JournalEntry {
 
     public void setJrnCredit(double jrnCredit) {
         this.jrnCredit = jrnCredit;
+    }
+
+    public boolean isJrnActual() {
+        return jrnActual;
+    }
+
+    public void setJrnActual(boolean jrnActual) {
+        this.jrnActual = jrnActual;
     }
 }

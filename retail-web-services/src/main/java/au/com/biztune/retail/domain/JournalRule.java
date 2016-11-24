@@ -13,6 +13,7 @@ public class JournalRule {
     private String jrnrAccDesc;
     private boolean jrnrDebit;
     private boolean jrnrCredit;
+    private boolean jrnrActual;
 
     public long getId() {
         return id;
@@ -84,5 +85,13 @@ public class JournalRule {
 
     public void setJrnrCredit(boolean jrnrCredit) {
         this.jrnrCredit = jrnrCredit;
+    }
+
+    public boolean isJrnrActual() {
+        return jrnrActual;
+    }
+
+    public void setJrnrActual(boolean jrnrActual) {
+        this.jrnrActual = jrnrActual;
     }
 }
