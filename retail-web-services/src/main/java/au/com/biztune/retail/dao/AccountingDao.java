@@ -51,4 +51,18 @@ public interface AccountingDao {
      * @return List of JournalRule
      */
     List<JournalRule> getJournalRuleByOrguIdAndTxnTypeAndAction(long orguId, String txnType, String action);
+
+    /**
+     * accounting export report.
+     * @param clauseList clauseList
+     * @return List of Journal Entry
+     */
+    List<JournalEntry> accountingExportRpt(List clauseList);
+
+    /**
+     * accounting summary export report for Accounting system.
+     * @param clauseList clauseList
+     * @return List of Journal Entry
+     */
+    List<JournalEntry> accountingSummaryExportRpt (List clauseList);
 }

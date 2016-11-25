@@ -13,6 +13,8 @@ public class GeneralSearchForm {
     private List<Long> txnTypeList;
     private long clientId;
     private long supplierId;
+    private String searchRange;
+    private String generatedBy;
 
     public String getDateFrom() {
         return dateFrom;
@@ -68,5 +70,21 @@ public class GeneralSearchForm {
 
     public void setSupplierId(long supplierId) {
         this.supplierId = supplierId;
+    }
+
+    public String getSearchRange() {
+        return searchRange;
+    }
+
+    public void setSearchRange(String searchRange) {
+        this.searchRange = searchRange;
+    }
+
+    public String getGeneratedBy() {
+        return generatedBy;
+    }
+
+    public void setGeneratedBy(String generatedBy) {
+        this.generatedBy = generatedBy;
     }
 }

@@ -137,6 +137,8 @@ var service_uri = {
     'CASH_SESSION_END_URI' : 'cashSession/endSession',
     'CASH_SESSION_ALL_RECONCILED_URI' : 'cashSession/getAllReconciledSessions',
     'CASH_SESSION_RECONCILIATION_TO_PDF_URI' : 'cashSession/reconciliation/exportPdf/',
+    'CASH_SESSION_ACCOUNTING_REPORT_URI' : 'cashSession/accountingReport',
+    'CASH_SESSION_ACCOUNTING_SUMMARY_URI' : 'cashSession/accountingSummaryReport',
     'SALE_SUMMARY_REPORT_URI' : 'saleSummaryReport/saleSummary'
 }
 

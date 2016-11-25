@@ -1545,3 +1545,9 @@ GO
 
 UPDATE PAYMENT_MEDIA SET PAYM_REC_DIFF_VAL = 0 WHERE PAYM_NAME IN ('Account', 'Unknown Card')
 go
+
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Accounting Export Report', 'accountingExportReport', 'Accounting Export Report');
+go
+
+INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'accountingExportReport' ));
+go

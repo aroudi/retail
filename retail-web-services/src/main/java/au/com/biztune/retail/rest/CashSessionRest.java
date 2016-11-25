@@ -1,13 +1,13 @@
 package au.com.biztune.retail.rest;
 
-import au.com.biztune.retail.domain.CashSession;
-import au.com.biztune.retail.domain.SessionEvent;
-import au.com.biztune.retail.domain.SessionEventDetail;
+import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.AddFloatForm;
 import au.com.biztune.retail.form.ReconciliationForm;
+import au.com.biztune.retail.report.AccountingRptMgr;
 import au.com.biztune.retail.report.ReconciliationRptMgr;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
+import au.com.biztune.retail.service.AccountingExtractService;
 import au.com.biztune.retail.service.CashSessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
@@ -36,8 +37,14 @@ public class CashSessionRest {
     @Autowired
     private ReconciliationRptMgr reconciliationRptMgr;
 
+    @Autowired
+    private AccountingExtractService accountingExtractService;
+
     @Context
     private SecurityContext securityContext;
+
+    @Autowired
+    private AccountingRptMgr accountingRptMgr;
 
     /**
      * Returns list of active Cash Sessions.
@@ -152,4 +159,36 @@ public class CashSessionRest {
             return null;
         }
     }
+    /**
+     * Accounting Report.
+     * @param searchForm searchForm
+     * @return CommonResponse
+     */
+
+    @Secured
+    @Path("/accountingReport")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<JournalEntry> searchInvoice (GeneralSearchForm searchForm) {
+        return accountingExtractService.accountingExportReport(searchForm);
+    }
+
+    /**
+     * export reconciliation report as PDF.
+     * @param generalSearchForm generalSearchForm
+     * @return Stream output.
+     */
+    @Secured
+    @Path("/accountingSummaryReport")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response exportAccountingSummaryRptToPdf(GeneralSearchForm generalSearchForm) {
+        final StreamingOutput streamingOutput = accountingRptMgr.createAccountingRptPdfStream(generalSearchForm, securityContext);
+        //purchaseOrderRptMgr.createPurchaseOrderPdfFile(pohId);
+        return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = AccountingSummaryReport" + ".pdf").build();
+    }
+
+
 }

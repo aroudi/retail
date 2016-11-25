@@ -27,4 +27,8 @@
         <property name="reportHeaderFileName" value="reconciliation" />
         <property name="reportDetailFileName" value="reconciliationLine" />
     </bean>
+    <bean id="AccountingRptMgr" class="au.com.biztune.retail.report.AccountingRptMgr">
+        <property name="reportPath" value="classpath:reports" />
+        <property name="reportHeaderFileName" value="accountingExport" />
+    </bean>
 </beans>
