@@ -323,32 +323,28 @@
     </select>
 
     <select id="accountingSummaryExportRpt" resultMap="journalEntryMap" >
-        SELECT
-        <include refid="journalEntryColumns"><property name="alias" value="je"/></include>
-        SELECT
-              je.JRN_ACC_CODE,
-              tje.JRN_ACC_DESC,
-              tje.TOTAL_DEBIT JRN_DEBIT,
-              tje.TOTAL_CREDIT JRN_CREDIT
-        FROM
-            JOURNAL_ENTRY je
-            INNER JOIN CASH_SESSION cs ON (je.CSSN_SESSION_ID = cs.CSSN_SESSION_ID)
-            INNER JOIN CONFIG_CATEGORY cc ON (cs.CSSN_STATUS = cc.CATEGORY_ID)
-            INNER JOIN (
-                    SELECT JRN_ACC_DESC, SUM (JRN_DEBIT) TOTAL_DEBIT, SUM ( JRN_CREDIT) TOTAL_CREDIT
-                    FROM JOURNAL_ENTRY
-                    GROUP BY JRN_ACC_DESC
-            ) tje
-        ON (je.JRN_ACC_DESC = tje.JRN_ACC_DESC)
-        WHERE
-            cc.CATEGORY_CODE = 'SESSION_STATE_RECONCILED' and je.JRN_ACTUAL = 1
-        <if test="list != null">
-            AND
-            <foreach collection="list" item="item" index="index"
-                     open ="(" separator=" AND " close=")">
-                cs.${item.column} ${item.operator} #{item.value}
-            </foreach>
-        </if>
+        SELECT distinct je.JRN_ACC_CODE, tje.JRN_ACC_DESC, tje.TOTAL_DEBIT JRN_DEBIT, tje.TOTAL_CREDIT JRN_CREDIT
+          FROM JOURNAL_ENTRY je INNER JOIN
+          (
+            SELECT JRN_ACC_DESC,SUM (JRN_DEBIT) TOTAL_DEBIT, SUM ( JRN_CREDIT) TOTAL_CREDIT
+            FROM JOURNAL_ENTRY where CSSN_SESSION_ID in
+            (
+                SELECT distinct cs.CSSN_SESSION_ID
+                FROM CASH_SESSION cs
+                INNER JOIN CONFIG_CATEGORY cc ON (cs.CSSN_STATUS = cc.CATEGORY_ID)
+                WHERE cc.CATEGORY_CODE = 'SESSION_STATE_RECONCILED'
+                <if test="list != null">
+                    AND
+                    <foreach collection="list" item="item" index="index"
+                             open ="(" separator=" AND " close=")">
+                        cs.${item.column} ${item.operator} #{item.value}
+                    </foreach>
+                </if>
+            )
+            GROUP BY JRN_ACC_DESC
+        ) tje
+        on (je.JRN_ACC_DESC = tje.JRN_ACC_DESC)
+
     </select>
 
 </mapper>

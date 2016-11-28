@@ -28,7 +28,7 @@
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="111" y="148" width="423" height="20" uuid="0198e6c3-9414-49a7-9923-9ea3b5f0eb06"/>
-				<textFieldExpression><![CDATA[$P{REPORT_PARAMS}.getSearchRange().equals("dateRange")?("Date " + $P{REPORT_PARAMS}.getDateFrom() + "  to  " + $P{REPORT_PARAMS}.getDateTo()): ("Date " + $P{REPORT_PARAMS}.getNoFrom() + "  to  " + $P{REPORT_PARAMS}.getNoTo())]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REPORT_PARAMS}.getSearchRange().equals("dateRange")?("Date " + $P{REPORT_PARAMS}.getDateFrom() + "  to  " + $P{REPORT_PARAMS}.getDateTo()): ("Session " + $P{REPORT_PARAMS}.getNoFrom() + "  to  " + $P{REPORT_PARAMS}.getNoTo())]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="1" y="44" width="180" height="15" uuid="a88f512f-e6a2-42b2-a6a1-e23b4207c5f4"/>
@@ -80,13 +80,6 @@
 				</textElement>
 				<text><![CDATA[Report Range:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="444" y="0" width="100" height="20" uuid="6c4732aa-4745-4bcb-90df-36a737d85c54"/>
-				<textElement textAlignment="Right">
-					<font isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Date: " + $V{Today}]]></textFieldExpression>
-			</textField>
 			<line>
 				<reportElement x="12" y="201" width="492" height="1" uuid="423644eb-6832-4a57-8803-bf79abacd137"/>
 			</line>
@@ -130,7 +123,7 @@
 		<band height="30" splitType="Stretch">
 			<textField isBlankWhenNull="true">
 				<reportElement x="458" y="10" width="90" height="14" uuid="5ccd8f38-f3b1-4d40-92ea-0b326e826b30"/>
-				<textFieldExpression><![CDATA[$F{jrnCredit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{jrnCredit})]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement mode="Opaque" x="11" y="26" width="492" height="1" uuid="38896ffa-4f29-432d-9355-baa688714b8a"/>
@@ -145,7 +138,7 @@
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="366" y="10" width="78" height="14" uuid="51280d93-0529-4783-8906-d1a7cf0b2f54"/>
-				<textFieldExpression><![CDATA[$F{jrnDebit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{jrnDebit})]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -155,13 +148,18 @@
 	<pageFooter>
 		<band height="34" splitType="Stretch">
 			<staticText>
-				<reportElement x="244" y="7" width="40" height="20" uuid="d904677a-7e5c-49ef-a1a0-648352d84af9"/>
+				<reportElement x="1" y="7" width="40" height="20" uuid="d904677a-7e5c-49ef-a1a0-648352d84af9"/>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Page:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="285" y="7" width="100" height="20" uuid="a5aeaf0d-1de1-488c-a863-9055d7dfea47"/>
+				<reportElement x="42" y="7" width="100" height="20" uuid="a5aeaf0d-1de1-488c-a863-9055d7dfea47"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="444" y="7" width="100" height="20" uuid="9775b779-5c1a-4bfb-a408-c1c87c1c094f"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Printed on " + $V{Today}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

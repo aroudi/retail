@@ -254,6 +254,21 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
             });
             return promise;
         },
+
+        getStreamDataByPost: function (rowObject, addRowUri) {
+            var serviceUrl = configService.getAddress() + addRowUri;
+            var promise = $http({
+                url: serviceUrl ,
+                method: 'POST',
+                responseType: 'arraybuffer',
+                data : rowObject
+            }).success(function (data) {
+                return data;
+            }).error(function (data) {
+            });
+            return promise;
+        },
+
         getStreamData: function (baseDataURI) {
             var serviceUrl = configService.getAddress() + baseDataURI;
             var promise = $http({

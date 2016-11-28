@@ -53,7 +53,7 @@ public class AccountingRptMgr {
             }
             final String pathStr = reportPath.getURL().getPath();
             final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            final List<JournalEntry> journalEntryList = accountingDao.accountingExportRpt(
+            final List<JournalEntry> journalEntryList = accountingDao.accountingSummaryExportRpt(
                     SearchClauseBuilder.buildSearchWhereCluase(searchForm, "CASH_SESSION"));
             final JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(journalEntryList);
             final String reportHeaderJrxmlName = pathStr + "/" + reportHeaderFileName + ".jrxml";

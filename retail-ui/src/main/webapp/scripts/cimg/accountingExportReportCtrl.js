@@ -29,7 +29,7 @@ cimgApp.controller('accountingExportReportCtrl', function($scope, $state, $timeo
     };
     $scope.accountingSummaryReport = function() {
         var exportUrl = CASH_SESSION_ACCOUNTING_SUMMARY_URI;
-        baseDataService.addRow($scope.searchForm, CASH_SESSION_ACCOUNTING_SUMMARY_URI).then(function(response){
+        baseDataService.getStreamDataByPost($scope.searchForm, CASH_SESSION_ACCOUNTING_SUMMARY_URI).then(function(response){
             var blob = new Blob([response.data], {'type': 'application/pdf'});
             var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
             baseDataService.setPdfContent(myPdfContent);

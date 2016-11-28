@@ -181,7 +181,7 @@ public class CashSessionRest {
      */
     @Secured
     @Path("/accountingSummaryReport")
-    @GET
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response exportAccountingSummaryRptToPdf(GeneralSearchForm generalSearchForm) {
