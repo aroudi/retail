@@ -21,6 +21,8 @@
         <result column="DELN_TOTAL_QTY" property="delnTotalQty" />
         <result column="DELN_TOTAL_LINES" property="delnTotalLines" />
         <result column="DELN_COMMENT" property="delnComment" />
+        <result column="DELN_TOTAL" property="delnTotal" />
+        <result column="DELN_TAX" property="delnTax" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="user" column="DELN_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -43,6 +45,11 @@
         <result column="DELN_TOTAL_QTY" property="delnTotalQty" />
         <result column="DELN_TOTAL_LINES" property="delnTotalLines" />
         <result column="DELN_COMMENT" property="delnComment" />
+        <result column="FREIGHT_AMOUNT" property="freightAmount" />
+        <result column="FREIGHT_TAX" property="freightTax" />
+        <result column="DELN_TOTAL" property="delnTotal" />
+        <result column="DELN_TAX" property="delnTax" />
+        <association property="freightTxrl" column="FREIGHT_TXRL_ID" select="au.com.biztune.retail.dao.TaxRuleDao.getTaxRuleById" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="legalTender" column="LEGT_ID" select="au.com.biztune.retail.dao.LegalTenderDao.getLegalTenderById" />
@@ -89,7 +96,12 @@
         ${alias}.DELN_TYPE,
         ${alias}.DELN_STATUS,
         ${alias}.LEGT_ID,
-        ${alias}.DELN_COMMENT
+        ${alias}.DELN_COMMENT,
+        ${alias}.FREIGHT_TXRL_ID,
+        ${alias}.FREIGHT_AMOUNT,
+        ${alias}.FREIGHT_TAX,
+        ${alias}.DELN_TOTAL,
+        ${alias}.DELN_TAX
     </sql>
 
     <sql id="deliveryNoteLineColumns">
@@ -134,7 +146,12 @@
             DELN_TYPE,
             DELN_STATUS,
             LEGT_ID,
-            DELN_COMMENT
+            DELN_COMMENT,
+            FREIGHT_TXRL_ID,
+            FREIGHT_AMOUNT,
+            FREIGHT_TAX,
+            DELN_TOTAL,
+            DELN_TAX
         ) VALUES (
         #{orguId}
         <if test="delnNoteNumber != null">
@@ -245,6 +262,36 @@
         <if test="delnComment == null">
             ,null
         </if>
+        <if test="freightTxrl != null">
+            ,#{freightTxrl.id}
+        </if>
+        <if test="freightTxrl == null">
+            ,null
+        </if>
+        <if test="freightAmount != null">
+            ,#{freightAmount}
+        </if>
+        <if test="freightAmount == null">
+            ,null
+        </if>
+        <if test="freightTax != null">
+            ,#{freightTax}
+        </if>
+        <if test="freightTax == null">
+            ,null
+        </if>
+        <if test="delnTotal != null">
+            ,#{delnTotal}
+        </if>
+        <if test="delnTotal == null">
+            ,null
+        </if>
+        <if test="delnTax != null">
+            ,#{delnTax}
+        </if>
+        <if test="delnTax == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -304,6 +351,21 @@
         </if>
         <if test="delnComment != null">
             ,DELN_COMMENT = #{delnComment}
+        </if>
+        <if test="freightTxrl != null">
+            ,FREIGHT_TXRL_ID = #{freightTxrl.id}
+        </if>
+        <if test="freightAmount != null">
+            ,FREIGHT_AMOUNT = #{freightAmount}
+        </if>
+        <if test="freightTax != null">
+            ,FREIGHT_TAX = #{freightTax}
+        </if>
+        <if test="delnTotal != null">
+            ,DELN_TOTAL = #{delnTotal}
+        </if>
+        <if test="delnTax != null">
+            ,DELN_TAX = #{delnTax}
         </if>
         WHERE DELN_ID = #{id}
     </update>

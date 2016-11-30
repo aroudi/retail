@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI) {
+cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI) {
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -82,6 +82,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             $scope.deliveryNoteHeader = {};
             $scope.deliveryNoteHeader.deliveryDate = new Date();
             $scope.deliveryNoteHeader.id = -1;
+            $scope.deliveryNoteHeader.freightAmount = 0.00;
             $scope.pageIsNew = true;
         } else {
             $scope.deliveryNoteHeader = angular.copy(baseDataService.getRow());
@@ -104,6 +105,11 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         baseDataService.getBaseData(DLV_NOTE_STATUS_URI).then(function(response){
             $scope.delnStatusSet = response.data;
             $scope.deliveryNoteHeader.delnStatus = baseDataService.populateSelectList($scope.deliveryNoteHeader.delnStatus,$scope.delnStatusSet);
+        });
+        baseDataService.getBaseData(TAXRULE_ALL_URI).then(function(response){
+            $scope.taxRuleSet = response.data;
+            $scope.deliveryNoteHeader.freightTxrl = baseDataService.populateSelectList($scope.deliveryNoteHeader.freightTxrl,$scope.taxRuleSet);
+            //$scope.calculateTotal();
         });
     }
 
@@ -177,6 +183,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             return;
         }
         line.totalCost = line.dlnlUnitCost * line.rcvdQty;
+        calculateSubTotal();
     }
     $scope.saveDeliveryNote = function () {
 
@@ -242,4 +249,20 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         );
     };
 
+    function calculateSubTotal() {
+        var lineList =  $scope.gridOptions.data;
+        var valueNett = 0.00;
+        for (var i = 0; i < lineList.length; i++) {
+            if (!lineList[i].deleted) {
+                valueNett = valueNett*1 + lineList[i].totalCost*1 ;
+            }
+        }
+        $scope.deliveryNoteHeader.delnValueNett = valueNett;
+        $scope.calculateTotal();
+    }
+
+    $scope.calculateTotal = function() {
+        $scope.deliveryNoteHeader.freightTax = $scope.deliveryNoteHeader.freightAmount*$scope.deliveryNoteHeader.freightTxrl.taxLegVariance.txlvRate*1
+        $scope.deliveryNoteHeader.delnTotal = $scope.deliveryNoteHeader.delnValueNett*1 + $scope.deliveryNoteHeader.freightAmount*1 + $scope.deliveryNoteHeader.freightTax*1;
+    }
 });

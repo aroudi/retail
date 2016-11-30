@@ -16,6 +16,12 @@ public interface TaxRuleDao {
     List<TaxRule> getAllTaxRules();
 
     /**
+     * get tax rule by id.
+     * @param txrlId txrlId
+     * @return TAX RULE
+     */
+    TaxRule getTaxRuleById(long txrlId);
+    /**
      * get tax rule by Code.
      * @param code code
      * @return TaxRule

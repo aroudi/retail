@@ -347,4 +347,83 @@
 
     </select>
 
+    <!-- Accounting -->
+    <insert id="insertAccountingExport" parameterType="AccountingExport" useGeneratedKeys="true" keyProperty="id" keyColumn="ACC_EXP_ID">
+        INSERT INTO ACCOUNTING_EXPORT(
+        ACC_EXP_ID,
+        ORGU_ID,
+        STORE_ID,
+        APP_USER_ID,
+        EXPORT_SUPPLIERS,
+        EXPORT_DELIVERY_NOTES,
+        EXPORT_JOURNAL_ENTRIES,
+        EXPORTED_CONTENT,
+        EXPORT_TIME
+        ) VALUES (
+        #{orguId},
+        #{storeId},
+        #{appUserId}
+        <if test="exportSuppliers != null">
+            ,#{exportSuppliers}
+        </if>
+        <if test="exportSuppliers == null">
+            ,0
+        </if>
+        <if test="exportDeliveryNotes != null">
+            ,#{exportDeliveryNotes}
+        </if>
+        <if test="exportDeliveryNotes == null">
+            ,0
+        </if>
+        <if test="exportJournalEntries != null">
+            ,#{exportJournalEntries}
+        </if>
+        <if test="exportJournalEntries == null">
+            ,0
+        </if>
+        <if test="exportedContents != null">
+            ,#{exportedContents}
+        </if>
+        <if test="exportedContents == null">
+            ,null
+        </if>
+        <if test="exportTime != null">
+            ,#{exportTime}
+        </if>
+        <if test="exportTime == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <insert id="insertAccExportSuppLink" parameterType="AccExportSuppLink">
+        INSERT INTO ACC_EXPORT_SUPP_LINK(
+        ACC_EXP_ID,
+        SUPPLIER_ID
+        ) VALUES (
+        #{accExpId},
+        #{supplierId}
+        )
+    </insert>
+
+    <insert id="insertAccExportDelnLink" parameterType="AccExportDelnLink">
+        INSERT INTO ACC_EXPORT_DELN_LINK(
+        ACC_EXP_ID,
+        DELN_ID
+        ) VALUES (
+        #{accExpId},
+        #{delnId}
+        )
+    </insert>
+
+    <insert id="insertAccExportSessionLink" parameterType="AccExportSessionLink">
+        INSERT INTO ACC_EXPORT_SESSION_LINK(
+        ACC_EXP_ID,
+        CSSN_SESSION_ID
+        ) VALUES (
+        #{accExpId},
+        #{cssnSessionId}
+        )
+    </insert>
+
 </mapper>

@@ -86,6 +86,21 @@
           txlv.TXLV_IS_ACTIVE = 1
     </select>
 
+    <select id="getTaxRuleById" resultMap="taxRuleMap" >
+        SELECT
+        <include refid="taxRuleColumns"><property name="alias" value="txrl"/></include>,
+        <include refid="taxRuleNameColumns"><property name="alias" value="txrn"/></include>,
+        <include refid="taxLegVarianceColumns"><property name="alias" value="txlv"/></include>
+        FROM
+        TAX_RULE txrl
+        INNER JOIN
+        TAX_RULE_NAME txrn on (txrl.TXRN_ID = txrn.TXRN_ID)
+        INNER JOIN
+        TAX_LEG_VARIANCE txlv on (txrl.TXRL_ID = txlv.TXRL_ID)
+        WHERE
+        txlv.TXLV_IS_ACTIVE = 1 AND txrl.TXRL_ID = #{value}
+    </select>
+
     <select id="getTaxRuleByCode" resultMap="taxRuleMap" >
         SELECT
         <include refid="taxRuleColumns"><property name="alias" value="txrl"/></include>,

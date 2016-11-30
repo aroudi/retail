@@ -1,9 +1,6 @@
 package au.com.biztune.retail.dao;
 
-import au.com.biztune.retail.domain.Account;
-import au.com.biztune.retail.domain.JournalEntry;
-import au.com.biztune.retail.domain.JournalRule;
-import au.com.biztune.retail.domain.JournalSupport;
+import au.com.biztune.retail.domain.*;
 
 import java.util.List;
 
@@ -65,4 +62,28 @@ public interface AccountingDao {
      * @return List of Journal Entry
      */
     List<JournalEntry> accountingSummaryExportRpt (List clauseList);
+
+    /**
+     * insert accounting export log.
+     * @param accountingExport accountingExport
+     */
+    void insertAccountingExport(AccountingExport accountingExport);
+
+    /**
+     * insert accountExport Supplier Link.
+     * @param accExportSuppLink accExportSuppLink
+     */
+    void insertAccExportSuppLink(AccExportSuppLink accExportSuppLink);
+
+    /**
+     * insert Accounting Export Delivery Note Header Link.
+     * @param accExportDelnLink accExportDelnLink
+     */
+    void insertAccExportDelnLink(AccExportDelnLink accExportDelnLink);
+
+    /**
+     * insert Accounting Export Session Link.
+     * @param accExportSessionLink accExportSessionLink
+     */
+    void insertAccExportSessionLink(AccExportSessionLink accExportSessionLink);
 }

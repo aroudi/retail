@@ -30,6 +30,11 @@ public class DeliveryNoteHeader {
     private String deliveryDate;
     private String delnComment;
     private AppUser user;
+    private TaxRule freightTxrl;
+    private double freightAmount;
+    private double freightTax;
+    private double delnTotal;
+    private double delnTax;
 
 
     public long getId() {
@@ -214,5 +219,45 @@ public class DeliveryNoteHeader {
 
     public void setUser(AppUser user) {
         this.user = user;
+    }
+
+    public TaxRule getFreightTxrl() {
+        return freightTxrl;
+    }
+
+    public void setFreightTxrl(TaxRule freightTxrl) {
+        this.freightTxrl = freightTxrl;
+    }
+
+    public double getFreightAmount() {
+        return freightAmount;
+    }
+
+    public void setFreightAmount(double freightAmount) {
+        this.freightAmount = freightAmount;
+    }
+
+    public double getFreightTax() {
+        return freightTax;
+    }
+
+    public void setFreightTax(double freightTax) {
+        this.freightTax = freightTax;
+    }
+
+    public double getDelnTotal() {
+        return delnTotal;
+    }
+
+    public void setDelnTotal(double delnTotal) {
+        this.delnTotal = delnTotal;
+    }
+
+    public double getDelnTax() {
+        return delnTax;
+    }
+
+    public void setDelnTax(double delnTax) {
+        this.delnTax = delnTax;
     }
 }
