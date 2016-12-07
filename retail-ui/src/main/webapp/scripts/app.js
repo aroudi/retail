@@ -139,7 +139,9 @@ var service_uri = {
     'CASH_SESSION_RECONCILIATION_TO_PDF_URI' : 'cashSession/reconciliation/exportPdf/',
     'CASH_SESSION_ACCOUNTING_REPORT_URI' : 'cashSession/accountingReport',
     'CASH_SESSION_ACCOUNTING_SUMMARY_URI' : 'cashSession/accountingSummaryReport',
-    'SALE_SUMMARY_REPORT_URI' : 'saleSummaryReport/saleSummary'
+    'SALE_SUMMARY_REPORT_URI' : 'saleSummaryReport/saleSummary',
+    'ACCOUNTING_EXPORT_INIT_FORM_URI' : 'accounting/initiateForm',
+    'ACCOUNTING_EXPORT_URI' : 'accounting/exportAsTxt'
 }
 
 var response_status = {
@@ -822,6 +824,15 @@ cimgApp.filter('booleanFilter', function() {
             return 'Yes'
         } else {
             return 'No'
+        }
+    };
+});
+cimgApp.filter('accImportFilter', function() {
+    return function (status) {
+        if (status == true) {
+            return 'Exported'
+        } else {
+            return 'Will be exported'
         }
     };
 });

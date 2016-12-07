@@ -28,6 +28,30 @@
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
+    <resultMap id="deliveryNoteHeaderExportMap" type="DeliveryNoteHeader" >
+        <id column="DELN_ID" property="id" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="DELN_NOTE_NUMBER" property="delnNoteNumber" />
+        <result column="DELN_GRN" property="delnGrn" />
+        <result column="POH_ID" property="pohId" />
+        <result column="POH_ORDER_NUMBER" property="pohOrderNumber" />
+        <result column="DELN_DELIVERY_DATE" property="delnDeliveryDate" />
+        <result column="DELN_CREATED_DATE" property="delnCreatedDate" />
+        <result column="DELN_LAST_MODIFIED_DATE" property="delnLastModifiedDate" />
+        <result column="DELN_LAST_MODIFIED_BY" property="delnLastModifiedBy" />
+        <result column="DELN_VALUE_GROSS" property="delnValueGross" />
+        <result column="DELN_VALUE_NETT" property="delnValueNett" />
+        <result column="POH_QTY_ORDERED" property="pohQtyOrdered" />
+        <result column="DELN_TOTAL_QTY" property="delnTotalQty" />
+        <result column="DELN_TOTAL_LINES" property="delnTotalLines" />
+        <result column="DELN_COMMENT" property="delnComment" />
+        <result column="DELN_TOTAL" property="delnTotal" />
+        <result column="DELN_TAX" property="delnTax" />
+        <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
+        <association property="user" column="DELN_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
+        <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+    </resultMap>
+
     <resultMap id="deliveryNoteHeaderMap" type="DeliveryNoteHeader" >
         <id column="DELN_ID" property="id" />
         <result column="ORGU_ID" property="orguId" />
@@ -657,5 +681,23 @@
         DELIVERY_NOTE_LINE
         where DLNL_ID = #{value}
     </delete>
+    <select id="getDelNoteHeadersForAccExport" resultMap="deliveryNoteHeaderExportMap" >
+        SELECT
+        <include refid="deliveryNoteHeaderColumns"><property name="alias" value="deln"/></include>
+        FROM
+        DELIVERY_NOTE_HEADER deln
+        WHERE deln.ACC_EXPORTED = 0
+    </select>
+
+    <select id="getNoOfDeliveryNoteToBeExported" resultType="java.lang.Integer">
+        SELECT
+         COUNT (DELN_ID) FROM DELIVERY_NOTE_HEADER WHERE ACC_EXPORTED = 0
+    </select>
+
+
+    <update id="updateDeliveryNoteAccExportStatusById" >
+        UPDATE DELIVERY_NOTE_HEADER SET ACC_EXPORTED = 1
+        WHERE DELN_ID = #{id}
+    </update>
 
 </mapper>

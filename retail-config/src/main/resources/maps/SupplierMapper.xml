@@ -24,7 +24,24 @@
         <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
         <association resultMap="suppOrguLinkMap" property="suppOrguLink" />
     </resultMap>
-
+    <resultMap id="supplierExportMap" type="Supplier" >
+        <id column="SUPPLIER_ID" property="id" />
+        <result column="SUPPLIER_CODE" property="supplierCode" />
+        <result column="SUPPLIER_NAME" property="supplierName" />
+        <result column="LEAD_TIME" property="leadTime" />
+        <result column="STOCK_COVER" property="stockCover" />
+        <result column="MIN_ORDER_VALUE" property="minOrderValue" />
+        <result column="CREDIT_LIMIT" property="creditLimit" />
+        <result column="MAX_ADV_ORDER" property="maxAdvOrder" />
+        <result column="CREATE_DATE" property="createDate" />
+        <result column="LAST_MODIFIED_DATE" property="lastModifiedDate" />
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" />
+        <result column="CONTACT_FIRST_NAME" property="contactFirstName" />
+        <result column="CONTACT_SUR_NAME" property="contactSurName" />
+        <result column="CONTACT_TITLE" property="contactTitle" />
+        <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
+        <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
+    </resultMap>
     <resultMap id="supplierOnlyMap" type="Supplier" >
         <id column="SUPPLIER_ID" property="id" />
         <result column="SUPPLIER_CODE" property="supplierCode" />
@@ -454,4 +471,22 @@
         </if>
         WHERE SOL_ID = #{id}
     </update>
+    <select id="getSupplierListForAccExport" resultMap="supplierExportMap" >
+        SELECT
+        <include refid="supplierColumns"><property name="alias" value="supp"/></include>
+        FROM
+        SUPPLIER supp
+        WHERE supp.ACC_EXPORTED = 0
+    </select>
+
+    <select id="getNoOfSupplierToBeExported" resultType="java.lang.Integer" >
+        SELECT
+          COUNT(SUPPLIER_ID) FROM SUPPLIER WHERE ACC_EXPORTED = 0
+    </select>
+
+    <update id="setSupplierExportFlagPerSuppId">
+        UPDATE Supplier SET ACC_EXPORTED= 1
+        WHERE SUPPLIER_ID = #{value}
+    </update>
+
 </mapper>

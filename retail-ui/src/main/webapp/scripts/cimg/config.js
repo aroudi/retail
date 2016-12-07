@@ -293,6 +293,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/accountingExportReport.html',
             access: "user"
         })
+        .state('dashboard.accountingExport',{
+            url:'/accountingExport',
+            controller: 'accountingExportCtrl',
+            templateUrl:'views/pages/accountingExport.html',
+            access: "user"
+        })
         .state('dashboard.blank',{
             templateUrl:'views/pages/blank.html',
             url:'/blank'

@@ -27,6 +27,9 @@
         <result column="JRN_DEBIT" property="jrnDebit" />
         <result column="JRN_CREDIT" property="jrnCredit" />
         <result column="JRN_ACTUAL" property="jrnActual" />
+        <result column="JRN_DATE" property="jrnDate" />
+        <result column="JRN_TAX_CODE" property="jrnTaxCode" />
+        <association property="account" column="ACC_ID" select="getAccountById" />
     </resultMap>
 
     <resultMap id="journalSupportMap" type="JournalSupport" >
@@ -68,7 +71,9 @@
         ${alias}.JRN_ACC_DESC,
         ${alias}.JRN_DEBIT,
         ${alias}.JRN_CREDIT,
-        ${alias}.JRN_ACTUAL
+        ${alias}.JRN_ACTUAL,
+        ${alias}.JRN_TAX_CODE,
+        ${alias}.JRN_DATE
     </sql>
 
     <sql id="journalSupportColumns">
@@ -137,7 +142,9 @@
         JRN_ACC_DESC,
         JRN_DEBIT,
         JRN_CREDIT,
-        JRN_ACTUAL
+        JRN_ACTUAL,
+        JRN_DATE,
+        JRN_TAX_CODE
         ) VALUES (
         #{orguId}
         <if test="cssnSessionId != null">
@@ -200,6 +207,18 @@
         </if>
         <if test="jrnActual == null">
             ,1
+        </if>
+        <if test="jrnDate != null">
+            ,#{jrnDate}
+        </if>
+        <if test="jrnDate == null">
+            ,null
+        </if>
+        <if test="jrnTaxCode != null">
+            ,#{jrnTaxCode}
+        </if>
+        <if test="jrnTaxCode == null">
+            ,null
         </if>
         )
     </insert>
@@ -294,6 +313,15 @@
         account.ACC_ID=#{value}
     </select>
 
+    <select id="getAccountByName" resultMap="accountMap" >
+        SELECT
+        <include refid="accountColumns"><property name="alias" value="account"/></include>
+        FROM
+        ACCOUNT account
+        WHERE
+        account.ACC_NAME=#{value}
+    </select>
+
     <select id="getJournalRuleByOrguIdAndTxnTypeAndAction" resultMap="journalRuleMap" >
         SELECT
         <include refid="journalRuleColumns"><property name="alias" value="jr"/></include>
@@ -350,7 +378,6 @@
     <!-- Accounting -->
     <insert id="insertAccountingExport" parameterType="AccountingExport" useGeneratedKeys="true" keyProperty="id" keyColumn="ACC_EXP_ID">
         INSERT INTO ACCOUNTING_EXPORT(
-        ACC_EXP_ID,
         ORGU_ID,
         STORE_ID,
         APP_USER_ID,
@@ -426,4 +453,18 @@
         )
     </insert>
 
+    <select id="getJournalEntryPerSessions" resultMap="journalEntryMap" >
+        SELECT
+        <include refid="journalEntryColumns"><property name="alias" value="je"/></include>
+        FROM
+        JOURNAL_ENTRY je
+        WHERE
+        je.JRN_ACTUAL = 1  AND
+        je.CSSN_SESSION_ID IN
+        <foreach collection="list" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER  BY je.JRN_ID
+    </select>
 </mapper>

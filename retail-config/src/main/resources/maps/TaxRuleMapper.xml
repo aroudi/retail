@@ -143,5 +143,12 @@
         AND txlv.TXLV_IS_ACTIVE = 1
     </select>
 
+    <select id="getAllTaxCodes" resultMap="taxRuleNameMap" >
+        SELECT
+        <include refid="taxRuleNameColumns"><property name="alias" value="txrn"/></include>
+        FROM
+        TAX_RULE_NAME txrn
+    </select>
+
 
 </mapper>

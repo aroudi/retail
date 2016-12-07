@@ -95,4 +95,22 @@ public interface DeliveryNoteDao {
      * @return List of delivery note
      */
     List<DeliveryNoteHeader> searchDelNoteHeader(long orguId, List clauseList);
+
+    /**
+     * get list of delivery note for export.
+     * @return List of delivery note which has not been exported.
+     */
+    List<DeliveryNoteHeader> getDelNoteHeadersForAccExport();
+
+    /**
+     * get no of delivery note which has not been exported.
+     * @return number of delivery note for export.
+     */
+    int getNoOfDeliveryNoteToBeExported();
+
+    /**
+     * update delivery note export status to 1.
+     * @param id id
+     */
+    void updateDeliveryNoteAccExportStatusById(long id);
 }

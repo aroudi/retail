@@ -1,5 +1,7 @@
 package au.com.biztune.retail.domain;
 
+import java.sql.Timestamp;
+
 /**
  * Created by arash on 22/11/2016.
  */
@@ -16,6 +18,9 @@ public class JournalEntry {
     private double jrnDebit;
     private double jrnCredit;
     private boolean jrnActual;
+    private Timestamp jrnDate;
+    private String jrnTaxCode;
+    private Account account;
 
     public long getId() {
         return id;
@@ -111,5 +116,29 @@ public class JournalEntry {
 
     public void setJrnActual(boolean jrnActual) {
         this.jrnActual = jrnActual;
+    }
+
+    public Timestamp getJrnDate() {
+        return jrnDate;
+    }
+
+    public void setJrnDate(Timestamp jrnDate) {
+        this.jrnDate = jrnDate;
+    }
+
+    public String getJrnTaxCode() {
+        return jrnTaxCode;
+    }
+
+    public void setJrnTaxCode(String jrnTaxCode) {
+        this.jrnTaxCode = jrnTaxCode;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

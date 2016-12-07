@@ -1,0 +1,70 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel  panel-primary">
+            <div class="panel-heading">
+                Accounting export
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="col-lg-6">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>No of suppliers</label>
+                                    <input class="form-control" data-ng-model="accountingExportForm.noOfSuppliers" ng-disabled="true">
+                                </div >
+                            </div>
+                        </div >
+                        <div class="col-lg-6">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>No of received notes</label>
+                                    <input class="form-control" data-ng-model="accountingExportForm.noOfDeliveryNotes" ng-disabled="true">
+                                </div >
+                            </div>
+                        </div >
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>Export Suppliers:</label>
+                            <input type="checkbox" data-ng-model="accountingExportForm.exportSuppliers">
+                        </div >
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>Export Purchases:</label>
+                            <input type="checkbox" data-ng-model="accountingExportForm.exportDeliveryNotes">
+                        </div >
+                    </div>
+                    <!--
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>Export Journal Entries:</label>
+                            <input type="checkbox" data-ng-model="accountingExportForm.exportAccJournal">
+                        </div >
+                    </div>
+                    -->
+                </div>
+                <div class="row">
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    <button type="button" class="btn btn-success" ng-click="export()">Export</button>
+                </div>
+            </div>
+        </div>
+        <!--
+        <div class="panel  panel-primary">
+            <div class="panel-heading">
+                Sale Transaction List
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="generalList" external-scopes="clickHandler" ui-grid ="gridOptions" ui-grid-pinning  class="grid" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns style="height:700px" ></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        -->
+    </div>
+</div>
+

@@ -86,4 +86,18 @@ public interface AccountingDao {
      * @param accExportSessionLink accExportSessionLink
      */
     void insertAccExportSessionLink(AccExportSessionLink accExportSessionLink);
+
+    /**
+     * get journal entry per session list.
+     * @param sessionList sessionList
+     * @return journal entry list.
+     */
+    List<JournalEntry> getJournalEntryPerSessions(List sessionList);
+
+    /**
+     * get account by name.
+     * @param accName accName
+     * @return Account
+     */
+    Account getAccountByName(String accName);
 }

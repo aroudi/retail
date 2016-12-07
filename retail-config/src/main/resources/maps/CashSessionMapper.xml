@@ -22,6 +22,7 @@
         <result column="CSSN_CURRENT_CASH" property="cssnCurrentCash" />
         <result column="CSSN_TOTAL_FLOAT" property="cssnTotalFloat" />
         <result column="CSSN_TOTAL_PICKUP" property="cssnTotalPickup" />
+        <result column="ACC_EXPORTED" property="accExported" />
         <!--association resultMap="au.com.biztune.retail.dao.CustomerDao.customerMap" property="customer" /-->
         <association property="cssnStatus" column="CSSN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="cssnOperator" column="CSSN_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getUserById" />
@@ -136,7 +137,8 @@
         ${alias}.CSSN_CYCLE_PERIOD,
         ${alias}.CSSN_CURRENT_CASH,
         ${alias}.CSSN_TOTAL_FLOAT,
-        ${alias}.CSSN_TOTAL_PICKUP
+        ${alias}.CSSN_TOTAL_PICKUP,
+        ${alias}.ACC_EXPORTED
     </sql>
 
     <sql id="sessionEventColumns">
@@ -790,4 +792,18 @@
         SESSION_EVENT seev INNER JOIN CONFIG_CATEGORY cc on (seev.SEEV_EVENT_TYPE = cc.CATEGORY_ID)
         WHERE (cc.CATEGORY_CODE = 'SESSION_EVENT_TYPE_RECONCILE')
     </select>
+
+    <select id="getAllReconciledCashSession" resultMap="CashSessionMap" >
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_RECONCILED')
+    </select>
+
+    <update id="updateCashSessionImportStatus">
+        UPDATE CASH_SESSION SET
+        ACC_EXPORTED = 1
+        WHERE CSSN_SESSION_ID = #{value}
+    </update>
+
 </mapper>

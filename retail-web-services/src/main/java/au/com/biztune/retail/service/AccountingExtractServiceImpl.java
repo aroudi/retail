@@ -11,10 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * Created by arash on 27/09/2016.
@@ -230,27 +228,55 @@ public class AccountingExtractServiceImpl implements AccountingExtractService {
         journalRuleList = accountingDao.getJournalRuleByOrguIdAndTxnTypeAndAction(txnHeader.getOrgUnit().getId()
                 , txnHeader.getTxhdTxnType().getCategoryCode(), journalAction);
         if (journalRuleList != null && journalRuleList.size() > 1) {
+
             for (JournalRule journalRule : journalRuleList) {
-                journalEntry = new JournalEntry();
-                journalEntry.setSrcTxnType(txnHeader.getTxhdTxnType().getId());
-                journalEntry.setSrcTxnId(txnHeader.getId());
-                journalEntry.setAppUserId(txnHeader.getUser().getId());
-                journalEntry.setOrguId(txnHeader.getOrgUnit().getId());
-                journalEntry.setCssnSessionId(cashSession.getId());
-                journalEntry.setJrnActual(journalRule.isJrnrActual());
-                if (journalRule.isJrnrDebit()) {
+                //check if journal entry contains 'Sales Income' then break amount per each tax code
+                if (journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_SALES_INCOME)) {
+                    //break income per tax code
+                    final Map<String, Double> itemTaxGroupMap = extractTaxFiguresFromItem(txnHeader);
+                    if (itemTaxGroupMap != null && itemTaxGroupMap.keySet() != null && itemTaxGroupMap.keySet().size() > 0) {
+                        for (String taxCode: itemTaxGroupMap.keySet()) {
+                            journalEntry = new JournalEntry();
+                            journalEntry.setSrcTxnType(txnHeader.getTxhdTxnType().getId());
+                            journalEntry.setSrcTxnId(txnHeader.getId());
+                            journalEntry.setAppUserId(txnHeader.getUser().getId());
+                            journalEntry.setOrguId(txnHeader.getOrgUnit().getId());
+                            journalEntry.setCssnSessionId(cashSession.getId());
+                            journalEntry.setJrnActual(journalRule.isJrnrActual());
+                            journalEntry.setJrnDate(new Timestamp(new Date().getTime()));
+                            journalEntry.setAccId(journalRule.getAccount().getId());
+                            journalEntry.setJrnAccCode(journalRule.getJrnrAccCode());
+                            journalEntry.setJrnAccDesc(journalRule.getJrnrAccDesc());
+                            journalEntry.setJrnTaxCode(taxCode);
+                            if (journalRule.isJrnrDebit()) {
+                                journalEntry.setJrnDebit(itemTaxGroupMap.get(taxCode));
+                            } else if (journalRule.isJrnrCredit()) {
+                                journalEntry.setJrnCredit(itemTaxGroupMap.get(taxCode));
+                            }
+                            accountingDao.insertJournalEntry(journalEntry);
+                            journalEntryList.add(journalEntry);
+                        }
+                    }
+                } else {
+                    journalEntry = new JournalEntry();
+                    journalEntry.setSrcTxnType(txnHeader.getTxhdTxnType().getId());
+                    journalEntry.setSrcTxnId(txnHeader.getId());
+                    journalEntry.setAppUserId(txnHeader.getUser().getId());
+                    journalEntry.setOrguId(txnHeader.getOrgUnit().getId());
+                    journalEntry.setCssnSessionId(cashSession.getId());
+                    journalEntry.setJrnActual(journalRule.isJrnrActual());
+                    journalEntry.setJrnDate(new Timestamp(new Date().getTime()));
                     journalEntry.setAccId(journalRule.getAccount().getId());
                     journalEntry.setJrnAccCode(journalRule.getJrnrAccCode());
                     journalEntry.setJrnAccDesc(journalRule.getJrnrAccDesc());
-                    journalEntry.setJrnDebit(amount);
-                } else if (journalRule.isJrnrCredit()) {
-                    journalEntry.setAccId(journalRule.getAccount().getId());
-                    journalEntry.setJrnAccCode(journalRule.getJrnrAccCode());
-                    journalEntry.setJrnAccDesc(journalRule.getJrnrAccDesc());
-                    journalEntry.setJrnCredit(amount);
+                    if (journalRule.isJrnrDebit()) {
+                        journalEntry.setJrnDebit(amount);
+                    } else if (journalRule.isJrnrCredit()) {
+                        journalEntry.setJrnCredit(amount);
+                    }
+                    accountingDao.insertJournalEntry(journalEntry);
+                    journalEntryList.add(journalEntry);
                 }
-                accountingDao.insertJournalEntry(journalEntry);
-                journalEntryList.add(journalEntry);
             }
         }
         return journalEntryList;
@@ -288,6 +314,35 @@ public class AccountingExtractServiceImpl implements AccountingExtractService {
                 accountingDao.insertJournalSupport(journalSupport);
             }
         }
+    }
+
+
+    private Map<String, Double> extractTaxFiguresFromItem(TxnHeader txnHeader) {
+
+        Double totalTaxGroup = null;
+        final Map<String, Double> itemTaxGroupMap = new HashMap<String, Double>();
+        if (txnHeader != null && txnHeader.getTxnDetails() != null) {
+            for (TxnDetail txnDetail : txnHeader.getTxnDetails()) {
+                if (txnDetail == null || txnDetail.isTxdeItemVoid() || !txnDetail.isSelected()) {
+                    continue;
+                }
+                for (TaxRule taxRule : txnDetail.getProduct().getProdOrguLink().getTaxRules()) {
+                    if (taxRule == null) {
+                        continue;
+                    }
+                    if (itemTaxGroupMap.containsKey(taxRule.getTaxLegVariance().getTxlvCode())) {
+                        totalTaxGroup = itemTaxGroupMap.get(taxRule.getTaxLegVariance().getTxlvCode());
+                        if (totalTaxGroup != null) {
+                            totalTaxGroup = totalTaxGroup + txnDetail.getTxdeValueNet() * txnDetail.getQuantity();
+                        }
+                    } else {
+                        totalTaxGroup = txnDetail.getTxdeValueNet() * txnDetail.getQuantity();
+                        itemTaxGroupMap.put(taxRule.getTaxLegVariance().getTxlvCode(), totalTaxGroup);
+                    }
+                }
+            }
+        }
+        return itemTaxGroupMap;
     }
 
     /**

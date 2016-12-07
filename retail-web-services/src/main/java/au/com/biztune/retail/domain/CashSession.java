@@ -28,6 +28,7 @@ public class CashSession {
     private double cssnCurrentCash;
     private double cssnTotalFloat;
     private double cssnTotalPickup;
+    private boolean accExported;
 
     public long getId() {
         return id;
@@ -203,5 +204,13 @@ public class CashSession {
 
     public void setCssnReconcileDate(Timestamp cssnReconcileDate) {
         this.cssnReconcileDate = cssnReconcileDate;
+    }
+
+    public boolean isAccExported() {
+        return accExported;
+    }
+
+    public void setAccExported(boolean accExported) {
+        this.accExported = accExported;
     }
 }

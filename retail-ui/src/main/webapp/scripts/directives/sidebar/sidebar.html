@@ -161,9 +161,20 @@
 
 
             <li ng-class="{active: collapseVar==10}">{{dropDown}}
-                <a href="" ng-click="check(10)"><i class="fa fa-comments fa-fw"></i> User Management<span
+                <a href="" ng-click="check(10)"><i class="fa fa-comments fa-fw"></i> Accounting<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=10">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.accountingExport">Export to file</a>
+                    </li>
+                </ul>
+            </li>
+
+
+            <li ng-class="{active: collapseVar==11}">{{dropDown}}
+                <a href="" ng-click="check(11)"><i class="fa fa-comments fa-fw"></i> User Management<span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=11">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.addUser">Create User</a>
                     </li>

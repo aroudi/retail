@@ -80,4 +80,21 @@ public interface SupplierDao {
      */
     Supplier getSupplierBySolId(long solId);
 
+    /**
+     * get list of supplier for export.
+     * @return List of supplier
+     */
+    List<Supplier> getSupplierListForAccExport();
+
+    /**
+     * update supplier export flag.
+     * @param suppId suppId
+     */
+    void setSupplierExportFlagPerSuppId(long suppId);
+
+    /**
+     * get no of supplier to be exported.
+     * @return no of supplier to be exported.
+     */
+    int getNoOfSupplierToBeExported();
 }

@@ -148,4 +148,16 @@ public interface CashSessionDao {
      * @return Session Event
      */
     List<SessionEvent> getReconciledSessionEvents();
+
+    /**
+     * get all reconciled cash session.
+     * @return reconciled cash session
+     */
+    List<CashSession> getAllReconciledCashSession();
+
+    /**
+     * update cash session import status.
+     * @param cssnId cssnId
+     */
+    void updateCashSessionImportStatus(long cssnId);
 }
