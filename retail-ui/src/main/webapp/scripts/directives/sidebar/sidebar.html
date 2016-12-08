@@ -147,11 +147,6 @@
                         <a ui-sref="dashboard.cashupReport">Cash Up Reports</a>
                     </li>
                 </ul>
-                <ul class="nav nav-second-level" collapse="collapseVar!=9">
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.accountingExportReport">Accounting Export</a>
-                    </li>
-                </ul>
             </li>
 
 
@@ -165,7 +160,16 @@
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=10">
                     <li ui-sref-active="active">
+                        <a ui-sref="dashboard.updateAccountCodes">Accounting Chart</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.accountingExportReport">Accounting Report</a>
+                    </li>
+                    <li ui-sref-active="active">
                         <a ui-sref="dashboard.accountingExport">Export to file</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.accountingExportList">List exported journal</a>
                     </li>
                 </ul>
             </li>

@@ -100,4 +100,31 @@ public interface AccountingDao {
      * @return Account
      */
     Account getAccountByName(String accName);
+
+    /**
+     * get all accounts of org unit.
+     * @param orguId orguId
+     * @return List of Accounts
+     */
+    List<Account> getAllAccountsByOrguId(long orguId);
+
+    /**
+     * update account.
+     * @param account account
+     */
+    void updateAccountCode(Account account);
+
+    /**
+     * get all acconting export per orguId.
+     * @param orguId orguId
+     * @return List of exported accounts.
+     */
+    List<AccountingExport> getAllAccountingExportPerOrguId(long orguId);
+
+    /**
+     * get AccountingExport by id.
+     * @param id id
+     * @return AccountingExport
+     */
+    AccountingExport getAccountingExportById(long id);
 }

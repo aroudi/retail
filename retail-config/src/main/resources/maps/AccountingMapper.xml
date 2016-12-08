@@ -50,6 +50,18 @@
         <association property="account" column="ACC_ID" select="getAccountById" />
     </resultMap>
 
+    <resultMap id="accountingExportMap" type="AccountingExport" >
+        <id column="ACC_EXP_ID" property="id" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="EXPORT_SUPPLIERS" property="exportSuppliers" />
+        <result column="EXPORT_DELIVERY_NOTES" property="exportDeliveryNotes" />
+        <result column="EXPORT_JOURNAL_ENTRIES" property="exportJournalEntries" />
+        <result column="EXPORTED_CONTENT" property="exportedContents" />
+        <result column="EXPORT_TIME" property="exportTime" />
+        <association property="appUser" column="APP_USER_ID" select="au.com.biztune.retail.dao.UserDao.getUserById" />
+    </resultMap>
+
     <sql id="accountColumns">
         ${alias}.ACC_ID,
         ${alias}.ORGU_ID,
@@ -92,6 +104,18 @@
         ${alias}.JRNR_DEBIT,
         ${alias}.JRNR_CREDIT,
         ${alias}.JRNR_ACTUAL
+    </sql>
+
+    <sql id="accountingExportColumns">
+        ${alias}.ACC_EXP_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.APP_USER_ID,
+        ${alias}.EXPORT_SUPPLIERS,
+        ${alias}.EXPORT_DELIVERY_NOTES,
+        ${alias}.EXPORT_JOURNAL_ENTRIES,
+        ${alias}.EXPORTED_CONTENT,
+        ${alias}.EXPORT_TIME
     </sql>
 
     <insert id="insertAccount" parameterType="Account" useGeneratedKeys="true" keyProperty="id" keyColumn="ACC_ID">
@@ -304,6 +328,15 @@
         )
     </insert>
 
+    <select id="getAllAccountsByOrguId" resultMap="accountMap" >
+        SELECT
+        <include refid="accountColumns"><property name="alias" value="account"/></include>
+        FROM
+        ACCOUNT account
+        WHERE
+        account.ORGU_ID=#{value}
+    </select>
+
     <select id="getAccountById" resultMap="accountMap" >
         SELECT
         <include refid="accountColumns"><property name="alias" value="account"/></include>
@@ -467,4 +500,27 @@
         </foreach>
         ORDER  BY je.JRN_ID
     </select>
+
+    <update id="updateAccountCode">
+        UPDATE ACCOUNT SET
+        ACC_CODE = #{accCode}
+        WHERE ACC_ID = #{id}
+    </update>
+
+    <select id="getAllAccountingExportPerOrguId" resultMap="accountingExportMap" >
+        SELECT
+        <include refid="accountingExportColumns"><property name="alias" value="ae"/></include>
+        FROM
+        ACCOUNTING_EXPORT ae
+        WHERE ae.ORGU_ID = #{value}
+    </select>
+
+    <select id="getAccountingExportById" resultMap="accountingExportMap" >
+        SELECT
+        <include refid="accountingExportColumns"><property name="alias" value="ae"/></include>
+        FROM
+        ACCOUNTING_EXPORT ae
+        WHERE ae.ACC_EXP_ID = #{value}
+    </select>
+
 </mapper>

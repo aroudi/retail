@@ -15,6 +15,7 @@ public class AccountingExport {
     private boolean exportJournalEntries;
     private String exportedContents;
     private Timestamp exportTime;
+    private AppUser appUser;
 
     public long getId() {
         return id;
@@ -87,4 +88,24 @@ public class AccountingExport {
     public void setExportTime(Timestamp exportTime) {
         this.exportTime = exportTime;
     }
+
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
+    }
+
+    /**
+     * get exported by.
+     * @return exported by
+     */
+    public String getExportedBy() {
+        if (appUser != null) {
+            return appUser.getUsrFirstName() + " " + appUser.getUsrSurName();
+        }
+        return "";
+    }
+
 }

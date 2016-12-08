@@ -6,7 +6,7 @@ cimgApp.controller('accountingExportCtrl', function($scope, $state, baseDataServ
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
-            {field:'id', visible:false, enableCellEdit:false},
+            {field:'id', visible:true, displayName:'Session#', width:'10%', enableCellEdit:false},
             {field:'cssnOperator.usrFirstName', displayName:'First Name', enableCellEdit:false, width:'15%'},
             {field:'cssnOperator.usrSurName', displayName:'SurName',enableCellEdit:false, width:'20%'},
             {field:'cssnStartDate', displayName:'Created on',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
@@ -61,5 +61,15 @@ cimgApp.controller('accountingExportCtrl', function($scope, $state, baseDataServ
     }
     $scope.cancelForm = function() {
         $state.go($scope.previouseState);
+    }
+
+    $scope.disableExportJournalEntryOption = function() {
+        var disable = true;
+        $scope.gridOptions.data.forEach(function (row){
+          if (row.accExported == false) {
+              disable = false;
+          }
+        })
+        return disable;
     }
 });

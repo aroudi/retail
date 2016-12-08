@@ -141,7 +141,11 @@ var service_uri = {
     'CASH_SESSION_ACCOUNTING_SUMMARY_URI' : 'cashSession/accountingSummaryReport',
     'SALE_SUMMARY_REPORT_URI' : 'saleSummaryReport/saleSummary',
     'ACCOUNTING_EXPORT_INIT_FORM_URI' : 'accounting/initiateForm',
-    'ACCOUNTING_EXPORT_URI' : 'accounting/exportAsTxt'
+    'ACCOUNTING_EXPORT_URI' : 'accounting/exportAsTxt',
+    'ACCOUNT_GET_ALL_URI' : 'accounting/getAllAccounts',
+    'ACCOUNT_UPDATE_CODE_URI' : 'accounting/updateAccounts',
+    'ACCOUNTING_EXPORT_ALL_URI' : 'accounting/getAllAccountingExport',
+    'ACCOUNTING_EXPORT_GET_CONTENT_URI' : 'accounting/getAccountingExport/'
 }
 
 var response_status = {

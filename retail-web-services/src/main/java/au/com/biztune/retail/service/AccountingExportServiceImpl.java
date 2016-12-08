@@ -3,6 +3,7 @@ package au.com.biztune.retail.service;
 import au.com.biztune.retail.dao.*;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.AccountingExportForm;
+import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.DateUtil;
 import au.com.biztune.retail.util.IdBConstant;
@@ -178,7 +179,10 @@ public class AccountingExportServiceImpl implements AccountingExportService {
         if (journalEntry == null) {
             return "";
         }
-        final String dateStr = DateUtil.dateToString(journalEntry.getJrnDate(), "dd/MM/yyyy");
+        String dateStr = "";
+        if (journalEntry.getJrnDate() != null) {
+            dateStr = DateUtil.dateToString(journalEntry.getJrnDate(), "dd/MM/yyyy");
+        }
         final StringBuilder result = new StringBuilder();
         if (journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_INVENTORY)
                 || journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_CLEARING_ACCOUNT))
@@ -188,15 +192,17 @@ public class AccountingExportServiceImpl implements AccountingExportService {
             result.append("3");
             result.append(buildGap("\t", 2));
         }
-        if (journalEntry.getJrnDate() != null) {
+        if (dateStr != null && !dateStr.isEmpty()) {
             result.append(dateStr);
         }
         result.append("\t");
 
-        result.append(dateStr);
+        if (dateStr != null && !dateStr.isEmpty()) {
+            result.append(dateStr);
+        }
         result.append(" ");
         result.append(journalEntry.getJrnAccDesc());
-        if (journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_SALES_INCOME)) {
+        if (journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_SALES_INCOME) && journalEntry.getJrnTaxCode() != null) {
             result.append(" ( " + journalEntry.getJrnTaxCode() + " ) ");
         }
         result.append(" - User: " + journalEntry.getAppUserId() + " - #" + journalEntry.getCssnSessionId());
@@ -212,6 +218,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
         }
         result.append("\t");
         result.append("55");
+        result.append("\t");
 
         if (!journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_INVENTORY)
                 && !journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_COST_OF_GOODS)
@@ -221,7 +228,6 @@ public class AccountingExportServiceImpl implements AccountingExportService {
             final double debitAmount = journalEntry.getJrnDebit();
             result.append(journalEntry.getJrnTaxCode());
             //for sale income add extra entry
-            result.append(System.getProperty("line.separator"));
             final Account clearingAccount = accountingDao.getAccountByName(IdBConstant.ACCOUNT_CLEARING_ACCOUNT);
             journalEntry.setAccount(clearingAccount);
             journalEntry.setJrnAccDesc(clearingAccount.getAccDesc());
@@ -237,6 +243,10 @@ public class AccountingExportServiceImpl implements AccountingExportService {
             result.append(buildJournalEntryRecord(journalEntry));
         } else {
             result.append("N-T");
+            if (!journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_COST_OF_GOODS)) {
+                result.append(System.getProperty("line.separator"));
+            }
+
         }
         return result.toString();
     }
@@ -280,6 +290,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
             final StringBuilder fileContent = new StringBuilder();
             List<Supplier> supplierList = null;
             List<DeliveryNoteHeader> deliveryNoteHeaderList = null;
+            List<JournalEntry> journalEntryList = null;
             String content;
             if (output == null) {
                 return;
@@ -343,7 +354,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
                     for (CashSession cashSession : accountingExportForm.getCashSessionList()) {
                         sessionList.add(cashSession.getId());
                     }
-                    final List<JournalEntry> journalEntryList = accountingDao.getJournalEntryPerSessions(sessionList);
+                    journalEntryList = accountingDao.getJournalEntryPerSessions(sessionList);
                     if (journalEntryList != null) {
                         for (JournalEntry journalEntry : journalEntryList) {
                             content = buildJournalEntryRecord(journalEntry);
@@ -366,7 +377,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
             accountingExport.setExportDeliveryNotes(accountingExportForm.isExportDeliveryNotes());
             accountingExport.setExportJournalEntries(accountingExportForm.isExportAccJournal());
             accountingDao.insertAccountingExport(accountingExport);
-            if (accountingExportForm.isExportSuppliers()) {
+            if (accountingExportForm.isExportSuppliers() && supplierList != null) {
                 AccExportSuppLink accExportSuppLink;
                 for (Supplier supplier: supplierList) {
                     accExportSuppLink = new AccExportSuppLink();
@@ -376,7 +387,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
                     supplierDao.setSupplierExportFlagPerSuppId(supplier.getId());
                 }
             }
-            if (accountingExportForm.isExportDeliveryNotes()) {
+            if (accountingExportForm.isExportDeliveryNotes() && deliveryNoteHeaderList != null) {
                 AccExportDelnLink accExportDelnLink;
                 for (DeliveryNoteHeader deliveryNoteHeader : deliveryNoteHeaderList) {
                     accExportDelnLink = new AccExportDelnLink();
@@ -384,6 +395,17 @@ public class AccountingExportServiceImpl implements AccountingExportService {
                     accExportDelnLink.setDelnId(deliveryNoteHeader.getId());
                     accountingDao.insertAccExportDelnLink(accExportDelnLink);
                     deliveryNoteDao.updateDeliveryNoteAccExportStatusById(deliveryNoteHeader.getId());
+                }
+            }
+
+            if (accountingExport.isExportJournalEntries() && accountingExportForm.getCashSessionList() != null) {
+                AccExportSessionLink accExportSessionLink;
+                for (CashSession cashSession : accountingExportForm.getCashSessionList()) {
+                    accExportSessionLink = new AccExportSessionLink();
+                    accExportSessionLink.setAccExpId(accountingExport.getId());
+                    accExportSessionLink.setCssnSessionId(cashSession.getId());
+                    accountingDao.insertAccExportSessionLink(accExportSessionLink);
+                    cashSessionDao.updateCashSessionImportStatus(cashSession.getId());
                 }
             }
             //return output
@@ -407,8 +429,8 @@ public class AccountingExportServiceImpl implements AccountingExportService {
             final AccountingExportForm accountingExportForm = new AccountingExportForm();
             accountingExportForm.setNoOfSuppliers(noOfSuppliers);
             accountingExportForm.setNoOfDeliveryNotes(noOfDeliveryNotes);
-            accountingExportForm.setExportSuppliers(true);
-            accountingExportForm.setExportDeliveryNotes(true);
+            accountingExportForm.setExportSuppliers(false);
+            accountingExportForm.setExportDeliveryNotes(false);
             accountingExportForm.setExportAccJournal(false);
             if (cashSessions != null) {
                 accountingExportForm.setCashSessionList(cashSessions);
@@ -420,4 +442,83 @@ public class AccountingExportServiceImpl implements AccountingExportService {
         }
     }
 
+    /**
+     * get all accounts.
+     * @return List of accounts.
+     */
+    public List<Account> getAllAccountByOrguId() {
+        try {
+            return accountingDao.getAllAccountsByOrguId(sessionState.getOrgUnit().getId());
+        } catch (Exception e) {
+            logger.error("Exception in retreiving accounts", e);
+            return null;
+        }
+    }
+
+    /**
+     * update account codes.
+     * @param accountList accountList
+     * @return Common Response.
+     */
+    public CommonResponse updateAccountCodes(List<Account> accountList) {
+        final CommonResponse response = new CommonResponse();
+        try {
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+            if (accountList != null && accountList.size() > 0) {
+                for (Account account : accountList) {
+                    accountingDao.updateAccountCode(account);
+                }
+            }
+            return response;
+        } catch (Exception e) {
+            logger.error("Exception in updating account codes.", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Error in saving account code: " + e.getMessage());
+            return response;
+        }
+    }
+
+
+
+
+    /**
+     * get all accounting export by orguId.
+     * @return List of accounting exports.
+     */
+    public List<AccountingExport> getAllAccountingExportByOrguId() {
+        try {
+            return accountingDao.getAllAccountingExportPerOrguId(sessionState.getOrgUnit().getId());
+        } catch (Exception e) {
+            logger.error("Exception in retreiving accounting export", e);
+            return null;
+        }
+    }
+
+    /**
+     * Retreive journal contents from db.
+     * @param id id
+     * @return Streamingoutput
+     */
+    public StreamingOutput getExportedAccountsContentById(long id) {
+        StreamingOutput streamingOutput = null;
+
+        try {
+            final AccountingExport accountingExport = accountingDao.getAccountingExportById(id);
+            if (accountingExport == null) {
+                return null;
+            }
+            streamingOutput = new StreamingOutput() {
+                @Override
+                public void write(OutputStream output) throws IOException, WebApplicationException {
+                    output.write(accountingExport.getExportedContents().getBytes());
+                    output.flush();
+                    output.close();
+                }
+            };
+            return streamingOutput;
+        } catch (Exception e) {
+            logger.error("Exception in retreiving exported contents: ", e);
+            return null;
+        }
+    }
 }
