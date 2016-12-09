@@ -531,6 +531,7 @@ public class CashSessionServiceImpl implements CashSessionService {
             journalEntry.setJrnActual(journalRule.isJrnrActual());
             journalEntry.setAccId(journalRule.getAccount().getId());
             journalEntry.setJrnAccCode(journalRule.getJrnrAccCode());
+            journalEntry.setJrnDate(new Timestamp(new Date().getTime()));
             if (!accountName.isEmpty()) {
                 journalEntry.setJrnAccDesc(accountName);
             } else {

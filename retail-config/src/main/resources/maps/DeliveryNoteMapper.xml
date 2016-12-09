@@ -47,6 +47,9 @@
         <result column="DELN_COMMENT" property="delnComment" />
         <result column="DELN_TOTAL" property="delnTotal" />
         <result column="DELN_TAX" property="delnTax" />
+        <result column="FREIGHT_AMOUNT" property="freightAmount" />
+        <result column="FREIGHT_TAX" property="freightTax" />
+        <result column="FREIGHT_TAX_CODE" property="freightTaxCode" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="user" column="DELN_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -124,6 +127,7 @@
         ${alias}.FREIGHT_TXRL_ID,
         ${alias}.FREIGHT_AMOUNT,
         ${alias}.FREIGHT_TAX,
+        ${alias}.FREIGHT_TAX_CODE,
         ${alias}.DELN_TOTAL,
         ${alias}.DELN_TAX
     </sql>
@@ -174,6 +178,7 @@
             FREIGHT_TXRL_ID,
             FREIGHT_AMOUNT,
             FREIGHT_TAX,
+            FREIGHT_TAX_CODE,
             DELN_TOTAL,
             DELN_TAX
         ) VALUES (
@@ -304,6 +309,12 @@
         <if test="freightTax == null">
             ,null
         </if>
+        <if test="freightTaxCode != null">
+            ,#{freightTaxCode}
+        </if>
+        <if test="freightTaxCode == null">
+            ,null
+        </if>
         <if test="delnTotal != null">
             ,#{delnTotal}
         </if>
@@ -384,6 +395,9 @@
         </if>
         <if test="freightTax != null">
             ,FREIGHT_TAX = #{freightTax}
+        </if>
+        <if test="freightTaxCode != null">
+            ,FREIGHT_TAX_CODE = #{freightTaxCode}
         </if>
         <if test="delnTotal != null">
             ,DELN_TOTAL = #{delnTotal}

@@ -268,6 +268,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             addResponse = response.data;
             if (addResponse.status == SUCCESS ) {
                 if ($scope.pageIsNew) {
+                    $scope.purchaseOrderHeader.id = addResponse.info;
                     baseDataService.displayMessage("info","Order Number", "Purhcase order saved with number: " + addResponse.info);
                 }
                 if (mode == 'draft') {

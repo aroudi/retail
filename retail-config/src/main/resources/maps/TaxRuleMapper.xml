@@ -114,7 +114,7 @@
         TAX_LEG_VARIANCE txlv on (txrl.TXRL_ID = txlv.TXRL_ID)
         WHERE
         txlv.TXLV_IS_ACTIVE = 1
-        AND txrn.TXRN_CODE = #{value}
+        AND txrl.TXRL_CODE = #{value}
     </select>
 
     <select id="getTaxLegVarianceById" resultMap="taxLegVarianceMap" >

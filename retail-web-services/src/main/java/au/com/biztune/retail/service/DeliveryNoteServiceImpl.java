@@ -73,6 +73,9 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             deliveryNoteHeader.setDelnLastModifiedDate(currentDate);
             deliveryNoteHeader.setDelnLastModifiedBy(appUser.getId());
             deliveryNoteHeader.setDelnDeliveryDate(DateUtil.stringToDate(deliveryNoteHeader.getDeliveryDate(), "yyyy-MM-dd"));
+            if (deliveryNoteHeader.getFreightTxrl() != null && deliveryNoteHeader.getFreightTxrl().getTaxRuleName() != null) {
+                deliveryNoteHeader.setFreightTaxCode(deliveryNoteHeader.getFreightTxrl().getTxrlCode());
+            }
             if (isNew) {
                 //final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_DLV_NOTE_STATUS, IdBConstant.DLV_NOTE_STATUS_IN_PROGRESS);
                 //deliveryNoteHeader.setDelnStatus(status);

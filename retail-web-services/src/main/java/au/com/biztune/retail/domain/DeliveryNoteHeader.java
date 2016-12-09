@@ -33,6 +33,7 @@ public class DeliveryNoteHeader {
     private TaxRule freightTxrl;
     private double freightAmount;
     private double freightTax;
+    private String freightTaxCode;
     private double delnTotal;
     private double delnTax;
 
@@ -259,5 +260,13 @@ public class DeliveryNoteHeader {
 
     public void setDelnTax(double delnTax) {
         this.delnTax = delnTax;
+    }
+
+    public String getFreightTaxCode() {
+        return freightTaxCode;
+    }
+
+    public void setFreightTaxCode(String freightTaxCode) {
+        this.freightTaxCode = freightTaxCode;
     }
 }

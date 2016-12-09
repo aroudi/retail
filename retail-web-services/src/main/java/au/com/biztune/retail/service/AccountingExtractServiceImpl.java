@@ -222,64 +222,73 @@ public class AccountingExtractServiceImpl implements AccountingExtractService {
     }
 
     private List<JournalEntry> insertJournalEntry(TxnHeader txnHeader, String journalAction, double amount) {
-        JournalEntry journalEntry = null;
-        final List<JournalEntry> journalEntryList = new ArrayList<JournalEntry>();
-        List<JournalRule> journalRuleList = null;
-        journalRuleList = accountingDao.getJournalRuleByOrguIdAndTxnTypeAndAction(txnHeader.getOrgUnit().getId()
-                , txnHeader.getTxhdTxnType().getCategoryCode(), journalAction);
-        if (journalRuleList != null && journalRuleList.size() > 1) {
+        try {
+            JournalEntry journalEntry = null;
+            final List<JournalEntry> journalEntryList = new ArrayList<JournalEntry>();
+            List<JournalRule> journalRuleList = null;
+            journalRuleList = accountingDao.getJournalRuleByOrguIdAndTxnTypeAndAction(txnHeader.getOrgUnit().getId()
+                    , txnHeader.getTxhdTxnType().getCategoryCode(), journalAction);
+            if (journalRuleList != null && journalRuleList.size() > 1) {
 
-            for (JournalRule journalRule : journalRuleList) {
-                //check if journal entry contains 'Sales Income' then break amount per each tax code
-                if (journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_SALES_INCOME)) {
-                    //break income per tax code
-                    final Map<String, Double> itemTaxGroupMap = extractTaxFiguresFromItem(txnHeader);
-                    if (itemTaxGroupMap != null && itemTaxGroupMap.keySet() != null && itemTaxGroupMap.keySet().size() > 0) {
-                        for (String taxCode: itemTaxGroupMap.keySet()) {
-                            journalEntry = new JournalEntry();
-                            journalEntry.setSrcTxnType(txnHeader.getTxhdTxnType().getId());
-                            journalEntry.setSrcTxnId(txnHeader.getId());
-                            journalEntry.setAppUserId(txnHeader.getUser().getId());
-                            journalEntry.setOrguId(txnHeader.getOrgUnit().getId());
-                            journalEntry.setCssnSessionId(cashSession.getId());
-                            journalEntry.setJrnActual(journalRule.isJrnrActual());
-                            journalEntry.setJrnDate(new Timestamp(new Date().getTime()));
-                            journalEntry.setAccId(journalRule.getAccount().getId());
-                            journalEntry.setJrnAccCode(journalRule.getJrnrAccCode());
-                            journalEntry.setJrnAccDesc(journalRule.getJrnrAccDesc());
-                            journalEntry.setJrnTaxCode(taxCode);
-                            if (journalRule.isJrnrDebit()) {
-                                journalEntry.setJrnDebit(itemTaxGroupMap.get(taxCode));
-                            } else if (journalRule.isJrnrCredit()) {
-                                journalEntry.setJrnCredit(itemTaxGroupMap.get(taxCode));
+                for (JournalRule journalRule : journalRuleList) {
+                    //check if journal entry contains 'Sales Income' then break amount per each tax code
+                    if (journalRule == null || journalRule.getAccount() == null) {
+                        logger.error("jouranl rule is null or does not have an account");
+                        continue;
+                    }
+                    if (journalRule.getAccount().getAccName().equals(IdBConstant.ACCOUNT_SALES_INCOME)) {
+                        //break income per tax code
+                        final Map<String, Double> itemTaxGroupMap = extractTaxFiguresFromItem(txnHeader);
+                        if (itemTaxGroupMap != null && itemTaxGroupMap.keySet() != null && itemTaxGroupMap.keySet().size() > 0) {
+                            for (String taxCode: itemTaxGroupMap.keySet()) {
+                                journalEntry = new JournalEntry();
+                                journalEntry.setSrcTxnType(txnHeader.getTxhdTxnType().getId());
+                                journalEntry.setSrcTxnId(txnHeader.getId());
+                                journalEntry.setAppUserId(txnHeader.getUser().getId());
+                                journalEntry.setOrguId(txnHeader.getOrgUnit().getId());
+                                journalEntry.setCssnSessionId(cashSession.getId());
+                                journalEntry.setJrnActual(journalRule.isJrnrActual());
+                                journalEntry.setJrnDate(new Timestamp(new Date().getTime()));
+                                journalEntry.setAccId(journalRule.getAccount().getId());
+                                journalEntry.setJrnAccCode(journalRule.getJrnrAccCode());
+                                journalEntry.setJrnAccDesc(journalRule.getJrnrAccDesc());
+                                journalEntry.setJrnTaxCode(taxCode);
+                                if (journalRule.isJrnrDebit()) {
+                                    journalEntry.setJrnDebit(Math.abs(itemTaxGroupMap.get(taxCode)));
+                                } else if (journalRule.isJrnrCredit()) {
+                                    journalEntry.setJrnCredit(Math.abs(itemTaxGroupMap.get(taxCode)));
+                                }
+                                accountingDao.insertJournalEntry(journalEntry);
+                                journalEntryList.add(journalEntry);
                             }
-                            accountingDao.insertJournalEntry(journalEntry);
-                            journalEntryList.add(journalEntry);
                         }
+                    } else {
+                        journalEntry = new JournalEntry();
+                        journalEntry.setSrcTxnType(txnHeader.getTxhdTxnType().getId());
+                        journalEntry.setSrcTxnId(txnHeader.getId());
+                        journalEntry.setAppUserId(txnHeader.getUser().getId());
+                        journalEntry.setOrguId(txnHeader.getOrgUnit().getId());
+                        journalEntry.setCssnSessionId(cashSession.getId());
+                        journalEntry.setJrnActual(journalRule.isJrnrActual());
+                        journalEntry.setJrnDate(new Timestamp(new Date().getTime()));
+                        journalEntry.setAccId(journalRule.getAccount().getId());
+                        journalEntry.setJrnAccCode(journalRule.getJrnrAccCode());
+                        journalEntry.setJrnAccDesc(journalRule.getJrnrAccDesc());
+                        if (journalRule.isJrnrDebit()) {
+                            journalEntry.setJrnDebit(amount);
+                        } else if (journalRule.isJrnrCredit()) {
+                            journalEntry.setJrnCredit(amount);
+                        }
+                        accountingDao.insertJournalEntry(journalEntry);
+                        journalEntryList.add(journalEntry);
                     }
-                } else {
-                    journalEntry = new JournalEntry();
-                    journalEntry.setSrcTxnType(txnHeader.getTxhdTxnType().getId());
-                    journalEntry.setSrcTxnId(txnHeader.getId());
-                    journalEntry.setAppUserId(txnHeader.getUser().getId());
-                    journalEntry.setOrguId(txnHeader.getOrgUnit().getId());
-                    journalEntry.setCssnSessionId(cashSession.getId());
-                    journalEntry.setJrnActual(journalRule.isJrnrActual());
-                    journalEntry.setJrnDate(new Timestamp(new Date().getTime()));
-                    journalEntry.setAccId(journalRule.getAccount().getId());
-                    journalEntry.setJrnAccCode(journalRule.getJrnrAccCode());
-                    journalEntry.setJrnAccDesc(journalRule.getJrnrAccDesc());
-                    if (journalRule.isJrnrDebit()) {
-                        journalEntry.setJrnDebit(amount);
-                    } else if (journalRule.isJrnrCredit()) {
-                        journalEntry.setJrnCredit(amount);
-                    }
-                    accountingDao.insertJournalEntry(journalEntry);
-                    journalEntryList.add(journalEntry);
                 }
             }
+            return journalEntryList;
+        } catch (Exception e) {
+            logger.error("Error in logging journal entry:", e);
+            return null;
         }
-        return journalEntryList;
     }
 
     private void insertJournalEntrySupport(TxnHeader txnHeader, List<JournalEntry> journalEntries, String paidFromMedia) {

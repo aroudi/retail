@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,8 +54,8 @@ public class AccountingRptMgr {
             }
             final String pathStr = reportPath.getURL().getPath();
             final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            final List<JournalEntry> journalEntryList = accountingDao.accountingSummaryExportRpt(
-                    SearchClauseBuilder.buildSearchWhereCluase(searchForm, "CASH_SESSION"));
+            final List<JournalEntry> journalEntryList = processAccountingSummaryList(accountingDao.accountingSummaryExportRpt(
+                    SearchClauseBuilder.buildSearchWhereCluase(searchForm, "CASH_SESSION")));
             final JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(journalEntryList);
             final String reportHeaderJrxmlName = pathStr + "/" + reportHeaderFileName + ".jrxml";
             final String outputFile = pathStr + "/" + reportHeaderFileName + ".pdf";
@@ -101,5 +102,38 @@ public class AccountingRptMgr {
 
     public void setReportPath(Resource reportPath) {
         this.reportPath = reportPath;
+    }
+
+    /**
+     * because summary report summs all credit and debit separately, we need to separate records for credit and debits.
+     * @param summaryList list from query.
+     * @return separated list per debit and credit.
+     */
+    private List<JournalEntry> processAccountingSummaryList(List<JournalEntry> summaryList) {
+        if (summaryList == null || summaryList.size() < 1) {
+            return summaryList;
+        }
+        JournalEntry journalEntry;
+        final List<JournalEntry> journalEntryList = new ArrayList<JournalEntry>();
+        for (JournalEntry journalEntryRec : summaryList) {
+            if (journalEntryRec.getJrnCredit() > 0 && journalEntryRec.getJrnDebit() > 0) {
+                journalEntry = new JournalEntry();
+                journalEntry.setJrnDebit(journalEntryRec.getJrnDebit());
+                journalEntry.setJrnCredit(0);
+                journalEntry.setJrnAccCode(journalEntryRec.getJrnAccCode());
+                journalEntry.setJrnAccDesc(journalEntryRec.getJrnAccDesc());
+                journalEntryList.add(journalEntry);
+
+                journalEntry = new JournalEntry();
+                journalEntry.setJrnCredit(journalEntryRec.getJrnCredit());
+                journalEntry.setJrnDebit(0);
+                journalEntry.setJrnAccCode(journalEntryRec.getJrnAccCode());
+                journalEntry.setJrnAccDesc(journalEntryRec.getJrnAccDesc());
+                journalEntryList.add(journalEntry);
+            } else {
+                journalEntryList.add(journalEntryRec);
+            }
+        }
+        return journalEntryList;
     }
 }

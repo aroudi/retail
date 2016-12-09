@@ -55,15 +55,15 @@ public class AccountingExportServiceImpl implements AccountingExportService {
     }
 
     private String buildTaxCodeList() {
-        final List<TaxRuleName> taxRuleNameList = taxRuleDao.getAllTaxCodes();
-        if (taxRuleNameList == null) {
+        final List<TaxRule> taxRuleList = taxRuleDao.getAllTaxRules();
+        if (taxRuleList == null) {
             return "";
         }
         final StringBuilder taxCodeList = new StringBuilder();
-        for (TaxRuleName taxRuleName : taxRuleNameList) {
+        for (TaxRule taxRule : taxRuleList) {
             taxCodeList.append("0");
             taxCodeList.append("\t");
-            taxCodeList.append(taxRuleName.getTxrnCode());
+            taxCodeList.append(taxRule.getTxrlCode());
             taxCodeList.append(System.getProperty("line.separator"));
         }
         return taxCodeList.toString();
@@ -101,25 +101,25 @@ public class AccountingExportServiceImpl implements AccountingExportService {
         result.append(buildGap("\t", 8));
         if (supplier.getContact() != null && supplier.getContact().getPhone() != null) {
             result.append(supplier.getContact().getPhone());
-            result.append(buildGap("\t", 2));
         }
+        result.append(buildGap("\t", 2));
         if (supplier.getContact() != null && supplier.getContact().getFax() != null) {
             result.append(supplier.getContact().getFax());
-            result.append(buildGap("\t", 3));
         }
+        result.append(buildGap("\t", 3));
         if (supplier.getContactFirstName() != null) {
             result.append(supplier.getContactFirstName());
-            result.append("\t");
         }
+        result.append("\t");
         if (supplier.getContactSurName() != null) {
             result.append(supplier.getContactSurName());
-            result.append(buildGap("\t", 11));
         }
+        result.append(buildGap("\t", 11));
         if (supplier.getSupplierCode() != null) {
             result.append(supplier.getSupplierCode());
-            result.append("\t");
-            result.append(System.getProperty("line.separator"));
         }
+        result.append("\t");
+        result.append(System.getProperty("line.separator"));
         return result.toString();
     }
 
@@ -144,8 +144,12 @@ public class AccountingExportServiceImpl implements AccountingExportService {
             result.append(deliveryNoteHeader.getDelnNoteNumber());
         }
         result.append(buildGap("\t", 4));
-        //TODO: replace 11400 with reading from db
-        result.append("11400");
+        final Account inventoryAccount = accountingDao.getAccountByName(IdBConstant.ACCOUNT_INVENTORY);
+        if (inventoryAccount != null) {
+            result.append(inventoryAccount.getAccCode());
+        } else {
+            result.append("11400");
+        }
         result.append(buildGap("\t", 2));
         result.append(deliveryNoteHeader.getDelnValueNett());
         result.append("\t");
@@ -159,14 +163,21 @@ public class AccountingExportServiceImpl implements AccountingExportService {
         result.append(deliveryNoteHeader.getId());
         result.append(buildGap("\t", 2));
         if (deliveryNoteHeader.getFreightAmount() > 0) {
-            //TODO : read freight tax code from db.
-            result.append("GST");
+            if (deliveryNoteHeader.getFreightTaxCode() != null) {
+                result.append(deliveryNoteHeader.getFreightTaxCode());
+            } else {
+                result.append("GST");
+            }
             result.append(buildGap("\t", 4));
             result.append(deliveryNoteHeader.getFreightAmount());
             result.append("\t");
             result.append(deliveryNoteHeader.getFreightAmount() + deliveryNoteHeader.getFreightTax());
             result.append("\t");
-            result.append("GST");
+            if (deliveryNoteHeader.getFreightTaxCode() != null) {
+                result.append(deliveryNoteHeader.getFreightTaxCode());
+            } else {
+                result.append("GST");
+            }
             result.append(buildGap("\t", 2));
             result.append(deliveryNoteHeader.getFreightTax());
             result.append(System.getProperty("line.separator"));
@@ -175,7 +186,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
     }
 
 
-    private String buildJournalEntryRecord(JournalEntry journalEntry) {
+    private String buildJournalEntryRecord(JournalEntry journalEntry, boolean isSecondRecord) {
         if (journalEntry == null) {
             return "";
         }
@@ -184,9 +195,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
             dateStr = DateUtil.dateToString(journalEntry.getJrnDate(), "dd/MM/yyyy");
         }
         final StringBuilder result = new StringBuilder();
-        if (journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_INVENTORY)
-                || journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_CLEARING_ACCOUNT))
-        {
+        if (isSecondRecord) {
             result.append("\t");
         } else {
             result.append("3");
@@ -226,7 +235,11 @@ public class AccountingExportServiceImpl implements AccountingExportService {
         {
             final double creditAmount = journalEntry.getJrnCredit();
             final double debitAmount = journalEntry.getJrnDebit();
-            result.append(journalEntry.getJrnTaxCode());
+            if (journalEntry.getJrnTaxCode() != null) {
+                result.append(journalEntry.getJrnTaxCode());
+            } else {
+                result.append("N-T");
+            }
             //for sale income add extra entry
             final Account clearingAccount = accountingDao.getAccountByName(IdBConstant.ACCOUNT_CLEARING_ACCOUNT);
             journalEntry.setAccount(clearingAccount);
@@ -240,7 +253,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
                 journalEntry.setJrnCredit(0.00);
             }
             result.append(System.getProperty("line.separator"));
-            result.append(buildJournalEntryRecord(journalEntry));
+            result.append(buildJournalEntryRecord(journalEntry, true));
         } else {
             result.append("N-T");
             if (!journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_COST_OF_GOODS)) {
@@ -327,12 +340,11 @@ public class AccountingExportServiceImpl implements AccountingExportService {
                         fileContent.append(System.getProperty("line.separator"));
                     }
                 }
+                output.write(System.getProperty("line.separator").getBytes());
+                fileContent.append(System.getProperty("line.separator"));
+                output.write(System.getProperty("line.separator").getBytes());
+                fileContent.append(System.getProperty("line.separator"));
             }
-
-            output.write(System.getProperty("line.separator").getBytes());
-            fileContent.append(System.getProperty("line.separator"));
-            output.write(System.getProperty("line.separator").getBytes());
-            fileContent.append(System.getProperty("line.separator"));
 
             if (accountingExportForm.isExportDeliveryNotes()) {
                 //fetch delivery note header list
@@ -346,10 +358,17 @@ public class AccountingExportServiceImpl implements AccountingExportService {
                         fileContent.append(System.getProperty("line.separator"));
                     }
                 }
+                output.write(System.getProperty("line.separator").getBytes());
+                fileContent.append(System.getProperty("line.separator"));
+                output.write(System.getProperty("line.separator").getBytes());
+                fileContent.append(System.getProperty("line.separator"));
             }
+
             if (accountingExportForm.isExportAccJournal()) {
                 //fetch journal entries.
                 final List<Long> sessionList = new ArrayList<Long>();
+                //to see if we passing first entry for inventory or second entry
+                int inventoryJournalEntryNo = 0;
                 if (accountingExportForm.getCashSessionList() != null) {
                     for (CashSession cashSession : accountingExportForm.getCashSessionList()) {
                         sessionList.add(cashSession.getId());
@@ -357,7 +376,20 @@ public class AccountingExportServiceImpl implements AccountingExportService {
                     journalEntryList = accountingDao.getJournalEntryPerSessions(sessionList);
                     if (journalEntryList != null) {
                         for (JournalEntry journalEntry : journalEntryList) {
-                            content = buildJournalEntryRecord(journalEntry);
+                            if (journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_INVENTORY)
+                                    || journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_COST_OF_GOODS))
+                            {
+                                inventoryJournalEntryNo++;
+                                //if even
+                                if (inventoryJournalEntryNo == 2) {
+                                    content = buildJournalEntryRecord(journalEntry, true);
+                                    inventoryJournalEntryNo = 0;
+                                } else {
+                                    content = buildJournalEntryRecord(journalEntry, false);
+                                }
+                            } else {
+                                content = buildJournalEntryRecord(journalEntry, false);
+                            }
                             output.write(content.getBytes());
                             fileContent.append(content);
                             output.write(System.getProperty("line.separator").getBytes());
