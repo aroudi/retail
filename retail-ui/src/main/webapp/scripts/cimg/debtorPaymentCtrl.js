@@ -175,6 +175,7 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
             $scope.debtorPaymentForm.valueRounding = $scope.debtorPaymentForm.amountDue;
             $scope.debtorPaymentForm.amountDue = 0.00;
         }
+        $scope.paymentAmount = $scope.maxPaymentAllowed()*1;
     }
 
     $scope.calculateAmountPaid = function() {

@@ -215,7 +215,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
                 return;
             }
             if (Math.abs($scope.paymentAmount) >= accountBalance ) {
-                refundAmount = (-1)*accountBalance;
+                refundAmount = (1)*accountBalance;
             } else {
                 refundAmount =$scope.paymentAmount;
             }
@@ -225,7 +225,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         txnMedia = {
             "id" : rowId,
             "paymentMedia":$scope.paymentMedia,
-            "txmdAmountLocal" : refundAmount,
+            "txmdAmountLocal" : (-1)*refundAmount,
             "txmdVoided":false,
             "deleted" : false,
             "txmdType": txnMediaType
@@ -359,7 +359,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
     function maxPaymentAllowed() {
         var maxPayment = (Math.round($scope.txnHeaderForm.txhdValueDue*Math.pow(10,1))/Math.pow(10,1)).toFixed(2);
         console.log("max payment = " + maxPayment);
-        return maxPayment;
+        return Math.abs(maxPayment);
     }
 
     $scope.maxPaymentAllowed = function() {

@@ -256,7 +256,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
             result.append(buildJournalEntryRecord(journalEntry, true));
         } else {
             result.append("N-T");
-            if (!journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_COST_OF_GOODS)) {
+            if (isSecondRecord) {
                 result.append(System.getProperty("line.separator"));
             }
 
