@@ -232,6 +232,16 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         }
         $scope.txnMediaList.data.push(txnMedia);
         totalTransaction();
+        //check if transaction is fully paid
+        if ($scope.txnHeaderForm.txhdValueDue == 0) {
+            baseDataService.displayMessage('yesNo','Sumbit!!','Do you want to Submit Transaction?').then(function(result){
+                if (result) {
+                    $scope.createTransactionRefund();
+                } else {
+                    return;
+                }
+            });
+        }
     };
     $scope.removeTxnMedia= function (row) {
         if (!$scope.refundMode) {

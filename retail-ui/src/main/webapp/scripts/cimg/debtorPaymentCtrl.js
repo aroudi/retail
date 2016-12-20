@@ -144,6 +144,16 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
         }
         $scope.txnMediaList.data.push(txnMedia);
         totalTransaction();
+        //check if transaction is fully paid
+        if ($scope.debtorPaymentForm.amountDue == 0) {
+            baseDataService.displayMessage('yesNo','Sumbit!!','Do you want to Submit Transaction?').then(function(result){
+                if (result) {
+                    $scope.createTxnAccPayment();
+                } else {
+                    return;
+                }
+            });
+        }
     };
     $scope.removeTxnMedia= function (row) {
         baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this item??').then(function(result){

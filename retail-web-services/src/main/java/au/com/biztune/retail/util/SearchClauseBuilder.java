@@ -1,10 +1,13 @@
 package au.com.biztune.retail.util;
 
 import au.com.biztune.retail.domain.GeneralSearchForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,13 +21,14 @@ public class SearchClauseBuilder {
      * @return
      */
     public static List<SearchClause> buildSearchWhereCluase(GeneralSearchForm searchForm, String searchTable) {
+        final Logger logger = LoggerFactory.getLogger(SearchClauseBuilder.class);
         List<SearchClause> clauseList = null;
         SearchClause searchClause = null;
         if (searchForm != null) {
             clauseList = new ArrayList<SearchClause>();
             Timestamp dateFrom = null;
             Timestamp dateTo = null;
-            dateFrom = DateUtil.stringToDate(searchForm.getDateFrom(), "yyyy-MM-dd");
+            dateFrom = DateUtil.stringToDate(searchForm.getDateFrom(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
             if (dateFrom != null) {
                 if ("TXN_HEADER".equals(searchTable)) {
                     searchClause = new SearchClause("TXHD_TRADING_DATE", " >= ", dateFrom);
@@ -48,7 +52,7 @@ public class SearchClauseBuilder {
                 }
             }
 
-            dateTo = DateUtil.stringToDate(searchForm.getDateTo(), "yyyy-MM-dd");
+            dateTo = DateUtil.stringToDate(searchForm.getDateTo(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
             if (dateTo != null) {
                 //maximise the hour for dateTo
                 Calendar cal = Calendar.getInstance();

@@ -513,6 +513,21 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.txnHeaderForm.txhdValueCredit = $scope.txnHeaderForm.txhdValueCredit*1 + $scope.paymentAmount*1
         }
         totalTransaction();
+        //check if transaction is fully paid
+        if ($scope.txnHeaderForm.txhdValueDue == 0) {
+            baseDataService.displayMessage('yesNo','Sumbit!!','Do you want to Submit Transaction?').then(function(result){
+                if (result) {
+                    if ($scope.showSubmitButtom()) {
+                        $scope.createTransactionSale();
+                    }
+                    if ($scope.showInvoiceButtom()) {
+                        $scope.invoiceTransactionSale();
+                    }
+                } else {
+                    return;
+                }
+            });
+        }
     };
     $scope.removeTxnMedia= function (row) {
         baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this item??').then(function(result){
