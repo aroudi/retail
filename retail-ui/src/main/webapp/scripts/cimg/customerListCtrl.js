@@ -6,7 +6,7 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout,baseDat
         enableFiltering: true,
         columnDefs: [
             {field:'customerId', visible:false, enableCellEdit:false},
-            {field:'customerType', displayName:'Type',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+            {field:'customerType', displayName:'Terms',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }

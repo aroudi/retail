@@ -2,7 +2,7 @@
  * Created by arash on 14/08/2015.
  */
 cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConstants, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_PAYMENT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI ) {
-
+    $scope.isNewPage = true;
     initContactList();
     initCustomerDebtList();
     initCustomerInvoiceList();
@@ -167,7 +167,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
             enableFiltering: true,
             columnDefs: [
                 {field:'id', visible:false, enableCellEdit:false},
-                {field:'contactType', displayName:'Type',enableCellEdit:false, width:'15%', cellFilter:'configCategoryFilter',
+                {field:'contactType', displayName:'Position',enableCellEdit:false, width:'15%', cellFilter:'configCategoryFilter',
                     cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                         return grid.getCellValue(row, col).color
                     }
@@ -207,7 +207,9 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
             $scope.customer.creditStartEom = false;
             $scope.customer.creditStartEom = false;
             $scope.customer.creditStartDate= getLastDateOfMonth();
+            $scope.isNewPage = true;
         } else {
+            $scope.isNewPage = false;
             $scope.customer = angular.copy(baseDataService.getRow());
             $scope.gridOptions.data = $scope.customer.contacts;
             $scope.customer.creditStartDate = new Date($scope.customer.creditStartDate);
