@@ -96,7 +96,7 @@
                                                 </div >
                                                 <div class="col-lg-2">
                                                     <div class="form-group">
-                                                        <label>Stok Cover(Days):
+                                                        <label>Pay In Advance(Days):
                                                                <span class="btn btn-warning btn-xs" ng-show="mainForm.stockCover.$error.pattern">
                                                                     Invalid number!
                                                                </span>
@@ -245,7 +245,7 @@
                                                 </div >
                                                 <div class="col-lg-4">
                                                     <div class="form-group">
-                                                        <label>Sur Name</label>
+                                                        <label>Surname</label>
                                                         <input class="form-control" data-ng-model="supplier.contactSurName" maxlength="100">
                                                     </div >
                                                 </div >
@@ -271,7 +271,7 @@
                         </div>
                         <!--   -->
                     </div>
-                    <div class="tab-pane fade" id="PurchaseOrderList">
+                    <div class="tab-pane fade" id="PurchaseOrderList" ng-show="!isPageNew">
                         <h4>Purchase Order List</h4>
                         <div class="row">
                             <div class="col-lg-12">
@@ -280,7 +280,7 @@
                         </div>
 
                     </div>
-                    <div class="tab-pane fade" id="ProductList">
+                    <div class="tab-pane fade" id="ProductList" ng-show="!isPageNew">
                         <h4>Product List</h4>
                         <div class="row">
                             <div class="col-lg-12">
@@ -289,7 +289,7 @@
                         </div>
 
                     </div>
-                    <div class="tab-pane fade" id="DeliveryNoteList">
+                    <div class="tab-pane fade" id="DeliveryNoteList" ng-show="!isPageNew">
                         <h4>Delivery Note List</h4>
                         <div class="row">
                             <div class="col-lg-12">

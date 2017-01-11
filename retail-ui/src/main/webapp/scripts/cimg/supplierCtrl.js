@@ -60,8 +60,7 @@ cimgApp.controller('supplierCtrl', function($scope, $state, UserService,uiGridCo
                     cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                         return grid.getCellValue(row, col).color
                     }
-                },
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewPohDetail(row)"></i></a>', width:'5%' }
+                }
             ]
         }
         $scope.purchaseOrderList.enableRowSelection = true;
@@ -101,8 +100,7 @@ cimgApp.controller('supplierCtrl', function($scope, $state, UserService,uiGridCo
                     cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                         return grid.getCellValue(row, col).color
                     }
-                },
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewDeliveryNoteDetail(row)"></i></a>', width:'5%' }
+                }
             ]
         }
         $scope.deliveryNoteList.enableRowSelection = true;
@@ -123,7 +121,9 @@ cimgApp.controller('supplierCtrl', function($scope, $state, UserService,uiGridCo
             $scope.supplier = {};
             $scope.supplier.id = -1;
             $scope.supplier.contact = {};
+            $scope.isPageNew = true;
         } else {
+            $scope.isPageNew = false;
             $scope.supplier = angular.copy(baseDataService.getRow());
             baseDataService.setIsPageNew(true);
             baseDataService.setRow({});
