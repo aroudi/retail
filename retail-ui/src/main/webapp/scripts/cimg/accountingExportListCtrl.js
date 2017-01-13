@@ -8,7 +8,7 @@ cimgApp.controller('accountingExportListCtrl', function($scope, $state, baseData
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'exportedBy', displayName:'Exported By', enableCellEdit:false, width:'20%'},
-            {field:'exportTime', displayName:'Exported On',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+            {field:'exportTime', displayName:'Exported On',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
             {field:'exportSuppliers', displayName:'Suppliers',enableCellEdit:false, cellFilter:'booleanFilter', width:'10%',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     if (grid.getCellValue(row, col) == true) {

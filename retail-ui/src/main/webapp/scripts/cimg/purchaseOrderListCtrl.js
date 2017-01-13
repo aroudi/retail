@@ -46,7 +46,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
                     return row.entity.supplier.supplierName
                 }
             },
-            {field:'pohCreatedDate', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+            {field:'pohCreatedDate', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
             {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'pohValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'pohValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
@@ -113,7 +113,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
                     cellTemplate:'<a href="" ng-click="grid.appScope.viewDelNoteDetail(row)">{{grid.appScope.getLinkedDelNote(row)}}</a>'
                 },
                 {field:"delnGrn", displayName:"GRN No", visible:true, width:'40%'},
-                {field:"delnDeliveryDate", displayName:"Delivery Date", width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\'' }
+                {field:"delnDeliveryDate", displayName:"Delivery Date", width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\'' }
             ],
             data:line.linkedDelNotes
         }

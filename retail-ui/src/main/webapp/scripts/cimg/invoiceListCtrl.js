@@ -12,7 +12,7 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
-            {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+            {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
             {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'15%'},
             {field:'txhdOrigTxnNr', displayName:'Sale Order No',enableCellEdit:false, width:'12.5%'},
             {field:'txhdTxnNr', displayName:'No',enableCellEdit:false, width:'12.5%'},

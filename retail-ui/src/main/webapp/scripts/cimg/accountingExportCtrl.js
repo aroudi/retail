@@ -9,7 +9,7 @@ cimgApp.controller('accountingExportCtrl', function($scope, $state, baseDataServ
             {field:'id', visible:true, displayName:'Session#', width:'10%', enableCellEdit:false},
             {field:'cssnOperator.usrFirstName', displayName:'First Name', enableCellEdit:false, width:'15%'},
             {field:'cssnOperator.usrSurName', displayName:'SurName',enableCellEdit:false, width:'20%'},
-            {field:'cssnStartDate', displayName:'Created on',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+            {field:'cssnStartDate', displayName:'Created on',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
             {field:'cssnStatus', displayName:'Status',enableCellEdit:false, width:'15%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color

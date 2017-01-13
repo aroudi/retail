@@ -18,7 +18,7 @@ cimgApp.controller('purchaseOrderSearchCtrl', function($scope, $state, $timeout,
                     return row.entity.supplier.supplierName
                 }
             },
-            {field:'pohCreatedDate', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+            {field:'pohCreatedDate', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
             {field:'pohValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency'},
             {field:'pohValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency'},
             {field:'pohStatus', displayName:'status',enableCellEdit:false, width:'7%', cellFilter:'configCategoryFilter',

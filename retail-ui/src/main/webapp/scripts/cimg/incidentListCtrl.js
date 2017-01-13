@@ -47,7 +47,7 @@ cimgApp.controller('incidentListCtrl', function($scope, $state, baseDataService,
                     }
                 }
             },
-            {field:'lastModifiedDate', displayName:'Modified On', displayName:'Last Modified On',enableCellEdit:false, cellFilter:'date:\'yyyy-MM-dd HH:mm\'', width:'10%'},
+            {field:'lastModifiedDate', displayName:'Modified On', displayName:'Last Modified On',enableCellEdit:false, cellFilter:'date:\'dd/MM/yyyy HH:mm\'', width:'10%'},
             {field:'lastModifiedBy',  displayName:'Modified By',cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'iimsNumber', displayName:'IIMS Number',enableCellEdit:false, width:'10%'},
             {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editIncident(row)"></i></a>&nbsp;<a href=""><i tooltip="Preview Message Body" tooltip-placement="bottom" class="fa fa-envelope fa-2x" ng-click="grid.appScope.editMessageBody(row)"></i></a>&nbsp;<a href=""><i tooltip="Delete" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ></i></a>'}
@@ -90,7 +90,7 @@ cimgApp.controller('incidentListCtrl', function($scope, $state, baseDataService,
                                             }
                                         }
                                     },
-                                    {name:'lastModifiedDate', field:'lastModifiedDate',  displayName:'Modified On',width:'8%',enableCellEdit:false, cellFilter:'date:\'yyyy-MM-dd HH:mm\'' },
+                                    {name:'lastModifiedDate', field:'lastModifiedDate',  displayName:'Modified On',width:'8%',enableCellEdit:false, cellFilter:'date:\'dd/MM/yyyy HH:mm\'' },
                                     {name:'lastModifiedBy',  displayName:'Modified By',field:'lastModifiedBy', cellFilter:'fullName', width:'7%',enableCellEdit:false},
                                     {name:"messageTitle", field:"messageTitle" , width:'15%'},
                                     {name:"messageBody", field:"messageBody" , width:'50%'},

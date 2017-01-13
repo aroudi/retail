@@ -25,7 +25,7 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
                     return row.entity.supplier.supplierName
                 }
             },
-            {field:'delnDeliveryDate', displayName:'Delivery Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+            {field:'delnDeliveryDate', displayName:'Delivery Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
             {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'delnValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'delnValueNett', displayName:'Net Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},

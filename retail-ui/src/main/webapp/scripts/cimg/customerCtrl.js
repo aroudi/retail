@@ -29,9 +29,9 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
                         },
                     enableCellEdit:false, width:'5%'
                 },
-                {field: 'cadStartDate', displayName:'Start Date',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
-                {field: 'cadDueDate', displayName:'Due Date',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
-                {field: 'cadPaymentDate', displayName:'Paid Date',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+                {field: 'cadStartDate', displayName:'Start Date',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
+                {field: 'cadDueDate', displayName:'Due Date',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
+                {field: 'cadPaymentDate', displayName:'Paid Date',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
                 {field: 'txhdTxnNr', displayName: 'Invoice No.', width: '20%'},
                 {field: 'cadAmountDebt', displayName: 'Debt Amount', enableCellEdit: false, cellFilter: 'currency', width: '20%', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
                 {field: 'balance', displayName: 'Balance', enableCellEdit: false, cellFilter: 'currency', width: '17.5%', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum}
@@ -55,7 +55,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
             columnDefs: [
                 {field:'id', visible:false, enableCellEdit:false},
                 {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'20%'},
-                {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+                {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
                 {field:'txhdOrigTxnNr', displayName:'Sale Order No',enableCellEdit:false, width:'15%'},
                 {field:'txhdTxnNr', displayName:'Invoice No',enableCellEdit:false, width:'15%'},
                 {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'15%', cellFilter:'currency'},
@@ -82,7 +82,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
             columnDefs: [
                 {field:'id', visible:false, enableCellEdit:false},
                 {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'20%'},
-                {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+                {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
                 {field:'txhdTxnNr', displayName:'Number',enableCellEdit:false, width:'15%'},
                 {field:'txhdState', displayName:'State', enableCellEdit:false, width:'15%', cellFilter:'configCategoryFilter',
                     cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
@@ -136,7 +136,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
                         return row.entity.project.referenceNo
                     }
                 },
-                {field:'dateCreated', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\'' },
+                {field:'dateCreated', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\'' },
                 {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
                 //{field:'boqValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
                 //{field:'boqValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},

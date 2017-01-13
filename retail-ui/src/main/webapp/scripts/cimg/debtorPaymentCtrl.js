@@ -38,8 +38,8 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
             enableRowSelection:false,
             columnDefs: [
                 {field: 'id', visible: false, enableCellEdit: false},
-                {field: 'cadStartDate', displayName:'Start Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
-                {field: 'cadDueDate', displayName:'Due Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+                {field: 'cadStartDate', displayName:'Start Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
+                {field: 'cadDueDate', displayName:'Due Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
                 {field: 'txhdTxnNr', displayName: 'Invoice No.', width: '15%'},
                 {field: 'cadAmountDebt', displayName: 'Amount Owing', enableCellEdit: false, cellFilter: 'currency', width: '10%', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
                 {field: 'paying', displayName: 'Paying', enableCellEdit: true, cellFilter: 'currency', width: '10%', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},

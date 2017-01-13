@@ -52,7 +52,7 @@ cimgApp.controller('supplierCtrl', function($scope, $state, UserService,uiGridCo
             columnDefs: [
                 {field:'id', visible:false, enableCellEdit:false},
                 {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'25%'},
-                {field:'pohCreatedDate', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+                {field:'pohCreatedDate', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
                 {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'25%'},
                 {field:'pohValueGross', displayName:'Gross Value',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
                 {field:'pohValueNett', displayName:'Net Value',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
@@ -92,7 +92,7 @@ cimgApp.controller('supplierCtrl', function($scope, $state, UserService,uiGridCo
                 {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'15%',
                     cellTemplate:'<a href="" ng-click="grid.appScope.viewPurchaseOrderDetail(row)">{{grid.appScope.getLinkedPurchaseOrder(row)}}</a>'
                 },
-                {field:'delnDeliveryDate', displayName:'Delivery Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
+                {field:'delnDeliveryDate', displayName:'Delivery Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
                 {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
                 {field:'delnValueGross', displayName:'Gross Value',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
                 {field:'delnValueNett', displayName:'Net Value',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},

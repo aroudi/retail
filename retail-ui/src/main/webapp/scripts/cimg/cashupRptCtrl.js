@@ -10,9 +10,9 @@ cimgApp.controller('cashupRptCtrl', function($scope, $state, $timeout,baseDataSe
             {field:'cashSession.id', displayName:'Session Id',enableCellEdit:false, width:'10%'},
             {field:'cashSession.cssnOperator.usrFirstName', displayName:'First Name', enableCellEdit:false, width:'15%'},
             {field:'cashSession.cssnOperator.usrSurName', displayName:'SurName',enableCellEdit:false, width:'20%'},
-            {field:'seevEventDate', displayName:'Reconciled on',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
-            {field:'cashSession.cssnStartDate', displayName:'Opened on',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''},
-            {field:'cashSession.cssnActEndDate', displayName:'Ended on',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'yyyy-MM-dd HH:mm\''}
+            {field:'seevEventDate', displayName:'Reconciled on',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
+            {field:'cashSession.cssnStartDate', displayName:'Opened on',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
+            {field:'cashSession.cssnActEndDate', displayName:'Ended on',enableCellEdit:false, width:'12.5%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''}
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
