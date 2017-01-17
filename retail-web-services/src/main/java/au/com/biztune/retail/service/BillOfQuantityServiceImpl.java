@@ -272,6 +272,34 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 price1.setPrceToDate(currentTime);
                 price1.setPrceSetCentral(false);
                 priceDao.insert(price1);
+            //if product exists, update supplier information
+            } else {
+                //check if this product is already assigned to the supplier
+                SuppProdPrice suppProdPrice = suppProdPriceDao.checkIfSupplierProductExistsPerOrguIdAndProdIdAndSuppId(
+                        sessionState.getOrgUnit().getId(), product.getId(), supplier.getId());
+                if (suppProdPrice == null) {
+                    //get supplier legal tender
+                    final LegalTender legalTender = legalTenderDao.getLegalTenderByCode(IdBConstant.LEGAL_TENDER_AU);
+                    suppProdPrice = new SuppProdPrice();
+                    suppProdPrice.setSolId(supplier.getSuppOrguLink().getId());
+                    suppProdPrice.setCatalogueNo(importedProduct.getCatalogueNo());
+                    suppProdPrice.setUnitOfMeasure(unitOfMeasure);
+                    suppProdPrice.setUnitOfMeasureContent(unitOfMeasure);
+                    suppProdPrice.setUnomQty(1);
+                    suppProdPrice.setLegalTender(legalTender);
+                    if (importedProduct.getCost() != null) {
+                        suppProdPrice.setPrice(importedProduct.getCost());
+                    }
+                    suppProdPrice.setSprcCreated(currentTime);
+                    suppProdPrice.setSprcModified(currentTime);
+                    suppProdPrice.setProdId(product.getId());
+                    suppProdPriceDao.insert(suppProdPrice);
+                } else {
+                    if (importedProduct.getCost() != null) {
+                        suppProdPrice.setPrice(importedProduct.getCost());
+                    }
+                    suppProdPriceDao.updateValues(suppProdPrice);
+                }
             }
             final BoqDetail boqDetail = new BoqDetail();
             boqDetail.setBillOfQuantity(billOfQuantity);

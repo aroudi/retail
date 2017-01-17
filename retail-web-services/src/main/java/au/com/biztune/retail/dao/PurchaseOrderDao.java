@@ -132,4 +132,12 @@ public interface PurchaseOrderDao {
      * @param pohId pohId
      */
     void updatePohPrintStatus(long pohId);
+
+    /**
+     * retreive all purchaes orders related to the specific product.
+     * @param prodId prodId
+     * @param orguId orguId
+     * @return List of PurchaseLine
+     */
+    List<PurchaseLine> getPurchaseOrdersOfProductPerProdId(long prodId, long orguId);
 }

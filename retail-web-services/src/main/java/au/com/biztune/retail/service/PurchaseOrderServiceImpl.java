@@ -116,6 +116,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 if (purchaseLine.getId() < 0) {
                     purchaseLine.setPohOrderNumber(pohNumber);
                     purchaseLine.setPohId(purchaseOrderHeader.getId());
+                    purchaseLine.setPolProdId(purchaseLine.getPurchaseItem().getProdId());
+                    purchaseLine.setPolSuppId(purchaseOrderHeader.getSupplier().getId());
                     purchaseOrderDao.insertPurchaseLine(purchaseLine);
                 } else {
                     purchaseOrderDao.updatePurchaseLine(purchaseLine);
@@ -333,6 +335,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 }
             }
             if (!lineFound) {
+                purchaseLine.setPolProdId(boqDetail.getProduct().getId());
+                purchaseLine.setPolSuppId(boqDetail.getSupplier().getId());
                 purchaseOrderDao.insertPurchaseLine(purchaseLine);
                 createPoBoqLink(purchaseLine, boqDetail);
                 purchaseOrderHeader.addLine(purchaseLine);
@@ -521,4 +525,17 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
     }
 
+    /**
+     * get all purchase Order Header for specific product.
+     * @param prodId prodId
+     * @return List of PurchaseOrderHeader
+     */
+    public List<PurchaseLine> getAllPurchaseOrderOfProduct(long prodId) {
+        try {
+            return purchaseOrderDao.getPurchaseOrdersOfProductPerProdId(prodId, sessionState.getOrgUnit().getId());
+        } catch (Exception e) {
+            logger.error("Exception in getting purchase order header list per product:", e);
+            return null;
+        }
+    }
 }

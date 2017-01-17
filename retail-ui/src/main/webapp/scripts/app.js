@@ -44,7 +44,7 @@ var config_data = {
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
- */
+*/
 //DEV
 
 var config_data = {
@@ -76,6 +76,7 @@ var service_uri = {
     'PRODUCT_ADD_URI' : 'product/add',
     'PRODUCT_GET_URI' : 'product/get',
     'PRODUCT_UPLOAD_CSV_URI' : 'product/uploadCsv',
+    'PRODUCT_GET_PO_LIST_URI' : 'purchaseOrder/getProductPurchaseOrders/',
     'UPLOAD_BOQ_URI'  : 'billOfQuantity/upload',
     'BOQDETAIL_GET_PER_BOQID_URI' : 'billOfQuantity/detail/getPerBoqId/',
     'BOQ_GET_ALL_URI' : 'billOfQuantity/header/getAll',

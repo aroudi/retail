@@ -91,4 +91,11 @@ public interface PurchaseOrderService {
      * @return List of PruductPurchaseItem
      */
     ProductPurchaseItem getSupplierProductPurchaseItemPerCatalogNo(long suppId, String catalogNo);
+
+    /**
+     * get all purchase Order Header for specific product.
+     * @param prodId prodId
+     * @return List of PurchaseOrderHeader
+     */
+    List<PurchaseLine> getAllPurchaseOrderOfProduct(long prodId);
 }

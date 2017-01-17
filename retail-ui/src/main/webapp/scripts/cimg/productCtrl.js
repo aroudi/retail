@@ -6,12 +6,15 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
     initPageData();
     function initPageData() {
         if ( baseDataService.getIsPageNew()) {
+            $scope.isNewPage = true;
             $scope.productForm = {};
             $scope.productForm.prodId = -1;
             $scope.productForm.prouId = -1;
         } else {
+            $scope.isNewPage = false;
             $scope.productForm = angular.copy(baseDataService.getRow());
             baseDataService.setRow({});
+            baseDataService.setIsPageNew(true);
         }
         initSupplierPriceGrid();
         baseDataService.setIsPageNew(true);
@@ -186,4 +189,22 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
         //$state.go('dashboard.listFacility');
         $state.go($scope.previouseState);
     }
+
+    $scope.displayProductPurchaseOrders = function () {
+        if ($scope.isNewPage) {
+            return;
+        }
+        ngDialog.openConfirm({
+            template:'views/pages/productPurchaseOrderList.html',
+            controller:'productPurchaseOrderListCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false,
+            resolve: {productId: function(){return $scope.productForm.prodId}}
+        }).then (function (){
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    };
+
 });

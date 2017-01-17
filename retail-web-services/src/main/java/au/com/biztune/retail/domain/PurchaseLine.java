@@ -38,6 +38,12 @@ public class PurchaseLine {
     private List<PoBoqLink> poBoqLinks;
     private boolean deleted;
     private double polQtyReserved;
+    private long polProdId;
+    private long polSuppId;
+    //dummy field for report:
+    private String supplierName;
+    private Timestamp pohCreatedDate;
+    private String pohPrefix;
 
     /**
      * add poBoqLink to list.
@@ -289,5 +295,45 @@ public class PurchaseLine {
 
     public void setPolQtyReserved(double polQtyReserved) {
         this.polQtyReserved = polQtyReserved;
+    }
+
+    public long getPolProdId() {
+        return polProdId;
+    }
+
+    public void setPolProdId(long polProdId) {
+        this.polProdId = polProdId;
+    }
+
+    public long getPolSuppId() {
+        return polSuppId;
+    }
+
+    public void setPolSuppId(long polSuppId) {
+        this.polSuppId = polSuppId;
+    }
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
+    public Timestamp getPohCreatedDate() {
+        return pohCreatedDate;
+    }
+
+    public void setPohCreatedDate(Timestamp pohCreatedDate) {
+        this.pohCreatedDate = pohCreatedDate;
+    }
+
+    public String getPohPrefix() {
+        return pohPrefix;
+    }
+
+    public void setPohPrefix(String pohPrefix) {
+        this.pohPrefix = pohPrefix;
     }
 }

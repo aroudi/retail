@@ -197,10 +197,12 @@
     <select id="getAllProductsPerOrgUnitId" resultMap="productListLiteMap" >
         SELECT
         <include refid="productColumns"><property name="alias" value="prod"/></include>,
-        <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>
+        <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>,
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="cat"/></include>
         FROM
         PRODUCT prod
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
+        INNER JOIN CONFIG_CATEGORY cat on (cat.CATEGORY_ID=  prou.CAT_ID_STATUS)
         WHERE prou.orgu_id = #{value}
     </select>
 

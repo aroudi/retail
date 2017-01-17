@@ -2,6 +2,7 @@
 package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.GeneralSearchForm;
+import au.com.biztune.retail.domain.PurchaseLine;
 import au.com.biztune.retail.report.PurchaseOrderRptMgr;
 import au.com.biztune.retail.domain.ProductPurchaseItem;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
@@ -184,6 +185,20 @@ public class PurchaseOrderRest {
     public List<PurchaseOrderHeader> getSupplierPurchaseOrders (@PathParam("suppId") long suppId) {
         return purchaseOrderService.getAllPurchaseOrderHeaderPerOrguIdAndSupplierId(suppId);
     }
+
+    /**
+     * get all product's purchase orders.
+     * @param prodId prodId.
+     * @return List of purchase orders
+     */
+    @Secured
+    @GET
+    @Path("/getProductPurchaseOrders/{prodId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PurchaseLine> getProductPurchaseOrders (@PathParam("prodId") long prodId) {
+        return purchaseOrderService.getAllPurchaseOrderOfProduct(prodId);
+    }
+
 
     /**
      * search purchase order header.

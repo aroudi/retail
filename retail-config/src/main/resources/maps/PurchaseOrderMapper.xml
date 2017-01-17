@@ -108,6 +108,34 @@
         <collection property="poBoqLinks" javaType="ArrayList" column="POL_ID" ofType="PoBoqLink" select="au.com.biztune.retail.dao.PoBoqLinkDao.getAllPoBoqLinkPerPolId"/>
     </resultMap>
 
+    <resultMap id="purchaseOrderOfProductMap" type="PurchaseLine" >
+        <id column="POL_ID" property="id" />
+        <result column="POH_ID" property="pohId" />
+        <result column="POL_UNIT_COST" property="polUnitCost" />
+        <result column="POL_PRICE" property="polPrice" />
+        <result column="POL_SPECIAL_BUY" property="polSpecialBuy" />
+        <result column="POL_QTY_ORDERED" property="polQtyOrdered" />
+        <result column="POL_QTY_RESERVED" property="polQtyReserved" />
+        <result column="POL_QTY_CANCELLED" property="polQtyCancelled" />
+        <result column="POL_QTY_RECEIVED" property="polQtyReceived" />
+        <result column="POL_QTY_INVOICED" property="polQtyInvoiced" />
+        <result column="POL_VALUE_ORDERED" property="polValueOrdered" />
+        <result column="POL_VALUE_RECEIVED" property="polValueReceived" />
+        <result column="POL_VALUE_INVOICED" property="polValueInvoiced" />
+        <result column="POL_FREE_TEXT" property="polFreeText" />
+        <result column="POL_MODIFIED" property="polModified" />
+        <result column="POL_DATE_RECEIVED" property="polDateReceived" />
+        <result column="POL_PRICE_CHECKED" property="polPriceChecked" />
+        <result column="POL_ID_PARENT_LINE" property="polIdParentLine" />
+        <result column="POL_QTY_COUNTED" property="polQtyCounted" />
+        <result column="POL_CONTENTS" property="polContents" />
+        <result column="SUPPLIER_NAME" property="supplierName" />
+        <result column="POH_CREATED_DATE" property="pohCreatedDate" />
+        <result column="POH_ORDER_NUMBER" property="pohOrderNumber" />
+        <result column="POH_PREFIX" property="pohPrefix" />
+        <association property="polStatus" resultMap="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryMap" />
+    </resultMap>
+
     <sql id="purchaseOrderHeaderColumns">
         ${alias}.POH_ID,
         ${alias}.ORGU_ID,
@@ -552,7 +580,9 @@
         POL_CONTENTS,
         UNOM_ID_CONTENTS,
         POL_CREATION_TYPE,
-        POL_STATUS
+        POL_STATUS,
+        POL_PROD_ID,
+        POL_SUPP_ID
         ) VALUES (
         #{pohId}
         <if test="pohOrderNumber != null">
@@ -730,6 +760,18 @@
             ,#{polStatus.id}
         </if>
         <if test="polStatus == null">
+            ,null
+        </if>
+        <if test="polProdId != null">
+            ,#{polProdId}
+        </if>
+        <if test="polProdId == null">
+            ,null
+        </if>
+        <if test="polSuppId != null">
+            ,#{polSuppId}
+        </if>
+        <if test="polSuppId == null">
             ,null
         </if>
         )
@@ -958,5 +1000,17 @@
     <update id="updatePohPrintStatus" >
         UPDATE PURCHASE_ORDER_HEADER SET POH_PRINTED = 1 WHERE POH_ID = #{value}
     </update>
+
+    <select id="getPurchaseOrdersOfProductPerProdId" resultMap="purchaseOrderOfProductMap" >
+        SELECT
+        supp.SUPPLIER_NAME, poh.POH_CREATED_DATE, poh.POH_PREFIX,
+        <include refid="purchaseLineColumns"><property name="alias" value="pol"/></include>,
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="cat"/></include>
+        from PURCHASE_LINE pol inner join PURCHASE_ORDER_HEADER poh on (pol.POH_ID = poh.POH_ID)
+        inner join SUPPLIER supp on (poh.SUPPLIER_ID = supp.SUPPLIER_ID)
+        left outer join CONFIG_CATEGORY cat on (pol.POL_STATUS = cat.CATEGORY_ID)
+        where pol.POL_PROD_ID = #{param1} and poh.ORGU_ID = #{param2}
+    </select>
+
 
 </mapper>

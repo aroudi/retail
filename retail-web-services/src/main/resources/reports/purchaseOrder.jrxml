@@ -2,11 +2,13 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="358"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
 	</parameter>
 	<field name="pohOrderNumber" class="java.lang.String"/>
+	<field name="pohPrefix" class="java.lang.String"/>
+	<field name="pohRevision" class="java.lang.Long"/>
 	<field name="supplier" class="au.com.biztune.retail.domain.Supplier">
 		<fieldDescription><![CDATA[supplier]]></fieldDescription>
 	</field>
@@ -38,7 +40,7 @@
 				<reportElement x="3" y="204" width="544" height="60" uuid="d0174672-6480-42b1-9d27-5224870afcaf"/>
 			</rectangle>
 			<rectangle>
-				<reportElement x="237" y="37" width="303" height="120" uuid="5c41d872-08d1-453c-b79c-7c93887e686f"/>
+				<reportElement x="237" y="30" width="303" height="135" uuid="5c41d872-08d1-453c-b79c-7c93887e686f"/>
 			</rectangle>
 			<staticText>
 				<reportElement x="3" y="89" width="205" height="42" uuid="371cdd93-3faa-44ab-bbc2-e305fb273faf"/>
@@ -48,25 +50,25 @@
 				<text><![CDATA[Purchase Order]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="240" y="71" width="59" height="20" uuid="10d9aa5a-6740-4f54-994d-6b454160b053"/>
+				<reportElement x="240" y="57" width="59" height="20" uuid="10d9aa5a-6740-4f54-994d-6b454160b053"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Order No:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="369" y="71" width="168" height="20" uuid="6a110809-4516-43d6-a921-9c8ea8879604"/>
-				<textFieldExpression><![CDATA[$F{pohOrderNumber}]]></textFieldExpression>
+				<reportElement x="359" y="57" width="178" height="20" uuid="6a110809-4516-43d6-a921-9c8ea8879604"/>
+				<textFieldExpression><![CDATA[$F{pohOrderNumber} + " (rev-" + $F{pohRevision} + ")"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="240" y="91" width="92" height="20" uuid="cfde9512-91ad-4a73-bd17-4712de0fd222"/>
+				<reportElement x="240" y="99" width="92" height="20" uuid="cfde9512-91ad-4a73-bd17-4712de0fd222"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Creation Date :]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="369" y="91" width="168" height="20" uuid="653f6cfe-7288-47cb-b824-48c6bdf7c6c0"/>
+				<reportElement x="359" y="99" width="178" height="20" uuid="653f6cfe-7288-47cb-b824-48c6bdf7c6c0"/>
 				<textFieldExpression><![CDATA[$F{pohCreatedDate}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
@@ -74,7 +76,7 @@
 				<textFieldExpression><![CDATA[$F{supplier}.getSupplierName()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="240" y="111" width="119" height="20" uuid="a5163f7d-cee4-4456-bc15-100df520b4fb"/>
+				<reportElement x="240" y="119" width="119" height="20" uuid="a5163f7d-cee4-4456-bc15-100df520b4fb"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -124,28 +126,28 @@
 				<text><![CDATA[PH: +61 2  9747 0088     FAX: +61 2 9747 4488]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="241" y="133" width="75" height="20" uuid="35ca90a5-502d-4b36-b141-790cbce438e8"/>
+				<reportElement x="240" y="141" width="75" height="20" uuid="35ca90a5-502d-4b36-b141-790cbce438e8"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Ordered By:]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="237" y="37" width="303" height="25" backcolor="#CCCCCC" uuid="1464852c-9f7b-4ba6-bf88-3610b1904b39"/>
+				<reportElement x="237" y="28" width="303" height="25" backcolor="#CCCCCC" uuid="1464852c-9f7b-4ba6-bf88-3610b1904b39"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="344" y="39" width="100" height="20" uuid="c8ee7f41-ad47-4300-8a09-7937d2f64fa8"/>
+				<reportElement x="344" y="30" width="100" height="20" uuid="c8ee7f41-ad47-4300-8a09-7937d2f64fa8"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Order Detail]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="369" y="111" width="168" height="20" uuid="5c1492fc-4d29-4c4c-a3eb-f64c36bb548a"/>
+				<reportElement x="359" y="119" width="178" height="20" uuid="5c1492fc-4d29-4c4c-a3eb-f64c36bb548a"/>
 				<textFieldExpression><![CDATA[$F{pohExpDelivery}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="369" y="133" width="168" height="20" uuid="f3da8ceb-d2f1-4af1-bf43-c7c9b5d9e04a"/>
+				<reportElement x="359" y="141" width="178" height="20" uuid="f3da8ceb-d2f1-4af1-bf43-c7c9b5d9e04a"/>
 				<textFieldExpression><![CDATA[$F{pohContactPerson}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -180,6 +182,17 @@
 			<textField isBlankWhenNull="true">
 				<reportElement x="75" y="204" width="462" height="20" uuid="b89e42be-93d3-4b2d-97de-aead56368916"/>
 				<textFieldExpression><![CDATA[$F{pohContactPerson}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="240" y="78" width="59" height="20" uuid="0b8e55b3-2ca2-485f-8c84-0d1dfccf5eb2"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Prefix:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="359" y="78" width="178" height="20" uuid="0ddecb0c-5a57-4c2f-b046-2d3a408b1267"/>
+				<textFieldExpression><![CDATA[$F{pohPrefix}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
