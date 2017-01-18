@@ -52,6 +52,11 @@
         WHERE pboql.POH_ID = #{value}
     </select>
 
+    <select id="getAllPoProjectCodesPerPohId" resultMap="PoBoqLinkMap" >
+        SELECT DISTINCT PROJECT_CODE FROM PO_BOQ_LINK
+        WHERE POH_ID = #{value}
+    </select>
+
     <select id="getAllPoBoqLinkPerPolId" resultMap="PoBoqLinkMap" >
         <include refid="getPoBoqLink">
         </include>

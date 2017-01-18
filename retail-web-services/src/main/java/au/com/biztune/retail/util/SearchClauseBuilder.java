@@ -139,6 +139,12 @@ public class SearchClauseBuilder {
                     clauseList.add(searchClause);
                 }
             }
+            if ("PURCHASE_ORDER_HEADER".equals(searchTable)) {
+                if ((searchForm.getProjectCode() != null) && (!searchForm.getProjectCode().isEmpty())) {
+                    searchClause = new SearchClause("POH_PRJ_CODE", " like ", "%" + searchForm.getProjectCode() + "%");
+                    clauseList.add(searchClause);
+                }
+            }
         }
         if (clauseList.size() > 0) {
             return clauseList;

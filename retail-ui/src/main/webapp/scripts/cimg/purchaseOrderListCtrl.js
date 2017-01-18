@@ -8,8 +8,8 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
 
     $scope.gridOptions = {
         enableFiltering: true,
-        enableSelectAll:true,
-        enableRowSelection:true,
+        enableSelectAll:false,
+        enableRowSelection:false,
         showGridFooter: true,
         showColumnFooter: true,
         enableColumnResizing: true,
@@ -39,7 +39,9 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
         } ,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'10%'},
+            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'10%',
+                cellTemplate:'<a href="" ng-click="grid.appScope.viewPohDetail(row)">{{row.entity.pohOrderNumber}}</a>'
+            },
             {field:'pohRevision', displayName:'Rev.',enableCellEdit:false, width:'5%'},
             {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'30%',
                 cellTooltip: function(row,col) {
@@ -58,8 +60,8 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewPohDetail(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'5%' }
         ]
     }
-    $scope.gridOptions.enableRowSelection = true;
-    $scope.gridOptions.multiSelect = true;
+    $scope.gridOptions.enableRowSelection = false;
+    $scope.gridOptions.multiSelect = false;
     //$scope.gridOptions.noUnselect= true;
 
     //

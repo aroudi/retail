@@ -48,6 +48,8 @@ public class PurchaseOrderHeader {
     private long pohRevision;
     private String pohCreatedDateStr;
     private boolean pohPrinted;
+    private String pohPrjName;
+    private String pohPrjCode;
 
     /**
      * constructor.
@@ -391,5 +393,21 @@ public class PurchaseOrderHeader {
 
     public void setPohPrinted(boolean pohPrinted) {
         this.pohPrinted = pohPrinted;
+    }
+
+    public String getPohPrjName() {
+        return pohPrjName;
+    }
+
+    public void setPohPrjName(String pohPrjName) {
+        this.pohPrjName = pohPrjName;
+    }
+
+    public String getPohPrjCode() {
+        return pohPrjCode;
+    }
+
+    public void setPohPrjCode(String pohPrjCode) {
+        this.pohPrjCode = pohPrjCode;
     }
 }

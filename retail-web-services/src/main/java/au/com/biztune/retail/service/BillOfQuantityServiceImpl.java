@@ -682,6 +682,18 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 }
                 //update the total fields in purchase order header.
                 purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
+                //fetch all project codes assigned to PO and insert as comma separated list to field PO_PRJ_CODE just for search.
+
+                final List<PoBoqLink> linkedProjects = poBoqLinkDao.getAllPoProjectCodesPerPohId(purchaseOrderHeader.getId());
+                if (linkedProjects != null && linkedProjects.size() > 0) {
+                    String commaSeparatedProjectCodes = "";
+                    for (PoBoqLink projectCode : linkedProjects) {
+                        if (projectCode.getProjectCode() != null) {
+                            commaSeparatedProjectCodes = commaSeparatedProjectCodes + projectCode.getProjectCode() + ", ";
+                        }
+                    }
+                    purchaseOrderDao.updatePohProjectCode(purchaseOrderHeader.getId(), commaSeparatedProjectCodes);
+                }
                 result.add(purchaseOrderHeader);
             }
             //now change the status of BillOfQuantities merged

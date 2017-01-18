@@ -15,6 +15,7 @@ public class GeneralSearchForm {
     private long supplierId;
     private String searchRange;
     private String generatedBy;
+    private String projectCode;
 
     public String getDateFrom() {
         return dateFrom;
@@ -86,5 +87,13 @@ public class GeneralSearchForm {
 
     public void setGeneratedBy(String generatedBy) {
         this.generatedBy = generatedBy;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
     }
 }

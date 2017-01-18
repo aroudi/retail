@@ -344,6 +344,24 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         }).then (function (value){
                 //alert('returned value = ' + value);
                 $scope.purchaseOrderHeader.supplier = value;
+                if ($scope.purchaseOrderHeader.supplier.contact != undefined && $scope.purchaseOrderHeader.supplier.contact.address1 != undefined) {
+                    $scope.purchaseOrderHeader.pohDlvAddress = $scope.purchaseOrderHeader.supplier.contact.address1;
+                } else {
+                    $scope.purchaseOrderHeader.pohDlvAddress = '';
+                }
+                var contactPerson = '';
+                if ($scope.purchaseOrderHeader.supplier.contactFirstName != undefined) {
+                    contactPerson = contactPerson + $scope.purchaseOrderHeader.supplier.contactFirstName;
+                }
+                if ($scope.purchaseOrderHeader.supplier.contactSurName != undefined) {
+                    contactPerson = contactPerson + ' ' +$scope.purchaseOrderHeader.supplier.contactSurName;
+                }
+                $scope.purchaseOrderHeader.pohContactPerson = contactPerson;
+                if ($scope.purchaseOrderHeader.supplier.contact!=undefined && $scope.purchaseOrderHeader.supplier.contact.phone != undefined) {
+                    $scope.purchaseOrderHeader.pohContactPhone = $scope.purchaseOrderHeader.supplier.contact.phone;
+                } else {
+                    $scope.purchaseOrderHeader.pohContactPhone = '';
+                }
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }

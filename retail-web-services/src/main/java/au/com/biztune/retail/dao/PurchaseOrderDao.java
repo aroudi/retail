@@ -140,4 +140,11 @@ public interface PurchaseOrderDao {
      * @return List of PurchaseLine
      */
     List<PurchaseLine> getPurchaseOrdersOfProductPerProdId(long prodId, long orguId);
+
+    /**
+     * update project code for po.
+     * @param pohId pohId
+     * @param projectCode projectCode
+     */
+    void updatePohProjectCode(long pohId, String projectCode);
 }

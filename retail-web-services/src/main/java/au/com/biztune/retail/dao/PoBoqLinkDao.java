@@ -60,4 +60,11 @@ public interface PoBoqLinkDao {
      * @return Project Name
      */
     String getProjectNameByProjectId(long projectId);
+
+    /**
+     * get all Project Code assigned to purchase order.
+     * @param pohId pohId
+     * @return List of PoBoqLink contains project codes.
+     */
+    List<PoBoqLink> getAllPoProjectCodesPerPohId(long pohId);
 }
