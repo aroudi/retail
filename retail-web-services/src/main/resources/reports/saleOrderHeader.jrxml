@@ -115,7 +115,7 @@
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Order No:]]></text>
+				<text><![CDATA[Number:]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement x="224" y="127" width="128" height="20" uuid="22c266ce-e128-4022-a132-0ac4e0325675"/>

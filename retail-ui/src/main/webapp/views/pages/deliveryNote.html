@@ -89,7 +89,7 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-12" >
-                            <div class="col-lg-3" >
+                            <div class="col-lg-2" >
                                 <label>Sub Total</label>
                                 <span>{{deliveryNoteHeader.delnValueNett |currency}}</span>
                             </div>
@@ -101,10 +101,16 @@
                                     </select>
                                 </div >
                             </div >
-                            <div class="col-lg-3">
+                            <div class="col-lg-2">
                                 <div class="form-group">
                                     <label>Freight Amount:</label>
                                     <input class="form-control" data-ng-model="deliveryNoteHeader.freightAmount"  ng-disabled="disablePage == true" ng-change = "calculateTotal()">
+                                </div >
+                            </div >
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    <label>Surcharge Amount:</label>
+                                    <input class="form-control" data-ng-model="deliveryNoteHeader.delnSurcharge" ng-change = "calculateTotal()">
                                 </div >
                             </div >
                             <div class="col-lg-3" >

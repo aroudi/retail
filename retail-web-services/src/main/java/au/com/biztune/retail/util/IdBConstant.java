@@ -438,6 +438,8 @@ public interface IdBConstant {
      *
      */
     String PAYMENT_MEDIA_ACCOUNT = "Account";
+    String MEDIA_TYPE_ACCOUNT = "Account";
+    String MEDIA_TYPE_CASH = "Cash";
 
 
     /**

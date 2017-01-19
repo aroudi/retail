@@ -53,7 +53,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
 
         ]
     }
-    $scope.gridOptions.enableRowSelection = true;
+    $scope.gridOptions.enableRowSelection = false;
     $scope.gridOptions.multiSelect = false;
     $scope.gridOptions.noUnselect= true;
 

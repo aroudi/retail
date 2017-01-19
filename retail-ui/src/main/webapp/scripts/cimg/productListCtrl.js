@@ -45,7 +45,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseData
             {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a>', width:'5%' }
         ]
     }
-    $scope.gridOptions.enableRowSelection = true;
+    $scope.gridOptions.enableRowSelection = false;
     $scope.gridOptions.multiSelect = false;
     $scope.gridOptions.noUnselect= true;
 

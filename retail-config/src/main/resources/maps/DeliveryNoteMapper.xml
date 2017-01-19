@@ -23,6 +23,7 @@
         <result column="DELN_COMMENT" property="delnComment" />
         <result column="DELN_TOTAL" property="delnTotal" />
         <result column="DELN_TAX" property="delnTax" />
+        <result column="DELN_SURCHARGE" property="delnSurcharge" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="user" column="DELN_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -50,6 +51,7 @@
         <result column="FREIGHT_AMOUNT" property="freightAmount" />
         <result column="FREIGHT_TAX" property="freightTax" />
         <result column="FREIGHT_TAX_CODE" property="freightTaxCode" />
+        <result column="DELN_SURCHARGE" property="delnSurcharge" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="user" column="DELN_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -76,6 +78,7 @@
         <result column="FREIGHT_TAX" property="freightTax" />
         <result column="DELN_TOTAL" property="delnTotal" />
         <result column="DELN_TAX" property="delnTax" />
+        <result column="DELN_SURCHARGE" property="delnSurcharge" />
         <association property="freightTxrl" column="FREIGHT_TXRL_ID" select="au.com.biztune.retail.dao.TaxRuleDao.getTaxRuleById" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -96,6 +99,7 @@
         <result column="DLNL_QTY" property="dlnlQty" />
         <result column="POL_QTY" property="polQty" />
         <result column="DLNL_COMMENT" property="dlnlComment" />
+        <result column="DELN_SURCHARGE" property="delnSurcharge" />
         <association property="purchaseItem" column="SPRC_ID" select="au.com.biztune.retail.dao.SuppProdPriceDao.getProductPurchaseItemPerSprcId" />
         <association property="dlnlCaseSize" column="DLNL_CASE_SIZE" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="dlnlProductSize" column="DLNL_PRODUCT_SIZE" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
@@ -129,6 +133,7 @@
         ${alias}.FREIGHT_TAX,
         ${alias}.FREIGHT_TAX_CODE,
         ${alias}.DELN_TOTAL,
+        ${alias}.DELN_SURCHARGE,
         ${alias}.DELN_TAX
     </sql>
 
@@ -180,7 +185,8 @@
             FREIGHT_TAX,
             FREIGHT_TAX_CODE,
             DELN_TOTAL,
-            DELN_TAX
+            DELN_TAX,
+            DELN_SURCHARGE
         ) VALUES (
         #{orguId}
         <if test="delnNoteNumber != null">
@@ -327,6 +333,12 @@
         <if test="delnTax == null">
             ,null
         </if>
+        <if test="delnSurcharge != null">
+            ,#{delnSurcharge}
+        </if>
+        <if test="delnSurcharge == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -404,6 +416,9 @@
         </if>
         <if test="delnTax != null">
             ,DELN_TAX = #{delnTax}
+        </if>
+        <if test="delnSurcharge != null">
+            ,DELN_SURCHARGE = #{delnSurcharge}
         </if>
         WHERE DELN_ID = #{id}
     </update>

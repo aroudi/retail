@@ -36,6 +36,7 @@ public class DeliveryNoteHeader {
     private String freightTaxCode;
     private double delnTotal;
     private double delnTax;
+    private double delnSurcharge;
 
 
     public long getId() {
@@ -268,5 +269,13 @@ public class DeliveryNoteHeader {
 
     public void setFreightTaxCode(String freightTaxCode) {
         this.freightTaxCode = freightTaxCode;
+    }
+
+    public double getDelnSurcharge() {
+        return delnSurcharge;
+    }
+
+    public void setDelnSurcharge(double delnSurcharge) {
+        this.delnSurcharge = delnSurcharge;
     }
 }

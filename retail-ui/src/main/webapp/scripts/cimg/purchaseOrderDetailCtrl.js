@@ -9,7 +9,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         showColumnFooter: true,
         enableColumnResizing: true,
         enableSorting:true,
-        expandableRowTemplate: '<div ui-grid="row.entity.subGridOptions" ui-grid-selection style ="height: 100px;"></div>',
+        expandableRowTemplate: '<div ui-grid="row.entity.subGridOptions" style ="height: 100px;"></div>',
         expandableRowScope:{
             subGridVariable: 'subGridScopeVariable'
         } ,
@@ -47,7 +47,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a> <a href=""><i tooltip="update BOQ" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-show="row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\' || row.entity.polStatus.categoryCode==\'POH_STATUS_PARTIAL_REC\'" ng-click="grid.appScope.updateBoqQtyRcvd(row)"></i></a>', width: '5%'}
         ]
     }
-    $scope.gridOptions.enableRowSelection = true;
+    $scope.gridOptions.enableRowSelection = false;
     $scope.gridOptions.multiSelect = false;
     $scope.gridOptions.noUnselect= true;
 

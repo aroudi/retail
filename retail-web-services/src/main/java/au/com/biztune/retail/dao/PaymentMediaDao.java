@@ -53,4 +53,11 @@ public interface PaymentMediaDao {
      * @return List of Payment Media.
      */
     List<PaymentMedia> getPaymentMediasForReconciliation();
+
+    /**
+     * get media type by name.
+     * @param mediaTypeName mediaTypeName
+     * @return Media type by name
+     */
+    MediaType getMediaTypeByName(String mediaTypeName);
 }

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI) {
 
     $scope.isPageNew = baseDataService.getIsPageNew();
     /*
@@ -65,6 +65,12 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.mediaTypeSet = response.data;
             $scope.mediaType = baseDataService.populateSelectList($scope.mediaType,$scope.mediaTypeSet);
             $scope.onMediaTypeChange();
+        });
+        baseDataService.getBaseData(MEDIA_TYPE_GET_BYNAME_URI+'Account').then(function(response){
+            $scope.mediaTypeAccount = response.data;
+        });
+        baseDataService.getBaseData(MEDIA_TYPE_GET_BYNAME_URI+'Cash').then(function(response){
+            $scope.mediaTypeCash = response.data;
         });
     }
 
@@ -315,7 +321,15 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             closeByDocument:false
         }).then (function (value){
                 $scope.customer = value;
+                var mediaType;
                 $scope.txnHeaderForm.txhdDlvAddress = $scope.customer.address2;
+                if ($scope.customer.customerType.categoryCode == 'CUSTOMER_TYPE_ACCOUNT') {
+                    mediaType = $scope.mediaTypeAccount;
+                } else {
+                    mediaType = $scope.mediaTypeCash;
+                }
+                $scope.mediaType = baseDataService.populateSelectList(mediaType,$scope.mediaTypeSet);
+                $scope.onMediaTypeChange();
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }

@@ -44,6 +44,13 @@
           MEDIA_TYPE mt
     </select>
 
+    <select id="getMediaTypeByName" resultMap="mediaTypeMap" >
+        SELECT
+        <include refid="mediaTypeColumns"><property name="alias" value="mt"/></include>
+        FROM
+        MEDIA_TYPE mt where mt.MEDT_NAME = #{value}
+    </select>
+
     <select id="getAllPaymentMediaOfTypePerId" resultMap="paymentMediaMap" >
         SELECT
           <include refid="paymentMediaColumns"><property name="alias" value="pm"/></include>,

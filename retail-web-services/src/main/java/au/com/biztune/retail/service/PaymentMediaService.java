@@ -22,4 +22,11 @@ public interface PaymentMediaService {
      * @return LIst of PaymentMedia
      */
     List<MediaType> getAllMediaTypes();
+
+    /**
+     * get mediatype by name.
+     * @param mediaTypeName mediaTypeName
+     * @return media type.
+     */
+    MediaType getMediaTypeByName(String mediaTypeName);
 }

@@ -60,4 +60,17 @@ public class PaymentMediaRest {
     public List getPaymentMediasOfMediaType(@PathParam("typeId") long typeId) {
         return paymentMediaService.getAllPaymentMediaOfType(typeId);
     }
+
+    /**
+     * get all media types of specific media type.
+     * @param mediaTypeName mediaTypeName
+     * @return List of PaymentMedia
+     */
+    @Secured
+    @GET
+    @Path("/getMediaTypeByName/{mediaTypeName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public au.com.biztune.retail.domain.MediaType getMediaTypeByName(@PathParam("mediaTypeName") String mediaTypeName) {
+        return paymentMediaService.getMediaTypeByName(mediaTypeName);
+    }
 }

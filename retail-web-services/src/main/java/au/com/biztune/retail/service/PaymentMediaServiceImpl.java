@@ -46,4 +46,18 @@ public class PaymentMediaServiceImpl implements PaymentMediaService {
             return null;
         }
     }
+
+    /**
+     * get mediatype by name.
+     * @param mediaTypeName mediaTypeName
+     * @return media type.
+     */
+    public MediaType getMediaTypeByName(String mediaTypeName) {
+        try {
+            return paymentMediaDao.getMediaTypeByName(mediaTypeName);
+        } catch (Exception e) {
+            logger.error("Error in getting media type by name: ", e);
+            return null;
+        }
+    }
 }

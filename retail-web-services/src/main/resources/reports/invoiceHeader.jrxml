@@ -45,7 +45,7 @@
 				<reportElement x="3" y="161" width="544" height="69" uuid="fd08622a-89f2-40f4-bd68-1b51a5d0479b"/>
 			</rectangle>
 			<rectangle>
-				<reportElement x="185" y="127" width="39" height="20" backcolor="#CCCCCC" uuid="79611a70-47fd-4f2a-965b-b288bc3c197f"/>
+				<reportElement x="175" y="127" width="39" height="20" backcolor="#CCCCCC" uuid="79611a70-47fd-4f2a-965b-b288bc3c197f"/>
 			</rectangle>
 			<rectangle>
 				<reportElement x="3" y="127" width="69" height="20" backcolor="#CCCCCC" uuid="1a59dd21-01c6-4cc5-a402-07b4c2b4cc0b"/>
@@ -54,7 +54,7 @@
 				<reportElement x="73" y="127" width="99" height="20" uuid="ebf3d317-de8f-4afd-9b3b-37e37c8293ee"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="188" y="129" width="33" height="20" uuid="cfde9512-91ad-4a73-bd17-4712de0fd222"/>
+				<reportElement x="178" y="129" width="33" height="20" uuid="cfde9512-91ad-4a73-bd17-4712de0fd222"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -115,24 +115,24 @@
 				<text><![CDATA[Invoice No]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="224" y="127" width="128" height="20" uuid="22c266ce-e128-4022-a132-0ac4e0325675"/>
+				<reportElement x="214" y="127" width="97" height="20" uuid="22c266ce-e128-4022-a132-0ac4e0325675"/>
 			</rectangle>
 			<textField isBlankWhenNull="true">
-				<reportElement x="227" y="129" width="128" height="20" uuid="727a8bb3-0b39-443d-a56a-5fe2929bea8c"/>
+				<reportElement x="217" y="129" width="97" height="20" uuid="727a8bb3-0b39-443d-a56a-5fe2929bea8c"/>
 				<textFieldExpression><![CDATA[$F{txhdTradingDate}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement x="363" y="127" width="69" height="20" backcolor="#CCCCCC" uuid="5ddf472e-18cd-4f75-a068-e19be2d8be95"/>
+				<reportElement x="314" y="127" width="117" height="20" backcolor="#CCCCCC" uuid="5ddf472e-18cd-4f75-a068-e19be2d8be95"/>
 			</rectangle>
 			<rectangle>
 				<reportElement x="431" y="127" width="116" height="20" uuid="631e521c-3a1b-4745-b1e4-b1022d75a8e2"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="363" y="129" width="69" height="20" uuid="0e5b2791-bc90-47af-9716-92e3d02384ce"/>
+				<reportElement x="314" y="129" width="117" height="20" uuid="0e5b2791-bc90-47af-9716-92e3d02384ce"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[ORDER NO.]]></text>
+				<text><![CDATA[Customer P.O No]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="37" y="185" width="507" height="20" uuid="6d8c9d4f-6b3e-44ff-a1fd-b37382661c7d"/>

@@ -84,6 +84,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             $scope.deliveryNoteHeader.id = -1;
             $scope.deliveryNoteHeader.freightAmount = 0.00;
             $scope.pageIsNew = true;
+            $scope.deliveryNoteHeader.delnSurcharge = 0.00;
         } else {
             $scope.deliveryNoteHeader = angular.copy(baseDataService.getRow());
             $scope.gridOptions.data = $scope.deliveryNoteHeader.lines;
@@ -122,21 +123,30 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             baseDataService.displayMessage('info','Warning!','Please select supplier');
             return;
         }
-        ngDialog.openConfirm({
-            template:'views/pages/purchaseOrderSearch.html',
-            controller:'purchaseOrderSearchCtrl',
-            className: 'ngdialog-theme-default',
-            closeByDocument:false,
-            resolve: {searchUrl: function(){return POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI + $scope.deliveryNoteHeader.supplier.id}}
-        }).then (function (selectedItem){
-                if (selectedItem != undefined) {
-                    var purchaseOrderHeader = selectedItem;
-                    populateDateFromPurchaseOrder(purchaseOrderHeader);
-                }
-            }, function(reason) {
-                console.log('Modal promise rejected. Reason:', reason);
+        //check if this supplier has outstanding purchase order.
+        baseDataService.getBaseData(POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI + $scope.deliveryNoteHeader.supplier.id).then(function(response){
+            if (response.data != undefined && response.data.length > 0) {
+                ngDialog.openConfirm({
+                    template:'views/pages/purchaseOrderSearch.html',
+                    controller:'purchaseOrderSearchCtrl',
+                    className: 'ngdialog-theme-default',
+                    closeByDocument:false,
+                    resolve: {searchUrl: function(){return POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI + $scope.deliveryNoteHeader.supplier.id}}
+                }).then (function (selectedItem){
+                        if (selectedItem != undefined) {
+                            var purchaseOrderHeader = selectedItem;
+                            populateDateFromPurchaseOrder(purchaseOrderHeader);
+                        }
+                    }, function(reason) {
+                        console.log('Modal promise rejected. Reason:', reason);
+                    }
+                );
+            } else {
+                baseDataService.displayMessage('info','Warning!','No submitted purchase order found for this supplier');
+                $scope.gridOptions.data=[];
+                return;
             }
-        );
+        });
     };
     function populateDateFromPurchaseOrder (purchaseOrder) {
 
@@ -243,6 +253,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         }).then (function (value){
                 //alert('returned value = ' + value);
                 $scope.deliveryNoteHeader.supplier = value;
+                $scope.searchPurchaseOrder();
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }
@@ -263,6 +274,6 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
 
     $scope.calculateTotal = function() {
         $scope.deliveryNoteHeader.freightTax = $scope.deliveryNoteHeader.freightAmount*$scope.deliveryNoteHeader.freightTxrl.taxLegVariance.txlvRate*1
-        $scope.deliveryNoteHeader.delnTotal = $scope.deliveryNoteHeader.delnValueNett*1 + $scope.deliveryNoteHeader.freightAmount*1 + $scope.deliveryNoteHeader.freightTax*1;
+        $scope.deliveryNoteHeader.delnTotal = $scope.deliveryNoteHeader.delnValueNett*1 + $scope.deliveryNoteHeader.freightAmount*1 + $scope.deliveryNoteHeader.freightTax*1 + $scope.deliveryNoteHeader.delnSurcharge*1;
     }
 });

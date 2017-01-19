@@ -78,6 +78,7 @@
         <result column="POH_PRINTED" property="pohPrinted" />
         <result column="POH_PRJ_NAME" property="pohPrjName" />
         <result column="POH_PRJ_CODE" property="pohPrjCode" />
+        <association property="user" column="POH_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="pohStatus" column="POH_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <collection property="lines" javaType="ArrayList" column="POH_ID" ofType="PurchaseLine" select="getPurchaseLinesPerPohId"/>

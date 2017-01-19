@@ -38,20 +38,19 @@ var cimgApp = angular
   ]);
 
 //SIT
-/*
 var config_data = {
     'SERVER' : '10.0.0.17',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
-*/
 //DEV
-
+/*
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
+*/
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -84,6 +83,7 @@ var service_uri = {
     'UPDATE_BOQ_STOCK_URI'  : 'billOfQuantity/updateStockQty',
     'BOQ_EXPORT_PICKING_SLIP_PDF' : 'billOfQuantity/pickingSlip/exportPdf/',
     'MEDIA_TYPE_ALL_URI' : 'paymentMedia/getAllMediaTypes',
+    'MEDIA_TYPE_GET_BYNAME_URI' : 'paymentMedia/getMediaTypeByName/',
     'PAYMENT_MEDIA_OF_TYPE_URI' : 'paymentMedia/getOfMediatype/',
     'PRODUCT_SALE_ITEM_ALL_URI' : 'product/allProductSaleItem',
     'PRODUCT_SALE_ITEM_GET_BY_SKU_URI' : 'product/saleItem/getBySku/',

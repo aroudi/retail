@@ -30,7 +30,7 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout,baseDat
             {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editCustomer(row)"></i></a>', width:'5%' }
         ]
     }
-    $scope.gridOptions.enableRowSelection = true;
+    $scope.gridOptions.enableRowSelection = false;
     $scope.gridOptions.multiSelect = false;
     $scope.gridOptions.noUnselect= true;
 
