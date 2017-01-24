@@ -3,7 +3,7 @@
 
 
         <ul class="nav in" id="side-menu">
-            <img  src="images/logo.png"
+            <img  src="images/logo.jpg"
                   class="logo"/>
             <!--sidebar-search></sidebar-search-->
             <!--
@@ -190,6 +190,18 @@
                     </li>
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.listRole">Role List</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.changePassword">Change Password</a>
+                    </li>
+                </ul>
+            </li>
+            <li ng-class="{active: collapseVar==12}">{{dropDown}}
+                <a href="" ng-click="check(12)"><i class="fa fa-comments fa-fw"></i> Configuration<span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=12">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.updatePricingGradeList">Pricing Grades</a>
                     </li>
                 </ul>
             </li>

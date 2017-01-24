@@ -234,6 +234,11 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/logout',
             controller: 'logoutController'
         })
+        .state('dashboard.changePassword',{
+            url:'/changePassword',
+            controller: 'changePasswordCtrl',
+            templateUrl:'views/pages/changePassword.html'
+        })
 
         .state('dashboard.pdfViewer',{
             url:'/pdfViewer',
@@ -322,6 +327,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
         .state('dashboard.firstPage',{
             url:'/firstPage',
             templateUrl:'views/pages/firstPage.html'
+        })
+        .state('dashboard.updatePricingGradeList',{
+            url:'/updatePricingGradeList',
+            controller: 'pricingGradeListCtrl',
+            templateUrl:'views/pages/pricingGradeList.html',
+            access: "user"
         })
 
     /**

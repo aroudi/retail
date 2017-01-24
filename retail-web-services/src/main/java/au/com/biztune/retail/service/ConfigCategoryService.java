@@ -2,6 +2,7 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.ConfigCategory;
+import au.com.biztune.retail.domain.CustomerGrade;
 
 import java.util.List;
 
@@ -39,4 +40,10 @@ public interface ConfigCategoryService {
             , String description
             , int categoryOrder
             , String color);
+    /**
+     * update customerGrade.
+     * @param customerGrade customerGrade
+     */
+    void updateCustomerGrade(CustomerGrade customerGrade);
+
 }

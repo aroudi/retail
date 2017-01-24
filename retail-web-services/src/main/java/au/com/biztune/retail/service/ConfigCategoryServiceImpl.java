@@ -1,8 +1,10 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.ConfigCategoryDao;
+import au.com.biztune.retail.dao.CustomerGradeDao;
 import au.com.biztune.retail.domain.ConfigCategory;
 import au.com.biztune.retail.domain.ConfigType;
+import au.com.biztune.retail.domain.CustomerGrade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class ConfigCategoryServiceImpl implements ConfigCategoryService {
 
     @Autowired
     private ConfigCategoryDao categoryDao;
+
+    @Autowired
+    private CustomerGradeDao customerGradeDao;
 
     /**
      * return all categories for specific type.
@@ -90,5 +95,17 @@ public class ConfigCategoryServiceImpl implements ConfigCategoryService {
             return null;
         }
 
+    }
+
+    /**
+     * update customerGrade.
+     * @param customerGrade customerGrade
+     */
+    public void updateCustomerGrade(CustomerGrade customerGrade) {
+        try {
+            customerGradeDao.updateCustomerGrade(customerGrade);
+        } catch (Exception e) {
+            logger.error("Exception in updating the customer grade");
+        }
     }
 }

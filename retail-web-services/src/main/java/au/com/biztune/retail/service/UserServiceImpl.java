@@ -2,6 +2,7 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.UserDao;
 import au.com.biztune.retail.domain.*;
+import au.com.biztune.retail.form.ChangePasswordForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.IdBConstant;
@@ -328,5 +329,39 @@ public class UserServiceImpl implements UserService {
         final Random random = new SecureRandom();
         return new BigInteger(130, random).toString(32);
     }
+
+    /**
+     * change password.
+     * @param changePasswordForm changePasswordForm
+     * @return CimgResponse
+     */
+    public CommonResponse changePassword(ChangePasswordForm changePasswordForm) {
+        final CommonResponse response = new CommonResponse();
+        try {
+            if (changePasswordForm == null) {
+                response.setStatus(IdBConstant.RESULT_SUCCESS);
+                response.setMessage("form is empty");
+                return response;
+            }
+            //check oldpass in database
+            if (userDao.getUserByUserIdAndPassword(changePasswordForm.getUserId(), changePasswordForm.getOldPassword()) == null) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("Old password is incorrect!!!");
+                return response;
+            }
+            final AppUser appUser = new AppUser();
+            appUser.setId(changePasswordForm.getUserId());
+            appUser.setUsrPass(changePasswordForm.getPassword());
+            userDao.changePasswordPerUserId(appUser);
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+            response.setMessage("Password changed successfully");
+            return response;
+        } catch (Exception e) {
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Unexpected error happened: " + e.getMessage() + "\n please report to support team");
+            return response;
+        }
+    }
+
 }
 

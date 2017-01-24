@@ -12,6 +12,12 @@
         <result column="RATE" property="rate" />
     </resultMap>
 
+    <update id="updateCustomerGrade">
+        UPDATE CUSTOMER_GRADE SET
+        RATE = #{rate}, DESCRIPTION = #{description}
+        WHERE GRADE_ID = #{id}
+    </update>
+
     <select id="getAllCustomerGrades" resultMap="gradeMap" >
       SELECT * from CUSTOMER_GRADE
     </select>

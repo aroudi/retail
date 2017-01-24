@@ -232,4 +232,12 @@ public interface UserDao {
      * @return User Object
      */
     AppUser doLogin(String userName, String password);
+
+    /**
+     * get user by userId and password.
+     * @param userId userId
+     * @param password password
+     * @return user
+     */
+    AppUser getUserByUserIdAndPassword(long userId, String password);
 }

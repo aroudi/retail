@@ -14,4 +14,10 @@ public interface CustomerGradeDao {
      */
     List<CustomerGrade> getAllCustomerGrades();
 
+    /**
+     * update customer grade.
+     * @param customerGrade customerGrade
+     */
+    void updateCustomerGrade(CustomerGrade customerGrade);
+
 }

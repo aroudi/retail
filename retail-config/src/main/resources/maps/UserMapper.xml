@@ -149,6 +149,15 @@
         usr.USR_ID=#{value}
     </select>
 
+    <select id="getUserByUserIdAndPassword" resultMap="appUserLiteMap" >
+        SELECT
+        <include refid="appUserColumns"><property name="alias" value="usr"/></include>
+        FROM
+        APP_USER usr
+        WHERE
+        usr.USR_ID=#{param1} and usr.USR_PASS=#{param2}
+    </select>
+
     <select id="getUserByUserName" resultMap="appUserMap" >
         SELECT
         <include refid="appUserColumns"><property name="alias" value="usr"/></include>

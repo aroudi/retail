@@ -1,6 +1,7 @@
 package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.*;
+import au.com.biztune.retail.form.ChangePasswordForm;
 import au.com.biztune.retail.form.LoginForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
@@ -225,4 +226,18 @@ public class UserRest {
             logger.error ("Error in retrieving Access Point List :", e);
         }
     }
+    /**
+     * change password.
+     * @param changePasswordForm changePasswordForm
+     * @return CommonResponse
+     */
+    @Path("/changePassword")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse changePassword (ChangePasswordForm changePasswordForm) {
+        return userService.changePassword(changePasswordForm);
+    }
+
+
 }

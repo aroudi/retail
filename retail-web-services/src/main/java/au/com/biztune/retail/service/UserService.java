@@ -3,6 +3,7 @@ package au.com.biztune.retail.service;
 import au.com.biztune.retail.domain.AccessPoint;
 import au.com.biztune.retail.domain.AppRole;
 import au.com.biztune.retail.domain.AppUser;
+import au.com.biztune.retail.form.ChangePasswordForm;
 import au.com.biztune.retail.response.CommonResponse;
 
 import java.util.List;
@@ -87,5 +88,13 @@ public interface UserService {
      * @param appUser appUser
      */
     void logOut(AppUser appUser);
+
+    /**
+     * change password.
+     * @param changePasswordForm changePasswordForm
+     * @return CimgResponse
+     */
+    CommonResponse changePassword(ChangePasswordForm changePasswordForm);
+
 
 }

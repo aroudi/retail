@@ -3,17 +3,17 @@
 package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.ConfigCategory;
+import au.com.biztune.retail.domain.CustomerGrade;
+import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.ConfigCategoryService;
+import au.com.biztune.retail.util.IdBConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
@@ -62,4 +62,36 @@ public class ConfigCategoryRest {
     public ConfigCategory getCategoryOfTypeAndCode(@PathParam("typeName") String typeName, @PathParam("code") String code) {
         return categoryService.getCategoryOfTypeAndCode(typeName, code);
     }
+
+    /**
+     * update customer/pricing grades.
+     * @param customerGradeList customerGradeList
+     * @return List of accounts.
+     */
+    @Secured
+    @POST
+    @Path("/updatePricingGrades")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public CommonResponse updateAccountCodes(List<CustomerGrade> customerGradeList) {
+        final CommonResponse response = new CommonResponse();
+        response.setStatus(IdBConstant.RESULT_SUCCESS);
+        try {
+            if (customerGradeList == null || customerGradeList.size() < 1) {
+                response.setMessage("grade list is empty");
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                return response;
+            }
+            for (CustomerGrade customerGrade:customerGradeList) {
+                categoryService.updateCustomerGrade(customerGrade);
+            }
+            return response;
+        } catch (Exception e) {
+            logger.error("Exception in updating grade list");
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage(e.getMessage());
+            return response;
+        }
+    }
+
 }
