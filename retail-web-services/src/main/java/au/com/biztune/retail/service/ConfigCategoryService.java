@@ -46,4 +46,10 @@ public interface ConfigCategoryService {
      */
     void updateCustomerGrade(CustomerGrade customerGrade);
 
+    /**
+     * get customer grade by code.
+     * @param gradeCode gradeCode
+     * @return Customer grade.
+     */
+    CustomerGrade getCustomerGradeByCode(String gradeCode);
 }

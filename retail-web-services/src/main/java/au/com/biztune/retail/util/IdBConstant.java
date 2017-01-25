@@ -517,4 +517,9 @@ public interface IdBConstant {
     String ACCOUNT_INVENTORY = "INVENTORY";
     String ACCOUNT_CLEARING_ACCOUNT = "CLEARING_ACCOUNT";
     String ACCOUNT_COST_OF_GOODS = "COST_OF_GOODS";
+
+    /**
+     * CUSTOMER GRADE CODE
+     */
+    String CUSTOMER_GRADE_DEFAULT= "Default";
 }

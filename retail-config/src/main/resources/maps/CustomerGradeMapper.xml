@@ -21,4 +21,9 @@
     <select id="getAllCustomerGrades" resultMap="gradeMap" >
       SELECT * from CUSTOMER_GRADE
     </select>
+
+    <select id="getCustomerGradeByCode" resultMap="gradeMap" >
+        SELECT * from CUSTOMER_GRADE where GRADE_CODE = #{value}
+    </select>
+
 </mapper>

@@ -94,4 +94,17 @@ public class ConfigCategoryRest {
         }
     }
 
+    /**
+     * get customer grade by code.
+     * @param gradeCode gradeCode
+     * @return customer grade.
+     */
+    @Secured
+    @GET
+    @Path("/getCustomerGrade/{gradeCode}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public CustomerGrade getCustomerGradeByCode(@PathParam("gradeCode") String gradeCode) {
+        return categoryService.getCustomerGradeByCode(gradeCode);
+    }
+
 }

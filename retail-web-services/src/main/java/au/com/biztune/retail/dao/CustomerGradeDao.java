@@ -20,4 +20,10 @@ public interface CustomerGradeDao {
      */
     void updateCustomerGrade(CustomerGrade customerGrade);
 
+    /**
+     * get customer grade by code.
+     * @param gradeCode gradeCode
+     * @return customer grade.
+     */
+    CustomerGrade getCustomerGradeByCode(String gradeCode);
 }

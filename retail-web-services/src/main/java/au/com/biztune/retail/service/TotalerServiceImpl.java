@@ -1,5 +1,6 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.dao.CustomerGradeDao;
 import au.com.biztune.retail.dao.TotalerDao;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.util.IdBConstant;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class TotalerServiceImpl implements TotalerService {
     @Autowired
     private TotalerDao totalerDao;
+    private CustomerGradeDao customerGradeDao;
     private final Logger logger = LoggerFactory.getLogger(TotalerServiceImpl.class);
 
     /**
@@ -57,7 +59,15 @@ public class TotalerServiceImpl implements TotalerService {
 
             final Map<String, TotalTaxGroup> totalTaxGroupMap = new HashMap<String , TotalTaxGroup>();
 
-            double profitMargin = IdBConstant.DEFAULT_PROFIT_MARGIN;
+            final CustomerGrade defaultCustomerGrade = customerGradeDao.getCustomerGradeByCode(IdBConstant.CUSTOMER_GRADE_DEFAULT);
+
+
+            double profitMargin = 0.00;
+            if (defaultCustomerGrade != null) {
+                profitMargin = defaultCustomerGrade.getRate();
+            } else {
+                profitMargin = IdBConstant.DEFAULT_PROFIT_MARGIN;
+            }
             if (txnHeader.getCustomer() != null && txnHeader.getCustomer().getGrade() != null) {
                 profitMargin = txnHeader.getCustomer().getGrade().getRate();
             }

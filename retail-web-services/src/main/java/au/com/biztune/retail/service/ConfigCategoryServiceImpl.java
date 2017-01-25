@@ -108,4 +108,18 @@ public class ConfigCategoryServiceImpl implements ConfigCategoryService {
             logger.error("Exception in updating the customer grade");
         }
     }
+
+    /**
+     * get customer grade by code.
+     * @param gradeCode gradeCode
+     * @return Customer grade.
+     */
+    public CustomerGrade getCustomerGradeByCode(String gradeCode) {
+        try {
+            return customerGradeDao.getCustomerGradeByCode(gradeCode);
+        } catch (Exception e) {
+            logger.error("Exception in getting customer grade by code");
+            return null;
+        }
+    }
 }

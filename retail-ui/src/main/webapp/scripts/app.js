@@ -38,19 +38,19 @@ var cimgApp = angular
   ]);
 
 //SIT
-/*
 var config_data = {
     'SERVER' : '10.0.0.17',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
- */
 //DEV
+/*
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
+*/
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -184,9 +184,8 @@ var type_constant = {
     'TXN_MEDIA_REFUND' : 'categories/TXN_MEDIA_TYPE/TXN_MEDIA_REFUND',
     'SESSION_EVENT_TYPE_FLOAT' : 'categories/SESSION_EVENT_TYPE/SESSION_EVENT_TYPE_FLOAT',
     'SESSION_EVENT_TYPE_PICKUP' : 'categories/SESSION_EVENT_TYPE/SESSION_EVENT_TYPE_PICKUP',
-    'CASH_SESSION_STATE_ENDED' : 'categories/SESSION_STATE/SESSION_STATE_ENDED'
-
-
+    'CASH_SESSION_STATE_ENDED' : 'categories/SESSION_STATE/SESSION_STATE_ENDED',
+    'PRICING_GRADE_DEFAULT' : 'categories/getCustomerGrade/Default'
 }
 
 angular.forEach(config_data, function(key, value) {
