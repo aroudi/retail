@@ -128,4 +128,13 @@ public interface ProductDao {
      * @return ProductSaleItem
      */
     ProductSaleItem getProductSaleItemPerOrgUnitIdAndSku(long orguId, String sku);
+
+    /**
+     * get product list in page format.
+     * @param orguId orguId
+     * @param fromIndex fromIndex
+     * @param toIndex toIndex
+     * @return product list in paging mechanism.
+     */
+    List<Product> getAllProductsPerOrgUnitIdPaging(long orguId, long fromIndex, long toIndex);
 }

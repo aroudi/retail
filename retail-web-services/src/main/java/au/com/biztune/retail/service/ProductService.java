@@ -102,4 +102,12 @@ public interface ProductService {
      * @return Product
      */
     ProductSaleItem getProductSaleItemPerProdId(long prodId);
+
+    /**
+     * get all products in paging format.
+     * @param pageNo pageNo
+     * @param pageSize pageSize
+     * @return paging.
+     */
+    List<Product> getAllProductsInPagingFormat(long pageNo, long pageSize);
 }

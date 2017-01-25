@@ -38,19 +38,20 @@ var cimgApp = angular
   ]);
 
 //SIT
+/*
 var config_data = {
     'SERVER' : '10.0.0.17',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
+*/
 //DEV
-/*
+
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
-*/
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -72,6 +73,7 @@ var service_uri = {
     'UNOM_ALL_URI' : 'unitOfMeasure/all',
     'TAXRULE_ALL_URI' : 'taxRule/all',
     'PRODUCT_ALL_URI' : 'product/all',
+    'PRODUCT_ALL_PAGING_URI' : 'product/all/paging/',
     'PRODUCT_ADD_URI' : 'product/add',
     'PRODUCT_GET_URI' : 'product/get',
     'PRODUCT_UPLOAD_CSV_URI' : 'product/uploadCsv',

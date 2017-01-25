@@ -134,4 +134,19 @@ public class ProductRest {
             return null;
         }
     }
+
+    /**
+     * get all products in paging format.
+     * @param pageNo pageNo
+     * @param pageSize pageSize
+     * @return products in pages.
+     */
+    @Secured
+    @GET
+    @Path("/all/paging/{pageNo}/{pageSize}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List getAllProducts(@PathParam("pageNo") long pageNo, @PathParam("pageSize") long pageSize) {
+        return productService.getAllProductsInPagingFormat(pageNo, pageSize);
+    }
+
 }

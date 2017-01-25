@@ -113,6 +113,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * get all products in paging format.
+     * @param pageNo pageNo
+     * @param pageSize pageSize
+     * @return paging.
+     */
+    public List<Product> getAllProductsInPagingFormat(long pageNo, long pageSize) {
+        try {
+            final long rowNoFrom = (pageNo - 1) * pageSize + 1;
+            final long rowNoTo = rowNoFrom + pageSize - 1;
+            return productDao.getAllProductsPerOrgUnitIdPaging(sessionState.getOrgUnit().getId(), rowNoFrom, rowNoTo);
+
+        } catch (Exception e) {
+            logger.error("Error in retrieving product list");
+            return null;
+        }
+    }
+
+    /**
      * get Product Detail.
      * @param prodId prodId
      * @return ProductForm
