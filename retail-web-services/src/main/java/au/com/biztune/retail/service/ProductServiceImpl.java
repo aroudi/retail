@@ -3,9 +3,12 @@ package au.com.biztune.retail.service;
 import au.com.biztune.retail.dao.*;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.ProductForm;
+import au.com.biztune.retail.form.ProductSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.IdBConstant;
+import au.com.biztune.retail.util.SearchClause;
+import au.com.biztune.retail.util.SearchClauseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,12 +121,14 @@ public class ProductServiceImpl implements ProductService {
      * @param pageSize pageSize
      * @return paging.
      */
-    public List<Product> getAllProductsInPagingFormat(long pageNo, long pageSize) {
+    public ProductSearchForm getAllProductsInPagingFormat(long pageNo, long pageSize) {
         try {
             final long rowNoFrom = (pageNo - 1) * pageSize + 1;
             final long rowNoTo = rowNoFrom + pageSize - 1;
-            return productDao.getAllProductsPerOrgUnitIdPaging(sessionState.getOrgUnit().getId(), rowNoFrom, rowNoTo);
-
+            final ProductSearchForm productSearchForm = new ProductSearchForm();
+            productSearchForm.setResult(productDao.getAllProductsPerOrgUnitIdPaging(sessionState.getOrgUnit().getId(), rowNoFrom, rowNoTo));
+            productSearchForm.setTotalRecords(productDao.searchProductsTotalRecords(sessionState.getOrgUnit().getId(), null));
+            return productSearchForm;
         } catch (Exception e) {
             logger.error("Error in retrieving product list");
             return null;
@@ -503,6 +508,39 @@ public class ProductServiceImpl implements ProductService {
             return product;
         } catch (Exception e) {
             logger.error("Exception in importing product:", e);
+            return null;
+        }
+    }
+
+    /**
+     * get All product class.
+     * @return product class
+     */
+    public List<String> getAllProductClass() {
+        try {
+            return productDao.getAllProductClass();
+        } catch (Exception e) {
+            logger.error("Exception in getting product class:", e);
+            return null;
+        }
+    }
+
+    /**
+     * search products.
+     * @param productSearchForm productSearchForm
+     * @return product search form.
+     */
+    public ProductSearchForm searchProductPaging(ProductSearchForm productSearchForm) {
+        try {
+            final long rowNoFrom = (productSearchForm.getPageNo() - 1) * productSearchForm.getPageSize() + 1;
+            final long rowNoTo = rowNoFrom + productSearchForm.getPageSize() - 1;
+            //final ProductSearchForm productSearchForm = new ProductSearchForm();
+            final List<SearchClause> searchClauseList = SearchClauseBuilder.buildProductSearchWhereCluase(productSearchForm);
+            productSearchForm.setResult(productDao.searchProductsPaging(sessionState.getOrgUnit().getId(), rowNoFrom, rowNoTo, searchClauseList));
+            productSearchForm.setTotalRecords(productDao.searchProductsTotalRecords(sessionState.getOrgUnit().getId(), searchClauseList));
+            return productSearchForm;
+        } catch (Exception e) {
+            logger.error("Error in retrieving product list", e);
             return null;
         }
     }

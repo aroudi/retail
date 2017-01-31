@@ -42,6 +42,13 @@
         PROJECT project
     </sql>
 
+    <select id="getAllProject" resultMap="ProjectMap">
+        SELECT
+        <include refid="projectColumns"><property name="alias" value="project"/></include>
+        FROM
+        PROJECT project order by PROJECT_NAME
+    </select>
+
     <select id="getProjectByCode" resultMap="ProjectMap" >
         <include refid="getProject">
         </include>

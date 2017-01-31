@@ -1,6 +1,8 @@
 package au.com.biztune.retail.util;
 
 import au.com.biztune.retail.domain.GeneralSearchForm;
+import au.com.biztune.retail.form.BoqSearchForm;
+import au.com.biztune.retail.form.ProductSearchForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +22,8 @@ public class SearchClauseBuilder {
      * @param searchTable searchTable
      * @return
      */
+    final Logger logger = LoggerFactory.getLogger(SearchClauseBuilder.class);
     public static List<SearchClause> buildSearchWhereCluase(GeneralSearchForm searchForm, String searchTable) {
-        final Logger logger = LoggerFactory.getLogger(SearchClauseBuilder.class);
         List<SearchClause> clauseList = null;
         SearchClause searchClause = null;
         if (searchForm != null) {
@@ -151,6 +153,70 @@ public class SearchClauseBuilder {
         } else {
             return null;
         }
+    }
+
+    public static List<SearchClause> buildProductSearchWhereCluase(ProductSearchForm searchForm) {
+        List<SearchClause> clauseList = null;
+        SearchClause searchClause = null;
+        if (searchForm != null) {
+            clauseList = new ArrayList<SearchClause>();
+            if (searchForm.getSupplierId() > 0) {
+                searchClause = new SearchClause("sol.SUPP_ID", " = ", searchForm.getSupplierId());
+                clauseList.add(searchClause);
+            }
+            if (searchForm.getProdSku() != null && !searchForm.getProdSku().isEmpty()) {
+                searchClause = new SearchClause("prod.PROD_SKU", " like ", searchForm.getProdSku() + "%");
+                clauseList.add(searchClause);
+            }
+            if (searchForm.getProdName() != null && !searchForm.getProdName().isEmpty()) {
+                searchClause = new SearchClause("prod.PROD_NAME", " like ", searchForm.getProdName() + "%");
+                clauseList.add(searchClause);
+            }
+            if (searchForm.getProdTypeId() > 0) {
+                searchClause = new SearchClause("prod.CAT_ID_TYPE", " = ", searchForm.getProdTypeId());
+                clauseList.add(searchClause);
+            }
+        }
+        if (clauseList.size() < 1) {
+            return null;
+        }
+        return clauseList;
+    }
+
+    public static List<SearchClause> buildBoqSearchWhereCluase(BoqSearchForm searchForm) {
+        List<SearchClause> clauseList = null;
+        SearchClause searchClause = null;
+        if (searchForm != null) {
+            clauseList = new ArrayList<SearchClause>();
+            if (searchForm.getProjectId() > 0) {
+                searchClause = new SearchClause("boq.PROJECT_ID", " = ", searchForm.getProjectId());
+                clauseList.add(searchClause);
+            }
+            if (searchForm.getClientId() > 0) {
+                searchClause = new SearchClause("prj.CLIENT_ID", " = ", searchForm.getClientId());
+                clauseList.add(searchClause);
+            }
+            if (searchForm.getStatusId() > 0) {
+                searchClause = new SearchClause("boq.BOQ_STATUS", " = ", searchForm.getStatusId());
+                clauseList.add(searchClause);
+            }
+            if (searchForm.getBoqName() != null && !searchForm.getBoqName().isEmpty()) {
+                searchClause = new SearchClause("boq.BOQ_NAME", " like ", searchForm.getBoqName() + "%");
+                clauseList.add(searchClause);
+            }
+            if (searchForm.getReferenceCode() != null && !searchForm.getReferenceCode().isEmpty()) {
+                searchClause = new SearchClause("boq.REFERENCE_CODE", " like ", searchForm.getReferenceCode() + "%");
+                clauseList.add(searchClause);
+            }
+            if (searchForm.getOrderNo() != null && !searchForm.getOrderNo().isEmpty()) {
+                searchClause = new SearchClause("boq.ORDER_NO", " like ", searchForm.getOrderNo() + "%");
+                clauseList.add(searchClause);
+            }
+        }
+        if (clauseList.size() < 1) {
+            return null;
+        }
+        return clauseList;
     }
 
 }

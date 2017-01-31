@@ -1,8 +1,43 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI, CREATE_PO_FROM_BOQ_URI ) {
+cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI, CREATE_PO_FROM_BOQ_URI, BOQ_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, PROJECT_GET_ALL_URI, BOQ_STATUS_URI) {
+    $scope.getPage = function(){
+        $scope.searchForm.pageNo = paginationOptions.pageNumber*1 ;
+        $scope.searchForm.pageSize = paginationOptions.pageSize;
+        if ($scope.project != undefined) {
+            $scope.searchForm.projectId = $scope.project.id;
+        } else {
+            $scope.searchForm.projectId = -1;
+        }
+        if ($scope.client != undefined) {
+            $scope.searchForm.clientId = $scope.client.id;
+        } else {
+            $scope.searchForm.clientId = -1;
+        }
+        if ($scope.status != undefined) {
+            $scope.searchForm.statusId = $scope.status.id;
+        } else {
+            $scope.searchForm.statusId = -1;
+        }
+        baseDataService.addRow($scope.searchForm, BOQ_SEARCH_PAGING_URI).then(function(response) {
+            var result = angular.copy(response.data);
+            $scope.gridOptions.totalItems = result.totalRecords;
+            $scope.gridOptions.data = result.result;
+        });
+    }
+
+    var paginationOptions = {
+        pageNumber:1,
+        pageSize:25,
+        sort:null
+    };
+
     $scope.gridOptions = {
+        paginationPageSizes : [25,50,75,100],
+        paginationPageSize:25,
+        useExternalPagination: true,
+        useExternalSorting:true,
         enableFiltering: true,
         enableSelectAll:false,
         enableRowSelection:true,
@@ -60,15 +95,21 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
             //row.unselectR
             baseDataService.setRow(row.entity);
         });
-    };
-    getBoqList();
-    function getBoqList() {
-        baseDataService.getBaseData(BOQ_GET_ALL_URI).then(function(response){
-            var data = angular.copy(response.data);
-            $scope.gridOptions.data = data;
+        $scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
+            if (sortColumns.length == 0) {
+                paginationOptions.sort = null;
+            } else {
+                paginationOptions.sort = sortColumns[0].sort.direction;
+            }
+            $scope.getPage();
         });
-    }
-
+        gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
+            console.log('newPage =' + newPage + ' pageSize=' + pageSize);
+            paginationOptions.pageNumber = newPage;
+            paginationOptions.pageSize = pageSize;
+            $scope.getPage();
+        });
+    };
     $scope.viewBoqDetail = function(row) {
         if (row == undefined || row.entity == undefined) {
             alert('row is undefined');
@@ -102,4 +143,40 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
         $state.go($scope.previouseState);
     }
 
+    initPageData();
+    function initPageData() {
+        $scope.searchForm = {};
+        $scope.getPage();
+        baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
+            $scope.clientSet = response.data;
+            if ($scope.clientSet.length > 0) {
+                var client = {
+                    "id" : -1,
+                    "companyName" : "All"
+                }
+                $scope.clientSet.unshift(client);
+            }
+        });
+        baseDataService.getBaseData(PROJECT_GET_ALL_URI).then(function(response){
+            $scope.projectSet = response.data;
+            if ($scope.projectSet.length > 0) {
+                var project = {
+                    "id" : -1,
+                    "projectName" : "All"
+                }
+                $scope.projectSet.unshift(project);
+            }
+        });
+        baseDataService.getBaseData(BOQ_STATUS_URI).then(function(response){
+            $scope.statusSet = response.data;
+            if ($scope.statusSet.length > 0) {
+                var status = {
+                    "id" : -1,
+                    "displayName" : "All",
+                    "description" : "All"
+                }
+                $scope.statusSet.unshift(status);
+            }
+        });
+    }
 });

@@ -76,13 +76,13 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
         $scope.gridOptions.onRegisterApi = function (gridApi) {
             $scope.gridApi = gridApi;
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-                baseDataService.setRow(row.entity);
+                //baseDataService.setRow(row.entity);
             });
             gridApi.cellNav.on.navigate($scope, function(newRowCol, oldRowCol){
             });
         };
 
-        if (!baseDataService.getIsPageNew()) {
+        if (!$scope.isNewPage) {
             $scope.gridOptions.data = $scope.productForm.suppProdPrices;
         }
     }

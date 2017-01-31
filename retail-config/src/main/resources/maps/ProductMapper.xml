@@ -171,7 +171,7 @@
 
     <sql id="prodOrguLinkColumns">
         ${alias}.PROU_ID,
-        ${alias}.PROD_ID,
+        <!--${alias}.PROD_ID,-->
         ${alias}.ORGU_ID,
         ${alias}.PROU_REFUNDABLE,
         ${alias}.PROU_DISCOUNTABLE,
@@ -206,19 +206,65 @@
         WHERE prou.orgu_id = #{value}
     </select>
 
-    <select id="getAllProductsPerOrgUnitIdPaging" resultMap="productListLiteMap" >
-        SELECT
+    <select id="getAllProductsPerOrgUnitIdPaging" resultMap="productListMap" >
+        select * from
+        (SELECT
         <include refid="productColumns"><property name="alias" value="prod"/></include>,
         <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>,
-        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="cat"/></include>
-        FROM
-          (select
-              ROW_NUMBER() OVER (ORDER BY PROD_ID) AS NUMBER,
-              <include refid="productColumns"><property name="alias" value="prd"/></include>
-          from PRODUCT prd ) prod
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="cat"/></include>,
+        ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS NUMBER
+        FROM product prod
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
-        INNER JOIN CONFIG_CATEGORY cat on (cat.CATEGORY_ID=  prou.CAT_ID_STATUS)
-        WHERE prou.orgu_id = #{param1} and prod.NUMBER BETWEEN #{param2} AND #{param3} ORDER BY prod.PROD_ID
+        INNER JOIN CONFIG_CATEGORY cat on (cat.CATEGORY_ID= prou. CAT_ID_STATUS)
+        WHERE prou.orgu_id = #{param1}
+        ) q_result
+        where q_result.NUMBER BETWEEN #{param2} AND #{param3}
+    </select>
+
+    <select id="searchProductsPaging" resultMap="productListLiteMap" >
+        SELECT * FROM
+        (SELECT
+        <include refid="productColumns"><property name="alias" value="prod"/></include>,
+        <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>,
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="cat"/></include>,
+        ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS NUMBER
+        FROM PRODUCT prod
+        INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
+        INNER JOIN CONFIG_CATEGORY cat on (cat. CATEGORY_ID= prou.CAT_ID_STATUS)
+        LEFT OUTER JOIN SUPP_PROD_PRICE spp on (prod.PROD_ID = spp.PROD_ID)
+        LEFT OUTER JOIN SUPP_ORGU_LINK sol on (sol.SOL_ID = spp.SOL_ID)
+        WHERE prou.orgu_id = #{param1}
+            <if test="param4 != null">
+                AND
+                <foreach collection="param4" item="item" index="index"
+                         open ="(" separator=" AND " close=")">
+                    ${item.column} ${item.operator} #{item.value}
+                </foreach>
+            </if>
+        )q_result
+        where  q_result.NUMBER BETWEEN #{param2} AND #{param3}
+    </select>
+
+    <select id="getAllProductClass" resultType="string" >
+        select distinct prod_class from PRODUCT order by PROD_CLASS
+    </select>
+
+    <select id="searchProductsTotalRecords" resultType="long" >
+        SELECT
+        count(*)
+        FROM PRODUCT prod
+        INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
+        INNER JOIN CONFIG_CATEGORY cat on (cat. CATEGORY_ID= prou.CAT_ID_STATUS)
+        LEFT OUTER JOIN SUPP_PROD_PRICE spp on (prod.PROD_ID = spp.PROD_ID)
+        LEFT OUTER JOIN SUPP_ORGU_LINK sol on (sol.SOL_ID = spp.SOL_ID)
+        WHERE prou.orgu_id = #{param1}
+        <if test="param2 != null">
+            AND
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                ${item.column} ${item.operator} #{item.value}
+            </foreach>
+        </if>
     </select>
 
     <select id="getProductPerOrgUnitIdAndProdId" resultMap="productDetailMap" >

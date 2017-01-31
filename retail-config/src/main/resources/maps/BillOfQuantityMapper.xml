@@ -72,6 +72,44 @@
         </include>
     </select>
 
+    <select id="searchBillOfQuantityPaging" resultMap="BillOfQuantityMap" >
+        select * from
+        (
+        select
+          <include refid="boqColumns"><property name="alias" value="boq"/></include>,
+          ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS NUMBER
+        from BILL_OF_QUANTITY boq
+            left outer join PROJECT prj on (boq.PROJECT_ID = prj.PROJECT_ID)
+            left outer join CONFIG_CATEGORY cc on (boq.BOQ_STATUS = cc.CATEGORY_ID)
+        where
+            boq.ORGU_ID = #{param1}
+            <if test="param4 != null">
+                AND
+                <foreach collection="param4" item="item" index="index"
+                         open ="(" separator=" AND " close=")">
+                    ${item.column} ${item.operator} #{item.value}
+                </foreach>
+            </if>
+        )qr
+        where qr.NUMBER between #{param2} and #{param3}
+    </select>
+
+    <select id="getBillOfQuantityQueryTotalRows" resultType="long" >
+        select count(*)
+        from BILL_OF_QUANTITY boq
+            left outer join PROJECT prj on (boq.PROJECT_ID = prj.PROJECT_ID)
+            left outer join CONFIG_CATEGORY cc on (boq.BOQ_STATUS = cc.CATEGORY_ID)
+        where
+        boq.ORGU_ID = #{param1}
+        <if test="param2 != null">
+            AND
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                ${item.column} ${item.operator} #{item.value}
+            </foreach>
+        </if>
+    </select>
+
     <select id="getBillOfQuantityByName" resultMap="BillOfQuantityMap" >
         <include refid="getBillOfQuantity">
         </include>

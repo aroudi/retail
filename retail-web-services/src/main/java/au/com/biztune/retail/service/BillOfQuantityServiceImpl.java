@@ -2,12 +2,15 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.*;
 import au.com.biztune.retail.domain.*;
+import au.com.biztune.retail.form.BoqSearchForm;
 import au.com.biztune.retail.generated.BillOfQuantity;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.upload.BillOfQuantityUploader;
 import au.com.biztune.retail.util.DateUtil;
 import au.com.biztune.retail.util.IdBConstant;
+import au.com.biztune.retail.util.SearchClause;
+import au.com.biztune.retail.util.SearchClauseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -782,4 +785,36 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
         }
     }
 
+    /**
+     * search boq.
+     * @param boqSearchForm boqSearchForm
+     * @return boq search form.
+     */
+    public BoqSearchForm searchBoqPaging(BoqSearchForm boqSearchForm) {
+        try {
+            final long rowNoFrom = (boqSearchForm.getPageNo() - 1) * boqSearchForm.getPageSize() + 1;
+            final long rowNoTo = rowNoFrom + boqSearchForm.getPageSize() - 1;
+            //final ProductSearchForm productSearchForm = new ProductSearchForm();
+            final List<SearchClause> searchClauseList = SearchClauseBuilder.buildBoqSearchWhereCluase(boqSearchForm);
+            boqSearchForm.setResult(billOfQuantityDao.searchBillOfQuantityPaging(sessionState.getOrgUnit().getId(), rowNoFrom, rowNoTo, searchClauseList));
+            boqSearchForm.setTotalRecords(billOfQuantityDao.getBillOfQuantityQueryTotalRows(sessionState.getOrgUnit().getId(), searchClauseList));
+            return boqSearchForm;
+        } catch (Exception e) {
+            logger.error("Error in queyring boq", e);
+            return null;
+        }
+    }
+
+    /**
+     * get all projects.
+     * @return project list.
+     */
+    public List<Project> getAllProjects() {
+        try {
+            return projectDao.getAllProject();
+        } catch (Exception e) {
+            logger.error("Error in getting project list", e);
+            return  null;
+        }
+    }
 }

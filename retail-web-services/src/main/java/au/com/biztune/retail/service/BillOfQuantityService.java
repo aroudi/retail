@@ -1,7 +1,9 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.BoqDetail;
+import au.com.biztune.retail.domain.Project;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
+import au.com.biztune.retail.form.BoqSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,4 +66,17 @@ public interface BillOfQuantityService {
      * @return List of Boq
      */
     List<au.com.biztune.retail.domain.BillOfQuantity> getClientBillOfQuantities(long clientId);
-}
+
+    /**
+     * search boq.
+     * @param boqSearchForm boqSearchForm
+     * @return boq search form.
+     */
+    BoqSearchForm searchBoqPaging(BoqSearchForm boqSearchForm);
+
+    /**
+     * get all projects.
+     * @return project list.
+     */
+    List<Project> getAllProjects();
+    }

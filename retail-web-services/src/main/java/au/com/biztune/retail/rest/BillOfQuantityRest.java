@@ -4,7 +4,9 @@ package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.BillOfQuantity;
 import au.com.biztune.retail.domain.BoqDetail;
+import au.com.biztune.retail.domain.Project;
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
+import au.com.biztune.retail.form.BoqSearchForm;
 import au.com.biztune.retail.report.BillOfQuantityRptMgr;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
@@ -135,5 +137,27 @@ public class BillOfQuantityRest {
     public Response exportBoqToPdf(@PathParam("boqId") long boqId) {
         final StreamingOutput streamingOutput = billOfQuantityRptMgr.createPickingSlipPdfStream(boqId);
         return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = PickingSlip" + boqId + ".pdf").build();
+    }
+
+    /**
+     * search boq.
+     * @param boqSearchForm boqSearchForm
+     * @return List of Boq.
+     */
+    @Secured
+    @Path("/searchBoqPaging")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public BoqSearchForm searchBoqPaging (BoqSearchForm boqSearchForm) {
+        return billOfQuantityService.searchBoqPaging(boqSearchForm);
+    }
+
+    @Secured
+    @GET
+    @Path("/getAllProjects")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Project> getAllProject () {
+        return billOfQuantityService.getAllProjects();
     }
 }

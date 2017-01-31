@@ -1,7 +1,28 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI) {
+cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI) {
+
+    $scope.getPage = function(){
+        $scope.productSearchForm.pageNo = paginationOptions.pageNumber*1 ;
+        $scope.productSearchForm.pageSize = paginationOptions.pageSize;
+        if ($scope.supplier != undefined) {
+            $scope.productSearchForm.supplierId = $scope.supplier.id;
+        } else {
+            $scope.productSearchForm.supplierId = -1;
+        }
+        if ($scope.productType != undefined) {
+            $scope.productSearchForm.prodTypeId = $scope.productType.id;
+        } else {
+            $scope.productSearchForm.prodTypeId = -1;
+        }
+        baseDataService.addRow($scope.productSearchForm, PRODUCT_SEARCH_PAGING_URI).then(function(response) {
+            var result = angular.copy(response.data);
+            $scope.gridOptions.totalItems = result.totalRecords;
+            $scope.gridOptions.data = result.result;
+        });
+    }
+
     var paginationOptions = {
         pageNumber:1,
         pageSize:25,
@@ -73,13 +94,13 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseData
             } else {
                 paginationOptions.sort = sortColumns[0].sort.direction;
             }
-            getPage();
+            $scope.getPage();
         });
         gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
             console.log('newPage =' + newPage + ' pageSize=' + pageSize);
             paginationOptions.pageNumber = newPage;
             paginationOptions.pageSize = pageSize;
-            getPage();
+            $scope.getPage();
         });
     };
     //getAllProducts();
@@ -104,15 +125,40 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseData
         });
     }
 
-    var getPage = function(){
+    //getPage();
+    initPageData();
+    function initPageData() {
+        $scope.productSearchForm = {};
+        baseDataService.getBaseData(PRODUCT_TYPE_URI).then(function(response){
+            $scope.productTypeSet = response.data;
+            if ($scope.productTypeSet.length > 0) {
+                var prodType = {
+                    "id" : -1,
+                    "displayName" : "All",
+                    "description" : "All"
+                }
+                $scope.productTypeSet.unshift(prodType);
+            }
+            //$scope.productForm.prodType = baseDataService.populateSelectList($scope.productForm.prodType,$scope.productTypeSet);
+        });
+        baseDataService.getBaseData(SUPPLIER_ALL_URI).then(function(response){
+            $scope.supplierSet = response.data;
+            if ($scope.supplierSet.length > 0) {
+                var supplier = {
+                   "id" : -1,
+                    "supplierName" : "All"
+                }
+                $scope.supplierSet.unshift(supplier);
+            }
+        });
         var pageNo = paginationOptions.pageNumber*1 ;
-        var pagingUrl = PRODUCT_ALL_PAGING_URI + pageNo + '/' + paginationOptions.pageSize;
-        console.log('callback with pageNo =' + pageNo + ' paginationOptions.pageSize ='+ paginationOptions.pageSize);
+        var pagingUrl = PRODUCT_ALL_PAGING_URI + '/' + pageNo + '/' + paginationOptions.pageSize;
+        //console.log('callback with pageNo =' + pageNo + ' paginationOptions.pageSize ='+ paginationOptions.pageSize);
         baseDataService.getBaseData(pagingUrl).then(function(response){
-            var data = angular.copy(response.data);
-            $scope.gridOptions.totalItems = 26892;
-            $scope.gridOptions.data = data;
+            var result = angular.copy(response.data);
+            $scope.gridOptions.totalItems = result.totalRecords;
+            $scope.gridOptions.data = result.result;
         });
     }
-    getPage();
+
 });

@@ -4,6 +4,7 @@ import au.com.biztune.retail.domain.ProdOrguLink;
 import au.com.biztune.retail.domain.Product;
 import au.com.biztune.retail.domain.ProductSaleItem;
 import au.com.biztune.retail.domain.ProuTxrlLink;
+import au.com.biztune.retail.util.SearchClause;
 
 import java.util.List;
 
@@ -137,4 +138,28 @@ public interface ProductDao {
      * @return product list in paging mechanism.
      */
     List<Product> getAllProductsPerOrgUnitIdPaging(long orguId, long fromIndex, long toIndex);
+
+    /**
+     * search product.
+     * @param orguId orguId
+     * @param fromIndex fromIndex
+     * @param toIndex toIndex
+     * @param searchClauses searchClauses
+     * @return Product List
+     */
+    List<Product> searchProductsPaging(long orguId, long fromIndex, long toIndex, List<SearchClause> searchClauses);
+
+    /**
+     * get all product class.
+     * @return list of product class.
+     */
+    List<String> getAllProductClass();
+
+    /**
+     * get product search total records.
+     * @param orguId orguId
+     * @param searchClauses searchClauses
+     * @return product search total records.
+     */
+    long searchProductsTotalRecords(long orguId, List<SearchClause> searchClauses);
 }

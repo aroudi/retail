@@ -5,6 +5,7 @@ import au.com.biztune.retail.domain.ProductSaleItem;
 import au.com.biztune.retail.domain.Supplier;
 import au.com.biztune.retail.domain.UnitOfMeasure;
 import au.com.biztune.retail.form.ProductForm;
+import au.com.biztune.retail.form.ProductSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
 
 import java.util.List;
@@ -109,5 +110,18 @@ public interface ProductService {
      * @param pageSize pageSize
      * @return paging.
      */
-    List<Product> getAllProductsInPagingFormat(long pageNo, long pageSize);
+    ProductSearchForm getAllProductsInPagingFormat(long pageNo, long pageSize);
+
+    /**
+     * get All product class.
+     * @return product class
+     */
+    List<String> getAllProductClass();
+
+    /**
+     * search products.
+     * @param productSearchForm productSearchForm
+     * @return product search form.
+     */
+    ProductSearchForm searchProductPaging(ProductSearchForm productSearchForm);
 }

@@ -16,6 +16,12 @@ public class GeneralSearchForm {
     private String searchRange;
     private String generatedBy;
     private String projectCode;
+    private long pageNo;
+    private long pageSize;
+    private long totalRecords;
+    private List result;
+
+
 
     public String getDateFrom() {
         return dateFrom;
@@ -95,5 +101,37 @@ public class GeneralSearchForm {
 
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
+    }
+
+    public long getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(long pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public long getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(long pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public long getTotalRecords() {
+        return totalRecords;
+    }
+
+    public void setTotalRecords(long totalRecords) {
+        this.totalRecords = totalRecords;
+    }
+
+    public List getResult() {
+        return result;
+    }
+
+    public void setResult(List result) {
+        this.result = result;
     }
 }

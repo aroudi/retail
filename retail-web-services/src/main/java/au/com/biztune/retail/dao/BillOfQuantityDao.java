@@ -1,6 +1,7 @@
 package au.com.biztune.retail.dao;
 
 import au.com.biztune.retail.domain.BillOfQuantity;
+import au.com.biztune.retail.util.SearchClause;
 
 import java.util.List;
 
@@ -59,4 +60,22 @@ public interface BillOfQuantityDao {
      * @return bill of quantity list.
      */
     List<BillOfQuantity> getBillOfQuantitiesByClientId(long clientId);
+
+    /**
+     * search Bill Of Quantities.
+     * @param orguId orguId
+     * @param fromNo fromNo
+     * @param toNo toNo
+     * @param searchClauses searchClauses
+     * @return List of Bill Of Quantity
+     */
+    List<BillOfQuantity> searchBillOfQuantityPaging(long orguId, long fromNo, long toNo, List<SearchClause> searchClauses);
+
+    /**
+     * get query total rows.
+     * @param orguId orguId
+     * @param searchClauses searchClauses
+     * @return query total records.
+     */
+    long getBillOfQuantityQueryTotalRows(long orguId, List<SearchClause> searchClauses);
 }

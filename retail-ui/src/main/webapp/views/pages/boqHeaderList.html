@@ -2,12 +2,72 @@
     <div class="col-lg-12">
         <div class="panel  panel-primary">
             <div class="panel-heading">
+                Search
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="col-lg-4">
+                            <label>Project</label>
+                            <select class="form-control" data-ng-model="project"
+                                    ng-options="prj.projectName for prj in projectSet" >
+                            </select>
+                        </div >
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Client</label>
+                                <select class="form-control" data-ng-model="client"
+                                        ng-options="type.companyName for type in clientSet" >
+                                </select>
+                            </div >
+                        </div >
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select class="form-control" data-ng-model="status"
+                                        ng-options="type.displayName for type in statusSet" >
+                                </select>
+                            </div >
+                        </div >
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Client Order No</label>
+                                <input type="text" class="form-control" data-ng-model="searchForm.orderNo" type="text" />
+                            </div >
+                        </div >
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Reference</label>
+                                <input type="text" class="form-control" data-ng-model="searchForm.referenceCode" type="text" />
+                            </div >
+                        </div >
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>BOQ ID/Name</label>
+                                <input type="text" class="form-control" data-ng-model="searchForm.boqName" type="text" />
+                            </div >
+                        </div >
+                    </div>
+                </div>
+                <div class="row">
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    <button type="button" class="btn btn-success" ng-click="getPage()">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel  panel-primary">
+            <div class="panel-heading">
                 Bill Of Quantity List
             </div>
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <div id="boqDetailList" external-scopes="clickHandler" ui-grid ="gridOptions" ui-grid-pinning  class="grid" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns style="height:750px"  ></div>
+                        <div id="boqDetailList" external-scopes="clickHandler" ui-grid ="gridOptions" ui-grid-pinning  class="grid" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-pagination style="height:650px"  ></div>
                     </div>
                 </div>
             </div>

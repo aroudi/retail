@@ -4,6 +4,7 @@ package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.ProductSaleItem;
 import au.com.biztune.retail.form.ProductForm;
+import au.com.biztune.retail.form.ProductSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.ProductImportServiceImpl;
@@ -145,8 +146,29 @@ public class ProductRest {
     @GET
     @Path("/all/paging/{pageNo}/{pageSize}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List getAllProducts(@PathParam("pageNo") long pageNo, @PathParam("pageSize") long pageSize) {
+    public ProductSearchForm getAllProducts(@PathParam("pageNo") long pageNo, @PathParam("pageSize") long pageSize) {
         return productService.getAllProductsInPagingFormat(pageNo, pageSize);
     }
 
+    /**
+     * search product.
+     * @param productSearchForm productSearchForm
+     * @return ProductSearchForm
+     */
+    @Secured
+    @Path("/searchProductPaging")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ProductSearchForm searchProductPaging (ProductSearchForm productSearchForm) {
+        return productService.searchProductPaging(productSearchForm);
+    }
+
+    @Secured
+    @GET
+    @Path("/allProductClass")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List getAllProductClass() {
+        return productService.getAllProductClass();
+    }
 }

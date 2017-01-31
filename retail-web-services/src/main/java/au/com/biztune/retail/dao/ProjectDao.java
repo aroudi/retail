@@ -2,6 +2,8 @@ package au.com.biztune.retail.dao;
 
 import au.com.biztune.retail.domain.Project;
 
+import java.util.List;
+
 /**
  * Created by arash on 1/04/2016.
  */
@@ -40,4 +42,10 @@ public interface ProjectDao {
      * @param project project
      */
     void updatePerCode(Project project);
+
+    /**
+     * get all projects.
+     * @return project list
+     */
+    List<Project> getAllProject();
 }
