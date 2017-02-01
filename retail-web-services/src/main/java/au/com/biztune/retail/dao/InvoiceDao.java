@@ -93,6 +93,25 @@ public interface InvoiceDao {
     List<TxnHeader> searchInvoice(long storeId, List txnTypeList, List clauseList);
 
     /**
+     * search invoices.
+     * @param storeId storeId
+     * @param clauseList clauseList
+     * @param txnTypeList txnTypeList
+     * @param fromPage fromPage
+     * @param toPage toPage
+     * @return List of invoices
+     */
+    List<TxnHeader> searchInvoicePaging(long storeId, List txnTypeList, List clauseList, long fromPage, long toPage);
+
+    /**
+     * get invoice search query total .
+     * @param storeId storeId
+     * @param txnTypeList txnTypeList
+     * @param clauseList clauseList
+     * @return total records
+     */
+    long getInvoiceQueryTotalRows(long storeId, List txnTypeList, List clauseList);
+    /**
      * update print status.
      * @param invoiceId invoiceId
      * @param printed printed

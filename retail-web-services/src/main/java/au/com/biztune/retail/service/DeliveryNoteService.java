@@ -44,4 +44,10 @@ public interface DeliveryNoteService {
      */
     List<DeliveryNoteHeader> searchDeliveryNote(GeneralSearchForm searchForm);
 
-}
+    /**
+     * search delivery note paging.
+     * @param searchForm searchForm
+     * @return List of Delivery Note
+     */
+    GeneralSearchForm searchDeliveryNotePaging(GeneralSearchForm searchForm);
+    }

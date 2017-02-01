@@ -1,13 +1,48 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialog, baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, TXN_TYPE_INVOICE, TXN_TYPE_REFUND, INVOICE_SEARCH_URI) {
+cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialog, baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, TXN_TYPE_INVOICE, TXN_TYPE_REFUND, INVOICE_SEARCH_URI, INVOICE_SEARCH_PAGING_URI) {
 
     $scope.searchForm = {};
     $scope.searchForm.clientId = -1;
     $scope.includeInvoice = true;
     $scope.includeRefund = true;
+
+    $scope.getPage = function(){
+        console.log('get page called');
+        $scope.searchForm.txnTypeList = [];
+        if ($scope.includeInvoice) {
+            $scope.searchForm.txnTypeList.push($scope.txnTypeInvoice.id);
+        }
+        if ($scope.includeRefund) {
+            $scope.searchForm.txnTypeList.push($scope.txnTypeRefund.id);
+        }
+        $scope.searchForm.pageNo = paginationOptions.pageNumber*1 ;
+        $scope.searchForm.pageSize = paginationOptions.pageSize;
+        if ($scope.client != undefined) {
+            $scope.searchForm.clientId = $scope.client.id;
+        } else {
+            $scope.searchForm.clientId = -1;
+        }
+        baseDataService.addRow($scope.searchForm, INVOICE_SEARCH_PAGING_URI).then(function(response) {
+            var result = angular.copy(response.data);
+            $scope.gridOptions.totalItems = result.totalRecords;
+            $scope.gridOptions.data = result.result;
+        });
+    }
+
+    var paginationOptions = {
+        pageNumber:1,
+        pageSize:25,
+        sort:null
+    };
+
+
     $scope.gridOptions = {
+        paginationPageSizes : [25,50,75,100],
+        paginationPageSize:25,
+        useExternalPagination: true,
+        useExternalSorting:true,
         enableFiltering: true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
@@ -29,23 +64,30 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
-        gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-            baseDataService.setRow(row.entity);
+        $scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
+            if (sortColumns.length == 0) {
+                paginationOptions.sort = null;
+            } else {
+                paginationOptions.sort = sortColumns[0].sort.direction;
+            }
+            $scope.getPage();
+        });
+        gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
+            console.log('newPage =' + newPage + ' pageSize=' + pageSize);
+            paginationOptions.pageNumber = newPage;
+            paginationOptions.pageSize = pageSize;
+            $scope.getPage();
         });
     };
-    getAllInvoice();
-    function getAllInvoice() {
-
+    initPageData();
+    function initPageData() {
+        $scope.searchForm = {};
         baseDataService.getBaseData(TXN_TYPE_INVOICE).then(function(response){
             $scope.txnTypeInvoice = response.data;
-        });
-        baseDataService.getBaseData(TXN_TYPE_REFUND).then(function(response){
-            $scope.txnTypeRefund = response.data;
-        });
-
-        baseDataService.getBaseData(INVOICE_ALL_URI).then(function(response){
-            var data = angular.copy(response.data);
-            $scope.gridOptions.data = data;
+            baseDataService.getBaseData(TXN_TYPE_REFUND).then(function(response){
+                $scope.txnTypeRefund = response.data;
+                $scope.getPage();
+            });
         });
     }
 
@@ -128,6 +170,11 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
             return true;
         }
         return false;
+    }
+
+    $scope.clearCustomer = function() {
+        $scope.client ={};
+        $scope.client.id = -1;
     }
 
 

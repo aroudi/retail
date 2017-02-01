@@ -6,6 +6,7 @@ import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.DateUtil;
 import au.com.biztune.retail.util.IdBConstant;
+import au.com.biztune.retail.util.SearchClause;
 import au.com.biztune.retail.util.SearchClauseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -396,5 +397,29 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             return null;
         }
     }
+    /**
+     * search delivery note paging.
+     * @param searchForm searchForm
+     * @return List of Delivery Note
+     */
+    public GeneralSearchForm searchDeliveryNotePaging(GeneralSearchForm searchForm) {
+        try {
+            if (searchForm == null) {
+                logger.error("search form is null");
+                return null;
+            }
+            final long rowNoFrom = (searchForm.getPageNo() - 1) * searchForm.getPageSize() + 1;
+            final long rowNoTo = rowNoFrom + searchForm.getPageSize() - 1;
+            //final ProductSearchForm productSearchForm = new ProductSearchForm();
+            final List<SearchClause> searchClauseList = SearchClauseBuilder.buildSearchWhereCluase(searchForm, "DELIVERY_NOTE_HEADER");
+            searchForm.setResult(deliveryNoteDao.searchDelNoteHeaderPaging(sessionState.getOrgUnit().getId(), searchClauseList, rowNoFrom, rowNoTo));
+            searchForm.setTotalRecords(deliveryNoteDao.getDelNoteHeaderQueryTotalRows(sessionState.getOrgUnit().getId(), searchClauseList));
+            return searchForm;
+        } catch (Exception e) {
+            logger.error("Exception in searching delivery note:", e);
+            return null;
+        }
+    }
+
 
 }

@@ -245,6 +245,20 @@ public class TransactionRest {
     }
 
     /**
+     * search txn header paging.
+     * @param searchForm searchForm
+     * @return txn header list
+     */
+    @Secured
+    @Path("/searchTxnHeaderPaging")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public GeneralSearchForm searchTxnHeaderPaging (GeneralSearchForm searchForm) {
+        return transactionService.searchTxnHeaderPaging(searchForm);
+    }
+
+    /**
      * search invoice.
      * @param searchForm searchForm
      * @return CommonResponse
@@ -257,6 +271,20 @@ public class TransactionRest {
     @Produces(MediaType.APPLICATION_JSON)
     public List<TxnHeader> searchInvoice (GeneralSearchForm searchForm) {
         return transactionService.searchInvoice(searchForm);
+    }
+
+    /**
+     * search invoice paging.
+     * @param searchForm searchForm
+     * @return invoice list,
+     */
+    @Secured
+    @Path("/searchInvoicePaging")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public GeneralSearchForm searchInvoicePaging (GeneralSearchForm searchForm) {
+        return transactionService.searchInvoicePaging(searchForm);
     }
 
     /**

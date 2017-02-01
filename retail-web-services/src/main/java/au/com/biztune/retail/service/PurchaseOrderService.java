@@ -98,4 +98,11 @@ public interface PurchaseOrderService {
      * @return List of PurchaseOrderHeader
      */
     List<PurchaseLine> getAllPurchaseOrderOfProduct(long prodId);
+
+    /**
+     * search purchase order header.
+     * @param searchForm searchForm
+     * @return List of PurchaseOrderHeader
+     */
+    GeneralSearchForm searchPurchaseOrderHeadersPaging(GeneralSearchForm searchForm);
 }

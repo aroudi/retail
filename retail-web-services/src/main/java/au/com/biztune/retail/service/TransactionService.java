@@ -112,4 +112,18 @@ public interface TransactionService {
      * @return CommonResponse
      */
     CommonResponse deleteQuote(long txhdId);
+
+    /**
+     * search transaction paging.
+     * @param searchForm searchForm
+     * @return List of PurchaseOrderHeader
+     */
+    GeneralSearchForm searchTxnHeaderPaging(GeneralSearchForm searchForm);
+
+    /**
+     * search invoice paging.
+     * @param searchForm searchForm
+     * @return List of invoice
+     */
+    GeneralSearchForm searchInvoicePaging(GeneralSearchForm searchForm);
 }

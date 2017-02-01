@@ -955,6 +955,42 @@
         </if>
     </select>
 
+    <select id="searchPurchaseOrderHeaderPaging" resultMap="purchaseOrderHeaderLiteMap" >
+        SELECT * FROM
+        (SELECT
+        <include refid="purchaseOrderHeaderColumns"> <property name="alias" value="poh"/> </include>,
+        ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS NUMBER
+
+        FROM
+        PURCHASE_ORDER_HEADER poh
+        WHERE poh.ORGU_ID=#{param1}
+        <if test="param2 != null">
+            AND
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                ${item.column} ${item.operator} #{item.value}
+            </foreach>
+        </if>
+
+        )qr
+        where qr.NUMBER between #{param3} and #{param4}
+    </select>
+
+    <select id="getPurchaseOrderQueryTotalRows" resultType="long" >
+        SELECT
+          count(*)
+        FROM
+        PURCHASE_ORDER_HEADER poh
+        WHERE poh.ORGU_ID=#{param1}
+        <if test="param2 != null">
+            AND
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                ${item.column} ${item.operator} #{item.value}
+            </foreach>
+        </if>
+    </select>
+
     <select id="getAllPurchaseOrderHeaderPerOrguIdAndSupplierId" resultMap="purchaseOrderHeaderLiteMap" >
         SELECT
         <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>

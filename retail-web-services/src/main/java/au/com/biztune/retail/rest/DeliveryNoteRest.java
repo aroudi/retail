@@ -111,4 +111,22 @@ public class DeliveryNoteRest {
         }
     }
 
+    /**
+     * search delivery note paging.
+     * @param generalSearchForm generalSearchForm
+     * @return delivery note list.
+     */
+    @Secured
+    @Path("/header/searchPaging")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public GeneralSearchForm searchPaging(GeneralSearchForm generalSearchForm) {
+        try {
+            return deliveryNoteService.searchDeliveryNotePaging(generalSearchForm);
+        } catch (Exception e) {
+            logger.error ("Error in searching delivery notes:", e);
+            return null;
+        }
+    }
 }

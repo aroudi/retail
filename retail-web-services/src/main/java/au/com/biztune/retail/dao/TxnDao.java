@@ -141,6 +141,25 @@ public interface TxnDao {
     List<TxnHeader> searchTxnHeader(long storeId, List txnTypeList, List clauseList);
 
     /**
+     * search txn header per type and search parameters.
+     * @param storeId storeId
+     * @param txnTypeList txnTypeList
+     * @param clauseList clauseList
+     * @param fromPage fromPage
+     * @param toPage toPage
+     * @return List of txnHeader
+     */
+    List<TxnHeader> searchTxnHeaderPaging(long storeId, List txnTypeList, List clauseList, long fromPage, long toPage);
+
+    /**
+     * get txn header search query total .
+     * @param storeId storeId
+     * @param txnTypeList txnTypeList
+     * @param clauseList clauseList
+     * @return total records
+     */
+    long getTxnHeaderQueryTotalRows(long storeId, List txnTypeList, List clauseList);
+    /**
      * delete txnHeader per txhdId.
      * @param txhdId txhdId
      */

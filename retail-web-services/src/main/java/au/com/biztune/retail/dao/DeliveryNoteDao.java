@@ -97,6 +97,24 @@ public interface DeliveryNoteDao {
     List<DeliveryNoteHeader> searchDelNoteHeader(long orguId, List clauseList);
 
     /**
+     * search delivery note paging.
+     * @param orguId orguId
+     * @param clauseList clauseList
+     * @param pageFrom pageFrom
+     * @param pageTo pageTo
+     * @return List of delivery note
+     */
+    List<DeliveryNoteHeader> searchDelNoteHeaderPaging(long orguId, List clauseList, long pageFrom, long pageTo);
+
+
+    /**
+     * get query total records for paging.
+     * @param orguId orguId
+     * @param clauseList clauseList
+     * @return query total records
+     */
+    long getDelNoteHeaderQueryTotalRows(long orguId, List clauseList);
+    /**
      * get list of delivery note for export.
      * @return List of delivery note which has not been exported.
      */

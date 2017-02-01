@@ -188,6 +188,27 @@ public class SearchClauseBuilder {
         SearchClause searchClause = null;
         if (searchForm != null) {
             clauseList = new ArrayList<SearchClause>();
+            Timestamp dateFrom = null;
+            Timestamp dateTo = null;
+            dateFrom = DateUtil.stringToDate(searchForm.getDateFrom(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
+            if (dateFrom != null) {
+                searchClause = new SearchClause("boq.DATE_CREATED", " >= ", dateFrom);
+                clauseList.add(searchClause);
+            }
+
+            dateTo = DateUtil.stringToDate(searchForm.getDateTo(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
+            if (dateTo != null) {
+                //maximise the hour for dateTo
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(dateTo);
+                cal.set(Calendar.HOUR, 24);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                dateTo = new Timestamp(cal.getTime().getTime());
+                searchClause = new SearchClause("boq.DATE_CREATED", " <= ", dateTo);
+                clauseList.add(searchClause);
+            }
+
             if (searchForm.getProjectId() > 0) {
                 searchClause = new SearchClause("boq.PROJECT_ID", " = ", searchForm.getProjectId());
                 clauseList.add(searchClause);

@@ -1,13 +1,47 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI) {
+cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI) {
 
     $scope.saleOrderSearchForm = {};
     $scope.saleOrderSearchForm.clientId = -1;
     $scope.includeSaleOrder = true;
     $scope.includeQuote = true;
+
+    $scope.getPage = function(){
+        $scope.saleOrderSearchForm.txnTypeList = [];
+        if ($scope.includeSaleOrder) {
+            $scope.saleOrderSearchForm.txnTypeList.push($scope.txnTypeSale.id);
+        }
+        if ($scope.includeQuote) {
+            $scope.saleOrderSearchForm.txnTypeList.push($scope.txnTypeQuote.id);
+        }
+        $scope.saleOrderSearchForm.pageNo = paginationOptions.pageNumber*1 ;
+        $scope.saleOrderSearchForm.pageSize = paginationOptions.pageSize;
+        if ($scope.client != undefined) {
+            $scope.saleOrderSearchForm.clientId = $scope.client.id;
+        } else {
+            $scope.saleOrderSearchForm.clientId = -1;
+        }
+        baseDataService.addRow($scope.saleOrderSearchForm, TXN_SEARCH_PAGING_URI).then(function(response) {
+            var result = angular.copy(response.data);
+            $scope.gridOptions.totalItems = result.totalRecords;
+            $scope.gridOptions.data = result.result;
+        });
+    }
+
+    var paginationOptions = {
+        pageNumber:1,
+        pageSize:25,
+        sort:null
+    };
+
+
     $scope.gridOptions = {
+        paginationPageSizes : [25,50,75,100],
+        paginationPageSize:25,
+        useExternalPagination: true,
+        useExternalSorting:true,
         enableFiltering: true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
@@ -33,22 +67,22 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
-        gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-            baseDataService.setRow(row.entity);
+        gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
+            console.log('newPage =' + newPage + ' pageSize=' + pageSize);
+            paginationOptions.pageNumber = newPage;
+            paginationOptions.pageSize = pageSize;
+            $scope.getPage();
         });
     };
-    getAllTxnSale();
-    function getAllTxnSale() {
-
+    initPageData();
+    function initPageData() {
+        $scope.saleOrderSearchForm = {};
         baseDataService.getBaseData(TXN_TYPE_SALE).then(function(response){
             $scope.txnTypeSale = response.data;
-        });
-        baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){
-            $scope.txnTypeQuote = response.data;
-        });
-        baseDataService.getBaseData(TXN_ALL_URI).then(function(response){
-            var data = angular.copy(response.data);
-            $scope.gridOptions.data = data;
+            baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){
+                $scope.txnTypeQuote = response.data;
+                $scope.getPage();
+            });
         });
     }
 
@@ -143,4 +177,9 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
             }
         });
     }
+    $scope.clearCustomer = function() {
+        $scope.client ={};
+        $scope.client.id = -1;
+    }
+
 });

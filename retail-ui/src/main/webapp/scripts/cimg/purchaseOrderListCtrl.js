@@ -1,12 +1,47 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI, POH_EXPORT_PDF) {
+cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI, POH_EXPORT_PDF, POH_SEARCH_PAGING_URI, SUPPLIER_ALL_URI) {
 
     $scope.searchForm = {};
     $scope.searchForm.supplierId = -1;
 
+    $scope.getPage = function(){
+        $scope.searchForm.pageNo = paginationOptions.pageNumber*1 ;
+        $scope.searchForm.pageSize = paginationOptions.pageSize;
+        if ($scope.supplier != undefined) {
+            $scope.searchForm.supplierId = $scope.supplier.id;
+        } else {
+            $scope.searchForm.supplierId = -1;
+        }
+
+        $scope.pohSrouceData = purchaseOrderService.getSourceOfData();
+        if ($scope.pohSrouceData == 'Auto') {
+            purchaseOrderService.setSrouceOfData('');
+            $scope.gridOptions.data = purchaseOrderService.getGeneratedResultFromBoqList();
+        } else {
+            baseDataService.addRow($scope.searchForm, POH_SEARCH_PAGING_URI).then(function(response) {
+                var result = angular.copy(response.data);
+                $scope.gridOptions.totalItems = result.totalRecords;
+                $scope.gridOptions.data = result.result;
+                for (i=0; i<$scope.gridOptions.data.length; i++) {
+                    displayLinkedDelNotes($scope.gridOptions.data[i])
+                }
+            });
+        }
+    }
+
+    var paginationOptions = {
+        pageNumber:1,
+        pageSize:25,
+        sort:null
+    };
+
     $scope.gridOptions = {
+        paginationPageSizes : [25,50,75,100],
+        paginationPageSize:25,
+        useExternalPagination: true,
+        useExternalSorting:true,
         enableFiltering: true,
         enableSelectAll:false,
         enableRowSelection:false,
@@ -67,26 +102,36 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
-        gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-            baseDataService.setRow(row.entity);
+        $scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
+            if (sortColumns.length == 0) {
+                paginationOptions.sort = null;
+            } else {
+                paginationOptions.sort = sortColumns[0].sort.direction;
+            }
+            $scope.getPage();
+        });
+        gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
+            console.log('newPage =' + newPage + ' pageSize=' + pageSize);
+            paginationOptions.pageNumber = newPage;
+            paginationOptions.pageSize = pageSize;
+            $scope.getPage();
         });
     };
 
-    getPohList();
-    function getPohList() {
-        $scope.pohSrouceData = purchaseOrderService.getSourceOfData();
-        if ($scope.pohSrouceData == 'Auto') {
-            purchaseOrderService.setSrouceOfData('');
-            $scope.gridOptions.data = purchaseOrderService.getGeneratedResultFromBoqList();
-        } else {
-            baseDataService.getBaseData(POH_GET_ALL_URI).then(function(response){
-                var data = angular.copy(response.data);
-                $scope.gridOptions.data = data;
-                for (i=0; i<$scope.gridOptions.data.length; i++) {
-                    displayLinkedDelNotes($scope.gridOptions.data[i])
+    initPageData();
+    function initPageData() {
+        $scope.searchForm = {};
+        $scope.getPage();
+        baseDataService.getBaseData(SUPPLIER_ALL_URI).then(function(response){
+            $scope.supplierSet = response.data;
+            if ($scope.supplierSet.length > 0) {
+                var supplier = {
+                    "id" : -1,
+                    "supplierName" : "All"
                 }
-            });
-        }
+                $scope.supplierSet.unshift(supplier);
+            }
+        });
     }
 
     $scope.viewPohDetail = function(row) {
@@ -121,6 +166,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
         }
     }
 
+    /*
     $scope.searchSupplier = function () {
         ngDialog.openConfirm({
             template:'views/pages/supplierSearch.html',
@@ -136,12 +182,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             }
         );
     };
-
-    $scope.search = function() {
-        baseDataService.addRow($scope.searchForm, POH_SEARCH_URI).then(function(response){
-            $scope.gridOptions.data = response.data;
-        });
-    }
+    */
     $scope.exportToPdf = function(row) {
         var exportUrl = POH_EXPORT_PDF + row.entity.id;
         baseDataService.getStreamData(exportUrl).then(function(response){

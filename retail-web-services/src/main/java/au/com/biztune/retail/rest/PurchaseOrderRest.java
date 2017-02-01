@@ -218,4 +218,23 @@ public class PurchaseOrderRest {
             return null;
         }
     }
+
+    /**
+     * search purchaes order paging.
+     * @param generalSearchForm generalSearchForm
+     * @return purchase order list.
+     */
+    @Secured
+    @Path("/header/searchPaging")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public GeneralSearchForm searchPaging(GeneralSearchForm generalSearchForm) {
+        try {
+            return purchaseOrderService.searchPurchaseOrderHeadersPaging(generalSearchForm);
+        } catch (Exception e) {
+            logger.error ("Error in searching purchase order header List :", e);
+            return null;
+        }
+    }
 }

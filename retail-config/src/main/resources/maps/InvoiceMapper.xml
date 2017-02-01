@@ -388,6 +388,58 @@
         ORDER BY TXIV_TRADING_DATE DESC
     </select>
 
+    <select id="getInvoiceQueryTotalRows" resultType="long" >
+        SELECT
+        count(*)
+        FROM
+        INVOICE invoice where STORE_ID = #{param1}
+        <if test="param2 != null">
+            AND invoice.TXIV_TXN_TYPE in
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="param3 != null">
+            AND
+            <foreach collection="param3" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                invoice.${item.column} ${item.operator} #{item.value}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="searchInvoicePaging" resultMap="invoiceLightMap" >
+        SELECT * FROM
+        (
+        SELECT
+        <include refid="invoiceColumns">
+            <property name="alias" value="invoice"/>
+        </include>,
+        ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS NUMBER
+        FROM
+        INVOICE invoice where STORE_ID = #{param1}
+        <if test="param2 != null">
+            AND invoice.TXIV_TXN_TYPE in
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="param3 != null">
+            AND
+            <foreach collection="param3" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                invoice.${item.column} ${item.operator} #{item.value}
+            </foreach>
+        </if>
+        )qr
+        where qr.NUMBER between #{param4} and #{param5}
+        ORDER BY qr.TXIV_TRADING_DATE DESC
+    </select>
+
     <select id="getAllInvoiceOfCustomer" resultMap="invoiceLightMap" >
         SELECT
         <include refid="invoiceColumns"><property name="alias" value="invoice"/></include>

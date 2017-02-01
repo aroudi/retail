@@ -6,6 +6,7 @@ import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.DateUtil;
 import au.com.biztune.retail.util.IdBConstant;
+import au.com.biztune.retail.util.SearchClause;
 import au.com.biztune.retail.util.SearchClauseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -519,6 +520,30 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 return null;
             }
             return purchaseOrderDao.searchPurchaseOrderHeader(sessionState.getOrgUnit().getId(), SearchClauseBuilder.buildSearchWhereCluase(searchForm, "PURCHASE_ORDER_HEADER"));
+        } catch (Exception e) {
+            logger.error("Exception in searching purchase order header list:", e);
+            return null;
+        }
+    }
+
+    /**
+     * search purchase order header.
+     * @param searchForm searchForm
+     * @return List of PurchaseOrderHeader
+     */
+    public GeneralSearchForm searchPurchaseOrderHeadersPaging(GeneralSearchForm searchForm) {
+        try {
+            if (searchForm == null) {
+                logger.error("search form is null");
+                return null;
+            }
+            final long rowNoFrom = (searchForm.getPageNo() - 1) * searchForm.getPageSize() + 1;
+            final long rowNoTo = rowNoFrom + searchForm.getPageSize() - 1;
+            //final ProductSearchForm productSearchForm = new ProductSearchForm();
+            final List<SearchClause> searchClauseList = SearchClauseBuilder.buildSearchWhereCluase(searchForm, "PURCHASE_ORDER_HEADER");
+            searchForm.setResult(purchaseOrderDao.searchPurchaseOrderHeaderPaging(sessionState.getOrgUnit().getId(), searchClauseList, rowNoFrom, rowNoTo));
+            searchForm.setTotalRecords(purchaseOrderDao.getPurchaseOrderQueryTotalRows(sessionState.getOrgUnit().getId(), searchClauseList));
+            return searchForm;
         } catch (Exception e) {
             logger.error("Exception in searching purchase order header list:", e);
             return null;

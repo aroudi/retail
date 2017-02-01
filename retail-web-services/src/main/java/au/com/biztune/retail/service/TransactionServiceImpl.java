@@ -8,6 +8,7 @@ import au.com.biztune.retail.form.TxnMediaForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.IdBConstant;
+import au.com.biztune.retail.util.SearchClause;
 import au.com.biztune.retail.util.SearchClauseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1163,11 +1164,37 @@ public class TransactionServiceImpl implements TransactionService {
             return null;
         }
     }
-
+    /**
+     * search transaction paging.
+     * @param searchForm searchForm
+     * @return List of txn header
+     */
+    public GeneralSearchForm searchTxnHeaderPaging(GeneralSearchForm searchForm) {
+        try {
+            if (searchForm == null) {
+                logger.error("search form is null");
+                return null;
+            }
+            List<Long> txnType = null;
+            if (searchForm.getTxnTypeList() != null && searchForm.getTxnTypeList().size() > 0) {
+                txnType = searchForm.getTxnTypeList();
+            }
+            final long rowNoFrom = (searchForm.getPageNo() - 1) * searchForm.getPageSize() + 1;
+            final long rowNoTo = rowNoFrom + searchForm.getPageSize() - 1;
+            //final ProductSearchForm productSearchForm = new ProductSearchForm();
+            final List<SearchClause> searchClauseList = SearchClauseBuilder.buildSearchWhereCluase(searchForm, "TXN_HEADER");
+            searchForm.setResult(txnDao.searchTxnHeaderPaging(sessionState.getStore().getId(), txnType, searchClauseList, rowNoFrom, rowNoTo));
+            searchForm.setTotalRecords(txnDao.getTxnHeaderQueryTotalRows(sessionState.getStore().getId(), txnType, searchClauseList));
+            return searchForm;
+        } catch (Exception e) {
+            logger.error("Exception in searching transaction list:", e);
+            return null;
+        }
+    }
     /**
      * search Sale Order and Quote per parameters.
      * @param searchForm searchForm
-     * @return List of TxnHeader
+     * @return List of invoice
      */
     public List<TxnHeader> searchInvoice(GeneralSearchForm searchForm) {
         try {
@@ -1182,6 +1209,34 @@ public class TransactionServiceImpl implements TransactionService {
             return invoiceDao.searchInvoice(sessionState.getStore().getId(), txnType, SearchClauseBuilder.buildSearchWhereCluase(searchForm, "INVOICE"));
         } catch (Exception e) {
             logger.error("Exception in searching transaction: ", e);
+            return null;
+        }
+    }
+
+    /**
+     * search invoice paging.
+     * @param searchForm searchForm
+     * @return List of invoice
+     */
+    public GeneralSearchForm searchInvoicePaging(GeneralSearchForm searchForm) {
+        try {
+            if (searchForm == null) {
+                logger.error("search form is null");
+                return null;
+            }
+            List<Long> txnType = null;
+            if (searchForm.getTxnTypeList() != null && searchForm.getTxnTypeList().size() > 0) {
+                txnType = searchForm.getTxnTypeList();
+            }
+            final long rowNoFrom = (searchForm.getPageNo() - 1) * searchForm.getPageSize() + 1;
+            final long rowNoTo = rowNoFrom + searchForm.getPageSize() - 1;
+            //final ProductSearchForm productSearchForm = new ProductSearchForm();
+            final List<SearchClause> searchClauseList = SearchClauseBuilder.buildSearchWhereCluase(searchForm, "TXN_HEADER");
+            searchForm.setResult(invoiceDao.searchInvoicePaging(sessionState.getStore().getId(), txnType, searchClauseList, rowNoFrom, rowNoTo));
+            searchForm.setTotalRecords(invoiceDao.getInvoiceQueryTotalRows(sessionState.getStore().getId(), txnType, searchClauseList));
+            return searchForm;
+        } catch (Exception e) {
+            logger.error("Exception in searching invoice list:", e);
             return null;
         }
     }

@@ -1,10 +1,35 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_GET_ALL_URI, DEL_NOTE_GET_URI, POH_GET_URI, DEL_NOTE_SEARCH_URI) {
+cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_GET_ALL_URI, DEL_NOTE_GET_URI, POH_GET_URI, DEL_NOTE_SEARCH_URI, DEL_NOTE_SEARCH_PAGING_URI, SUPPLIER_ALL_URI) {
     $scope.searchForm = {};
     $scope.searchForm.supplierId = -1;
+
+    $scope.getPage = function(){
+        $scope.searchForm.pageNo = paginationOptions.pageNumber*1 ;
+        $scope.searchForm.pageSize = paginationOptions.pageSize;
+        if ($scope.supplier != undefined) {
+            $scope.searchForm.supplierId = $scope.supplier.id;
+        } else {
+            $scope.searchForm.supplierId = -1;
+        }
+        baseDataService.addRow($scope.searchForm, DEL_NOTE_SEARCH_PAGING_URI).then(function(response) {
+            var result = angular.copy(response.data);
+            $scope.gridOptions.totalItems = result.totalRecords;
+            $scope.gridOptions.data = result.result;
+        });
+    }
+
+    var paginationOptions = {
+        pageNumber:1,
+        pageSize:25,
+        sort:null
+    };
     $scope.gridOptions = {
+        paginationPageSizes : [25,50,75,100],
+        paginationPageSize:25,
+        useExternalPagination: true,
+        useExternalSorting:true,
         enableFiltering: true,
         enableSelectAll:true,
         enableRowSelection:true,
@@ -44,16 +69,35 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
-        gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-            baseDataService.setRow(row.entity);
+        $scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
+            if (sortColumns.length == 0) {
+                paginationOptions.sort = null;
+            } else {
+                paginationOptions.sort = sortColumns[0].sort.direction;
+            }
+            $scope.getPage();
+        });
+        gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
+            console.log('newPage =' + newPage + ' pageSize=' + pageSize);
+            paginationOptions.pageNumber = newPage;
+            paginationOptions.pageSize = pageSize;
+            $scope.getPage();
         });
     };
 
-    getDeliveryNoteList();
-    function getDeliveryNoteList() {
-        baseDataService.getBaseData(DEL_NOTE_GET_ALL_URI).then(function(response){
-            var data = angular.copy(response.data);
-            $scope.gridOptions.data = data;
+    initPageData();
+    function initPageData() {
+        $scope.searchForm = {};
+        $scope.getPage();
+        baseDataService.getBaseData(SUPPLIER_ALL_URI).then(function(response){
+            $scope.supplierSet = response.data;
+            if ($scope.supplierSet.length > 0) {
+                var supplier = {
+                    "id" : -1,
+                    "supplierName" : "All"
+                }
+                $scope.supplierSet.unshift(supplier);
+            }
         });
     }
 

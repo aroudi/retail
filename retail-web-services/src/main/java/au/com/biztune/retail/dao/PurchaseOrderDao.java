@@ -147,4 +147,22 @@ public interface PurchaseOrderDao {
      * @param projectCode projectCode
      */
     void updatePohProjectCode(long pohId, String projectCode);
+
+    /**
+     * get purchase order header paging.
+     * @param orguId orguId
+     * @param clauseList clauseList
+     * @param pageFrom pageFrom
+     * @param pageTo pageTo
+     * @return List of purchase orders paging.
+     */
+    List<PurchaseOrderHeader> searchPurchaseOrderHeaderPaging(long orguId, List clauseList, long pageFrom, long pageTo);
+
+    /**
+     * get query total rows.
+     * @param orguId orguId
+     * @param clauseList clauseList
+     * @return query total rows.
+     */
+    long getPurchaseOrderQueryTotalRows(long orguId, List clauseList);
 }
