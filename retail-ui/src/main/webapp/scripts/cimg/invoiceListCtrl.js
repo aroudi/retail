@@ -126,14 +126,8 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
         });
     }
     $scope.exportToPdf = function(row) {
-
         var exportUrl = INVOICE_EXPORT_PDF + row.entity.id;
-        baseDataService.getStreamData(exportUrl).then(function(response){
-            var blob = new Blob([response.data], {'type': 'application/pdf'});
-            var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
-            baseDataService.setPdfContent(myPdfContent);
-            $state.go('dashboard.pdfViewer');
-        });
+        baseDataService.pdfViewer(exportUrl);
     }
     $scope.searchCustomer = function () {
         ngDialog.openConfirm({

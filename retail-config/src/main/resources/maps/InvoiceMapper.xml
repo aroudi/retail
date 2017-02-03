@@ -413,7 +413,7 @@
     <select id="searchInvoicePaging" resultMap="invoiceLightMap" >
         SELECT * FROM
         (
-        SELECT
+        SELECT TOP ${param5}
         <include refid="invoiceColumns">
             <property name="alias" value="invoice"/>
         </include>,
@@ -435,9 +435,9 @@
                 invoice.${item.column} ${item.operator} #{item.value}
             </foreach>
         </if>
+        ORDER BY TXIV_TRADING_DATE DESC
         )qr
         where qr.NUMBER between #{param4} and #{param5}
-        ORDER BY qr.TXIV_TRADING_DATE DESC
     </select>
 
     <select id="getAllInvoiceOfCustomer" resultMap="invoiceLightMap" >

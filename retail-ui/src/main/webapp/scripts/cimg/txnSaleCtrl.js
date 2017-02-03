@@ -803,12 +803,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     $scope.exportToPdf = function(url) {
 
         var exportUrl = url + $scope.txnHeaderForm.id;
-        baseDataService.getStreamData(exportUrl).then(function(response){
-            var blob = new Blob([response.data], {'type': 'application/pdf'});
-            var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
-            baseDataService.setPdfContent(myPdfContent);
-            $state.go('dashboard.pdfViewer');
-        });
+        baseDataService.pdfViewer(exportUrl);
+        //$state.go('dashboard.pdfViewer');
     }
 
     $scope.addPayment = function () {
@@ -893,7 +889,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 //baseDataService.displayMessage("info","Invoice Number", "Invoice saved with number: " + addResponse.info);
                 $scope.txnHeaderForm.id=addResponse.info;
                 $scope.exportToPdf($scope.exportInvoiceToPdfUrl);
-                //$state.go('dashboard.listSaleTransaction');
+                $state.go('dashboard.listInvoice');
             } else {
                 alert('Not able to save Transaction. ' + addResponse.message);
             }

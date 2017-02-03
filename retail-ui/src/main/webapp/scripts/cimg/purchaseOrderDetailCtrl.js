@@ -432,21 +432,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
 
     function exportToPdf () {
         var exportUrl = POH_EXPORT_PDF + $scope.purchaseOrderHeader.id;
-        baseDataService.getStreamData(exportUrl).then(function(response){
-            var blob = new Blob([response.data], {'type': 'application/pdf'});
-            //saveAs (blob , outPutFile);
-            var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
-            baseDataService.setPdfContent(myPdfContent);
-            $state.go('dashboard.pdfViewer');
-
-            /*
-            hiddenElement.href = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
-            //hiddenElement.target ='_blank';
-            hiddenElement.download = 'purchaseOrder.pdf';
-            hiddenElement.click();
-            */
-        });
-
+        baseDataService.pdfViewer(exportUrl);
     }
     function managePoStatusDisplay(){
         if ($scope.purchaseOrderHeader.pohStatus.categoryCode == 'POH_STATUS_CONFIRMED') {

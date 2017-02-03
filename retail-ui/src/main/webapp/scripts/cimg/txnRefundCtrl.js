@@ -411,12 +411,8 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
 
     $scope.exportToPdf = function(url) {
         var exportUrl = url + $scope.txnHeaderForm.id;
-        baseDataService.getStreamData(exportUrl).then(function(response){
-            var blob = new Blob([response.data], {'type': 'application/pdf'});
-            var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
-            baseDataService.setPdfContent(myPdfContent);
-            $state.go('dashboard.pdfViewer');
-        });
+        baseDataService.pdfViewer(exportUrl);
+        $state.go('dashboard.listInvoice');
     }
     function selectAllRowsForRefund() {
         $scope.refundMode = true;

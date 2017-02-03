@@ -383,6 +383,20 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
 
             return new Date(strDate[2],strDate[1]-1,strDate[0],strDate[3],strDate[4]);
         },
+        pdfViewer : function(exportUrl) {
+            ngDialog.openConfirm({
+                template:'views/pages/pdfViewer.html',
+                controller:'pdfViewerCtrl',
+                className: 'ngdialog-pdfView',
+                closeByDocument:true,
+                resolve: {url: function(){return exportUrl}}
+            }).then (function (value){
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                }
+            );
+            //$state.go('dashboard.pdfViewer');
+        },
         displayMessage : function (type, heading,mBody) {
             var result = false;
             var myMessage = {

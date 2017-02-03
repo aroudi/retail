@@ -185,12 +185,6 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
     */
     $scope.exportToPdf = function(row) {
         var exportUrl = POH_EXPORT_PDF + row.entity.id;
-        baseDataService.getStreamData(exportUrl).then(function(response){
-            var blob = new Blob([response.data], {'type': 'application/pdf'});
-            var myPdfContent = window.URL.createObjectURL(blob);
-            baseDataService.setPdfContent(myPdfContent);
-            $state.go('dashboard.pdfViewer');
-        });
-
+        baseDataService.pdfViewer(exportUrl);
     }
 });

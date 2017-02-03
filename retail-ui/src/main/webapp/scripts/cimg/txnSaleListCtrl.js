@@ -121,12 +121,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
     $scope.exportToPdf = function(row) {
 
         var exportUrl = TXN_EXPORT_PDF + row.entity.id;
-        baseDataService.getStreamData(exportUrl).then(function(response){
-            var blob = new Blob([response.data], {'type': 'application/pdf'});
-            var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
-            baseDataService.setPdfContent(myPdfContent);
-            $state.go('dashboard.pdfViewer');
-        });
+        baseDataService.pdfViewer(exportUrl);
     }
 
     $scope.searchCustomer = function () {
