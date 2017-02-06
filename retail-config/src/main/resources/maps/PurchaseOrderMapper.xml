@@ -959,7 +959,7 @@
         SELECT * FROM
         (SELECT
         <include refid="purchaseOrderHeaderColumns"> <property name="alias" value="poh"/> </include>,
-        ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS NUMBER
+        ROW_NUMBER() OVER (ORDER BY POH_CREATED_DATE DESC) AS NUMBER
 
         FROM
         PURCHASE_ORDER_HEADER poh

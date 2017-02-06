@@ -35,11 +35,14 @@ cimgApp.controller('cashupRptCtrl', function($scope, $state, $timeout,baseDataSe
 
     $scope.showReconciliationRpt = function(row) {
         var exportUrl = CASH_SESSION_RECONCILIATION_TO_PDF_URI + row.entity.id;
+        baseDataService.pdfViewer(exportUrl);
+        /*
         baseDataService.getStreamData(exportUrl).then(function(response){
             var blob = new Blob([response.data], {'type': 'application/pdf'});
             var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
             baseDataService.setPdfContent(myPdfContent);
             $state.go('dashboard.pdfViewer');
         });
+        */
     }
 });

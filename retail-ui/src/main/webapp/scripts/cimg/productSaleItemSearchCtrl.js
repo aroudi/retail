@@ -5,7 +5,7 @@ cimgApp.controller('productSaleItemSearchCtrl', function($scope, $state, $timeou
 
     $scope.gridOptions = {
         enableFiltering: true,
-        enableSelectAll:true,
+        enableSelectAll:false,
         enableRowSelection:true,
         selectionRowHeaderWidth:35,
         showGridFooter:true,

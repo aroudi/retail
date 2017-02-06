@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConstants, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_PAYMENT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI ) {
+cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConstants, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_PAYMENT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI, TXN_EXPORT_PDF ) {
     $scope.isNewPage = true;
     initContactList();
     initCustomerDebtList();
@@ -367,12 +367,15 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
     $scope.printSaleOrder = function(row) {
 
         var exportUrl = TXN_EXPORT_PDF + row.entity.id;
+        baseDataService.pdfViewer(exportUrl);
+        /*
         baseDataService.getStreamData(exportUrl).then(function(response){
             var blob = new Blob([response.data], {'type': 'application/pdf'});
             var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
             baseDataService.setPdfContent(myPdfContent);
             $state.go('dashboard.pdfViewer');
         });
+        */
     }
 
 

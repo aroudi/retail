@@ -688,7 +688,7 @@
         <include refid="deliveryNoteHeaderColumns">
             <property name="alias" value="deln"/>
         </include>,
-        ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS NUMBER
+        ROW_NUMBER() OVER (ORDER BY DELN_DELIVERY_DATE DESC) AS NUMBER
 
         FROM
         DELIVERY_NOTE_HEADER deln

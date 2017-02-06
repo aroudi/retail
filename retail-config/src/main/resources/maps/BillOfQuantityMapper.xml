@@ -77,7 +77,7 @@
         (
         select
           <include refid="boqColumns"><property name="alias" value="boq"/></include>,
-          ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS NUMBER
+          ROW_NUMBER() OVER (ORDER BY DATE_CREATED DESC) AS NUMBER
         from BILL_OF_QUANTITY boq
             left outer join PROJECT prj on (boq.PROJECT_ID = prj.PROJECT_ID)
             left outer join CONFIG_CATEGORY cc on (boq.BOQ_STATUS = cc.CATEGORY_ID)

@@ -880,7 +880,7 @@
         <include refid="txnHeaderColumns">
             <property name="alias" value="txhd"/>
         </include>,
-        ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS NUMBER
+        ROW_NUMBER() OVER (ORDER BY TXHD_TRADING_DATE DESC) AS NUMBER
 
         FROM
         TXN_HEADER txhd
@@ -902,7 +902,6 @@
         </if>
         )qr
         where qr.NUMBER between #{param4} and #{param5}
-        ORDER BY qr.TXHD_TRADING_DATE DESC
     </select>
 
 

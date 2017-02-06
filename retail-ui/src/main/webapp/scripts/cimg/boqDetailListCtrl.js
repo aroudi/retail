@@ -284,29 +284,16 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
     };
 
     $scope.exportToPdf = function() {
-        var hiddenElement = document.createElement('a');
         var exportUrl = BOQ_EXPORT_PICKING_SLIP_PDF + $scope.billOfQuantity.id;
+        baseDataService.pdfViewer(exportUrl);
+        /*
         baseDataService.getStreamData(exportUrl).then(function(response){
             var blob = new Blob([response.data], {'type': 'application/pdf'});
             var myPdfContent = window.URL.createObjectURL(blob);//'data:attachment/'+fileFormat+',' + encodeURI(response.data);
             baseDataService.setPdfContent(myPdfContent);
             $state.go('dashboard.pdfViewer');
-            /*
-            ngDialog.openConfirm({
-                template:'views/pages/pdfViewer.html',
-                controller:'pdfViewerCtrl',
-                className: 'ngdialog-theme-default',
-                closeByDocument:false,
-                resolve: {pdfContent: function(){return myPdfContent}}
-            }).then (function (){
-                }, function(reason) {
-                    console.log('Modal promise rejected. Reason:', reason);
-                }
-            );
-            */
-
         });
-
+        */
     }
     $scope.removeItem = function(row) {
         if (row == undefined || row.entity == undefined) {
