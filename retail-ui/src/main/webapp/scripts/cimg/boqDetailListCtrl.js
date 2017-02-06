@@ -60,9 +60,11 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
+        /*
         gridApi.selection.on.rowSelectionChanged($scope, function(row) {
             baseDataService.setRow(row.entity);
         });
+        */
         gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef){
             if (colDef.name == 'qtyOnStock') {
                 $scope.qtyOnStockBeforeEditting = rowEntity.qtyOnStock;

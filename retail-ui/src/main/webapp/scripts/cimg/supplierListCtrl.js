@@ -24,9 +24,11 @@ cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,baseDat
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
+        /*
         gridApi.selection.on.rowSelectionChanged($scope, function(row) {
             baseDataService.setRow(row.entity);
         });
+        */
     };
     getAllSuppliers();
     function getAllSuppliers() {

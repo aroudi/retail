@@ -176,6 +176,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             })
             //hide Invoice and Balance column for Quote and Invoice.
             function hideInvoiceColumns(columns){
+                if ( $scope.txnHeaderForm == undefined || $scope.txnHeaderForm.txhdTxnType == undefined) {
+                    return;
+                }
                 if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
                     columns.forEach(function(column){
                         if (column.field === 'txdeQtyInvoiced' || column.field ==='txdeQtyBalance') {
@@ -307,8 +310,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 $scope.selectedTxnMediaRow = row.entity;
             });
+            /*
             gridApi.cellNav.on.navigate($scope, function(newRowCol, oldRowCol){
             });
+            */
         };
 
         if (!$scope.isPageNew ) {
@@ -789,10 +794,12 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         return false;
     }
     $scope.isTxnSaleAndFinal = function () {
+        if ($scope.txnHeaderForm == undefined || $scope.txnHeaderForm.txhdState == undefined) {
+            return false;
+        }
         if ($scope.txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_FINAL' && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
             return true;
         }
-        return false;
     }
     $scope.isTxnSaleAndPending = function () {
         if ((!$scope.isPageNew) && $scope.txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT' && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
@@ -971,6 +978,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
     //check if we are in invoice viewing mode.
     function isInvoiceViewMode() {
+        if ($scope.txnHeaderForm == undefined||  $scope.txnHeaderForm.txhdTxnType == undefined) {
+            return false;
+
+        }
         return ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') && (!$scope.isPageNew) && (!$scope.txnHeaderForm.convertedToInvoice)
     }
     function selectAllRowsForInvoice() {

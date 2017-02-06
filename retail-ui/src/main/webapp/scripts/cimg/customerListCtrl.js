@@ -37,9 +37,11 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout,baseDat
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
+        /*
         gridApi.selection.on.rowSelectionChanged($scope, function(row) {
             baseDataService.setRow(row.entity);
         });
+        */
     };
     getAllCustomers();
     function getAllCustomers() {

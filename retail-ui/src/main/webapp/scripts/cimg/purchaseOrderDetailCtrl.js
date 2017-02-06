@@ -54,9 +54,11 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
+        /*
         gridApi.selection.on.rowSelectionChanged($scope, function(row) {
             baseDataService.setRow(row.entity);
         });
+        */
         gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef){
             if (colDef.name == 'polQtyOrdered') {
                 $scope.polQtyOrderedBeforeEditting = rowEntity.polQtyOrdered;

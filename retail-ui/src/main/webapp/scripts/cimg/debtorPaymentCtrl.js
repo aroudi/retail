@@ -102,8 +102,10 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 $scope.selectedTxnMediaRow = row.entity;
             });
+            /*
             gridApi.cellNav.on.navigate($scope, function(newRowCol, oldRowCol){
             });
+            */
         };
 
     }

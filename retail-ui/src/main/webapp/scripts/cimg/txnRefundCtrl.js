@@ -171,8 +171,10 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 $scope.selectedTxnMediaRow = row.entity;
             });
+            /*
             gridApi.cellNav.on.navigate($scope, function(newRowCol, oldRowCol){
             });
+            */
         };
         $scope.txnMediaList.data =$scope.txnHeaderForm.txnMediaFormList;
     }
