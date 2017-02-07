@@ -38,19 +38,19 @@ var cimgApp = angular
   ]);
 
 //SIT
-/*
 var config_data = {
     'SERVER' : '10.0.0.17',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
-*/
 //DEV
+/*
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
+*/
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -388,7 +388,21 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
                 controller:'pdfViewerCtrl',
                 className: 'ngdialog-pdfView',
                 closeByDocument:true,
-                resolve: {url: function(){return exportUrl}}
+                resolve: {url: function(){return exportUrl}, searchForm:function(){return undefined}}
+            }).then (function (value){
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                }
+            );
+            //$state.go('dashboard.pdfViewer');
+        },
+        pdfViewerPostMethod : function(exportUrl, inputForm) {
+            ngDialog.openConfirm({
+                template:'views/pages/pdfViewer.html',
+                controller:'pdfViewerCtrl',
+                className: 'ngdialog-pdfView',
+                closeByDocument:true,
+                resolve: {url: function(){return exportUrl}, searchForm:function(){return inputForm}}
             }).then (function (value){
                 }, function(reason) {
                     console.log('Modal promise rejected. Reason:', reason);

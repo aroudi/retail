@@ -29,7 +29,7 @@ cimgApp.controller('accountingExportReportCtrl', function($scope, $state, $timeo
     };
     $scope.accountingSummaryReport = function() {
         var exportUrl = CASH_SESSION_ACCOUNTING_SUMMARY_URI;
-        baseDataService.pdfViewer(exportUrl);
+        baseDataService.pdfViewerPostMethod(exportUrl, $scope.searchForm);
 
         /*
         baseDataService.getStreamDataByPost($scope.searchForm, CASH_SESSION_ACCOUNTING_SUMMARY_URI).then(function(response){
