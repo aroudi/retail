@@ -10,10 +10,13 @@
                         <div class="col-lg-6">
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label>Client<a href=""><i tooltip="Find" tooltip-placement="bottom" class="fa fa-search fa-x" ng-click="searchCustomer()"></i></a>
-                                        <a href=""><i tooltip="Clear" tooltip-placement="bottom" class="fa fa-close fa-x" ng-click="clearCustomer()"></i></a>
+                                    <label>Client<!--a href=""><!--i tooltip="Find" tooltip-placement="bottom" class="fa fa-search fa-x" ng-click="searchCustomer()"></i></a-->
+                                        <!--a href=""><i tooltip="Clear" tooltip-placement="bottom" class="fa fa-close fa-x" ng-click="clearCustomer()"></i></a-->
                                     </label>
-                                    <input class="form-control" data-ng-model="client.companyName" ng-disabled="true">
+                                    <select class="form-control" data-ng-model="client"
+                                            ng-options="type.companyName for type in customerSet" ng-change="onCustomerChange()">
+                                    </select>
+                                    <!--input class="form-control" data-ng-model="client.companyName" ng-disabled="true"-->
                                 </div >
                             </div>
                         </div >

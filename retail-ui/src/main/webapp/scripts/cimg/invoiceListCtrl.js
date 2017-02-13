@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialog, baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, TXN_TYPE_INVOICE, TXN_TYPE_REFUND, INVOICE_SEARCH_URI, INVOICE_SEARCH_PAGING_URI) {
+cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialog, baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, TXN_TYPE_INVOICE, TXN_TYPE_REFUND, INVOICE_SEARCH_URI, INVOICE_SEARCH_PAGING_URI, CUSTOMER_ALL_URI) {
 
     $scope.searchForm = {};
     $scope.searchForm.clientId = -1;
@@ -89,6 +89,17 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
                 $scope.getPage();
             });
         });
+        baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
+            $scope.customerSet = response.data;
+            $scope.client = baseDataService.populateSelectList($scope.customer,$scope.customerSet);
+            if ($scope.customerSet.length > 0) {
+                var customer = {
+                    "id" : -1,
+                    "companyName" : "All"
+                }
+                $scope.customerSet.unshift(customer);
+            }
+        });
     }
 
     $scope.editTransaction = function(row) {
@@ -144,6 +155,10 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
         );
     };
 
+    $scope.onCustomerChange = function () {
+        //$scope.client = value;
+        $scope.searchForm.clientId = $scope.client.id;
+    }
 
     $scope.search = function() {
         $scope.searchForm.txnTypeList = [];

@@ -209,4 +209,21 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
         );
     };
 
+    $scope.displayProductTxns = function () {
+        if ($scope.isNewPage) {
+            return;
+        }
+        ngDialog.openConfirm({
+            template:'views/pages/productTxnList.html',
+            controller:'productTxnListCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false,
+            resolve: {productId: function(){return $scope.productForm.prodId}}
+        }).then (function (){
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    };
+
 });

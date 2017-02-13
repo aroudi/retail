@@ -1,5 +1,6 @@
 package au.com.biztune.retail.dao;
 
+import au.com.biztune.retail.domain.ProductSale;
 import au.com.biztune.retail.domain.TxnDetail;
 import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.domain.TxnMedia;
@@ -183,4 +184,11 @@ public interface TxnDao {
      * @param printed printed
      */
     void updateTxnPrintStatus(long txhdId, boolean printed);
+
+    /**
+     * get transaction sale of specific product.
+     * @param productId productId
+     * @return List of transaction including product.
+     */
+    List<ProductSale> getTransactionsOfProduct(long productId);
 }

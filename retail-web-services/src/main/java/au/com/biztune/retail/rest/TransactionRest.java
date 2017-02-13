@@ -2,6 +2,7 @@ package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.DebtorPaymentForm;
 import au.com.biztune.retail.domain.GeneralSearchForm;
+import au.com.biztune.retail.domain.ProductSale;
 import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.form.TxnHeaderForm;
 import au.com.biztune.retail.report.TransactionRptMgr;
@@ -299,4 +300,23 @@ public class TransactionRest {
     public CommonResponse deleteQuoteById (@PathParam("id") long id) {
         return transactionService.deleteQuote(id);
     }
+
+    /**
+     * get all transactions of product.
+     * @param prodId prodId
+     * @return List of transactions including product
+     */
+    @Secured
+    @Path("/getTxnOfProduct/{prodId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ProductSale> getTransactionsOfProduct(@PathParam("prodId") long prodId) {
+        try {
+            return transactionService.getTransactionsOfProduct(prodId);
+        } catch (Exception e) {
+            logger.error ("Error in retrieving transactions of product :", e);
+            return null;
+        }
+    }
+
 }

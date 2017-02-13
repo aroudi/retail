@@ -2,6 +2,7 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.DebtorPaymentForm;
 import au.com.biztune.retail.domain.GeneralSearchForm;
+import au.com.biztune.retail.domain.ProductSale;
 import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.form.TxnHeaderForm;
 import au.com.biztune.retail.response.CommonResponse;
@@ -126,4 +127,11 @@ public interface TransactionService {
      * @return List of invoice
      */
     GeneralSearchForm searchInvoicePaging(GeneralSearchForm searchForm);
-}
+
+    /**
+     * get transactions of product.
+     * @param productId productId
+     * @return List of transaction for product.
+     */
+    List<ProductSale> getTransactionsOfProduct(long productId);
+    }

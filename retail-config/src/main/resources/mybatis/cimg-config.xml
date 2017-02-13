@@ -69,6 +69,7 @@
         <typeAlias type="au.com.biztune.retail.domain.AccExportDelnLink" alias="AccExportDelnLink" />
         <typeAlias type="au.com.biztune.retail.domain.AccExportSuppLink" alias="AccExportSuppLink" />
         <typeAlias type="au.com.biztune.retail.domain.AccExportSessionLink" alias="AccExportSessionLink" />
+        <typeAlias type="au.com.biztune.retail.domain.ProductSale" alias="ProductSale" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />

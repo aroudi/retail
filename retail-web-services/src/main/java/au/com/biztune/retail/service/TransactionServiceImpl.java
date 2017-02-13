@@ -1263,5 +1263,18 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
+    /**
+     * get transactions of product.
+     * @param productId productId
+     * @return List of transaction for product.
+     */
+    public List<ProductSale> getTransactionsOfProduct(long productId) {
+        try {
+            return txnDao.getTransactionsOfProduct(productId);
+        } catch (Exception e) {
+            logger.error("Exception in getting transactions of product:", e);
+            return null;
+        }
+    }
 
 }

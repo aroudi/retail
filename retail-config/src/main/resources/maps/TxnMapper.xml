@@ -102,6 +102,20 @@
         <association property="txmdType" column="TXMD_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
+    <resultMap id="productSaleMap" type="ProductSale" >
+        <result column="TXDE_PROD_ID" property="prodId" />
+        <result column="TXDE_ID" property="txdeId" />
+        <result column="TXHD_ID" property="txhdId" />
+        <result column="TXHD_TXN_NR" property="txhdTxnNr" />
+        <result column="TXHD_TRADING_DATE" property="txhdTradingDate" />
+        <result column="CLIENT" property="client" />
+        <result column="TXN_TYPE" property="txnType" />
+        <result column="TXDE_VALUE_GROSS" property="txdeValueGross" />
+        <result column="TXDE_VALUE_NET" property="txdeValueNet" />
+        <result column="TXDE_QUANTITY_SOLD" property="txdeQuantitySold" />
+        <result column="TXDE_PRICE_SOLD" property="txdePriceSold" />
+    </resultMap>
+
     <sql id="txnHeaderColumns">
         ${alias}.TXHD_ID,
         ${alias}.ORGU_ID,
@@ -920,6 +934,25 @@
         WHERE txhd.TXHD_ID = #{value}
     </select>
 
+    <select id="getTransactionsOfProduct" resultMap="productSaleMap" >
+        SELECT
+          txh.TXHD_ID,
+          txh.TXHD_TXN_NR,
+          txh.TXHD_TRADING_DATE,
+          cust.COMPANY_NAME CLIENT,
+          cat.DISPLAY_NAME TXN_TYPE,
+          txd.TXDE_PROD_ID,
+          txd.TXDE_ID,
+          txd.TXDE_VALUE_GROSS,
+          txd.TXDE_VALUE_NET,
+          txd.TXDE_QUANTITY_SOLD,
+          txd.TXDE_PRICE_SOLD
+        FROM TXN_DETAIL txd INNER JOIN TXN_HEADER txh on (txd.TXHD_ID = txh.TXHD_ID)
+                            INNER JOIN CONFIG_CATEGORY cat on (txh.TXHD_TXN_TYPE = cat.CATEGORY_ID)
+                            LEFT OUTER JOIN Customer cust on (txh.CUSTOMER_ID = cust.CUSTOMER_ID)
+        WHERE txd.TXDE_PROD_ID = #{value}
+    </select>
+
     <update id="assigneTxnNumber" parameterType="TxnHeader" >
         UPDATE TXN_HEADER
           SET TXHD_TXN_NR = #{txhdTxnNr}
@@ -969,5 +1002,6 @@
     <update id="updateTxnPrintStatus" >
         UPDATE TXN_HEADER SET TXHD_PRINTED = #{param2} WHERE TXHD_ID = #{param1}
     </update>
+
 
 </mapper>

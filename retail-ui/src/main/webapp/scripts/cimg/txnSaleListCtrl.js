@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI) {
+cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI, CUSTOMER_ALL_URI) {
 
     $scope.saleOrderSearchForm = {};
     $scope.saleOrderSearchForm.clientId = -1;
@@ -84,6 +84,18 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
                 $scope.getPage();
             });
         });
+        baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
+            $scope.customerSet = response.data;
+            $scope.client = baseDataService.populateSelectList($scope.customer,$scope.customerSet);
+            if ($scope.customerSet.length > 0) {
+                var customer = {
+                    "id" : -1,
+                    "companyName" : "All"
+                }
+                $scope.customerSet.unshift(customer);
+            }
+        });
+
     }
 
     $scope.editTransaction = function(row) {
@@ -139,6 +151,9 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         );
     };
 
+    $scope.onCustomerChange = function () {
+        $scope.saleOrderSearchForm.clientId = $scope.client.id;
+    }
 
     $scope.search = function() {
         $scope.saleOrderSearchForm.txnTypeList = [];
