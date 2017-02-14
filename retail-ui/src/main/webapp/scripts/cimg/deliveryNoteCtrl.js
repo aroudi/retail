@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI) {
+cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI) {
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -112,14 +112,26 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             $scope.deliveryNoteHeader.freightTxrl = baseDataService.populateSelectList($scope.deliveryNoteHeader.freightTxrl,$scope.taxRuleSet);
             //$scope.calculateTotal();
         });
-    }
+        baseDataService.getBaseData(SUPPLIER_ALL_URI).then(function(response){
+            $scope.supplierSet = response.data;
+            if ($scope.supplierSet.length > 0) {
+                var supplier = {
+                    "id" : -1,
+                    "supplierName" : "Select"
+                }
+                $scope.supplierSet.unshift(supplier);
+            }
+            $scope.deliveryNoteHeader.supplier = baseDataService.populateSelectList($scope.deliveryNoteHeader.supplier,$scope.supplierSet);
+            //$scope.changeSupplier();
+        });
+   }
 
     $scope.cancelForm = function() {
         $state.go($scope.previouseState);
     }
 
     $scope.searchPurchaseOrder = function () {
-        if ($scope.deliveryNoteHeader.supplier === undefined) {
+        if ($scope.deliveryNoteHeader.supplier === undefined || $scope.deliveryNoteHeader.supplier.id === -1) {
             baseDataService.displayMessage('info','Warning!','Please select supplier');
             return;
         }
@@ -242,6 +254,10 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
                 return;
             }
         });
+    }
+
+    $scope.changeSupplier = function() {
+        $scope.searchPurchaseOrder();
     }
 
     $scope.searchSupplier = function () {

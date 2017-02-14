@@ -95,7 +95,6 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
                 $scope.customerSet.unshift(customer);
             }
         });
-
     }
 
     $scope.editTransaction = function(row) {

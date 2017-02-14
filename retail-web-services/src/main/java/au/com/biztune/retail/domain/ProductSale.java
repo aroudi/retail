@@ -1,5 +1,7 @@
 package au.com.biztune.retail.domain;
 
+import java.sql.Timestamp;
+
 /**
  * Created by arash on 13/02/2017.
  */
@@ -9,7 +11,7 @@ public class ProductSale {
     private long txdeId;
     private long txhdId;
     private String txhdTxnNr;
-    private String txhdTradingDate;
+    private Timestamp txhdTradingDate;
     private String client;
     private String txnType;
     private double txdeValueGross;
@@ -57,11 +59,11 @@ public class ProductSale {
         this.txhdTxnNr = txhdTxnNr;
     }
 
-    public String getTxhdTradingDate() {
+    public Timestamp getTxhdTradingDate() {
         return txhdTradingDate;
     }
 
-    public void setTxhdTradingDate(String txhdTradingDate) {
+    public void setTxhdTradingDate(Timestamp txhdTradingDate) {
         this.txhdTradingDate = txhdTradingDate;
     }
 

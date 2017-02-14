@@ -2,6 +2,7 @@
 
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.domain.ProductSale;
 import au.com.biztune.retail.domain.ProductSaleItem;
 import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.form.ProductSearchForm;
@@ -9,6 +10,7 @@ import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.ProductImportServiceImpl;
 import au.com.biztune.retail.service.ProductService;
+import au.com.biztune.retail.service.TransactionService;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +44,9 @@ public class ProductRest {
 
     @Autowired
     private ProductImportServiceImpl productImportService;
+
+    @Autowired
+    private TransactionService transactionService;
     /**
      * Get All Unit Of Measures as JSON.
      * @return List of categories
@@ -171,4 +176,41 @@ public class ProductRest {
     public List getAllProductClass() {
         return productService.getAllProductClass();
     }
+
+    /**
+     * get all transactions of product.
+     * @param prodId prodId
+     * @return List of transactions including product
+     */
+    @Secured
+    @Path("/getTxnOfProduct/{prodId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ProductSale> getTransactionsOfProduct(@PathParam("prodId") long prodId) {
+        try {
+            return transactionService.getTransactionsOfProduct(prodId);
+        } catch (Exception e) {
+            logger.error ("Error in retrieving transactions of product :", e);
+            return null;
+        }
+    }
+
+    /**
+     * get all invoices of product.
+     * @param prodId prodId
+     * @return List of invoices including product
+     */
+    @Secured
+    @Path("/getInvoiceOfProduct/{prodId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ProductSale> getInvoicesOfProduct(@PathParam("prodId") long prodId) {
+        try {
+            return transactionService.getInvoicesOfProduct(prodId);
+        } catch (Exception e) {
+            logger.error ("Error in retrieving invoice of product :", e);
+            return null;
+        }
+    }
+
 }

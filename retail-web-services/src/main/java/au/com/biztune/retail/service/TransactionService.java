@@ -16,33 +16,40 @@ import java.util.List;
 public interface TransactionService {
     /**
      * submit a transaction and save it into database.
-     * @param  txnHeaderForm txnHeaderForm
-     * @param  securityContext securityContext
+     *
+     * @param txnHeaderForm   txnHeaderForm
+     * @param securityContext securityContext
      * @return CommonResponse
      */
     CommonResponse saveTransaction(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
+
     /**
      * get all transaction of store.
+     *
      * @return List of TxnHeader
      */
-   List<TxnHeader> getAllTxnHeadersForStore();
+    List<TxnHeader> getAllTxnHeadersForStore();
+
     /**
      * get Transaction Sale per Id.
-     * @param  txhdId Transaction Header Id
+     *
+     * @param txhdId Transaction Header Id
      * @return TxnHeaderForm
      */
     TxnHeaderForm getTxnHeaderPerId(long txhdId);
 
     /**
      * get Invoice per Id.
-     * @param  invoiceId invoiceId
+     *
+     * @param invoiceId invoiceId
      * @return TxnHeaderForm
      */
     TxnHeaderForm getInvoicePerId(long invoiceId);
 
     /**
      * add payment.
-     * @param txnHeaderForm txnHeaderForm
+     *
+     * @param txnHeaderForm   txnHeaderForm
      * @param securityContext securityContext
      * @return Response.
      */
@@ -50,35 +57,40 @@ public interface TransactionService {
 
     /**
      * create invoice from transaction.
-     * @param  txnHeaderForm txnHeaderForm
-     * @param  securityContext securityContext
+     *
+     * @param txnHeaderForm   txnHeaderForm
+     * @param securityContext securityContext
      * @return CommonResponse
      */
     CommonResponse createInvoice(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
 
     /**
      * get all transaction of store.
+     *
      * @return List of TxnHeader
      */
     List<TxnHeader> getAllInvoiceHeadersForStore();
 
     /**
      * create Txn Account Payment.
+     *
      * @param debtorPaymentForm debtorPaymentForm
-     * @param securityContext securityContext
+     * @param securityContext   securityContext
      * @return CommonResponse
      */
     CommonResponse createTxnAccPayment(DebtorPaymentForm debtorPaymentForm, SecurityContext securityContext);
 
     /**
      * get all Invoice of customer.
+     *
      * @param cusgtomerId customerId
      * @return List of TxnHeader
      */
-   List<TxnHeader> getAllInvoiceOfCustomer(long cusgtomerId);
+    List<TxnHeader> getAllInvoiceOfCustomer(long cusgtomerId);
 
     /**
      * get all transaction header of type sale and quote for specific customer.
+     *
      * @param customerId customerId
      * @return List of TxnHeader
      */
@@ -86,8 +98,9 @@ public interface TransactionService {
 
     /**
      * refund transaction.
-     * @param  txnHeaderForm txnHeaderForm
-     * @param  securityContext securityContext
+     *
+     * @param txnHeaderForm   txnHeaderForm
+     * @param securityContext securityContext
      * @return CommonResponse
      */
     CommonResponse refundTransaction(TxnHeaderForm txnHeaderForm, SecurityContext securityContext);
@@ -95,6 +108,7 @@ public interface TransactionService {
 
     /**
      * search Sale Order and Quote per parameters.
+     *
      * @param searchForm searchForm
      * @return List of TxnHeader
      */
@@ -102,6 +116,7 @@ public interface TransactionService {
 
     /**
      * search Sale Order and Quote per parameters.
+     *
      * @param searchForm searchForm
      * @return List of TxnHeader
      */
@@ -109,6 +124,7 @@ public interface TransactionService {
 
     /**
      * delete quote per id.
+     *
      * @param txhdId txhdId
      * @return CommonResponse
      */
@@ -116,6 +132,7 @@ public interface TransactionService {
 
     /**
      * search transaction paging.
+     *
      * @param searchForm searchForm
      * @return List of PurchaseOrderHeader
      */
@@ -123,6 +140,7 @@ public interface TransactionService {
 
     /**
      * search invoice paging.
+     *
      * @param searchForm searchForm
      * @return List of invoice
      */
@@ -130,8 +148,17 @@ public interface TransactionService {
 
     /**
      * get transactions of product.
+     *
      * @param productId productId
      * @return List of transaction for product.
      */
     List<ProductSale> getTransactionsOfProduct(long productId);
-    }
+
+    /**
+     * get invoices of product.
+     *
+     * @param productId productId
+     * @return List of invoice for product.
+     */
+    List<ProductSale> getInvoicesOfProduct(long productId);
+}

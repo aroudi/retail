@@ -950,7 +950,7 @@
         FROM TXN_DETAIL txd INNER JOIN TXN_HEADER txh on (txd.TXHD_ID = txh.TXHD_ID)
                             INNER JOIN CONFIG_CATEGORY cat on (txh.TXHD_TXN_TYPE = cat.CATEGORY_ID)
                             LEFT OUTER JOIN Customer cust on (txh.CUSTOMER_ID = cust.CUSTOMER_ID)
-        WHERE txd.TXDE_PROD_ID = #{value}
+        WHERE txd.TXDE_PROD_ID = #{value} and cat.CATEGORY_CODE != 'TXN_TYPE_INVOICE'
     </select>
 
     <update id="assigneTxnNumber" parameterType="TxnHeader" >

@@ -1277,4 +1277,18 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
+    /**
+     * get invoices of product.
+     * @param productId productId
+     * @return List of invoice for product.
+     */
+    public List<ProductSale> getInvoicesOfProduct(long productId) {
+        try {
+            return invoiceDao.getInvoicesOfProduct(productId);
+        } catch (Exception e) {
+            logger.error("Exception in getting invoices of product:", e);
+            return null;
+        }
+    }
+
 }

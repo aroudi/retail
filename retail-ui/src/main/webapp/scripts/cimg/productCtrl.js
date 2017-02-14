@@ -209,7 +209,7 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
         );
     };
 
-    $scope.displayProductTxns = function () {
+    $scope.displayProductTxns = function (transactionType) {
         if ($scope.isNewPage) {
             return;
         }
@@ -218,7 +218,7 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
             controller:'productTxnListCtrl',
             className: 'ngdialog-theme-default',
             closeByDocument:false,
-            resolve: {productId: function(){return $scope.productForm.prodId}}
+            resolve: {productId: function(){return $scope.productForm.prodId}, txnType: function(){return transactionType}}
         }).then (function (){
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);

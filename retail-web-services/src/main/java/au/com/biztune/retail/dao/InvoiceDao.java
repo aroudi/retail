@@ -1,5 +1,6 @@
 package au.com.biztune.retail.dao;
 
+import au.com.biztune.retail.domain.ProductSale;
 import au.com.biztune.retail.domain.TxnDetail;
 import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.domain.TxnMedia;
@@ -117,4 +118,11 @@ public interface InvoiceDao {
      * @param printed printed
      */
     void updateTxnPrintStatus(long invoiceId, boolean printed);
+
+    /**
+     * get all invoices for specific product.
+     * @param productId productId
+     * @return List of invoices for product.
+     */
+    List<ProductSale> getInvoicesOfProduct(long productId);
 }

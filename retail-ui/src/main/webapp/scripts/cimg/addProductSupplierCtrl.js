@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('addProductSupplierCtrl', function($scope, baseDataService,ngDialog, productSupplierObject, SUCCESS, FAILURE, UNOM_ALL_URI) {
+cimgApp.controller('addProductSupplierCtrl', function($scope, baseDataService,ngDialog, productSupplierObject, SUCCESS, FAILURE, UNOM_ALL_URI, SUPPLIER_ALL_URI) {
 
     populatePageData();
     function populatePageData() {
@@ -11,7 +11,18 @@ cimgApp.controller('addProductSupplierCtrl', function($scope, baseDataService,ng
             $scope.unitOfMeasureSet = response.data;
             $scope.productSupplier.suppUnitOfMeasure = baseDataService.populateSelectList($scope.productSupplier.suppUnitOfMeasure,$scope.unitOfMeasureSet);
         });
-
+        baseDataService.getBaseData(SUPPLIER_ALL_URI).then(function(response){
+            $scope.supplierSet = response.data;
+            if ($scope.supplierSet.length > 0) {
+                var supplier = {
+                    "id" : -1,
+                    "supplierName" : "Select"
+                }
+                $scope.supplierSet.unshift(supplier);
+            }
+            $scope.productSupplier.supplier = baseDataService.populateSelectList($scope.productSupplier.supplier,$scope.supplierSet);
+            //$scope.changeSupplier();
+        });
     }
 
     $scope.submit = function () {

@@ -165,11 +165,11 @@ public class SearchClauseBuilder {
                 clauseList.add(searchClause);
             }
             if (searchForm.getProdSku() != null && !searchForm.getProdSku().isEmpty()) {
-                searchClause = new SearchClause("prod.PROD_SKU", " like ", searchForm.getProdSku() + "%");
+                searchClause = new SearchClause("prod.PROD_SKU", " like ", "%" + searchForm.getProdSku() + "%");
                 clauseList.add(searchClause);
             }
             if (searchForm.getProdName() != null && !searchForm.getProdName().isEmpty()) {
-                searchClause = new SearchClause("prod.PROD_NAME", " like ", searchForm.getProdName() + "%");
+                searchClause = new SearchClause("prod.PROD_NAME", " like ", "%" + searchForm.getProdName() + "%");
                 clauseList.add(searchClause);
             }
             if (searchForm.getProdTypeId() > 0) {

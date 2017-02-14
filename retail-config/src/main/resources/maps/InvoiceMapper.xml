@@ -92,6 +92,20 @@
         <association property="txmdType" column="TXMD_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
+    <resultMap id="productSaleMap" type="ProductSale" >
+        <result column="TXDE_PROD_ID" property="prodId" />
+        <result column="TXID_ID" property="txdeId" />
+        <result column="TXIV_ID" property="txhdId" />
+        <result column="TXIV_TXN_NR" property="txhdTxnNr" />
+        <result column="TXIV_TRADING_DATE" property="txhdTradingDate" />
+        <result column="CLIENT" property="client" />
+        <result column="TXDE_VALUE_GROSS" property="txdeValueGross" />
+        <result column="TXDE_VALUE_NET" property="txdeValueNet" />
+        <result column="TXID_QTY_INVOICED" property="txdeQuantitySold" />
+        <result column="TXID_PRICE_SOLD" property="txdePriceSold" />
+        <result column="TXN_TYPE" property="txnType" />
+    </resultMap>
+
     <sql id="invoiceColumns">
         ${alias}.TXIV_ID,
         ${alias}.TXHD_ID,
@@ -486,5 +500,24 @@
     <update id="updateTxnPrintStatus" >
         UPDATE INVOICE SET TXIV_PRINTED = #{param2} WHERE TXIV_ID = #{param1}
     </update>
+
+    <select id="getInvoicesOfProduct" resultMap="productSaleMap" >
+        SELECT
+          txiv.TXIV_ID,
+          txiv.TXIV_TXN_NR,
+          txiv.TXIV_TRADING_DATE,
+          cust.COMPANY_NAME CLIENT,
+          txd.TXDE_PROD_ID,
+          txd.TXDE_ID,
+          txd.TXDE_VALUE_GROSS,
+          txd.TXDE_VALUE_NET,
+          txivd.TXID_QTY_INVOICED,
+          txivd.TXID_PRICE_SOLD,
+          'INVOICE' TXN_TYPE
+        FROM TXN_DETAIL txd INNER JOIN INVOICE_DETAIL txivd on (txd.TXDE_ID = txivd.TXDE_ID)
+                            INNER JOIN INVOICE txiv on (txiv.TXIV_ID = txivd.TXIV_ID)
+                            LEFT OUTER JOIN Customer cust on (txiv.CUSTOMER_ID = cust.CUSTOMER_ID)
+        WHERE txd.TXDE_PROD_ID = #{value}
+    </select>
 
 </mapper>

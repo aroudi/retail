@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productTxnListCtrl', function($scope, $state, $timeout, uiGridConstants, baseDataService, productId, SUCCESS, FAILURE, TXNS_OF_PRODUCT ) {
+cimgApp.controller('productTxnListCtrl', function($scope, $state, $timeout, uiGridConstants, baseDataService, productId, txnType, SUCCESS, FAILURE, TXNS_OF_PRODUCT, INVOICE_OF_PRODUCT ) {
 
     initTxnList();
     getAllProductTxns();
@@ -18,13 +18,13 @@ cimgApp.controller('productTxnListCtrl', function($scope, $state, $timeout, uiGr
                 {field:'txdeId', visible:false, enableCellEdit:false},
                 {field:'txhdId', visible:false, enableCellEdit:false},
                 {field:'txhdTradingDate', displayName:'Date',enableCellEdit:false, width:'15%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
-                {field:'txnType', displayName:'Order/Quote',enableCellEdit:false, width:'10%'},
+                {field:'txnType', displayName:'Txn Type',enableCellEdit:false, width:'10%'},
                 {field:'txhdTxnNr', displayName:'Order No',enableCellEdit:false, width:'10%'},
                 {field:'client', displayName:'Client',enableCellEdit:false, width:'20%'},
                 {field:'txdeValueGross', displayName:'Sell(ex)',enableCellEdit:false, width:'12%',cellFilter: 'currency'},
                 {field:'txdeValueNet', displayName:'Sell(inc)',enableCellEdit:false, width:'13%',cellFilter: 'currency'},
                 {field:'txdeQuantitySold', displayName:'Qty',enableCellEdit:false, width:'10%'},
-                {field:'txdePriceSold', displayName:'Qty',enableCellEdit:false, width:'10%'}
+                {field:'txdePriceSold', displayName:'Total',enableCellEdit:false, width:'10%'}
             ]
         }
         $scope.txnList.enableRowSelection = true;
@@ -41,9 +41,15 @@ cimgApp.controller('productTxnListCtrl', function($scope, $state, $timeout, uiGr
         };
     }
     function getAllProductTxns() {
-        baseDataService.getBaseData(TXNS_OF_PRODUCT + productId).then(function(response){
-            $scope.txnList.data = response.data;
-        });
+        if (txnType === 'INVOICE') {
+            baseDataService.getBaseData(INVOICE_OF_PRODUCT + productId).then(function(response){
+                $scope.txnList.data = response.data;
+            });
+        } else {
+            baseDataService.getBaseData(TXNS_OF_PRODUCT + productId).then(function(response){
+                $scope.txnList.data = response.data;
+            });
+        }
     }
 
     $scope.cancel = function() {

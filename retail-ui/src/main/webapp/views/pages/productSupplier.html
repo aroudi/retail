@@ -10,8 +10,11 @@
                         <div class="col-lg-8">
                             <div class="form-group">
                                 <label>Supplier</label>
-                                <input class="form-control" data-ng-model="productSupplier.supplier.supplierName" ng-disabled="true">
-                                <button type="button" class="btn btn-success" ng-click="searchSupplier()">Supplier</button>
+                                <!--input class="form-control" data-ng-model="productSupplier.supplier.supplierName" ng-disabled="true">
+                                <button type="button" class="btn btn-success" ng-click="searchSupplier()">Supplier</button-->
+                                <select class="form-control" data-ng-model="productSupplier.supplier"
+                                        ng-options="supp.supplierName for supp in supplierSet" >
+                                </select>
                             </div >
                         </div>
                     </div>
