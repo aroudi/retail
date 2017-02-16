@@ -60,27 +60,7 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
         })
         .state('dashboard.home',{
             url:'/home',
-            controller: 'txnSaleListCtrl',
-            templateUrl:'views/pages/generalList.html',
-            access: "user",
-            /*
-            controller: 'MainCtrl',
-            templateUrl:'views/dashboard/home.html',
-            */
-            resolve: {
-                loadMyFiles:function($ocLazyLoad) {
-                    return $ocLazyLoad.load({
-                        name:'sbAdminApp',
-                        files:[
-                            'scripts/controllers/main.js',
-                            'scripts/directives/timeline/timeline.js',
-                            'scripts/directives/notifications/notifications.js',
-                            'scripts/directives/chat/chat.js',
-                            'scripts/directives/dashboard/stats/stats.js'
-                        ]
-                    })
-                }
-            }
+            templateUrl:'views/pages/firstPage.html'
         })
         .state('dashboard.form',{
             templateUrl:'views/form.html',
@@ -332,6 +312,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/updatePricingGradeList',
             controller: 'pricingGradeListCtrl',
             templateUrl:'views/pages/pricingGradeList.html',
+            access: "user"
+        })
+        .state('dashboard.openDraftPageList',{
+            url:'/openDraftPageList',
+            controller: 'draftPageListCtrl',
+            templateUrl:'views/pages/draftPageList.html',
             access: "user"
         })
 

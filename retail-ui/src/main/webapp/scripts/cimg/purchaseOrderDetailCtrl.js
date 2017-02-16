@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, SUPPLIER_ALL_URI) {
+cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, SUPPLIER_ALL_URI) {
     var rowtpl='<div ng-class="{\'brown\':row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\'}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
     $scope.gridOptions = {
         enableFiltering: true,
@@ -511,6 +511,33 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             var purchaseLine = createPurchaseLine(selectedProduct);
             $scope.gridOptions.data.push(purchaseLine);
         });
+    }
+    $scope.saveAsDraft = function()
+    {
+        if ($scope.pageIsNew) {
+            $scope.purchaseOrderHeader.lines = $scope.gridOptions.data
+        } else {
+            //remove the subgrid info from data before submitting:
+            for (i=0; i<$scope.gridOptions.data.length; i++) {
+                if ($scope.gridOptions.data[i].subGridOptions != undefined || $scope.gridOptions.data[i].subGridOptions != null) {
+                    delete $scope.gridOptions.data[i].subGridOptions;
+                }
+            }
+        }
+
+        var pageId;
+        if ($scope.pageData === undefined) {
+            pageId = -1;
+        } else {
+            pageId = $scope.pageData.id;
+        }
+        var txnType = {
+            'id' : -1,
+            'categoryCode' : 'PAGE_TYPE_PURCHASE',
+            'description' :'Purchase Order'
+        }
+        $scope.pageData = multiPageService.addPage(pageId, txnType, $scope.purchaseOrderHeader.pohOrderNumber===undefined?'':$scope.purchaseOrderHeader.pohOrderNumber,$scope.purchaseOrderHeader);
+        $state.go('dashboard.openDraftPageList');
     }
 
 });

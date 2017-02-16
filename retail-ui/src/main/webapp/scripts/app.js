@@ -638,6 +638,55 @@ cimgApp.service('purchaseOrderService', function () {
     };
 });
 
+cimgApp.service('multiPageService', function ($location,$http,$sessionStorage, $state, baseDataService) {
+    var pageList = [];
+    var sequence = 0;
+    return {
+        addPage: function(pageId, pageType, pageNo, formData) {
+            var pageData;
+            //delete existing form list
+            if (pageId != -1) {
+                this.deletePage(pageId);
+            }
+            pageData = {
+                'id' : this.getPageSequence(),
+                'pageType' : pageType,
+                'dateCreated' : new Date(),
+                'pageNo' : pageNo,
+                'formData' : formData
+            }
+            pageList.push(pageData);
+            return pageData;
+        },
+        getPageList: function() {
+            return pageList;
+        },
+        getPageSequence : function() {
+            sequence = sequence + 1;
+            return sequence;
+        },
+        deletePage : function(pageId) {
+            //var pageList = $sessionStorage.pageList;
+            if (pageList.length < 1) {
+                return;
+            }
+            for (var i = 0; i < pageList.length; i++) {
+                if (pageList[i].id === pageId) {
+                    console.log('splice called');
+                    pageList.splice(i, 1);
+                    //$sessionStorage.pageList = pageList;
+                    return;
+                }
+            }
+        },
+        removePageList : function(){
+            //delete $sessionStorage.pageList;
+            pageList = [];
+        }
+    }
+});
+
+
 cimgApp.service('UserService', function ($location,$http,$sessionStorage) {
     var message;
     return {
@@ -701,6 +750,7 @@ cimgApp.service('AccessChecker2', function ($state, $rootScope, UserService, bas
                    return;
                }
             }
+            console.log('accessName = ' + accessName);
             //user dont have access. display message and return to the previouse state
             baseDataService.displayMessage("info","Warning", "Access Denied!!")
             $state.go($rootScope.previouseState);

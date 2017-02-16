@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI) {
 
     $scope.isPageNew = baseDataService.getIsPageNew();
     /*
@@ -15,7 +15,6 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     initPageData();
     initTxnDetail();
     initTxnMediaList();
-
     function initPageData() {
         baseDataService.getBaseData(TXN_MEDIA_SALE).then(function(response){
             $scope.txnMediaTypeSale = response.data;
@@ -41,7 +40,6 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             baseDataService.setIsPageNew(true);
             $scope.paymentAmount = maxPaymentAllowed()*1;
         }
-        $scope.txnHeaderForm.convertedToTxnSale = false;
         if ($scope.isPageNew) {
             baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){
                 if ($scope.txnType == 'quote') {
@@ -1050,5 +1048,19 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             selectAllRowsForInvoice();
         }
     }
+    $scope.saveAsDraft = function()
+    {
+        $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
+        $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
+        $scope.txnHeaderForm.customer = $scope.customer;
 
+        var pageId;
+        if ($scope.pageData === undefined) {
+            pageId = -1;
+        } else {
+            pageId = $scope.pageData.id;
+        }
+        $scope.pageData = multiPageService.addPage(pageId, $scope.txnHeaderForm.txhdTxnType, $scope.txnHeaderForm.txhdTxnNr===undefined?'':$scope.txnHeaderForm.txhdTxnNr,$scope.txnHeaderForm);
+        $state.go('dashboard.openDraftPageList');
+    }
 });
