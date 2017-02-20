@@ -32,6 +32,7 @@ public class TxnHeaderForm {
     private long parentId;
     private String txhdContactPerson;
     private String txhdContactPhone;
+    private boolean temporarySaved;
 
 
     public long getId() {
@@ -224,5 +225,13 @@ public class TxnHeaderForm {
 
     public void setTxhdContactPhone(String txhdContactPhone) {
         this.txhdContactPhone = txhdContactPhone;
+    }
+
+    public boolean isTemporarySaved() {
+        return temporarySaved;
+    }
+
+    public void setTemporarySaved(boolean temporarySaved) {
+        this.temporarySaved = temporarySaved;
     }
 }

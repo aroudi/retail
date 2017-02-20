@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI) {
+cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,$timeout,ngDialog, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI) {
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -101,6 +101,11 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
                 $scope.disablePage = true;
             } else {
                 $scope.disablePage = false;
+            }
+            if ($scope.deliveryNoteHeader.id === -1){
+                $scope.pageIsNew = true;
+            } else {
+                $scope.pageIsNew = false;
             }
         }
         baseDataService.getBaseData(DLV_NOTE_STATUS_URI).then(function(response){
@@ -292,4 +297,31 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         $scope.deliveryNoteHeader.freightTax = $scope.deliveryNoteHeader.freightAmount*$scope.deliveryNoteHeader.freightTxrl.taxLegVariance.txlvRate*1
         $scope.deliveryNoteHeader.delnTotal = $scope.deliveryNoteHeader.delnValueNett*1 + $scope.deliveryNoteHeader.freightAmount*1 + $scope.deliveryNoteHeader.freightTax*1 + $scope.deliveryNoteHeader.delnSurcharge*1;
     }
+    function saveAsDraft()
+    {
+        $scope.deliveryNoteHeader.lines = $scope.gridOptions.data
+        var pageId;
+        if ($scope.pageData === undefined) {
+            pageId = -1;
+        } else {
+            pageId = $scope.pageData.id;
+        }
+        var txnType = {
+            'id' : -1,
+            'categoryCode' : 'PAGE_TYPE_DELIVERY_NOTE',
+            'description' :'Received Note'
+        }
+        $scope.pageData = multiPageService.addPage(pageId, txnType, $scope.deliveryNoteHeader.delnNoteNumber ===undefined?'':$scope.deliveryNoteHeader.delnNoteNumber,$scope.deliveryNoteHeader);
+        $state.go('dashboard.openDraftPageList');
+    }
+    var promise;
+    (function refresh() {
+        saveAsDraft();
+        promise = $timeout(refresh, 5000);
+    })();
+
+    $scope.$on('$destroy', function () {
+        $timeout.cancel(promise);
+        promise = undefined;
+    });
 });

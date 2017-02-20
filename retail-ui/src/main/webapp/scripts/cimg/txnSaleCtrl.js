@@ -15,6 +15,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     initPageData();
     initTxnDetail();
     initTxnMediaList();
+    if ( $scope.txnHeaderForm.temporarySaved  && $scope.txnHeaderForm.txhdTxnType.categoryCode === 'TXN_TYPE_SALE') {
+        checkIfItemsInvoiced();
+    }
+
     function initPageData() {
         baseDataService.getBaseData(TXN_MEDIA_SALE).then(function(response){
             $scope.txnMediaTypeSale = response.data;
@@ -33,14 +37,21 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.txnHeaderForm.id = -1;
             $scope.txnHeaderForm.convertedToInvoice = false;
             $scope.txnHeaderForm.convertedToTxnSale = false;
+            $scope.txnHeaderForm.temporarySaved = false;
         } else {
             $scope.txnHeaderForm = angular.copy(baseDataService.getRow());
             $scope.customer = $scope.txnHeaderForm.customer;
             baseDataService.setRow({});
             baseDataService.setIsPageNew(true);
             $scope.paymentAmount = maxPaymentAllowed()*1;
+            if ($scope.txnHeaderForm.temporarySaved) {
+                $scope.isPageNew = true;
+                if ($scope.txnHeaderForm.txhdTxnType.categoryCode === 'TXN_TYPE_INVOICE') {
+                    $scope.isInvoiceMode = true;
+                }
+            }
         }
-        if ($scope.isPageNew) {
+        if ($scope.isPageNew && !$scope.txnHeaderForm.temporarySaved) {
             baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){
                 if ($scope.txnType == 'quote') {
                     $scope.txnHeaderForm.txhdTxnType = response.data;
@@ -82,7 +93,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 }
                 $scope.customerSet.unshift(customer);
             }
-            //$scope.customer = baseDataService.populateSelectList($scope.customer,$scope.customerSet);
+            $scope.customer = baseDataService.populateSelectList($scope.customer,$scope.customerSet);
             //$scope.onCustomerChange();
         });
     }
@@ -283,7 +294,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             txnDetail['calculatedLineTax'] = txnDetail.calculatedLineValue * txnDetail.txdeTax;
             totalTransaction();
         })
-        if (!$scope.isPageNew ) {
+        if ((!$scope.isPageNew) || $scope.txnHeaderForm.temporarySaved ) {
             $scope.txnDetailList.data = angular.copy($scope.txnHeaderForm.txnDetailFormList);
         }
     }
@@ -326,7 +337,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             */
         };
 
-        if (!$scope.isPageNew ) {
+        if ((!$scope.isPageNew) || $scope.txnHeaderForm.temporarySaved ) {
             $scope.txnMediaList.data = $scope.txnHeaderForm.txnMediaFormList;
         }
     }
@@ -953,6 +964,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         } else {
             $scope.isInvoiceMode = false;
         }
+        if ($scope.txnHeaderForm.temporarySaved) {
+            return;
+        }
         if (invoiceModeBeforeSelection != $scope.isInvoiceMode) {
             changeToInvoiceMode();
         }
@@ -1048,11 +1062,13 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             selectAllRowsForInvoice();
         }
     }
-    $scope.saveAsDraft = function()
+    function saveAsDraft()
     {
         $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
         $scope.txnHeaderForm.customer = $scope.customer;
+        $scope.txnHeaderForm.temporarySaved = true;
+
 
         var pageId;
         if ($scope.pageData === undefined) {
@@ -1061,6 +1077,16 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             pageId = $scope.pageData.id;
         }
         $scope.pageData = multiPageService.addPage(pageId, $scope.txnHeaderForm.txhdTxnType, $scope.txnHeaderForm.txhdTxnNr===undefined?'':$scope.txnHeaderForm.txhdTxnNr,$scope.txnHeaderForm);
-        $state.go('dashboard.openDraftPageList');
+        //$state.go('dashboard.openDraftPageList');
     }
+    var promise;
+    (function refresh() {
+        saveAsDraft();
+        promise = $timeout(refresh, 5000);
+    })();
+
+    $scope.$on('$destroy', function () {
+        $timeout.cancel(promise);
+        promise = undefined;
+    });
 });

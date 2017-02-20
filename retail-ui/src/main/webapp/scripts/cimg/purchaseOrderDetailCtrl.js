@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, SUPPLIER_ALL_URI) {
+cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,$timeout, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, SUPPLIER_ALL_URI) {
     var rowtpl='<div ng-class="{\'brown\':row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\'}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
     $scope.gridOptions = {
         enableFiltering: true,
@@ -108,8 +108,6 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
     */
     initPageData();
     function initPageData() {
-        $scope.posIsCancessled = false;
-        $scope.posIsConfirmed = false;
         baseDataService.getBaseData(POL_CREATION_TYPE_MANUAL).then(function(response){
             var data = angular.copy(response.data);
             $scope.polCreationTypeManual = data;
@@ -172,7 +170,11 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             }
             baseDataService.setRow({});
             baseDataService.setIsPageNew(true);
-            $scope.pageIsNew = false;
+            if ($scope.purchaseOrderHeader.id === -1){
+                $scope.pageIsNew = true;
+            } else {
+                $scope.pageIsNew = false;
+            }
         }
 
     }
@@ -512,19 +514,9 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             $scope.gridOptions.data.push(purchaseLine);
         });
     }
-    $scope.saveAsDraft = function()
+    function saveAsDraft()
     {
-        if ($scope.pageIsNew) {
-            $scope.purchaseOrderHeader.lines = $scope.gridOptions.data
-        } else {
-            //remove the subgrid info from data before submitting:
-            for (i=0; i<$scope.gridOptions.data.length; i++) {
-                if ($scope.gridOptions.data[i].subGridOptions != undefined || $scope.gridOptions.data[i].subGridOptions != null) {
-                    delete $scope.gridOptions.data[i].subGridOptions;
-                }
-            }
-        }
-
+        $scope.purchaseOrderHeader.lines = $scope.gridOptions.data
         var pageId;
         if ($scope.pageData === undefined) {
             pageId = -1;
@@ -537,7 +529,17 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             'description' :'Purchase Order'
         }
         $scope.pageData = multiPageService.addPage(pageId, txnType, $scope.purchaseOrderHeader.pohOrderNumber===undefined?'':$scope.purchaseOrderHeader.pohOrderNumber,$scope.purchaseOrderHeader);
-        $state.go('dashboard.openDraftPageList');
     }
+
+    var promise;
+    (function refresh() {
+        saveAsDraft();
+        promise = $timeout(refresh, 5000);
+    })();
+
+    $scope.$on('$destroy', function () {
+        $timeout.cancel(promise);
+        promise = undefined;
+    });
 
 });
