@@ -67,7 +67,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
                 {field: 'txdeQtyRefund', displayName: 'Qty Refund', type: 'number', width: '7%'},
                 {field: 'txdeQtyBalance', displayName: 'Balance',enableCellEdit: false, type: 'number', width: '7%'},
                 {field: 'calculatedLineValue', displayName: 'Aomount', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
-                {field: 'calculatedLineTax', displayName: 'Tax', enableCellEdit: false, width: '7%'},
+                {field: 'calculatedLineTax', displayName: 'Tax',cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '7%'},
                 {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '8%'}
             ]
         }

@@ -1,7 +1,12 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI) {
+
+    $scope.isViewMode = false;
+    if (viewMode!=undefined) {
+        $scope.isViewMode = viewMode;
+    }
 
     $scope.isPageNew = baseDataService.getIsPageNew();
     /*
@@ -148,7 +153,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     }
                 },
                 {field: 'calculatedLineValue', displayName: 'Aomount', enableCellEdit: false, cellFilter: 'currency', width: '9%'},
-                {field: 'calculatedLineTax', displayName: 'Tax', enableCellEdit: false, width: '7%'},
+                {field: 'calculatedLineTax', displayName: 'Tax', cellFilter: 'currency', footerCellFilter: 'currency',enableCellEdit: false, width: '7%'},
                 {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'},
                 {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="grid.appScope.isTxnLineVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
 
@@ -1064,6 +1069,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     }
     function saveAsDraft()
     {
+        if ($scope.isViewMode) {
+            return;
+        }
         $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
         $scope.txnHeaderForm.customer = $scope.customer;
@@ -1089,4 +1097,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         $timeout.cancel(promise);
         promise = undefined;
     });
+    $scope.cancel = function() {
+        $scope.closeThisDialog('button');
+    }
+
 });

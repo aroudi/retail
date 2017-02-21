@@ -1,7 +1,12 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,$timeout,ngDialog, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI) {
+cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI) {
+
+    $scope.isViewMode = false;
+    if (viewMode!=undefined) {
+        $scope.isViewMode = viewMode;
+    }
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -299,6 +304,9 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
     }
     function saveAsDraft()
     {
+        if ($scope.isViewMode) {
+            return;
+        }
         $scope.deliveryNoteHeader.lines = $scope.gridOptions.data
         var pageId;
         if ($scope.pageData === undefined) {
@@ -312,7 +320,6 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             'description' :'Received Note'
         }
         $scope.pageData = multiPageService.addPage(pageId, txnType, $scope.deliveryNoteHeader.delnNoteNumber ===undefined?'':$scope.deliveryNoteHeader.delnNoteNumber,$scope.deliveryNoteHeader);
-        $state.go('dashboard.openDraftPageList');
     }
     var promise;
     (function refresh() {
@@ -324,4 +331,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         $timeout.cancel(promise);
         promise = undefined;
     });
+    $scope.cancel = function() {
+        $scope.closeThisDialog('button');
+    }
 });

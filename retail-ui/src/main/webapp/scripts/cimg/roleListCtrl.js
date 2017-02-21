@@ -5,6 +5,7 @@ cimgApp.controller('roleListCtrl', function($scope, $state, $timeout,baseDataSer
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editRole(row)"></i></a>', width:'5%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'roleCode', displayName:'Code',enableCellEdit:false, width:'30%'},
             {field:'roleName', displayName:'Role Name',enableCellEdit:false, width:'30%',
@@ -16,8 +17,7 @@ cimgApp.controller('roleListCtrl', function($scope, $state, $timeout,baseDataSer
                 cellTooltip: function(row,col) {
                     return row.entity.roleDesc
                 }
-            },
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editRole(row)"></i></a>', width:'5%' }
+            }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;

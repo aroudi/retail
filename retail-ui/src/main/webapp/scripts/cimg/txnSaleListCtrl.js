@@ -44,6 +44,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         useExternalSorting:true,
         enableFiltering: true,
         columnDefs: [
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row,false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.editTransaction(row,true)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)" ></i></a> </i></a>&nbsp;<a href=""><i tooltip="Delete" ng-show="row.entity.txhdTxnType.categoryCode ===\'TXN_TYPE_QUOTE\'" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeQuote(row)" ></i></a> ', width:'10%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
@@ -56,8 +57,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
             },
             {field:'txhdTxnType.displayName' , displayName:'Type', enableCellEdit:false, width:'10%'},
             {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
-            {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'},
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)" ></i></a> </i></a>&nbsp;<a href=""><i tooltip="Delete" ng-show="row.entity.txhdTxnType.categoryCode ===\'TXN_TYPE_QUOTE\'" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeQuote(row)" ></i></a> ', width:'10%' }
+            {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'}
         ]
     }
     $scope.gridOptions.enableRowSelection = false;
@@ -97,7 +97,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         });
     }
 
-    $scope.editTransaction = function(row) {
+    $scope.editTransaction = function(row, viewMode) {
         if (row == undefined || row.entity == undefined) {
             alert('row is undefined');
             return;
@@ -107,7 +107,21 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
             baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
-            $state.go('dashboard.createSaleTransaction');
+            if (viewMode) {
+                ngDialog.openConfirm({
+                    template:'views/pages/txnSale.html',
+                    controller:'txnSaleCtrl',
+                    className: 'ngdialog-pdfView',
+                    closeByDocument:false,
+                    resolve: {viewMode: function(){return true}}
+                }).then (function (){
+                    }, function(reason) {
+                        console.log('Modal promise rejected. Reason:', reason);
+                    }
+                );
+            } else {
+                $state.go('dashboard.createSaleTransaction');
+            }
         });
     }
 

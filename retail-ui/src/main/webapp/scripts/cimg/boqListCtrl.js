@@ -46,6 +46,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
         enableColumnResizing: true,
         enableSorting:true,
         columnDefs: [
+            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewBoqDetail(row)"></i></a>', width:'5%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'project.projectCode', displayName:'Project No',enableCellEdit:false, width:'10%',
                 cellTooltip: function(row,col) {
@@ -76,8 +77,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                    return grid.getCellValue(row, col).color
                 }
-            },
-            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewBoqDetail(row)"></i></a>', width:'5%' }
+            }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;

@@ -103,11 +103,13 @@
                     </div>
                     <div class="row">
                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                        <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                        <button type="button" class="btn btn-success" ng-click="submitPo()">Submit</button>
-                        <button type="button" class="btn btn-success" ng-click="savePoAsDraft()" ng-show="purchaseOrderHeader.pohStatus.categoryCode === 'POH_STATUS_IN_PROGRESS'">Save As Draft</button>
+                        <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
+                        <button type="button" class="btn btn-success" ng-click="submitPo()" ng-show="!isViewMode">Submit</button>
+                        <button type="button" class="btn btn-success" ng-click="savePoAsDraft()" ng-show="(!isViewMode)&&(purchaseOrderHeader.pohStatus.categoryCode === 'POH_STATUS_IN_PROGRESS')">Save As Draft</button>
+                        <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
+
                         <!--button type="button" class="btn btn-success" ng-click="exportToPdf()" ng-show="!pageIsNew">Export to PDF</button-->
-                        <button type="button" class="btn btn-info" ng-click="updateLinkedBoqs()" ng-show="purchaseOrderHeader.pohStatus.categoryCode=='POH_STATUS_GOOD_RECEIVED' || purchaseOrderHeader.pohStatus.categoryCode=='POH_STATUS_PARTIAL_REC'">Update Linked BOQs</button>
+                        <button type="button" class="btn btn-info" ng-click="updateLinkedBoqs()" ng-show="(!isViewMode)&&(purchaseOrderHeader.pohStatus.categoryCode=='POH_STATUS_GOOD_RECEIVED' || purchaseOrderHeader.pohStatus.categoryCode=='POH_STATUS_PARTIAL_REC')">Update Linked BOQs</button>
                     </div>
                     <div class="row">
                         &nbsp; &nbsp;
@@ -116,7 +118,7 @@
                         <div class="panel  panel-info">
                             <div class="panel-heading">
                                 Lines:
-                                <button type="button" class="btn btn-success" ng-click="searchProduct()">Add Product</button>
+                                <button type="button" class="btn btn-success" ng-click="searchProduct()" ng-show="!isViewMode">Add Product</button>
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                 Search By Catalogue No:
                                 <input size="50" data-ng-model="searchByCatalog"  ng-keypress="searchProductByCatalogNo($event)" >

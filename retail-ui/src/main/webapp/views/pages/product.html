@@ -100,7 +100,7 @@
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
                                             Buying
-                                            <button type="button" class="btn btn-success" ng-click="addSuppProdPrice()">Add</button>
+                                            <button type="button" class="btn btn-success" ng-click="addSuppProdPrice()" ng-show="!isViewMode">Add</button>
                                         </div>
                                         <div class="panel-body">
                                                 <div class="col-lg-12">
@@ -175,8 +175,9 @@
                                 <div class="col-lg-12">
                                     <div class="col-lg-11">
                                         <div class="form-group">
-                                            <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                                            <button type="button" class="btn btn-success" ng-click="createProduct()">Submit</button>
+                                            <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
+                                            <button type="button" class="btn btn-success" ng-click="createProduct()" ng-show="!isViewMode">Submit</button>
+                                            <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
                                             <button type="button" class="btn btn-success" ng-click="displayProductPurchaseOrders()" ng-show="!isNewPage">Purchase Orders</button>
                                             <button type="button" class="btn btn-success" ng-click="displayProductTxns('TXN')" ng-show="!isNewPage">Sale Orders/Quotes</button>

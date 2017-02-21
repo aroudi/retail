@@ -50,7 +50,7 @@ cimgApp.controller('incidentListCtrl', function($scope, $state, baseDataService,
             {field:'lastModifiedDate', displayName:'Modified On', displayName:'Last Modified On',enableCellEdit:false, cellFilter:'date:\'dd/MM/yyyy HH:mm\'', width:'10%'},
             {field:'lastModifiedBy',  displayName:'Modified By',cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'iimsNumber', displayName:'IIMS Number',enableCellEdit:false, width:'10%'},
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editIncident(row)"></i></a>&nbsp;<a href=""><i tooltip="Preview Message Body" tooltip-placement="bottom" class="fa fa-envelope fa-2x" ng-click="grid.appScope.editMessageBody(row)"></i></a>&nbsp;<a href=""><i tooltip="Delete" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ></i></a>'}
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editIncident(row)"></i></a>&nbsp;<a href=""><i tooltip="Preview Message Body" tooltip-placement="bottom" class="fa fa-envelope fa-2x" ng-click="grid.appScope.editMessageBody(row)"></i></a>&nbsp;<a href=""><i tooltip="Delete" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ></i></a>'}
         ]
     }
     $scope.gridOptions.enableRowSelection = true;

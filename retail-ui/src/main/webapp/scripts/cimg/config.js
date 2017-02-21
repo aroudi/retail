@@ -95,7 +95,8 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/createProduct',
             controller: 'productCtrl',
             templateUrl:'views/pages/product.html',
-            access: "user"
+            access: "user",
+            resolve: {viewMode: function(){return false}}
         })
         .state('dashboard.listProduct',{
             url:'/listProduct',
@@ -137,7 +138,8 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/purchaseOrderDetail',
             controller: 'purchaseOrderDetailCtrl',
             templateUrl:'views/pages/purchaseOrderDetail.html',
-            access: "user"
+            access: "user",
+            resolve: {viewMode: function(){return false}}
         })
         .state('dashboard.deliveryNoteList',{
             url:'/deliveryNoteList',
@@ -149,7 +151,8 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/deliveryNote',
             controller: 'deliveryNoteCtrl',
             templateUrl:'views/pages/deliveryNote.html',
-            access: "user"
+            access: "user",
+            resolve: {viewMode: function(){return false}}
         })
         .state('dashboard.createSaleTransaction',{
             url:'/createSaleTransaction',
@@ -158,7 +161,8 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             access: "user",
             params: {
                 txnType:null
-            }
+            },
+            resolve: {viewMode: function(){return false}}
         })
         .state('dashboard.createInvoice',{
             url:'/createInvoice',
@@ -167,7 +171,8 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             access: "user",
             params: {
                 txnType:null
-            }
+            },
+            resolve: {viewMode: function(){return false}}
         })
         .state('dashboard.refundTxn',{
             url:'/refundTxn',

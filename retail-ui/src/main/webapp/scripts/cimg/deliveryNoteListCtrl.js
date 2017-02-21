@@ -38,6 +38,7 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
         enableColumnResizing: true,
         enableSorting:true,
         columnDefs: [
+            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.openDeliveryNoteDetail(row, false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.openDeliveryNoteDetail(row, true)"></i></a>', width:'5%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'pohId', visible:false, enableCellEdit:false},
             {field:'delnNoteNumber', displayName:'Note No',enableCellEdit:false, width:'10%'},
@@ -58,8 +59,7 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                    return grid.getCellValue(row, col).color
                 }
-            },
-            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewDeliveryNoteDetail(row)"></i></a>', width:'5%' }
+            }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -101,7 +101,7 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
         });
     }
 
-    $scope.viewDeliveryNoteDetail = function(row) {
+    $scope.openDeliveryNoteDetail = function(row, viewMode) {
         if (row == undefined || row.entity == undefined) {
             alert('row is undefined');
             return;
@@ -111,7 +111,21 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
             baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
-            $state.go('dashboard.deliveryNote');
+            if (viewMode) {
+                ngDialog.openConfirm({
+                    template:'views/pages/deliveryNote.html',
+                    controller:'deliveryNoteCtrl',
+                    className: 'ngdialog-pdfView',
+                    closeByDocument:false,
+                    resolve: {viewMode: function(){return true}}
+                }).then (function (){
+                    }, function(reason) {
+                        console.log('Modal promise rejected. Reason:', reason);
+                    }
+                );
+            } else {
+                $state.go('dashboard.deliveryNote');
+            }
         });
     }
 

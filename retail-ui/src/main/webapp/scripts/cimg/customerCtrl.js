@@ -60,7 +60,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
                 {field:'txhdTxnNr', displayName:'Invoice No',enableCellEdit:false, width:'15%'},
                 {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'15%', cellFilter:'currency'},
                 {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'15%', cellFilter:'currency'},
-                {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' }
+                {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' }
             ]
         }
         $scope.invoiceList.enableRowSelection = true;
@@ -92,7 +92,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
                 {field:'txhdTxnType.displayName' , displayName:'Type', enableCellEdit:false, width:'10%'},
                 {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
                 {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'},
-                {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editSaleOrder(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.printSaleOrder(row)"></i></a>', width:'10%' }
+                {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editSaleOrder(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.printSaleOrder(row)"></i></a>', width:'10%' }
             ]
         }
         $scope.saleOrderList.enableRowSelection = true;
@@ -185,7 +185,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
                 },
                 {field:'mobile', enableCellEdit:false, width:'10%'},
                 {field:'email', enableCellEdit:false, width:'20%'},
-                {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editContact(row)"></i></a><a href=""><i tooltip="Remove" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeContact(row)"></i></a>', width:'5%' }
+                {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editContact(row)"></i></a><a href=""><i tooltip="Remove" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeContact(row)"></i></a>', width:'5%' }
             ]
         }
         $scope.gridOptions.enableRowSelection = true;

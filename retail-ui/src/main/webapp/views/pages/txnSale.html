@@ -82,13 +82,13 @@
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
                                                 Products
-                                                <button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchProduct()">Add Product</button>
+                                                <button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchProduct()" ng-show="!isViewMode">Add Product</button>
                                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                                 Search By Sku:
-                                                <input size="50" data-ng-model="searchBySku" ng-disabled="isTxnSaleAndFinal()" ng-keypress="searchProductBySku($event)" >
+                                                <input size="50" data-ng-model="searchBySku" ng-disabled="isTxnSaleAndFinal()" ng-keypress="searchProductBySku($event)" ng-show="!isViewMode" >
                                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                                <button type="button" class="btn btn-primary" ng-disabled="!isTxnSaleAndPending()" ng-click="toggleAllRowSelection()" ng-show="!allItemsSelected">Invoice All Items</button>
-                                                <button type="button" class="btn btn-primary" ng-disabled="!isTxnSaleAndPending()" ng-click="toggleAllRowSelection()" ng-show="allItemsSelected">Unselect Items</button>
+                                                <button type="button" class="btn btn-primary" ng-disabled="!isTxnSaleAndPending()" ng-click="toggleAllRowSelection()" ng-show="(!isViewMode)&&(!allItemsSelected)">Invoice All Items</button>
+                                                <button type="button" class="btn btn-primary" ng-disabled="!isTxnSaleAndPending()" ng-click="toggleAllRowSelection()" ng-show="(!isViewMode)&&(allItemsSelected)">Unselect Items</button>
 
                                         </div>
                                         <div class="panel-body" ng-disabled="isTxnSaleAndFinal()">
@@ -189,11 +189,12 @@
 
                             <div class="row">
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                                <button type="button" class="btn btn-success" ng-click="createTransactionSale()" ng-show="showSubmitButtom()">Submit</button>
+                                <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
+                                <button type="button" class="btn btn-success" ng-click="createTransactionSale()" ng-show="(!isViewMode)&&(showSubmitButtom())">Submit</button>
                                 <!--button type="button" class="btn btn-success" ng-click="addPayment()" ng-show="showAddPaymentButtom()">Add Payment</button-->
                                 <!--button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT'">Save draft</button -->
-                                <button type="button" class="btn btn-success" ng-click="invoiceTransactionSale()" ng-show="showInvoiceButtom()">Invoice</button>
+                                <button type="button" class="btn btn-success" ng-click="invoiceTransactionSale()" ng-show="(!isViewMode)&&(showInvoiceButtom())">Invoice</button>
+                                <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
                                 <!--button type="button" class="btn btn-success" ng-click="exportToPdf(exportSaleOrderToPdfUrl)">Print</button-->
 
                             </div>

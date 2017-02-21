@@ -1,9 +1,13 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productCtrl', function($scope, $state, UserService, baseDataService, ngDialog, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI) {
+cimgApp.controller('productCtrl', function($scope, $state, UserService, baseDataService, ngDialog,viewMode, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI) {
     //set default data on the page
     initPageData();
+    $scope.isViewMode = false;
+    if (viewMode!=undefined) {
+        $scope.isViewMode = viewMode;
+    }
     function initPageData() {
         if ( baseDataService.getIsPageNew()) {
             $scope.isNewPage = true;
@@ -225,5 +229,9 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
             }
         );
     };
+
+    $scope.cancel = function() {
+        $scope.closeThisDialog('button');
+    }
 
 });

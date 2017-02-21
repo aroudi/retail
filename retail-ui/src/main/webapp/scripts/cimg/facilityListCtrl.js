@@ -25,7 +25,7 @@ cimgApp.controller('facilityListCtrl', function($scope, $state, baseDataService,
             {field:'twitterContent', enableCellEdit:false, width:'20%'},
             //{field:'linesAfected', displayName:'Lines Affected', enableCellEdit:false},
             {name:'linesAfected', displayName:'Lines Affected', cellFilter:'lineList', overflow:'auto', width:'10%'},
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editFacility(row)"></i></a>&nbsp;<a href=""><i tooltip="Delete" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ></i></a>&nbsp;<a href=""><i tooltip="Change Status" tooltip-placement="bottom" class="fa fa-wrench fa-2x" ng-click="grid.appScope.changeStatus(row)" ></i></a>', width:'10%' }
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editFacility(row)"></i></a>&nbsp;<a href=""><i tooltip="Delete" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ></i></a>&nbsp;<a href=""><i tooltip="Change Status" tooltip-placement="bottom" class="fa fa-wrench fa-2x" ng-click="grid.appScope.changeStatus(row)" ></i></a>', width:'10%' }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;

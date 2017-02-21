@@ -5,6 +5,7 @@ cimgApp.controller('userListCtrl', function($scope, $state, $timeout,baseDataSer
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editUser(row)"></i></a>', width:'5%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'usrName', displayName:'User Name', enableCellEdit:false, width:'20%'},
             {field:'usrFirstName', displayName:'First Name',enableCellEdit:false, width:'30%',
@@ -25,8 +26,7 @@ cimgApp.controller('userListCtrl', function($scope, $state, $timeout,baseDataSer
                         return 'red'
                     }
                 }
-            },
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editUser(row)"></i></a>', width:'5%' }
+            }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;

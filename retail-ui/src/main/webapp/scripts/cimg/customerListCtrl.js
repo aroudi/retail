@@ -5,6 +5,7 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout,baseDat
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editCustomer(row)"></i></a>', width:'5%' },
             {field:'customerId', visible:false, enableCellEdit:false},
             {field:'customerType', displayName:'Terms',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
@@ -26,8 +27,7 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout,baseDat
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }
-            },
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editCustomer(row)"></i></a>', width:'5%' }
+            }
         ]
     }
     $scope.gridOptions.enableRowSelection = false;

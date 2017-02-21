@@ -73,6 +73,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             subGridVariable: 'subGridScopeVariable'
         } ,
         columnDefs: [
+            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewPohDetail(row, false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.viewPohDetail(row, false)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'5%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'10%',
                 cellTemplate:'<a href="" ng-click="grid.appScope.viewPohDetail(row)">{{row.entity.pohOrderNumber}}</a>'
@@ -91,8 +92,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                    return grid.getCellValue(row, col).color
                 }
-            },
-            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewPohDetail(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'5%' }
+            }
         ]
     }
     $scope.gridOptions.enableRowSelection = false;
@@ -134,7 +134,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
         });
     }
 
-    $scope.viewPohDetail = function(row) {
+    $scope.viewPohDetail = function(row, viewMode) {
         if (row == undefined || row.entity == undefined) {
             alert('row is undefined');
             return;
@@ -144,9 +144,24 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
-            $state.go('dashboard.purchaseOrderDetail');
+            if (viewMode) {
+                ngDialog.openConfirm({
+                    template:'views/pages/purchaseOrderDetail.html',
+                    controller:'purchaseOrderDetailCtrl',
+                    className: 'ngdialog-pdfView',
+                    closeByDocument:false,
+                    resolve: {viewMode: function(){return true}}
+                }).then (function (){
+                    }, function(reason) {
+                        console.log('Modal promise rejected. Reason:', reason);
+                    }
+                );
+            } else {
+                $state.go('dashboard.purchaseOrderDetail');
+            }
         });
     }
+
 
     function displayLinkedDelNotes(line) {
         line.subGridOptions = {

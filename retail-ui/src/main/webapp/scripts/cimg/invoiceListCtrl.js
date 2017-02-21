@@ -45,6 +45,7 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
         useExternalSorting:true,
         enableFiltering: true,
         columnDefs: [
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row, false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.editTransaction(row, true)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>&nbsp;<a href=""><i tooltip="Refund" tooltip-placement="bottom" class="fa fa-backward fa-2x" ng-show="grid.appScope.displayRefundOption(row)" ng-click="grid.appScope.refundTransaction(row)"></i></a>', width:'10%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
@@ -54,7 +55,6 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
             {field:'invoiceTxnType.displayName', displayName:'Type',enableCellEdit:false, width:'10%'},
             {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
             {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'},
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>&nbsp;<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Refund" tooltip-placement="bottom" class="fa fa-backward fa-2x" ng-show="grid.appScope.displayRefundOption(row)" ng-click="grid.appScope.refundTransaction(row)"></i></a>', width:'10%' }
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -102,7 +102,7 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
         });
     }
 
-    $scope.editTransaction = function(row) {
+    $scope.editTransaction = function(row, viewMode) {
         if (row == undefined || row.entity == undefined) {
             alert('row is undefined');
             return;
@@ -112,10 +112,26 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
             baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
-            if (row.entity.invoiceTxnType.categoryCode === 'TXN_TYPE_INVOICE') {
-                $state.go('dashboard.createSaleTransaction');
+            if (viewMode)
+            {
+                ngDialog.openConfirm({
+                    template:'views/pages/txnSale.html',
+                    controller:'txnSaleCtrl',
+                    className: 'ngdialog-pdfView',
+                    closeByDocument:false,
+                    resolve: {viewMode: function(){return true}}
+                }).then (function (){
+                    }, function(reason) {
+                        console.log('Modal promise rejected. Reason:', reason);
+                    }
+                );
+
             } else {
-                $state.go('dashboard.refundTxn');
+                if (row.entity.invoiceTxnType.categoryCode === 'TXN_TYPE_INVOICE') {
+                    $state.go('dashboard.createSaleTransaction');
+                } else {
+                    $state.go('dashboard.refundTxn');
+                }
             }
         });
     }

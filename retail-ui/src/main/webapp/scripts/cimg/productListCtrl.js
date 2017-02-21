@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI) {
+cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog,baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI) {
 
     $scope.getPage = function(){
         $scope.productSearchForm.pageNo = paginationOptions.pageNumber*1 ;
@@ -38,6 +38,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseData
         enableColumnResizing: true,
         enableSorting:true,
         columnDefs: [
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a><a href="">&nbsp;&nbsp;<i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.viewProduct(row)"></i></a>', width:'5%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'prodSku', enableCellEdit:false, width:'10%',
                 cellTooltip: function(row,col) {
@@ -72,8 +73,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseData
                         return 'green'
                     }
                 }
-            },
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a>', width:'5%' }
+            }
         ]
     }
     $scope.gridOptions.enableRowSelection = false;
@@ -122,6 +122,31 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,baseData
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.createProduct');
+        });
+    }
+
+    $scope.viewProduct = function(row) {
+        if (row == undefined || row.entity == undefined) {
+            alert('row is undefined');
+            return;
+        }
+        var productGetURI = PRODUCT_GET_URI + '/' + row.entity.id;
+        baseDataService.getBaseData(productGetURI).then(function(response){
+            baseDataService.setIsPageNew(false);
+            baseDataService.setRow(response.data);
+            //redirect to the supplier page.
+            //$state.go('dashboard.createProduct');
+            ngDialog.openConfirm({
+                template:'views/pages/product.html',
+                controller:'productCtrl',
+                className: 'ngdialog-pdfView',
+                closeByDocument:false,
+                resolve: {viewMode: function(){return true}}
+            }).then (function (){
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                }
+            );
         });
     }
 

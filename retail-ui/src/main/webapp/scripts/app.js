@@ -388,7 +388,7 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
             ngDialog.openConfirm({
                 template:'views/pages/pdfViewer.html',
                 controller:'pdfViewerCtrl',
-                className: 'ngdialog-pdfView',
+                className: 'ngdialog-theme-default',
                 closeByDocument:true,
                 resolve: {url: function(){return exportUrl}, searchForm:function(){return undefined}}
             }).then (function (value){
