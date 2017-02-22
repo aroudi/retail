@@ -38,17 +38,14 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
-			<line>
-				<reportElement mode="Opaque" x="1" y="18" width="183" height="1" uuid="af4e9b8c-e319-44da-ae87-2fff70f14f25"/>
-			</line>
-			<textField isBlankWhenNull="true">
+		<band height="21" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="8" y="2" width="101" height="13" uuid="905c75f8-e7e9-4678-8cbb-98b359cccbcb"/>
 				<textFieldExpression><![CDATA[$F{paymentMedia}.getPaymName()]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="134" y="2" width="50" height="13" uuid="aac94a9d-1142-4ff1-9ccd-7c291216cfe7"/>
-				<textFieldExpression><![CDATA[$F{txmdAmountLocal}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txmdAmountLocal})]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

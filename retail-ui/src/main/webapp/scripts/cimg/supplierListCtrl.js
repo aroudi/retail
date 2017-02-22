@@ -5,7 +5,7 @@ cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,baseDat
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editSupplier(row)"></i></a>', width:'5%' },
+            {name:'Action',enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editSupplier(row)"></i></a>', width:'5%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'supplierCode', enableCellEdit:false, width:'20%'},
             {field:'supplierName', enableCellEdit:false, width:'50%',

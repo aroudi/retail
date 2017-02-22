@@ -43,6 +43,7 @@ public class TxnHeader {
     private ConfigCategory invoiceTxnType;
     private boolean txhdPrinted;
     private CustomerAccountDebt customerAccountDebt;
+    private String txhdPoNo;
 
     /**
      * add txn detail to txn header.
@@ -336,5 +337,13 @@ public class TxnHeader {
 
     public void setCustomerAccountDebt(CustomerAccountDebt customerAccountDebt) {
         this.customerAccountDebt = customerAccountDebt;
+    }
+
+    public String getTxhdPoNo() {
+        return txhdPoNo;
+    }
+
+    public void setTxhdPoNo(String txhdPoNo) {
+        this.txhdPoNo = txhdPoNo;
     }
 }

@@ -78,31 +78,28 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="16" splitType="Stretch">
-			<line>
-				<reportElement mode="Opaque" x="1" y="15" width="492" height="1" uuid="af4e9b8c-e319-44da-ae87-2fff70f14f25"/>
-			</line>
-			<textField isBlankWhenNull="true">
+		<band height="19" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="3" y="0" width="186" height="13" uuid="905c75f8-e7e9-4678-8cbb-98b359cccbcb"/>
 				<textFieldExpression><![CDATA[$F{product}.getProdName()]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="189" y="0" width="57" height="13" uuid="aac94a9d-1142-4ff1-9ccd-7c291216cfe7"/>
 				<textFieldExpression><![CDATA[$F{unitOfMeasure}.getUnomDesc()]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="305" y="0" width="62" height="13" uuid="c3eaedc5-045f-437a-9c53-8082335d24eb"/>
-				<textFieldExpression><![CDATA[$F{txdeTax} * $F{txdeValueGross}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txdeTax} * $F{txdeValueGross})]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="409" y="0" width="83" height="13" uuid="525ca675-4786-491a-bca8-56c862ac11ca"/>
-				<textFieldExpression><![CDATA[$F{txdePriceSold}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txdePriceSold})]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="247" y="0" width="55" height="13" uuid="8baf56cd-29ae-4278-9eb6-c2c937734a3d"/>
-				<textFieldExpression><![CDATA[$F{txdeValueGross}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txdeValueGross})]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="369" y="0" width="39" height="13" uuid="0d27deda-aaa7-49a1-a3e1-0ff46fab9851"/>
 				<textFieldExpression><![CDATA[($F{txdeDetailType}.getCategoryCode().equals("TXN_LINE_SALE")) ? ($F{txdeQuantitySold}) : ($F{txdeQtyTotalRefund})]]></textFieldExpression>
 			</textField>

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="265"/>
+	<property name="ireport.y" value="10"/>
 	<subDataset name="Table Dataset 1" uuid="34d645cf-a029-4a91-b796-5f67f4c09de0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
@@ -36,6 +36,7 @@
 	<field name="txhdContactPerson" class="java.lang.String"/>
 	<field name="txhdContactPhone" class="java.lang.String"/>
 	<field name="txhdPrinted" class="java.lang.Boolean"/>
+	<field name="txhdPoNo" class="java.lang.String"/>
 	<variable name="Today" class="java.lang.String">
 		<variableExpression><![CDATA[(new SimpleDateFormat("yyyy/MM/dd")).format(new Date())]]></variableExpression>
 	</variable>
@@ -207,29 +208,29 @@
 				<reportElement x="439" y="129" width="100" height="20" uuid="bc5ce2cd-5c07-4961-847d-a421dd5c66fb"/>
 				<textFieldExpression><![CDATA[$F{appUser} == null ? " " : $F{appUser}.getUsrFirstName() + " " + $F{appUser}.getUsrSurName()]]></textFieldExpression>
 			</textField>
-			<rectangle>
-				<reportElement x="363" y="98" width="69" height="20" backcolor="#CCCCCC" uuid="71741faa-acd2-4c52-8730-b72025dd6ad3"/>
-			</rectangle>
-			<rectangle>
-				<reportElement x="432" y="98" width="116" height="20" uuid="cd132aed-c4cf-4b00-bea5-0f54ce8d3fdf"/>
-			</rectangle>
-			<staticText>
-				<reportElement x="365" y="99" width="69" height="20" uuid="b3940ea8-e7c6-483e-96d1-cda85db711b7"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Status:]]></text>
-			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="436" y="100" width="113" height="20" uuid="9d79cd44-b0bd-4e44-bcc0-b50bece8b125"/>
-				<textFieldExpression><![CDATA[$F{txhdState}.getDisplayName()]]></textFieldExpression>
-			</textField>
 			<textField>
 				<reportElement x="7" y="83" width="317" height="38" uuid="ddac7a03-e7d8-49b3-bd88-bc4c94e9e7f3"/>
 				<textElement>
 					<font size="20" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{txhdTxnType}.getCategoryCode().equals("TXN_TYPE_QUOTE")?"Quote":"Sale Order"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="351" y="95" width="83" height="20" backcolor="#CCCCCC" uuid="02cded4b-f605-46a8-8c4c-d861a190edb9"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="352" y="97" width="82" height="20" uuid="5c39e858-3843-4a55-a59e-55a83ad1c36b"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Customer P.O No]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="434" y="95" width="113" height="20" uuid="9af1d7e5-b4e1-4389-afe7-e8cb5391757e"/>
+			</rectangle>
+			<textField isBlankWhenNull="true">
+				<reportElement x="439" y="97" width="108" height="20" uuid="5f4e9518-83fd-4aba-aeab-243c156e7503"/>
+				<textFieldExpression><![CDATA[$F{txhdPoNo}==null?" " : $F{txhdPoNo}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
