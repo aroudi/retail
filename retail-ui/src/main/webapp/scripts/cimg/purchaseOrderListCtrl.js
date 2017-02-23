@@ -73,13 +73,13 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             subGridVariable: 'subGridScopeVariable'
         } ,
         columnDefs: [
-            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewPohDetail(row, false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.viewPohDetail(row, false)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'5%' },
+            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewPohDetail(row, false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.viewPohDetail(row, true)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'8%' },
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'10%',
+            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'8%',
                 cellTemplate:'<a href="" ng-click="grid.appScope.viewPohDetail(row)">{{row.entity.pohOrderNumber}}</a>'
             },
             {field:'pohRevision', displayName:'Rev.',enableCellEdit:false, width:'5%'},
-            {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'30%',
+            {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'29%',
                 cellTooltip: function(row,col) {
                     return row.entity.supplier.supplierName
                 }

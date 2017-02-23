@@ -92,7 +92,7 @@
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txdeTax} * $F{txdeValueGross})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="409" y="0" width="83" height="13" uuid="525ca675-4786-491a-bca8-56c862ac11ca"/>
+				<reportElement x="409" y="0" width="91" height="13" uuid="525ca675-4786-491a-bca8-56c862ac11ca"/>
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txdePriceSold})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
