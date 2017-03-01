@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="344"/>
+	<property name="ireport.y" value="342"/>
 	<subDataset name="Table Dataset 1" uuid="34d645cf-a029-4a91-b796-5f67f4c09de0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
@@ -218,7 +218,7 @@
 					<textElement>
 						<font size="20" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Tax Invoice]]></text>
+					<text><![CDATA[Delivery Docket]]></text>
 				</staticText>
 			</elementGroup>
 		</band>
@@ -232,7 +232,7 @@
 				<reportElement x="11" y="12" width="536" height="126" uuid="3141b3cf-f686-4318-a72a-aa51bccee833"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
                       ($F{txnDetails})]]></dataSourceExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "txnLine.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "deliveryDocketLine.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="279" splitType="Stretch">
@@ -428,6 +428,6 @@
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="1" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</summary>
 </jasperReport>

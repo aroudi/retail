@@ -443,7 +443,7 @@
             ,TXHD_PRINTED = #{txhdPrinted}
         </if>
         <if test="txhdPoNo != null">
-            ,TXHD_PO_NO = #{txhdPoNo}
+            ,TXHD_PO_NR = #{txhdPoNo}
         </if>
         WHERE TXHD_ID = #{id}
     </update>

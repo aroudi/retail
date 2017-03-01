@@ -11,7 +11,9 @@ import au.com.biztune.retail.util.IdBConstant;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
+//import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,8 @@ public class TransactionRptMgr {
     private String saleOrderHeaderFileName;
     private String reportTxnLineFileName;
     private String reportTxnMediaFileName;
+    private String deliveryDocketHeaderFileName;
+    private String deliveryDocketLineFileName;
 
     @Autowired
     private CustomerAccountDebtDao customerAccountDebtDao;
@@ -111,13 +115,24 @@ public class TransactionRptMgr {
         try {
             final String pathStr = reportPath.getURL().getPath();
             final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            final JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(txnHeaders);
+            final JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(txnHeaders);
+            final JRBeanCollectionDataSource beanColDataSource2 = new JRBeanCollectionDataSource(txnHeaders);
             final String reportTxnLineJrxmlName = pathStr + "/" + reportTxnLineFileName + ".jrxml";
             final String reportTxnLineJasperName = pathStr + "/" + reportTxnLineFileName + ".jasper";
             final String reportTxnMediaJrxmlName = pathStr + "/" + reportTxnMediaFileName + ".jrxml";
             final String reportTxnMediaJasperName = pathStr + "/" + reportTxnMediaFileName + ".jasper";
+            final String deliveryDocketHeaderJrxmlName = pathStr + "/" + deliveryDocketHeaderFileName + ".jrxml";
+            final String deliveryDocketLineJrxmlName = pathStr + "/" + deliveryDocketLineFileName + ".jrxml";
+            final String deliveryDocketLineJasperName = pathStr + "/" + deliveryDocketLineFileName + ".jasper";
+            JasperReport jasperDeliveryDocketReport = null;
             String reportHeaderJrxmlName = "";
+            JasperPrint jasperPrint2 = null;
             String outputFile = "";
+            final Map<String, Object> parameters = new HashMap<String, Object>();
+            final List<JasperPrint> jasperPrintList = new ArrayList<JasperPrint>();
+
+            parameters.put("SUBREPORT_DIR", pathStr + "/");
+
             if (txnType.equals(IdBConstant.TXN_TYPE_INVOICE)) {
                 reportHeaderJrxmlName = pathStr + "/" + invoiceHeaderFileName + ".jrxml";
                 outputFile = pathStr + "/" + invoiceHeaderFileName + ".pdf";
@@ -128,14 +143,23 @@ public class TransactionRptMgr {
             /* Compile the master and sub report */
             JasperCompileManager.compileReportToFile(reportTxnLineJrxmlName, reportTxnLineJasperName);
             JasperCompileManager.compileReportToFile(reportTxnMediaJrxmlName, reportTxnMediaJasperName);
-            final JasperReport jasperMasterReport = JasperCompileManager.compileReport(reportHeaderJrxmlName);
-            final Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put("SUBREPORT_DIR", pathStr + "/");
 
-            final JasperPrint jasperPrint = JasperFillManager.fillReport(jasperMasterReport, parameters, beanColDataSource);
+            final JasperReport jasperMasterReport = JasperCompileManager.compileReport(reportHeaderJrxmlName);
+            final JasperPrint jasperPrint1 = JasperFillManager.fillReport(jasperMasterReport, parameters, beanColDataSource1);
+            jasperPrintList.add(jasperPrint1);
+
+            if (txnType.equals(IdBConstant.TXN_TYPE_INVOICE)) {
+                JasperCompileManager.compileReportToFile(deliveryDocketLineJrxmlName, deliveryDocketLineJasperName);
+                jasperDeliveryDocketReport = JasperCompileManager.compileReport(deliveryDocketHeaderJrxmlName);
+                jasperPrint2 = JasperFillManager.fillReport(jasperDeliveryDocketReport, parameters, beanColDataSource2);
+                jasperPrintList.add(jasperPrint2);
+            }
+
             final JRPdfExporter exporter = new JRPdfExporter();
-            exporter.setParameter(JRPdfExporterParameter.JASPER_PRINT, jasperPrint);
-            exporter.setParameter(JRPdfExporterParameter.OUTPUT_STREAM, byteArrayOutputStream);
+            exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
+            //exporter.setParameter(JRPdfExporterParameter.JASPER_PRINT_LIST, jasperPrintList);
+            //exporter.setParameter(JRPdfExporterParameter.OUTPUT_STREAM, byteArrayOutputStream);
             exporter.exportReport();
             //JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream);
 
@@ -194,5 +218,21 @@ public class TransactionRptMgr {
 
     public void setInvoiceHeaderFileName(String invoiceHeaderFileName) {
         this.invoiceHeaderFileName = invoiceHeaderFileName;
+    }
+
+    public String getDeliveryDocketHeaderFileName() {
+        return deliveryDocketHeaderFileName;
+    }
+
+    public void setDeliveryDocketHeaderFileName(String deliveryDocketHeaderFileName) {
+        this.deliveryDocketHeaderFileName = deliveryDocketHeaderFileName;
+    }
+
+    public String getDeliveryDocketLineFileName() {
+        return deliveryDocketLineFileName;
+    }
+
+    public void setDeliveryDocketLineFileName(String deliveryDocketLineFileName) {
+        this.deliveryDocketLineFileName = deliveryDocketLineFileName;
     }
 }

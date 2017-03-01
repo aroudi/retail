@@ -21,6 +21,8 @@
         <property name="saleOrderHeaderFileName" value="saleOrderHeader" />
         <property name="reportTxnLineFileName" value="txnLine" />
         <property name="reportTxnMediaFileName" value="txnMedia" />
+        <property name="deliveryDocketHeaderFileName" value="deliveryDocketHeader" />
+        <property name="deliveryDocketLineFileName" value="deliveryDocketLine" />
     </bean>
     <bean id="ReconciliationRptMgr" class="au.com.biztune.retail.report.ReconciliationRptMgr">
         <property name="reportPath" value="classpath:reports" />
