@@ -132,6 +132,7 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdContactPerson(txnHeaderForm.getTxhdContactPerson());
             txnHeader.setTxhdContactPhone(txnHeaderForm.getTxhdContactPhone());
             txnHeader.setTxhdPoNo(txnHeaderForm.getTxhdPoNo());
+            txnHeader.setTxhdEmailTo(txnHeaderForm.getTxhdEmailTo());
             final Principal principal = securityContext.getUserPrincipal();
             AppUser appUser = null;
             if (principal instanceof AppUser) {
@@ -442,6 +443,7 @@ public class TransactionServiceImpl implements TransactionService {
         txnHeaderForm.setTxhdContactPerson(txnHeader.getTxhdContactPerson());
         txnHeaderForm.setTxhdContactPhone(txnHeader.getTxhdContactPhone());
         txnHeaderForm.setTxhdPoNo(txnHeader.getTxhdPoNo());
+        txnHeaderForm.setTxhdEmailTo(txnHeader.getTxhdEmailTo());
         if (txnHeader.getTxnDetails() != null) {
             TxnDetailForm txnDetailForm;
             final List<TxnDetailForm> txnDetailFormList = new ArrayList<TxnDetailForm>();
@@ -560,6 +562,7 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdContactPerson(txnHeaderForm.getTxhdContactPerson());
             txnHeader.setTxhdContactPhone(txnHeaderForm.getTxhdContactPhone());
             txnHeader.setTxhdPoNo(txnHeaderForm.getTxhdPoNo());
+            txnHeader.setTxhdEmailTo(txnHeaderForm.getTxhdEmailTo());
             final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_INVOICE);
             if (txnType != null) {
                 txnHeader.setInvoiceTxnType(txnType);

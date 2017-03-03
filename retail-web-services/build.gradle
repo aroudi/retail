@@ -85,6 +85,9 @@ dependencies {
     //csv
     compile group:'net.sf.supercsv', name:'super-csv', version :'2.0.0'
     compile group:'net.sf.opencsv', name:'opencsv', version :'2.3'
+    //javax.mail
+    compile group:'javax.mail', name:'mail', version :'1.4.7'
+
 }
 
 war{

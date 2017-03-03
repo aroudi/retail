@@ -7,7 +7,10 @@ import au.com.biztune.retail.dao.TxnDao;
 import au.com.biztune.retail.domain.ConfigCategory;
 import au.com.biztune.retail.domain.CustomerAccountDebt;
 import au.com.biztune.retail.domain.TxnHeader;
+import au.com.biztune.retail.processor.EMailProcessor;
+import au.com.biztune.retail.processor.EmailRequest;
 import au.com.biztune.retail.util.IdBConstant;
+import au.com.biztune.retail.util.queuemanager.QueueManager;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
@@ -21,9 +24,7 @@ import org.springframework.core.io.Resource;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -33,6 +34,12 @@ public class TransactionRptMgr {
     private final Logger logger = LoggerFactory.getLogger(TransactionRptMgr.class);
     @Autowired
     private ConfigCategoryDao configCategoryDao;
+
+    @Autowired
+    private EMailProcessor emailProcessor;
+
+    @Autowired
+    private QueueManager queueManager;
 
     @Autowired
     private TxnDao txnDao;
@@ -173,11 +180,37 @@ public class TransactionRptMgr {
                 output.flush();
             }
             };
+
+            //email the invoice
+            if (txnHeaders.get(0).getTxhdEmailTo() != null && !txnHeaders.get(0).getTxhdEmailTo().isEmpty()) {
+                sendEmail(txnHeaders.get(0), byteArrayOutputStream, txnType);
+            }
+
             return streamingOutput;
         } catch (Exception e) {
             logger.error("Exception in exporting Transaction as pdf: ", e);
             return null;
         }
+    }
+
+    private void sendEmail(TxnHeader txnHeader, ByteArrayOutputStream attachment, String txnType) {
+        final EmailRequest emailRequest = new EmailRequest();
+        String attachmentfileName;
+        emailRequest.setProcessor(emailProcessor);
+        emailRequest.setSubject("JOMON Architectural Hardware Invoice/Sale Order");
+        emailRequest.setMessage("Dear valued customer, \r\n Please find your Invoice/Sale Order as attachment.");
+        emailRequest.setAttachFileAsStream(attachment);
+        emailRequest.setSendAsStream(true);
+        if (txnHeader != null && txnHeader.getTxhdEmailTo() != null) {
+            emailRequest.setToAddress(txnHeader.getTxhdEmailTo());
+        }
+        if (txnType.equals(IdBConstant.TXN_TYPE_INVOICE)) {
+            attachmentfileName = "Invoice" + txnHeader.getTxhdTxnNr();
+        } else {
+            attachmentfileName = "SaleOrder" + txnHeader.getTxhdTxnNr();
+        }
+        emailRequest.setAttachFileName(attachmentfileName);
+        queueManager.push(emailRequest);
     }
 
     public Resource getReportPath() {

@@ -37,6 +37,7 @@ public class TxnHeader {
     //this is used for invoice only. it contains parent sale order id
     private long parentId;
     private String txhdDlvAddress;
+    private String txhdEmailTo;
     private String txhdContactPerson;
     private String txhdContactPhone;
     private AppUser user;
@@ -345,5 +346,13 @@ public class TxnHeader {
 
     public void setTxhdPoNo(String txhdPoNo) {
         this.txhdPoNo = txhdPoNo;
+    }
+
+    public String getTxhdEmailTo() {
+        return txhdEmailTo;
+    }
+
+    public void setTxhdEmailTo(String txhdEmailTo) {
+        this.txhdEmailTo = txhdEmailTo;
     }
 }

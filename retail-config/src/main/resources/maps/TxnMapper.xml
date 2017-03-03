@@ -27,6 +27,7 @@
         <result column="TXHD_DLV_ADDRESS" property="txhdDlvAddress" />
         <result column="TXHD_PRINTED" property="txhdPrinted" />
         <result column="TXHD_PO_NR" property="txhdPoNo" />
+        <result column="TXHD_EMAIL_TO" property="txhdEmailTo" />
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="user" column="TXHD_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="txhdState" column="TXHD_STATE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -57,6 +58,7 @@
         <result column="TXHD_CONTACT_PHONE" property="txhdContactPhone" />
         <result column="TXHD_PRINTED" property="txhdPrinted" />
         <result column="TXHD_PO_NR" property="txhdPoNo" />
+        <result column="TXHD_EMAIL_TO" property="txhdEmailTo" />
         <association property="user" column="TXHD_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" />
         <association property="txhdState" column="TXHD_STATE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -146,7 +148,8 @@
         ${alias}.TXHD_CONTACT_PERSON,
         ${alias}.TXHD_CONTACT_PHONE,
         ${alias}.TXHD_PRINTED,
-        ${alias}.TXHD_PO_NR
+        ${alias}.TXHD_PO_NR,
+        ${alias}.TXHD_EMAIL_TO
 
     </sql>
 
@@ -218,7 +221,8 @@
         TXHD_DLV_ADDRESS,
         TXHD_CONTACT_PERSON,
         TXHD_CONTACT_PHONE,
-        TXHD_PO_NR
+        TXHD_PO_NR,
+        TXHD_EMAIL_TO
 
         ) VALUES (
         #{orgUnit.id},
@@ -369,6 +373,12 @@
             ,#{txhdPoNo}
         </if>
         <if test="txhdPoNo == null">
+            ,null
+        </if>
+        <if test="txhdEmailTo != null">
+            ,#{txhdEmailTo}
+        </if>
+        <if test="txhdEmailTo == null">
             ,null
         </if>
         )

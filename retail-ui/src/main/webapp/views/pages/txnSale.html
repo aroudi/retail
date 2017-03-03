@@ -194,15 +194,17 @@
 
 
                             <div class="row">
-                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
-                                <button type="button" class="btn btn-success" ng-click="createTransactionSale()" ng-show="(!isViewMode)&&(showSubmitButtom())">Submit</button>
-                                <!--button type="button" class="btn btn-success" ng-click="addPayment()" ng-show="showAddPaymentButtom()">Add Payment</button-->
-                                <!--button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT'">Save draft</button -->
-                                <button type="button" class="btn btn-success" ng-click="invoiceTransactionSale()" ng-show="(!isViewMode)&&(showInvoiceButtom())">Invoice</button>
-                                <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
-                                <!--button type="button" class="btn btn-success" ng-click="exportToPdf(exportSaleOrderToPdfUrl)">Print</button-->
-
+                                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                    <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
+                                    <button type="button" class="btn btn-success" ng-click="createTransactionSale()" ng-show="(!isViewMode)&&(showSubmitButtom())">Submit</button>
+                                    <!--button type="button" class="btn btn-success" ng-click="addPayment()" ng-show="showAddPaymentButtom()">Add Payment</button-->
+                                    <!--button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT'">Save draft</button -->
+                                    <button type="button" class="btn btn-success" ng-click="invoiceTransactionSale()" ng-show="(!isViewMode)&&(showInvoiceButtom())">Invoice</button>
+                                    <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
+                                    <!--button type="button" class="btn btn-success" ng-click="exportToPdf(exportSaleOrderToPdfUrl)">Print</button-->
+                                    <label>Send EMail:</label>
+                                    <input type="checkbox" data-ng-model="sendEmail">
+                                    <input data-ng-model="txnHeaderForm.txhdEmailTo" ng-show="sendEmail">
                             </div>
                         </form>
                     </div>

@@ -56,6 +56,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 }
             }
         }
+        $scope.sendEmail = false;
         if ($scope.isPageNew && !$scope.txnHeaderForm.temporarySaved) {
             baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){
                 if ($scope.txnType == 'quote') {
@@ -373,6 +374,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     $scope.onCustomerChange = function () {
         var mediaType;
         $scope.txnHeaderForm.txhdDlvAddress = $scope.customer.address2;
+        $scope.txnHeaderForm.txhdEmailTo = $scope.customer.email;
         if ($scope.customer.customerType.categoryCode == 'CUSTOMER_TYPE_ACCOUNT') {
             mediaType = $scope.mediaTypeAccount;
         } else {
@@ -631,6 +633,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
         $scope.txnHeaderForm.customer = $scope.customer;
 
+        //check if we need to send email.
+        if (!checkEmailIsValid()) {
+            return;
+        }
         var rowObject = $scope.txnHeaderForm;
         baseDataService.addRow(rowObject, TXN_ADD_URI).then(function(response) {
             addResponse = response.data;
@@ -917,7 +923,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         totalTransaction();
     }
     $scope.invoiceTransactionSale = function () {
-
+        if (!checkEmailIsValid()) {
+            return;
+        }
         //check if we have outstanding amount to pay
         if (maxPaymentAllowed() > 0) {
             baseDataService.displayMessage("info","Warning", "Payment is due!!!");
@@ -1101,4 +1109,15 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         $scope.closeThisDialog('button');
     }
 
+    function checkEmailIsValid() {
+        //check
+        if ($scope.sendEmail && ($scope.txnHeaderForm.txhdEmailTo == undefined || $scope.txnHeaderForm.txhdEmailTo == '')) {
+            baseDataService.displayMessage("info","Email Invalid", "Please enter email address");
+            return false ;
+        }
+        if (!$scope.sendEmail) {
+            $scope.txnHeaderForm.txhdEmailTo = '';
+        }
+        return true;
+    }
 });

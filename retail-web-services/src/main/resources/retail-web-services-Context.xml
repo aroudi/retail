@@ -38,6 +38,9 @@
     <bean id="asynchQueueManager" class="au.com.biztune.retail.util.queuemanager.QueueManager">
     </bean>
 
+    <bean id="eMailProcessor" class="au.com.biztune.retail.processor.EMailProcessor">
+    </bean>
+
     <cache:annotation-driven />
 </beans>
 

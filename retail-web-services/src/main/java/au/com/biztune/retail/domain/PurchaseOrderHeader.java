@@ -50,6 +50,7 @@ public class PurchaseOrderHeader {
     private boolean pohPrinted;
     private String pohPrjName;
     private String pohPrjCode;
+    private String pohEmailTo;
 
     /**
      * constructor.
@@ -409,5 +410,13 @@ public class PurchaseOrderHeader {
 
     public void setPohPrjCode(String pohPrjCode) {
         this.pohPrjCode = pohPrjCode;
+    }
+
+    public String getPohEmailTo() {
+        return pohEmailTo;
+    }
+
+    public void setPohEmailTo(String pohEmailTo) {
+        this.pohEmailTo = pohEmailTo;
     }
 }

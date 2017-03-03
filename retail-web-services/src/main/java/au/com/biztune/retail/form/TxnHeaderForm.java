@@ -34,6 +34,7 @@ public class TxnHeaderForm {
     private String txhdContactPhone;
     private boolean temporarySaved;
     private String txhdPoNo;
+    private String txhdEmailTo;
 
 
 
@@ -243,5 +244,13 @@ public class TxnHeaderForm {
 
     public void setTxhdPoNo(String txhdPoNo) {
         this.txhdPoNo = txhdPoNo;
+    }
+
+    public String getTxhdEmailTo() {
+        return txhdEmailTo;
+    }
+
+    public void setTxhdEmailTo(String txhdEmailTo) {
+        this.txhdEmailTo = txhdEmailTo;
     }
 }
