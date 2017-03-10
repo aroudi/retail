@@ -4,6 +4,8 @@ import au.com.biztune.retail.domain.BillOfQuantity;
 import au.com.biztune.retail.domain.Customer;
 import au.com.biztune.retail.domain.CustomerAccountDebt;
 import au.com.biztune.retail.domain.CustomerGrade;
+import au.com.biztune.retail.form.AccountDebtRptForm;
+import au.com.biztune.retail.report.CustomerStatementRptMgr;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.BillOfQuantityService;
@@ -14,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.util.List;
 
 /**
@@ -34,6 +33,9 @@ public class CustomerRest {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private CustomerStatementRptMgr customerStatementRptMgr;
 
     @Autowired
     private BillOfQuantityService billOfQuantityService;
@@ -167,5 +169,20 @@ public class CustomerRest {
     @Produces(MediaType.APPLICATION_JSON)
     public List<BillOfQuantity> getCustomerBillOfQuantityListCustomerId (@PathParam("id") long id) {
         return billOfQuantityService.getClientBillOfQuantities(id);
+    }
+
+    /**
+     * generate customer statements report.
+     * @param accountDebtRptForm accountDebtRptForm
+     * @return Stream output.
+     */
+    @Secured
+    @Path("/generateCustomerStatements")
+    @POST
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response generateCustomerStatements(AccountDebtRptForm accountDebtRptForm) {
+        final StreamingOutput streamingOutput = customerStatementRptMgr.runReport(accountDebtRptForm);
+        return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = customerStatementsRpt.pdf").build();
     }
 }

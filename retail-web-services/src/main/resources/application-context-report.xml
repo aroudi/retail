@@ -33,4 +33,10 @@
         <property name="reportPath" value="classpath:reports" />
         <property name="reportHeaderFileName" value="accountingExport" />
     </bean>
+    <bean id="CustomerStatementRptMgr" class="au.com.biztune.retail.report.CustomerStatementRptMgr">
+        <property name="reportPath" value="classpath:reports" />
+        <property name="reportHeaderFileName" value="customerStatementHeader" />
+        <property name="reportLineFileName" value="customerStatementLine" />
+        <property name="reportLineDetailFileName" value="customerStatementLinePayments" />
+    </bean>
 </beans>

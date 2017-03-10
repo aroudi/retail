@@ -245,6 +245,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/debtorPayment.html',
             access: "user"
         })
+        .state('dashboard.customerStatement',{
+            url:'/customerStatement',
+            controller: 'customerStatementCtrl',
+            templateUrl:'views/pages/customerStatement.html',
+            access: "user"
+        })
         .state('dashboard.addFloat',{
             url:'/addFloat',
             controller: 'addFloatCtrl',

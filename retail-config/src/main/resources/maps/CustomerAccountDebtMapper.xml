@@ -17,6 +17,33 @@
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
     </resultMap>
 
+    <resultMap id="txnAccPaymentMap" type="TxnAccPayment" >
+        <id column="TAP_ID" property="id" />
+        <result column="TXHD_ID" property="txhdId" />
+        <result column="CAD_ID" property="cadId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="TAP_PAYMENT_DATE" property="tapPaymentDate" />
+        <result column="TAP_AMOUNT_PAID" property="tapAmountPaid" />
+        <result column="TXHD_TXN_NR" property="txhdTxnNr" />
+    </resultMap>
+
+
+    <resultMap id="customerAccountDebtRptMap" type="CustomerAccountDebt" >
+        <id column="CAD_ID" property="cadId" />
+        <result column="TXHD_ID" property="txhdId" />
+        <result column="TXHD_TXN_NR" property="txhdTxnNr" />
+        <result column="CAD_AMOUNT_DEBT" property="cadAmountDebt" />
+        <result column="BALANCE" property="balance" />
+        <result column="CAD_START_DATE" property="cadStartDate" />
+        <result column="CAD_DUE_DATE" property="cadDueDate" />
+        <result column="CAD_PAYMENT_DATE" property="cadPaymentDate" />
+        <result column="CAD_PAIED" property="cadPaid" />
+        <result column="TAX_AMOUNT" property="taxAmount" />
+        <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
+        <collection property="paymentList" javaType="ArrayList" column="CAD_ID" ofType="TxnAccPayment" select="getTxnAccPaymentByCadId"/>
+    </resultMap>
+
     <sql id="customerAccountDebtColumns">
         ${alias}.CAD_ID,
         ${alias}.TXHD_ID,
@@ -38,6 +65,16 @@
         ${alias}.TAP_AMOUNT_PAID
     </sql>
 
+
+    <sql id="txnAccPaymentColumns">
+        ${alias}.TAP_ID,
+        ${alias}.TXHD_ID,
+        ${alias}.CAD_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.TAP_PAYMENT_DATE,
+        ${alias}.TAP_AMOUNT_PAID
+    </sql>
 
 
     <insert id="insert" parameterType="CustomerAccountDebt" useGeneratedKeys="true" keyProperty="cadId" keyColumn="CAD_ID">
@@ -157,6 +194,42 @@
         FROM
         CUSTOMER_ACCOUNT_DEBT cad
         where CAD_PAIED = 0 and CUSTOMER_ID=#{param1} and TXHD_ID=#{param2}
+    </select>
+
+    <select id="getTxnAccPaymentByCadId" resultMap="txnAccPaymentMap" >
+        SELECT
+        <include refid="txnAccPaymentColumns"><property name="alias" value="tap"/></include>,
+        cad.TXHD_TXN_NR
+        FROM
+        TXN_ACC_PAYMENT tap inner join CUSTOMER_ACCOUNT_DEBT cad on (tap.CAD_ID = cad.CAD_ID)
+        where CAD_ID = #{value}
+    </select>
+
+
+    <select id="customerAccountPaymentReportMultiCustomer" resultMap="customerAccountDebtRptMap" >
+        SELECT
+        <include refid="customerAccountDebtColumns"><property name="alias" value="cad"/></include>,
+        inv.TXHD_VALUE_TAX TAX_AMOUNT
+        FROM
+        CUSTOMER_ACCOUNT_DEBT cad INNER JOIN TXN_HEADER inv on (cad.TXHD_ID = inv.TXHD_ID)
+        where CAD_PAIED = 0 and <![CDATA[cad.CAD_START_DATE <= #{param1}]]>
+        <if test="param2 != null">
+            AND cad.CUSTOMER_ID in
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator="," close=")">
+                #{item.id}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="customerAccountPaymentReportPerCustomer" resultMap="customerAccountDebtRptMap" >
+        SELECT
+        <include refid="customerAccountDebtColumns"><property name="alias" value="cad"/></include>,
+        inv.TXHD_VALUE_TAX TAX_AMOUNT
+        FROM
+        CUSTOMER_ACCOUNT_DEBT cad INNER JOIN TXN_HEADER inv on (cad.TXHD_ID = inv.TXHD_ID)
+        where CAD_PAIED = 0 and <![CDATA[cad.CAD_START_DATE <= #{param1}]]>
+        AND cad.CUSTOMER_ID = #{param2}
     </select>
 
 </mapper>

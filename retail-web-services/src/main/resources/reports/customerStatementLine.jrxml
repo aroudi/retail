@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchase_line" pageWidth="500" pageHeight="720" columnWidth="500" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="3877cb5b-9ab6-4d4d-85f1-104db4a4e5a0">
+	<property name="ireport.zoom" value="1.4641000000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
+	</parameter>
+	<field name="customer" class="au.com.biztune.retail.domain.Customer">
+		<fieldDescription><![CDATA[customer]]></fieldDescription>
+	</field>
+	<field name="txhdTxnNr" class="java.lang.String"/>
+	<field name="cadAmountDebt" class="java.lang.Double"/>
+	<field name="balance" class="java.lang.Double"/>
+	<field name="taxAmount" class="java.lang.Double"/>
+	<field name="paymentList" class="java.util.List"/>
+	<field name="cadStartDate" class="java.sql.Timestamp"/>
+	<field name="cadDueDate" class="java.sql.Timestamp"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="4" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="24" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="107" height="20" uuid="20865499-025c-41af-a732-334f8f6896e2"/>
+				<textElement>
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="110" y="0" width="98" height="20" uuid="28b2fa4b-b751-4742-9fd5-da5829bdfbe0"/>
+				<textElement>
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Invoice/Credit no.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="208" y="0" width="55" height="20" uuid="27de64bb-47e4-495b-bd02-6018465554ca"/>
+				<textElement>
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reference]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="331" y="0" width="77" height="20" uuid="5829bccb-db88-45fe-af29-b3f4d9fe9968"/>
+				<textElement>
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Balance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="409" y="0" width="84" height="20" uuid="50285ddb-bd42-48a6-940f-738486f3d361"/>
+				<textElement>
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Due Date]]></text>
+			</staticText>
+			<line>
+				<reportElement x="1" y="21" width="492" height="1" uuid="b22075e6-cc95-4c50-9c07-5c4c6bc11917"/>
+			</line>
+			<staticText>
+				<reportElement x="263" y="0" width="68" height="20" uuid="bcf6ebcb-139a-4f95-a5c9-32302fb218f7"/>
+				<textElement>
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tax Amount]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="58" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="1" y="0" width="106" height="17" isPrintWhenDetailOverflows="true" uuid="f5269f51-1fd9-42e1-878d-33c53672c29f"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cadStartDate}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="110" y="0" width="98" height="17" isPrintWhenDetailOverflows="true" uuid="0f735720-3366-4323-a332-299495c592cc"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{txhdTxnNr}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="208" y="0" width="55" height="17" uuid="0c173e48-c969-48f4-94b3-7016f809dadd"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<text><![CDATA[Invoice]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="263" y="0" width="68" height="17" isPrintWhenDetailOverflows="true" uuid="e01959cd-5e26-4bab-8532-a3df12c0b485"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{taxAmount})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="331" y="0" width="77" height="17" isPrintWhenDetailOverflows="true" uuid="77bce2a6-a1b6-4d00-870b-1e8ee74fca9a"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{balance})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="409" y="0" width="84" height="17" isPrintWhenDetailOverflows="true" uuid="feb26e79-577c-43e9-9450-3d911c923577"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{cadDueDate})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="263" y="38" width="146" height="1" uuid="92fa7605-5204-4efb-9416-ee0310e10bc6"/>
+			</line>
+			<staticText>
+				<reportElement x="263" y="42" width="38" height="12" uuid="9c18815c-1a5f-4e81-80eb-865c145837fb"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<text><![CDATA[Balance:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="311" y="39" width="97" height="17" isPrintWhenDetailOverflows="true" uuid="f62f466e-f4de-438e-9b50-877b69ff1a90"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{balance})]]></textFieldExpression>
+			</textField>
+
+			<subreport>
+				<reportElement x="1" y="17" width="492" height="20" uuid="f4d77d4f-1451-438a-9bc7-3cd8748a8543"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
+                      ($F{paymentList})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "customerStatementLinePayments.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

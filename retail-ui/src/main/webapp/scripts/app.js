@@ -57,6 +57,7 @@ var service_uri = {
     'CUSTOMER_GET_URI' : 'customer/get',
     'CUSTOMERGRADE_ALL_URI' : 'customer/allGrades',
     'CUSTOMER_GET_ACCOUNT_DEBT_URI' : 'customer/getAccountDebt/',
+    'CUSTOMER_STATEMENTS_URI' : 'customer/generateCustomerStatements',
     'CUSTOMER_GET_ACCOUNT_PAYMENT_URI' : 'customer/getAccountPayment/',
     'CUSTOMER_ALL_ACCOUNT_DEBT_URI' : 'customer/getAccountDebt/all',
     'CUSTOMER_ALL_INVOICE_URI' : 'transaction/invoice/customer/',

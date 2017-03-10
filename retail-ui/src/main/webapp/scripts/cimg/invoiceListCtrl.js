@@ -3,6 +3,19 @@
  */
 cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialog, baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, TXN_TYPE_INVOICE, TXN_TYPE_REFUND, INVOICE_SEARCH_URI, INVOICE_SEARCH_PAGING_URI, CUSTOMER_ALL_URI) {
 
+    $scope.showRefNo = function(row) {
+        if (row.txhdOrigTxnNr == undefined || row.txhdOrigTxnNr == null) {
+            return '';
+        }
+        if (row.invoiceTxnType.categoryCode === 'TXN_TYPE_INVOICE') {
+            return 'S.O: ' + row.txhdOrigTxnNr;
+        } else {
+            return 'Inv: ' + row.txhdOrigTxnNr;
+        }
+    }
+
+    var txnNumberTemplate = '<div>{{grid.appScope.showRefNo(row.entity)}}</div>';
+
     $scope.searchForm = {};
     $scope.searchForm.clientId = -1;
     $scope.includeInvoice = true;
@@ -50,9 +63,19 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
             {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
             {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'15%'},
-            {field:'txhdOrigTxnNr', displayName:'Sale Order No',enableCellEdit:false, width:'12.5%'},
-            {field:'txhdTxnNr', displayName:'No',enableCellEdit:false, width:'12.5%'},
-            {field:'invoiceTxnType.displayName', displayName:'Type',enableCellEdit:false, width:'10%'},
+            {field:'txhdOrigTxnNr', cellTemplate: txnNumberTemplate,displayName:'Ref No',enableCellEdit:false, width:'10%'},
+            {field:'txhdTxnNr', displayName:'Invoice/Refund No',enableCellEdit:false, width:'15%'},
+            {field:'invoiceTxnType.displayName', displayName:'Type',enableCellEdit:false, width:'10%',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    if (grid.getCellValue(row, col) === 'INVOICE') {
+                        return 'green';
+                    } else if (grid.getCellValue(row, col) === 'REFUND') {
+                        return 'red'
+                    } else{
+                        return 'amber'
+                    }
+                }
+            },
             {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
             {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'},
         ]

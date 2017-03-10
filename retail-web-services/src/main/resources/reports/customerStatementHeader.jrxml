@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
+	<property name="ireport.zoom" value="1.3310000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="344"/>
+	<subDataset name="Table Dataset 1" uuid="34d645cf-a029-4a91-b796-5f67f4c09de0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
+	</parameter>
+	<field name="customer" class="au.com.biztune.retail.domain.Customer">
+		<fieldDescription><![CDATA[customer]]></fieldDescription>
+	</field>
+	<field name="customerAccountDebtList" class="java.util.List"/>
+	<variable name="Today" class="java.lang.String">
+		<variableExpression><![CDATA[(new SimpleDateFormat("yyyy/MM/dd")).format(new Date())]]></variableExpression>
+	</variable>
+	<variable name="V_CURRENT_PAGE_NUMBER" class="java.lang.Integer" resetType="Page">
+		<variableExpression><![CDATA[1]]></variableExpression>
+		<initialValueExpression><![CDATA[$V{PAGE_NUMBER}]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="216" splitType="Stretch">
+			<elementGroup>
+				<staticText>
+					<reportElement x="8" y="38" width="222" height="17" uuid="fabb39e3-fbd3-4eef-b2cb-1a53b930918d"/>
+					<textElement>
+						<font fontName="Calibri"/>
+					</textElement>
+					<text><![CDATA[Phone: +61 2  9747 0088     Fax: +61 2 9747 4488]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="8" y="55" width="179" height="15" uuid="32e3079d-2ef2-4432-b404-cdea73be7b2a"/>
+					<textElement>
+						<font fontName="Calibri" isBold="false"/>
+					</textElement>
+					<text><![CDATA[ABN : 92 084 941 266]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="8" y="23" width="217" height="15" uuid="1e14c108-956d-4d59-9f72-144dbe9b2d33"/>
+					<textElement>
+						<font fontName="Calibri"/>
+					</textElement>
+					<text><![CDATA[32 Spencer St, Five Dock NSW 2046 AUSTRALIA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="8" y="8" width="203" height="15" uuid="b568ab6b-9d22-41b1-8c8b-51162e99edec"/>
+					<textElement>
+						<font fontName="Calibri" size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[JOMON ARCHITECTURAL HARDWARE PTY LTD]]></text>
+				</staticText>
+			</elementGroup>
+			<rectangle>
+				<reportElement x="5" y="118" width="544" height="91" uuid="d2589724-2990-417b-8846-0a4247c8db8c"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</rectangle>
+			<elementGroup>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="15" y="125" width="296" height="20" uuid="c6a17c75-702a-440d-922c-66d1ad3a5d95"/>
+					<textElement>
+						<font fontName="Calibri" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{customer}.getCompanyName()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="15" y="146" width="296" height="60" uuid="6d8c9d4f-6b3e-44ff-a1fd-b37382661c7d"/>
+					<textFieldExpression><![CDATA[$F{customer}.getAddress()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="328" y="126" width="67" height="20" uuid="cadf6c3b-5b44-4fb7-85f5-861b5335536f"/>
+					<textElement>
+						<font fontName="Calibri" size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Customer no.]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="398" y="127" width="132" height="18" uuid="c7629489-ee70-43a6-8d66-12f5cbd3b5f6"/>
+					<textFieldExpression><![CDATA[$F{customer}.getCode()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="429" y="70" width="72" height="25" uuid="ec395cd0-a6da-4826-8ab5-79fb5ddf3165"/>
+					<textElement>
+						<font fontName="Calibri" size="16" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Statement]]></text>
+				</staticText>
+			</elementGroup>
+			<image>
+				<reportElement x="385" y="2" width="170" height="65" uuid="5cc0087b-7f21-4054-b8d6-3090a6dca5ec"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "logo.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="325" y="95" width="104" height="20" uuid="fbc303c1-6bdc-4d70-8cbf-35c66e3da047"/>
+				<textElement>
+					<font fontName="Calibri"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Today}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="269" y="95" width="55" height="20" uuid="31f3cbf7-ff2b-488c-b282-6634d0cf9f02"/>
+				<textElement>
+					<font fontName="Calibri" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="458" y="95" width="91" height="20" uuid="606c5968-3710-411f-b660-200429ccfcab"/>
+				<textElement>
+					<font fontName="Calibri"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="432" y="95" width="24" height="20" uuid="772efd70-060e-4bf3-a2dc-a665b59f7ee3"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri"/>
+				</textElement>
+				<text><![CDATA[Page:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="95" width="55" height="20" uuid="7fcff342-6596-4752-b523-df3b90efa25a"/>
+				<textElement>
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUSTOMER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="328" y="146" width="67" height="20" uuid="e8891d38-3538-423f-b965-f91b82e5eadb"/>
+				<textElement>
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Term :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="328" y="166" width="67" height="20" uuid="322749ae-499d-4833-8166-7ce20f53525e"/>
+				<textElement>
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BSB :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="328" y="186" width="67" height="20" uuid="3fd64c2b-50ad-4910-9d59-d23a8e6e9be7"/>
+				<textElement>
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Acct No :]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="141" splitType="Stretch">
+			<subreport>
+				<reportElement x="11" y="12" width="536" height="126" uuid="3141b3cf-f686-4318-a72a-aa51bccee833"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
+                      ($F{customerAccountDebtList})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "customerStatementLine.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="2" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="148" splitType="Stretch">
+			<staticText>
+				<reportElement x="5" y="0" width="168" height="20" uuid="59e5d15f-02d2-4e27-ac8d-f95cbe60c6f0"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Please detach and return with payment]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="5" y="20" width="104" height="20" uuid="adb2d718-1660-4d34-9d35-5c784f32686c"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Today}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-332" y="-108" width="168" height="20" uuid="ce534c4e-5024-44b7-9fa0-663180c96b61"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Please detach and return with payment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="40" width="67" height="20" uuid="f0e6c58c-c815-4d30-8ba5-ef49366c0a24"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[Customer Acc.ID:  ]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="5" y="63" width="222" height="40" uuid="b9add6ce-b758-49b5-815c-91649247dc47"/>
+				<textFieldExpression><![CDATA[$F{customer}.getAddress()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-332" y="-88" width="104" height="20" uuid="79bb955e-490a-41b9-9381-38d2d126c575"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Today}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="269" y="83" width="100" height="20" uuid="8287933c-4a4d-47ea-b1ba-7bf2c87b5caa"/>
+				<text><![CDATA[Outstanding Total]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="19" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,6 +1,7 @@
 package au.com.biztune.retail.domain;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * Created by arash on 12/09/2016.
@@ -19,8 +20,10 @@ public class CustomerAccountDebt {
     private boolean cadPaid;
     private double balance;
     private double paying;
+    private double taxAmount;
     private long orguId;
     private long storeId;
+    private List<TxnAccPayment> paymentList;
     //the wrapping transaction number for account payment
     private long txnAccPayId;
 
@@ -142,5 +145,21 @@ public class CustomerAccountDebt {
 
     public void setTxnAccPayId(long txnAccPayId) {
         this.txnAccPayId = txnAccPayId;
+    }
+
+    public double getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(double taxAmount) {
+        this.taxAmount = taxAmount;
+    }
+
+    public List<TxnAccPayment> getPaymentList() {
+        return paymentList;
+    }
+
+    public void setPaymentList(List<TxnAccPayment> paymentList) {
+        this.paymentList = paymentList;
     }
 }

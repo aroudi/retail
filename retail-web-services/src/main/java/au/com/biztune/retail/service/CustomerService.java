@@ -3,8 +3,10 @@ package au.com.biztune.retail.service;
 import au.com.biztune.retail.domain.Customer;
 import au.com.biztune.retail.domain.CustomerAccountDebt;
 import au.com.biztune.retail.domain.CustomerGrade;
+import au.com.biztune.retail.form.AccountDebtRptForm;
 import au.com.biztune.retail.response.CommonResponse;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -62,4 +64,20 @@ public interface CustomerService {
      * @return List of CustomerAccountDebt
      */
     List<CustomerAccountDebt> getCustomerAccountPaymentPerCustomerId(long customerId);
+
+    /**
+     * get customer account debt report.
+     * @param accountDebtRptForm accountDebtRptForm
+     * @return List of customer account debt.
+     */
+    List<CustomerAccountDebt> customerAccountDebtReportForMultiCustomer(AccountDebtRptForm accountDebtRptForm);
+
+    /**
+     * get customer account debt report per one customer.
+     * @param toDate toDate
+     * @param customerId customerId
+     * @return List of customer account debt.
+     */
+    List<CustomerAccountDebt> customerAccountDebtReportForOneCustomer(Timestamp toDate, long customerId);
+
 }

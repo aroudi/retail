@@ -1,7 +1,9 @@
 package au.com.biztune.retail.dao;
 
+import au.com.biztune.retail.domain.Customer;
 import au.com.biztune.retail.domain.CustomerAccountDebt;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -56,4 +58,19 @@ public interface CustomerAccountDebtDao {
      */
     List<CustomerAccountDebt> getCustomerAccountPaymentPerCustomerId (long customerId);
 
+    /**
+     * get customer account debt report by date and customer/for multiple customer.
+     * @param toDate toDate
+     * @param customerList customerList
+     * @return CustomerAccountDebt list.
+     */
+    List<CustomerAccountDebt> customerAccountPaymentReportMultiCustomer(Timestamp toDate, List<Customer> customerList);
+
+    /**
+     * get customer account debt report by date and customer - for only one customer.
+     * @param toDate toDate
+     * @param customerId customerId
+     * @return list of account debt for customer.
+     */
+    List<CustomerAccountDebt> customerAccountPaymentReportPerCustomer(Timestamp toDate, long customerId);
 }

@@ -2,13 +2,16 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.*;
 import au.com.biztune.retail.domain.*;
+import au.com.biztune.retail.form.AccountDebtRptForm;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.util.DateUtil;
 import au.com.biztune.retail.util.IdBConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -188,6 +191,38 @@ public class CustomerServiceImpl implements CustomerService {
             return null;
         }
     }
+
+    /**
+     * get customer account debt report.
+     * @param accountDebtRptForm accountDebtRptForm
+     * @return List of customer account debt.
+     */
+    public List<CustomerAccountDebt> customerAccountDebtReportForMultiCustomer(AccountDebtRptForm accountDebtRptForm) {
+        try {
+            Timestamp dateTo = null;
+            dateTo = DateUtil.stringToDate(accountDebtRptForm.getToDate(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
+            return customerAccountDebtDao.customerAccountPaymentReportMultiCustomer(dateTo, accountDebtRptForm.getCustomerList());
+        } catch (Exception e) {
+            logger.error("Error in getting customer account debt list: ", e);
+            return null;
+        }
+    }
+
+    /**
+     * get customer account debt report per one customer.
+     * @param toDate toDate
+     * @param customerId customerId
+     * @return List of customer account debt.
+     */
+    public List<CustomerAccountDebt> customerAccountDebtReportForOneCustomer(Timestamp toDate, long customerId) {
+        try {
+            return customerAccountDebtDao.customerAccountPaymentReportPerCustomer(toDate, customerId);
+        } catch (Exception e) {
+            logger.error("Error in getting customer account debt list: ", e);
+            return null;
+        }
+    }
+
     /**
      * get Customer Account Payment list per customer Id.
      * @param customerId customerId
