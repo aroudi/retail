@@ -30,10 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
 
@@ -78,13 +75,18 @@ public class CustomerStatementRptMgr {
                 if (customer == null) {
                     continue;
                 }
+                dateTo = DateUtil.stringToDate(accountDebtRptForm.getToDate(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
+                if (dateTo == null) {
+                    dateTo = new Timestamp(new Date().getTime());
+                }
                 customerAccountDebtList = customerAccountDebtDao.customerAccountPaymentReportPerCustomer(dateTo, customer.getId());
                 if (customerAccountDebtList == null) {
                     continue;
                 }
                 customerStatementReport = new CustomerStatementReport();
                 customerStatementReport.setCustomer(customer);
-                dateTo = DateUtil.stringToDate(accountDebtRptForm.getToDate(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
+                logger.info("accountDebtRptForm.getToDate() = " + accountDebtRptForm.getToDate());
+                logger.info("dateTo = " + dateTo);
                 customerStatementReport.setCustomerAccountDebtList(customerAccountDebtList);
                 reportList.add(customerStatementReport);
             }

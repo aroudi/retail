@@ -57,13 +57,13 @@
         ${alias}.CUSTOMER_ID
     </sql>
 
-    <sql id="txnAccPaymentColumns">
+    <!--sql id="txnAccPaymentColumns">
         ${alias}.TAP_ID,
         ${alias}.TXHD_ID,
         ${alias}.CAD_ID,
         ${alias}.TAP_PAYMENT_DATE,
         ${alias}.TAP_AMOUNT_PAID
-    </sql>
+    </sql-->
 
 
     <sql id="txnAccPaymentColumns">
