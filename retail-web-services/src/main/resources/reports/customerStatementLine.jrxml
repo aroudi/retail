@@ -27,121 +27,135 @@
 	</pageHeader>
 	<columnHeader>
 		<band height="24" splitType="Stretch">
+			<rectangle>
+				<reportElement x="1" y="-4" width="495" height="26" forecolor="#FFFFFF" backcolor="#CCCCCC" uuid="67addd5d-3780-4022-9329-d963b3a8fe0b"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="0" y="0" width="107" height="20" uuid="20865499-025c-41af-a732-334f8f6896e2"/>
+				<reportElement x="3" y="0" width="107" height="20" uuid="20865499-025c-41af-a732-334f8f6896e2"/>
 				<textElement>
-					<font fontName="Calibri" size="10" isBold="true"/>
+					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="110" y="0" width="98" height="20" uuid="28b2fa4b-b751-4742-9fd5-da5829bdfbe0"/>
+				<reportElement x="108" y="0" width="98" height="20" uuid="28b2fa4b-b751-4742-9fd5-da5829bdfbe0"/>
 				<textElement>
-					<font fontName="Calibri" size="10" isBold="true"/>
+					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Invoice/Credit no.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="208" y="0" width="55" height="20" uuid="27de64bb-47e4-495b-bd02-6018465554ca"/>
+				<reportElement x="209" y="0" width="55" height="20" uuid="27de64bb-47e4-495b-bd02-6018465554ca"/>
 				<textElement>
-					<font fontName="Calibri" size="10" isBold="true"/>
+					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Reference]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="331" y="0" width="77" height="20" uuid="5829bccb-db88-45fe-af29-b3f4d9fe9968"/>
+				<reportElement x="336" y="0" width="76" height="20" uuid="5829bccb-db88-45fe-af29-b3f4d9fe9968"/>
 				<textElement>
-					<font fontName="Calibri" size="10" isBold="true"/>
+					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Balance]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="409" y="0" width="84" height="20" uuid="50285ddb-bd42-48a6-940f-738486f3d361"/>
+				<reportElement x="421" y="0" width="75" height="20" uuid="50285ddb-bd42-48a6-940f-738486f3d361"/>
 				<textElement>
-					<font fontName="Calibri" size="10" isBold="true"/>
+					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Due Date]]></text>
 			</staticText>
 			<line>
-				<reportElement x="1" y="21" width="492" height="1" uuid="b22075e6-cc95-4c50-9c07-5c4c6bc11917"/>
+				<reportElement x="1" y="21" width="494" height="1" uuid="b22075e6-cc95-4c50-9c07-5c4c6bc11917"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement x="263" y="0" width="68" height="20" uuid="bcf6ebcb-139a-4f95-a5c9-32302fb218f7"/>
+				<reportElement x="269" y="0" width="68" height="20" uuid="bcf6ebcb-139a-4f95-a5c9-32302fb218f7"/>
 				<textElement>
-					<font fontName="Calibri" size="10" isBold="true"/>
+					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tax Amount]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="58" splitType="Stretch">
+		<band height="81" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="1" y="0" width="106" height="17" isPrintWhenDetailOverflows="true" uuid="f5269f51-1fd9-42e1-878d-33c53672c29f"/>
+				<reportElement x="3" y="5" width="106" height="17" isPrintWhenDetailOverflows="true" uuid="f5269f51-1fd9-42e1-878d-33c53672c29f"/>
 				<textElement>
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cadStartDate}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="110" y="0" width="98" height="17" isPrintWhenDetailOverflows="true" uuid="0f735720-3366-4323-a332-299495c592cc"/>
+				<reportElement x="109" y="5" width="98" height="17" isPrintWhenDetailOverflows="true" uuid="0f735720-3366-4323-a332-299495c592cc"/>
 				<textElement>
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{txhdTxnNr}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="208" y="0" width="55" height="17" uuid="0c173e48-c969-48f4-94b3-7016f809dadd"/>
+				<reportElement x="209" y="5" width="55" height="17" uuid="0c173e48-c969-48f4-94b3-7016f809dadd"/>
 				<textElement>
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<text><![CDATA[Invoice]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="263" y="0" width="68" height="17" isPrintWhenDetailOverflows="true" uuid="e01959cd-5e26-4bab-8532-a3df12c0b485"/>
+				<reportElement x="269" y="5" width="56" height="17" isPrintWhenDetailOverflows="true" uuid="e01959cd-5e26-4bab-8532-a3df12c0b485"/>
 				<textElement>
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{taxAmount})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="331" y="0" width="77" height="17" isPrintWhenDetailOverflows="true" uuid="77bce2a6-a1b6-4d00-870b-1e8ee74fca9a"/>
+				<reportElement x="337" y="5" width="75" height="17" isPrintWhenDetailOverflows="true" uuid="77bce2a6-a1b6-4d00-870b-1e8ee74fca9a"/>
+				<textElement textAlignment="Left">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{cadAmountDebt})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="421" y="5" width="75" height="17" isPrintWhenDetailOverflows="true" uuid="feb26e79-577c-43e9-9450-3d911c923577"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cadDueDate}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement stretchType="RelativeToBandHeight" x="1" y="24" width="492" height="21" uuid="f4d77d4f-1451-438a-9bc7-3cd8748a8543"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
+                      ($F{paymentList})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "customerStatementLinePayments.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement positionType="Float" x="286" y="49" width="135" height="1" uuid="92fa7605-5204-4efb-9416-ee0310e10bc6"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="336" y="50" width="76" height="17" isPrintWhenDetailOverflows="true" uuid="f62f466e-f4de-438e-9b50-877b69ff1a90"/>
 				<textElement>
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{balance})]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="409" y="0" width="84" height="17" isPrintWhenDetailOverflows="true" uuid="feb26e79-577c-43e9-9450-3d911c923577"/>
-				<textElement>
-					<font fontName="Arial" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{cadDueDate})]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement x="263" y="38" width="146" height="1" uuid="92fa7605-5204-4efb-9416-ee0310e10bc6"/>
-			</line>
 			<staticText>
-				<reportElement x="263" y="42" width="38" height="12" uuid="9c18815c-1a5f-4e81-80eb-865c145837fb"/>
+				<reportElement positionType="Float" x="287" y="50" width="38" height="12" uuid="9c18815c-1a5f-4e81-80eb-865c145837fb"/>
 				<textElement>
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<text><![CDATA[Balance:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="311" y="39" width="97" height="17" isPrintWhenDetailOverflows="true" uuid="f62f466e-f4de-438e-9b50-877b69ff1a90"/>
-				<textElement>
-					<font fontName="Arial" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{balance})]]></textFieldExpression>
-			</textField>
-
-			<subreport>
-				<reportElement x="1" y="17" width="492" height="20" uuid="f4d77d4f-1451-438a-9bc7-3cd8748a8543"/>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
-                      ($F{paymentList})]]></dataSourceExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "customerStatementLinePayments.jasper"]]></subreportExpression>
-			</subreport>
+			<line>
+				<reportElement positionType="Float" x="3" y="71" width="418" height="1" uuid="8bd3bf9e-e1c5-42c7-99fe-9737a4d1fe78"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
 		</band>
 	</detail>
 	<columnFooter>

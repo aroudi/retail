@@ -73,4 +73,12 @@ public interface CustomerAccountDebtDao {
      * @return list of account debt for customer.
      */
     List<CustomerAccountDebt> customerAccountPaymentReportPerCustomer(Timestamp toDate, long customerId);
+
+    /**
+     * get customer debt balance per customer id and date.
+     * @param toDate toDate
+     * @param customerId customerId
+     * @return balance
+     */
+    double customerAccountBalancePerCustomerAndDate(Timestamp toDate, long customerId);
 }

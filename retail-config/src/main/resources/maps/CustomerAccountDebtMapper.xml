@@ -202,7 +202,7 @@
         cad.TXHD_TXN_NR
         FROM
         TXN_ACC_PAYMENT tap inner join CUSTOMER_ACCOUNT_DEBT cad on (tap.CAD_ID = cad.CAD_ID)
-        where CAD_ID = #{value}
+        where tap.CAD_ID = #{value}
     </select>
 
 
@@ -232,4 +232,12 @@
         AND cad.CUSTOMER_ID = #{param2}
     </select>
 
+    <select id="customerAccountBalancePerCustomerAndDate" resultType="java.lang.Double" >
+        SELECT
+          SUM(cad.BALANCE)
+        FROM
+        CUSTOMER_ACCOUNT_DEBT cad INNER JOIN TXN_HEADER inv on (cad.TXHD_ID = inv.TXHD_ID)
+        where CAD_PAIED = 0 and <![CDATA[cad.CAD_START_DATE <= #{param1}]]>
+        AND cad.CUSTOMER_ID = #{param2}
+    </select>
 </mapper>

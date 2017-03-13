@@ -11,10 +11,11 @@ import java.util.List;
 public class CustomerStatementReport {
     private Customer customer;
     private List<CustomerAccountDebt> customerAccountDebtList;
-
+    private double totalDebtBalance;
     public Customer getCustomer() {
         return customer;
     }
+
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
@@ -26,5 +27,13 @@ public class CustomerStatementReport {
 
     public void setCustomerAccountDebtList(List<CustomerAccountDebt> customerAccountDebtList) {
         this.customerAccountDebtList = customerAccountDebtList;
+    }
+
+    public double getTotalDebtBalance() {
+        return totalDebtBalance;
+    }
+
+    public void setTotalDebtBalance(double totalDebtBalance) {
+        this.totalDebtBalance = totalDebtBalance;
     }
 }

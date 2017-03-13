@@ -5,7 +5,7 @@
 	<property name="ireport.y" value="0"/>
 	<field name="txhdTxnNr" class="java.lang.String"/>
 	<field name="tapPaymentDate" class="java.sql.Timestamp"/>
-	<field name="tapAmountPaid" class="java.sql.Timestamp"/>
+	<field name="tapAmountPaid" class="java.lang.Double"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -19,7 +19,7 @@
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="18" splitType="Stretch">
+		<band height="17" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="1" y="0" width="106" height="17" isPrintWhenDetailOverflows="true" uuid="f5269f51-1fd9-42e1-878d-33c53672c29f"/>
 				<textElement>
@@ -28,35 +28,28 @@
 				<textFieldExpression><![CDATA[$F{tapPaymentDate}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="195" y="0" width="123" height="17" isPrintWhenDetailOverflows="true" uuid="0f735720-3366-4323-a332-299495c592cc"/>
+				<reportElement x="176" y="0" width="88" height="17" isPrintWhenDetailOverflows="true" uuid="0f735720-3366-4323-a332-299495c592cc"/>
 				<textElement>
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{txhdTxnNr}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="391" y="0" width="11" height="17" uuid="0c173e48-c969-48f4-94b3-7016f809dadd"/>
+				<reportElement x="415" y="0" width="11" height="17" uuid="0c173e48-c969-48f4-94b3-7016f809dadd"/>
 				<textElement>
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<text><![CDATA[Cr]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="331" y="0" width="60" height="17" isPrintWhenDetailOverflows="true" uuid="77bce2a6-a1b6-4d00-870b-1e8ee74fca9a"/>
-				<textElement>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement x="338" y="0" width="73" height="17" isPrintWhenDetailOverflows="true" uuid="77bce2a6-a1b6-4d00-870b-1e8ee74fca9a"/>
+				<textElement textAlignment="Right">
 					<font fontName="Arial" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{balance})]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="409" y="0" width="91" height="17" isPrintWhenDetailOverflows="true" uuid="feb26e79-577c-43e9-9450-3d911c923577"/>
-				<textElement>
-					<font fontName="Arial" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{cadDueDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{tapAmountPaid})]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="107" y="0" width="88" height="17" uuid="8a3fc4d6-deea-48cc-ac92-589c1d429bf9"/>
+				<reportElement x="107" y="0" width="69" height="17" uuid="8a3fc4d6-deea-48cc-ac92-589c1d429bf9"/>
 				<textElement>
 					<font fontName="Arial" size="9"/>
 				</textElement>

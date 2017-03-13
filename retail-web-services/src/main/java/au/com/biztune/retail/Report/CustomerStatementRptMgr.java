@@ -63,12 +63,14 @@ public class CustomerStatementRptMgr {
      */
     public StreamingOutput runReport(AccountDebtRptForm accountDebtRptForm) {
         try {
+            double debtBalance = 0.00;
             Timestamp dateTo = null;
             final List<CustomerStatementReport> reportList = new ArrayList<CustomerStatementReport>();;
             List<CustomerAccountDebt> customerAccountDebtList = null;
             if (accountDebtRptForm == null || accountDebtRptForm.getCustomerList() == null) {
                 return null;
             }
+
             CustomerStatementReport customerStatementReport = null;
             for (Customer customer : accountDebtRptForm.getCustomerList()) {
                 //execute report for each customer.
@@ -83,8 +85,11 @@ public class CustomerStatementRptMgr {
                 if (customerAccountDebtList == null) {
                     continue;
                 }
+                debtBalance = customerAccountDebtDao.customerAccountBalancePerCustomerAndDate(dateTo, customer.getId());
+
                 customerStatementReport = new CustomerStatementReport();
                 customerStatementReport.setCustomer(customer);
+                customerStatementReport.setTotalDebtBalance(debtBalance);
                 logger.info("accountDebtRptForm.getToDate() = " + accountDebtRptForm.getToDate());
                 logger.info("dateTo = " + dateTo);
                 customerStatementReport.setCustomerAccountDebtList(customerAccountDebtList);
@@ -92,7 +97,7 @@ public class CustomerStatementRptMgr {
             }
             return createTransactionPdfStream(reportList);
         } catch (Exception e) {
-            logger.error("Exception in returning transaction header");
+            logger.error("Exception in returning transaction header", e);
             return null;
         }
     }
