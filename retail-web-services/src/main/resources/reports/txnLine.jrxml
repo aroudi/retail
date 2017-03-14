@@ -19,6 +19,8 @@
 	<field name="txdeDetailType" class="au.com.biztune.retail.domain.ConfigCategory">
 		<fieldDescription><![CDATA[txdeDetailType]]></fieldDescription>
 	</field>
+	<field name="txdeQtyBalance" class="java.lang.Double"/>
+	<field name="txdeQtyInvoiced" class="java.lang.Double"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -29,79 +31,177 @@
 		<band splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="24" splitType="Stretch">
+		<band height="33" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="2" width="495" height="30" forecolor="#FFFFFF" backcolor="#CCCCCC" uuid="e54d0765-40da-45d1-82d4-3ee4e2661b26"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="0" y="0" width="168" height="20" uuid="20865499-025c-41af-a732-334f8f6896e2"/>
+				<reportElement x="0" y="16" width="89" height="16" uuid="20865499-025c-41af-a732-334f8f6896e2"/>
 				<textElement>
-					<font fontName="SansSerif" size="12" isBold="true"/>
+					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Product]]></text>
+				<text><![CDATA[Prod Code]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="189" y="0" width="57" height="20" uuid="28b2fa4b-b751-4742-9fd5-da5829bdfbe0"/>
+				<reportElement x="380" y="6" width="53" height="20" uuid="27de64bb-47e4-495b-bd02-6018465554ca"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Size]]></text>
+				<text><![CDATA[Unit Price]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="246" y="0" width="53" height="20" uuid="27de64bb-47e4-495b-bd02-6018465554ca"/>
+				<reportElement x="279" y="4" width="39" height="14" uuid="5829bccb-db88-45fe-af29-b3f4d9fe9968"/>
 				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Price]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="369" y="0" width="39" height="20" uuid="5829bccb-db88-45fe-af29-b3f4d9fe9968"/>
-				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Qty]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="409" y="0" width="84" height="20" uuid="50285ddb-bd42-48a6-940f-738486f3d361"/>
+				<reportElement x="438" y="4" width="24" height="20" uuid="50285ddb-bd42-48a6-940f-738486f3d361"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Total Value]]></text>
+				<text><![CDATA[Net]]></text>
 			</staticText>
-			<line>
-				<reportElement x="1" y="21" width="492" height="1" uuid="b22075e6-cc95-4c50-9c07-5c4c6bc11917"/>
-			</line>
 			<staticText>
-				<reportElement x="305" y="0" width="62" height="20" uuid="bcf6ebcb-139a-4f95-a5c9-32302fb218f7"/>
+				<reportElement x="89" y="16" width="109" height="16" uuid="80a3d5e0-eb0b-4bc3-90d1-32f9604a4f44"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Describtion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="207" y="16" width="20" height="16" uuid="bcf6ebcb-139a-4f95-a5c9-32302fb218f7"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tax]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="240" y="16" width="29" height="16" uuid="28b2fa4b-b751-4742-9fd5-da5829bdfbe0"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Unit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="279" y="16" width="39" height="16" uuid="8ccb4bd0-4980-4558-af9d-ce06aa838abf"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ord]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="313" y="5" width="39" height="12" uuid="790a1506-c478-4386-b30f-e89abe87f7c0"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Back]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="313" y="17" width="28" height="15" uuid="ba31a660-e613-4b5f-8e4d-e39dc8a7580f"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ord]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="348" y="6" width="39" height="12" uuid="231032a5-65cb-44f4-922d-daa027140fe2"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[This]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="348" y="17" width="28" height="15" uuid="272b0168-dac2-4b13-8826-0bf0d6fabc46"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Del]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="17" width="39" height="15" uuid="ed08a114-d2ef-42c5-af9f-98b99c824c15"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ex.GST]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="438" y="18" width="41" height="14" uuid="015bf064-878c-4d86-a643-1ec96e8d3d27"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="19" splitType="Stretch">
+		<band height="21" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="3" y="0" width="186" height="13" uuid="905c75f8-e7e9-4678-8cbb-98b359cccbcb"/>
+				<reportElement x="92" y="6" width="109" height="13" uuid="905c75f8-e7e9-4678-8cbb-98b359cccbcb"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{product}.getProdName()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="189" y="0" width="57" height="13" uuid="aac94a9d-1142-4ff1-9ccd-7c291216cfe7"/>
-				<textFieldExpression><![CDATA[$F{unitOfMeasure}.getUnomDesc()]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="305" y="0" width="62" height="13" uuid="c3eaedc5-045f-437a-9c53-8082335d24eb"/>
-				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txdeTax} * $F{txdeValueGross})]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="409" y="0" width="91" height="13" uuid="525ca675-4786-491a-bca8-56c862ac11ca"/>
+				<reportElement x="438" y="6" width="57" height="13" uuid="525ca675-4786-491a-bca8-56c862ac11ca"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txdePriceSold})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="247" y="0" width="55" height="13" uuid="8baf56cd-29ae-4278-9eb6-c2c937734a3d"/>
-				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txdeValueGross})]]></textFieldExpression>
+				<reportElement x="283" y="5" width="26" height="13" uuid="0d27deda-aaa7-49a1-a3e1-0ff46fab9851"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{txdeDetailType}.getCategoryCode().equals("TXN_LINE_SALE")) ? ($F{txdeQuantitySold}) : ($F{txdeQtyTotalRefund})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="369" y="0" width="39" height="13" uuid="0d27deda-aaa7-49a1-a3e1-0ff46fab9851"/>
-				<textFieldExpression><![CDATA[($F{txdeDetailType}.getCategoryCode().equals("TXN_LINE_SALE")) ? ($F{txdeQuantitySold}) : ($F{txdeQtyTotalRefund})]]></textFieldExpression>
+				<reportElement x="3" y="6" width="86" height="13" uuid="be7b5dc5-f05a-44fd-bfea-2ee36123c5c1"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{product}.getProdSku()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="240" y="6" width="39" height="13" uuid="aac94a9d-1142-4ff1-9ccd-7c291216cfe7"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{unitOfMeasure}.getUnomDesc()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="495" height="1" uuid="b22075e6-cc95-4c50-9c07-5c4c6bc11917"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="383" y="6" width="50" height="13" uuid="8baf56cd-29ae-4278-9eb6-c2c937734a3d"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txdeValueGross})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="207" y="6" width="30" height="13" uuid="86e9dcd1-5baf-4a1c-8c89-140d588bab04"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[GST]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="348" y="6" width="26" height="13" uuid="27786262-216b-4db9-ae4d-6c16212e7194"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{txdeQtyInvoiced}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="315" y="6" width="26" height="13" uuid="e922aa90-23d1-4eb2-a961-ec7a21e0cd1e"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{txdeQtyBalance}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

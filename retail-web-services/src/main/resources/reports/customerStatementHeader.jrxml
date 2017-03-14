@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="125"/>
+	<property name="ireport.y" value="0"/>
 	<subDataset name="Table Dataset 1" uuid="34d645cf-a029-4a91-b796-5f67f4c09de0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
@@ -157,6 +157,14 @@
 			<textField isBlankWhenNull="true">
 				<reportElement x="328" y="102" width="101" height="20" uuid="56ddc85a-888e-4f6f-9781-4a86c0b6f1be"/>
 				<textFieldExpression><![CDATA[$V{Today}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="398" y="152" width="132" height="18" uuid="83068682-8957-4095-8c1d-ce7e98de24da"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{customer}.getCreditDuration() + " days " + ($F{customer}.isCreditStartEom()?"EOM":"Sale")
+]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
