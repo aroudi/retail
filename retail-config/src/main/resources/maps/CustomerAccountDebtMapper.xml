@@ -202,7 +202,7 @@
         cad.TXHD_TXN_NR
         FROM
         TXN_ACC_PAYMENT tap inner join CUSTOMER_ACCOUNT_DEBT cad on (tap.CAD_ID = cad.CAD_ID)
-        where tap.CAD_ID = #{value}
+        where tap.CAD_ID = #{value} and tap.TAP_AMOUNT_PAID > 0
     </select>
 
 

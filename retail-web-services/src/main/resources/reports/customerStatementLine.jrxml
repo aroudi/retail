@@ -118,14 +118,14 @@
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{cadAmountDebt})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="421" y="5" width="75" height="17" isPrintWhenDetailOverflows="true" uuid="feb26e79-577c-43e9-9450-3d911c923577"/>
+				<reportElement x="412" y="5" width="88" height="17" isPrintWhenDetailOverflows="true" uuid="feb26e79-577c-43e9-9450-3d911c923577"/>
 				<textElement>
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cadDueDate}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement stretchType="RelativeToBandHeight" x="1" y="24" width="492" height="21" uuid="f4d77d4f-1451-438a-9bc7-3cd8748a8543"/>
+				<reportElement stretchType="RelativeToBandHeight" x="1" y="24" width="494" height="21" uuid="f4d77d4f-1451-438a-9bc7-3cd8748a8543"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
                       ($F{paymentList})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "customerStatementLinePayments.jasper"]]></subreportExpression>
@@ -133,7 +133,7 @@
 			<line>
 				<reportElement positionType="Float" x="286" y="49" width="135" height="1" uuid="92fa7605-5204-4efb-9416-ee0310e10bc6"/>
 				<graphicElement>
-					<pen lineStyle="Dotted"/>
+					<pen lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
@@ -151,9 +151,9 @@
 				<text><![CDATA[Balance:]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="Float" x="3" y="71" width="418" height="1" uuid="8bd3bf9e-e1c5-42c7-99fe-9737a4d1fe78"/>
+				<reportElement positionType="Float" x="3" y="71" width="492" height="1" uuid="8bd3bf9e-e1c5-42c7-99fe-9737a4d1fe78"/>
 				<graphicElement>
-					<pen lineStyle="Dotted"/>
+					<pen lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>

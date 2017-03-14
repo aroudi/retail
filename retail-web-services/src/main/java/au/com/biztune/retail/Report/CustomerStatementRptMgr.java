@@ -82,11 +82,14 @@ public class CustomerStatementRptMgr {
                     dateTo = new Timestamp(new Date().getTime());
                 }
                 customerAccountDebtList = customerAccountDebtDao.customerAccountPaymentReportPerCustomer(dateTo, customer.getId());
-                if (customerAccountDebtList == null) {
+                if (customerAccountDebtList == null || customerAccountDebtList.size() < 1) {
                     continue;
                 }
-                debtBalance = customerAccountDebtDao.customerAccountBalancePerCustomerAndDate(dateTo, customer.getId());
-
+                try {
+                    debtBalance = customerAccountDebtDao.customerAccountBalancePerCustomerAndDate(dateTo, customer.getId());
+                } catch (Exception e1) {
+                    debtBalance = 0.00;
+                }
                 customerStatementReport = new CustomerStatementReport();
                 customerStatementReport.setCustomer(customer);
                 customerStatementReport.setTotalDebtBalance(debtBalance);
@@ -118,7 +121,7 @@ public class CustomerStatementRptMgr {
             final String reportLineDetailJasperName = pathStr + "/" + reportLineDetailFileName + ".jasper";
             JRBeanCollectionDataSource beanColDataSource1 = null;
             Map<String, Object> parameters = null;
-            List<JasperPrint> jasperPrintList = null;
+            final List<JasperPrint> jasperPrintList = new ArrayList<JasperPrint>();;
             JasperReport jasperMasterReport = null;
             JasperPrint jasperPrint1 = null;
             JRPdfExporter exporter = null;
@@ -130,12 +133,8 @@ public class CustomerStatementRptMgr {
                 reportHeaders = new ArrayList<CustomerStatementReport>();
                 reportHeaders.add(customerStatementReport);
                 beanColDataSource1  = new JRBeanCollectionDataSource(reportHeaders);
-
                 parameters = new HashMap<String, Object>();
-                jasperPrintList = new ArrayList<JasperPrint>();
-
                 parameters.put("SUBREPORT_DIR", pathStr + "/");
-
             /* Compile the master and sub report */
                 JasperCompileManager.compileReportToFile(reportLineDetailJrxmlName, reportLineDetailJasperName);
                 JasperCompileManager.compileReportToFile(reportTxnLineJrxmlName, reportTxnLineJasperName);
@@ -143,8 +142,6 @@ public class CustomerStatementRptMgr {
                 jasperPrint1 = JasperFillManager.fillReport(jasperMasterReport, parameters, beanColDataSource1);
                 jasperPrintList.add(jasperPrint1);
             }
-
-
             exporter = new JRPdfExporter();
             exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
             final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -160,7 +157,6 @@ public class CustomerStatementRptMgr {
                 output.flush();
             }
             };
-
             return streamingOutput;
         } catch (Exception e) {
             logger.error("Exception in exporting Transaction as pdf: ", e);

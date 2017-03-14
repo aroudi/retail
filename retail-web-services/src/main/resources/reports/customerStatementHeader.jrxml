@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="125"/>
 	<subDataset name="Table Dataset 1" uuid="34d645cf-a029-4a91-b796-5f67f4c09de0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
@@ -12,12 +12,13 @@
 	</field>
 	<field name="customerAccountDebtList" class="java.util.List"/>
 	<field name="totalDebtBalance" class="java.lang.Double"/>
-	<variable name="Today" class="java.lang.String">
-		<variableExpression><![CDATA[(new SimpleDateFormat("yyyy/MM/dd")).format(new Date())]]></variableExpression>
-	</variable>
 	<variable name="V_CURRENT_PAGE_NUMBER" class="java.lang.Integer" resetType="Page">
 		<variableExpression><![CDATA[1]]></variableExpression>
 		<initialValueExpression><![CDATA[$V{PAGE_NUMBER}]]></initialValueExpression>
+	</variable>
+	<variable name="Today" class="java.lang.String">
+		<variableExpression><![CDATA[(new SimpleDateFormat("yyyy/MM/dd")).format(new Date())]]></variableExpression>
+		<initialValueExpression><![CDATA[(new SimpleDateFormat("yyyy/MM/dd")).format(new Date())]]></initialValueExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
@@ -104,13 +105,6 @@
 				<reportElement x="385" y="2" width="170" height="65" uuid="5cc0087b-7f21-4054-b8d6-3090a6dca5ec"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "logo.png"]]></imageExpression>
 			</image>
-			<textField>
-				<reportElement x="325" y="102" width="104" height="20" uuid="fbc303c1-6bdc-4d70-8cbf-35c66e3da047"/>
-				<textElement>
-					<font fontName="Arial"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{Today}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="269" y="102" width="55" height="20" uuid="31f3cbf7-ff2b-488c-b282-6634d0cf9f02"/>
 				<textElement>
@@ -160,15 +154,19 @@
 				</textElement>
 				<text><![CDATA[Acct No :]]></text>
 			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="328" y="102" width="101" height="20" uuid="56ddc85a-888e-4f6f-9781-4a86c0b6f1be"/>
+				<textFieldExpression><![CDATA[$V{Today}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="141" splitType="Stretch">
+		<band height="271" splitType="Stretch">
 			<subreport>
-				<reportElement x="6" y="0" width="549" height="141" uuid="34a6e44b-8e8a-4ec8-8a63-8c3626e31cd2"/>
+				<reportElement x="8" y="0" width="544" height="207" uuid="34a6e44b-8e8a-4ec8-8a63-8c3626e31cd2"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -183,24 +181,17 @@
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="4" splitType="Stretch"/>
+		<band height="6" splitType="Stretch"/>
 	</pageFooter>
 	<summary>
 		<band height="119" splitType="Stretch">
 			<staticText>
-				<reportElement x="5" y="13" width="206" height="20" uuid="59e5d15f-02d2-4e27-ac8d-f95cbe60c6f0"/>
+				<reportElement x="5" y="7" width="206" height="20" uuid="59e5d15f-02d2-4e27-ac8d-f95cbe60c6f0"/>
 				<textElement>
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Please detach and return with payment]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="5" y="33" width="104" height="20" uuid="adb2d718-1660-4d34-9d35-5c784f32686c"/>
-				<textElement>
-					<font fontName="Arial" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{Today}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="5" y="53" width="67" height="20" uuid="f0e6c58c-c815-4d30-8ba5-ef49366c0a24"/>
 				<textElement>

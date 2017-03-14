@@ -1090,7 +1090,7 @@ public class TransactionServiceImpl implements TransactionService {
             txnDao.assigneTxnNumber(txnHeader);
             //save txn_acc_payment items
             for (CustomerAccountDebt customerAccountDebt : debtorPaymentForm.getDebtList()) {
-                if (customerAccountDebt == null) {
+                if (customerAccountDebt == null || customerAccountDebt.getPaying() <= 0.00) {
                     continue;
                 }
                 customerAccountDebt.setOrguId(sessionState.getStore().getOrgUnit().getId());
