@@ -46,6 +46,7 @@ public class TxnDetail {
     // for invoice detail, parentId store txdeId of sale transaction.
     private long parentId;
     private double txidSurcharge;
+    private double txdeQuantityOrdered;
 
 
 
@@ -431,5 +432,13 @@ public class TxnDetail {
 
     public void setTxidSurcharge(double txidSurcharge) {
         this.txidSurcharge = txidSurcharge;
+    }
+
+    public double getTxdeQuantityOrdered() {
+        return txdeQuantityOrdered;
+    }
+
+    public void setTxdeQuantityOrdered(double txdeQuantityOrdered) {
+        this.txdeQuantityOrdered = txdeQuantityOrdered;
     }
 }

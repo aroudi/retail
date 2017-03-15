@@ -25,12 +25,15 @@ import org.springframework.core.io.Resource;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
  * Created by arash on 4/07/2016.
  */
 public class TransactionRptMgr {
+    private static final boolean IS_WINDOWS = System.getProperty("os.name").contains("indow");
     private final Logger logger = LoggerFactory.getLogger(TransactionRptMgr.class);
     @Autowired
     private ConfigCategoryDao configCategoryDao;
@@ -51,6 +54,7 @@ public class TransactionRptMgr {
     private String invoiceHeaderFileName;
     private String saleOrderHeaderFileName;
     private String reportTxnLineFileName;
+    private String saleOrderLineFileName;
     private String reportTxnMediaFileName;
     private String deliveryDocketHeaderFileName;
     private String deliveryDocketLineFileName;
@@ -104,7 +108,7 @@ public class TransactionRptMgr {
             }
             txnHeaders.add(txnHeader);
             invoiceDao.updateTxnPrintStatus(inoiceId, true);
-            return createTransactionPdfStream(txnHeaders, IdBConstant.TXN_TYPE_INVOICE);
+            return createTransactionPdfStream(txnHeaders, txnHeader.getInvoiceTxnType().getCategoryCode());
         } catch (Exception e) {
             logger.error("Exception in returning transaction header");
             return null;
@@ -125,38 +129,49 @@ public class TransactionRptMgr {
             final JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(txnHeaders);
             final JRBeanCollectionDataSource beanColDataSource2 = new JRBeanCollectionDataSource(txnHeaders);
             final String reportTxnLineJrxmlName = pathStr + "/" + reportTxnLineFileName + ".jrxml";
-            final String reportTxnLineJasperName = pathStr + "/" + reportTxnLineFileName + ".jasper";
+            final String reportTxnLineJasperName = IS_WINDOWS ? (pathStr + "/" + reportTxnLineFileName + ".jasper").substring(1) : (pathStr + "/" + reportTxnLineFileName + ".jasper");
+            final String saleOrderLineJrxmlName = pathStr + "/" + saleOrderLineFileName + ".jrxml";
+            final String saleOrderLineJasperName = IS_WINDOWS ? (pathStr + "/" + saleOrderLineFileName + ".jasper").substring(1) : (pathStr + "/" + saleOrderLineFileName + ".jasper");
             final String reportTxnMediaJrxmlName = pathStr + "/" + reportTxnMediaFileName + ".jrxml";
-            final String reportTxnMediaJasperName = pathStr + "/" + reportTxnMediaFileName + ".jasper";
+            final String reportTxnMediaJasperName = IS_WINDOWS ? (pathStr + "/" + reportTxnMediaFileName + ".jasper").substring(1) : (pathStr + "/" + reportTxnMediaFileName + ".jasper");
             final String deliveryDocketHeaderJrxmlName = pathStr + "/" + deliveryDocketHeaderFileName + ".jrxml";
             final String deliveryDocketLineJrxmlName = pathStr + "/" + deliveryDocketLineFileName + ".jrxml";
-            final String deliveryDocketLineJasperName = pathStr + "/" + deliveryDocketLineFileName + ".jasper";
+            final String deliveryDocketLineJasperName = IS_WINDOWS ? (pathStr + "/" + deliveryDocketLineFileName + ".jasper").substring(1) : (pathStr + "/" + deliveryDocketLineFileName + ".jasper");
             JasperReport jasperDeliveryDocketReport = null;
             String reportHeaderJrxmlName = "";
             JasperPrint jasperPrint2 = null;
-            String outputFile = "";
             final Map<String, Object> parameters = new HashMap<String, Object>();
             final List<JasperPrint> jasperPrintList = new ArrayList<JasperPrint>();
-
             parameters.put("SUBREPORT_DIR", pathStr + "/");
 
             if (txnType.equals(IdBConstant.TXN_TYPE_INVOICE)) {
                 reportHeaderJrxmlName = pathStr + "/" + invoiceHeaderFileName + ".jrxml";
-                outputFile = pathStr + "/" + invoiceHeaderFileName + ".pdf";
+                if (Files.notExists(Paths.get(reportTxnLineJasperName))) {
+                    JasperCompileManager.compileReportToFile(reportTxnLineJrxmlName, reportTxnLineJasperName);
+                }
+            } else if (txnType.equals(IdBConstant.TXN_TYPE_REFUND)) {
+                reportHeaderJrxmlName = pathStr + "/" + invoiceHeaderFileName + ".jrxml";
+                if (Files.notExists(Paths.get(saleOrderLineJasperName))) {
+                    JasperCompileManager.compileReportToFile(saleOrderLineJrxmlName, saleOrderLineJasperName);
+                }
             } else {
                 reportHeaderJrxmlName = pathStr + "/" + saleOrderHeaderFileName + ".jrxml";
-                outputFile = pathStr + "/" + saleOrderHeaderFileName + ".pdf";
+                if (Files.notExists(Paths.get(saleOrderLineJasperName))) {
+                    JasperCompileManager.compileReportToFile(saleOrderLineJrxmlName, saleOrderLineJasperName);
+                }
             }
-            /* Compile the master and sub report */
-            JasperCompileManager.compileReportToFile(reportTxnLineJrxmlName, reportTxnLineJasperName);
-            JasperCompileManager.compileReportToFile(reportTxnMediaJrxmlName, reportTxnMediaJasperName);
+            if (Files.notExists(Paths.get(reportTxnMediaJasperName))) {
+                JasperCompileManager.compileReportToFile(reportTxnMediaJrxmlName, reportTxnMediaJasperName);
+            }
 
             final JasperReport jasperMasterReport = JasperCompileManager.compileReport(reportHeaderJrxmlName);
             final JasperPrint jasperPrint1 = JasperFillManager.fillReport(jasperMasterReport, parameters, beanColDataSource1);
             jasperPrintList.add(jasperPrint1);
 
             if (txnType.equals(IdBConstant.TXN_TYPE_INVOICE)) {
-                JasperCompileManager.compileReportToFile(deliveryDocketLineJrxmlName, deliveryDocketLineJasperName);
+                if (Files.notExists(Paths.get(deliveryDocketLineJasperName))) {
+                    JasperCompileManager.compileReportToFile(deliveryDocketLineJrxmlName, deliveryDocketLineJasperName);
+                }
                 jasperDeliveryDocketReport = JasperCompileManager.compileReport(deliveryDocketHeaderJrxmlName);
                 jasperPrint2 = JasperFillManager.fillReport(jasperDeliveryDocketReport, parameters, beanColDataSource2);
                 jasperPrintList.add(jasperPrint2);
@@ -267,5 +282,13 @@ public class TransactionRptMgr {
 
     public void setDeliveryDocketLineFileName(String deliveryDocketLineFileName) {
         this.deliveryDocketLineFileName = deliveryDocketLineFileName;
+    }
+
+    public String getSaleOrderLineFileName() {
+        return saleOrderLineFileName;
+    }
+
+    public void setSaleOrderLineFileName(String saleOrderLineFileName) {
+        this.saleOrderLineFileName = saleOrderLineFileName;
     }
 }

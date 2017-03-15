@@ -70,6 +70,8 @@
         <result column="TXDE_TAX" property="txdeTax" />
         <result column="TXDE_VALUE_NET" property="txdeValueNet" />
         <result column="TXID_QTY_INVOICED" property="txdeQuantitySold" />
+        <result column="TXDE_QUANTITY_SOLD" property="txdeQuantityOrdered" />
+        <result column="TXDE_QTY_BALANCE" property="txdeQtyBalance" />
         <result column="TXID_QTY_INVOICED" property="txdeQtyTotalInvoiced" />
         <result column="TXID_QTY_REFUND" property="txdeQtyTotalRefund" />
         <result column="TXID_PRICE_SOLD" property="txdePriceSold" />

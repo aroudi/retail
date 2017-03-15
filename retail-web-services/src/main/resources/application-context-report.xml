@@ -20,6 +20,7 @@
         <property name="invoiceHeaderFileName" value="invoiceHeader" />
         <property name="saleOrderHeaderFileName" value="saleOrderHeader" />
         <property name="reportTxnLineFileName" value="txnLine" />
+        <property name="saleOrderLineFileName" value="saleOrderLine" />
         <property name="reportTxnMediaFileName" value="txnMedia" />
         <property name="deliveryDocketHeaderFileName" value="deliveryDocketHeader" />
         <property name="deliveryDocketLineFileName" value="deliveryDocketLine" />
