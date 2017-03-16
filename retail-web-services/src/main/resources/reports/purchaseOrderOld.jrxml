@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
+	<property name="ireport.zoom" value="1.3310000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="259"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
+	</parameter>
+	<field name="pohOrderNumber" class="java.lang.String"/>
+	<field name="pohPrefix" class="java.lang.String"/>
+	<field name="pohRevision" class="java.lang.Long"/>
+	<field name="supplier" class="au.com.biztune.retail.domain.Supplier">
+		<fieldDescription><![CDATA[supplier]]></fieldDescription>
+	</field>
+	<field name="appUser" class="au.com.biztune.retail.domain.AppUser">
+		<fieldDescription><![CDATA[user]]></fieldDescription>
+	</field>
+	<field name="pohCreatedDate" class="java.sql.Timestamp"/>
+	<field name="pohLastDelvDate" class="java.sql.Timestamp"/>
+	<field name="pohExpDelivery" class="java.sql.Timestamp"/>
+	<field name="pohExpTransmit" class="java.lang.Double"/>
+	<field name="pohValueGross" class="java.lang.Double"/>
+	<field name="pohValueNett" class="java.lang.Double"/>
+	<field name="pohTotalQty" class="java.lang.Double"/>
+	<field name="pohContactPerson" class="java.lang.String"/>
+	<field name="pohDlvAddress" class="java.lang.String"/>
+	<field name="pohContactPhone" class="java.lang.String"/>
+	<field name="pohComment" class="java.lang.String"/>
+	<field name="pohPrinted" class="java.lang.Boolean"/>
+	<field name="lines" class="java.util.List"/>
+	<variable name="Today" class="java.lang.String">
+		<variableExpression><![CDATA[(new SimpleDateFormat("yyyy/MM/dd")).format(new Date())]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="292" splitType="Stretch">
+			<elementGroup>
+				<rectangle radius="10">
+					<reportElement x="7" y="216" width="544" height="60" uuid="d0174672-6480-42b1-9d27-5224870afcaf"/>
+				</rectangle>
+				<rectangle>
+					<reportElement x="241" y="42" width="303" height="135" uuid="5c41d872-08d1-453c-b79c-7c93887e686f"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="7" y="101" width="205" height="42" uuid="371cdd93-3faa-44ab-bbc2-e305fb273faf"/>
+					<textElement>
+						<font fontName="Serif" size="24" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Purchase Order]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="244" y="69" width="59" height="20" uuid="10d9aa5a-6740-4f54-994d-6b454160b053"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Order No:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="363" y="69" width="178" height="20" uuid="6a110809-4516-43d6-a921-9c8ea8879604"/>
+					<textFieldExpression><![CDATA[$F{pohOrderNumber} + " (rev-" + $F{pohRevision} + ")"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="244" y="111" width="92" height="20" uuid="cfde9512-91ad-4a73-bd17-4712de0fd222"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Creation Date :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="363" y="111" width="178" height="20" uuid="653f6cfe-7288-47cb-b824-48c6bdf7c6c0"/>
+					<textFieldExpression><![CDATA[$F{pohCreatedDate}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="87" y="186" width="451" height="20" uuid="0198e6c3-9414-49a7-9923-9ea3b5f0eb06"/>
+					<textFieldExpression><![CDATA[$F{supplier}.getSupplierName()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="244" y="131" width="119" height="20" uuid="a5163f7d-cee4-4456-bc15-100df520b4fb"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Expected Delivery:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="5" y="56" width="180" height="15" uuid="a88f512f-e6a2-42b2-a6a1-e23b4207c5f4"/>
+					<text><![CDATA[32 Spencer St, Five Dock NSW 2046]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="46" y="43" width="90" height="15" uuid="281156db-6c5d-4f79-b186-fd138b0d737e"/>
+					<textElement>
+						<font isBold="false"/>
+					</textElement>
+					<text><![CDATA[ 92 084 941 266]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="5" y="42" width="34" height="15" uuid="0510804b-d3df-4173-88ad-fc8e06684ce9"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[A.B.N.:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="10" y="155" width="69" height="20" uuid="e843686c-b6aa-4c3f-b9f2-5b8b5d78a066"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Served By:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="1" y="2" width="335" height="27" uuid="d7ad256a-16ae-4637-8d47-739b6b0fe84b"/>
+					<textElement>
+						<font size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[JOMON ARCHITECTURAL HARDWARE PTY LTD]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="86" y="155" width="155" height="20" uuid="5773f3a3-5824-45ee-bf5a-8f766881fd76"/>
+					<textFieldExpression><![CDATA[$F{appUser} == null ? " " : $F{appUser}.getUsrFirstName() + " " + $F{appUser}.getUsrSurName()]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="1" y="23" width="552" height="1" uuid="76f70884-c2dd-436c-8550-8d76ad3b0f4b"/>
+				</line>
+				<staticText>
+					<reportElement x="5" y="71" width="203" height="17" uuid="f3feaa15-364f-46b5-af65-364713bc5100"/>
+					<text><![CDATA[PH: +61 2  9747 0088     FAX: +61 2 9747 4488]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="244" y="153" width="75" height="20" uuid="35ca90a5-502d-4b36-b141-790cbce438e8"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Ordered By:]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement x="241" y="40" width="303" height="25" backcolor="#CCCCCC" uuid="1464852c-9f7b-4ba6-bf88-3610b1904b39"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="348" y="42" width="100" height="20" uuid="c8ee7f41-ad47-4300-8a09-7937d2f64fa8"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Order Detail]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="363" y="131" width="178" height="20" uuid="5c1492fc-4d29-4c4c-a3eb-f64c36bb548a"/>
+					<textFieldExpression><![CDATA[$F{pohExpDelivery}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="363" y="153" width="178" height="20" uuid="f3da8ceb-d2f1-4af1-bf43-c7c9b5d9e04a"/>
+					<textFieldExpression><![CDATA[$F{pohContactPerson}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="15" y="255" width="28" height="20" uuid="5a0a3bd7-dadf-4b1f-be07-5ef71516cdcc"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PH:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="12" y="216" width="59" height="20" uuid="8e46e36a-8244-4d35-93a0-112d4b329bc8"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Deliver To]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="41" y="236" width="500" height="20" uuid="e50babf2-a223-46bb-871f-e4c73aed1545"/>
+					<textFieldExpression><![CDATA[$F{pohDlvAddress}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="44" y="255" width="494" height="20" uuid="241829e8-67c4-4469-881c-574bf91ce58c"/>
+					<textFieldExpression><![CDATA[$F{pohContactPhone}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="9" y="186" width="70" height="20" uuid="cb1c0626-e6bc-4552-9e59-387d14f0b154"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Supplier:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="79" y="216" width="462" height="20" uuid="b89e42be-93d3-4b2d-97de-aead56368916"/>
+					<textFieldExpression><![CDATA[$F{pohContactPerson}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="244" y="90" width="59" height="20" uuid="0b8e55b3-2ca2-485f-8c84-0d1dfccf5eb2"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Prefix:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="363" y="90" width="178" height="20" uuid="0ddecb0c-5a57-4c2f-b046-2d3a408b1267"/>
+					<textFieldExpression><![CDATA[$F{pohPrefix}]]></textFieldExpression>
+				</textField>
+			</elementGroup>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="260" splitType="Stretch">
+			<subreport>
+				<reportElement x="11" y="12" width="533" height="237" uuid="3141b3cf-f686-4318-a72a-aa51bccee833"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
+                      ($F{lines})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "purchaseLine.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="131" splitType="Stretch">
+			<rectangle>
+				<reportElement stretchType="RelativeToBandHeight" x="14" y="34" width="533" height="89" uuid="17ecdbc7-b23e-49e6-be80-80967ea16b56"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="14" y="34" width="533" height="23" backcolor="#CCCCCC" uuid="543589d7-7f37-42d6-847a-e988d4b110a7"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="244" y="37" width="64" height="20" uuid="966bfd5b-ad8f-4384-b312-12b8c32c2db8"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Comment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="315" y="6" width="91" height="20" uuid="92ee278d-a156-4b06-8fae-491ea9529173"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Inc GST:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="410" y="6" width="137" height="20" uuid="39e5f7af-1811-4b39-b76c-a81d1cd5b274"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{pohValueNett}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="19" y="63" width="519" height="55" uuid="1d2bde46-a0ca-44ac-9f41-4487559df25e"/>
+				<textFieldExpression><![CDATA[$F{pohComment}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="55" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="450" y="0" width="100" height="20" uuid="6c4732aa-4745-4bcb-90df-36a737d85c54"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Printed " + $V{Today}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="244" y="32" width="40" height="20" uuid="d904677a-7e5c-49ef-a1a0-648352d84af9"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Page:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="14" y="0" width="155" height="20" uuid="776beed9-6e72-4fe3-a8eb-63ca979d9ca2"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{pohPrinted})?"Duplicate copy ":""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="285" y="32" width="100" height="20" uuid="a5aeaf0d-1de1-488c-a863-9055d7dfea47"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

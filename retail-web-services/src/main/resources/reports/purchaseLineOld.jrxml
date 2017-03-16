@@ -23,53 +23,50 @@
 	</pageHeader>
 	<columnHeader>
 		<band height="23" splitType="Stretch">
-			<rectangle>
-				<reportElement x="1" y="0" width="499" height="20" forecolor="#FFFFFF" backcolor="#CCCCCC" uuid="accb1d3a-34e5-4730-baa8-8e96d3d6e9e6"/>
-			</rectangle>
 			<staticText>
-				<reportElement x="5" y="0" width="159" height="20" uuid="20865499-025c-41af-a732-334f8f6896e2"/>
+				<reportElement x="0" y="0" width="195" height="20" uuid="20865499-025c-41af-a732-334f8f6896e2"/>
 				<textElement>
-					<font fontName="SansSerif" size="11" isBold="true"/>
+					<font fontName="SansSerif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Part No]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="206" y="0" width="67" height="20" uuid="28b2fa4b-b751-4742-9fd5-da5829bdfbe0"/>
 				<textElement>
-					<font size="11" isBold="true"/>
+					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Size]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="278" y="0" width="71" height="20" uuid="27de64bb-47e4-495b-bd02-6018465554ca"/>
 				<textElement>
-					<font size="11" isBold="true"/>
+					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Unit Cost]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="355" y="0" width="57" height="20" uuid="5829bccb-db88-45fe-af29-b3f4d9fe9968"/>
 				<textElement>
-					<font size="11" isBold="true"/>
+					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Qty]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="415" y="0" width="92" height="20" uuid="50285ddb-bd42-48a6-940f-738486f3d361"/>
 				<textElement>
-					<font size="11" isBold="true"/>
+					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total Value]]></text>
 			</staticText>
 			<line>
-				<reportElement x="1" y="21" width="499" height="1" uuid="b22075e6-cc95-4c50-9c07-5c4c6bc11917"/>
+				<reportElement x="1" y="21" width="492" height="1" uuid="b22075e6-cc95-4c50-9c07-5c4c6bc11917"/>
 			</line>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="24" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="2" y="2" width="204" height="14" uuid="89e546af-6cb1-4f90-920a-136117788c98"/>
+				<reportElement x="0" y="2" width="205" height="14" uuid="89e546af-6cb1-4f90-920a-136117788c98"/>
 				<textFieldExpression><![CDATA[$F{purchaseItem}.getCatalogueNo()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">

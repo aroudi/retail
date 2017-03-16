@@ -175,6 +175,14 @@
         WHERE supp.SUPPLIER_ID = #{param1}
     </select>
 
+    <select id="getSupplierFullBySuppId" resultMap="supplierExportMap" >
+        SELECT
+        <include refid="supplierColumns"><property name="alias" value="supp"/></include>
+        FROM
+        SUPPLIER supp
+        WHERE supp.SUPPLIER_ID = #{param1}
+    </select>
+
     <select id="getSupplierBySolId" resultMap="supplierMap" >
         SELECT
         <include refid="supplierColumns"><property name="alias" value="supp"/></include>,

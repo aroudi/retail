@@ -87,6 +87,12 @@ public interface SupplierDao {
     List<Supplier> getSupplierListForAccExport();
 
     /**
+     * get supplier full object(including contact).
+     * @return List of Suppliers
+     */
+    List<Supplier> getSupplierFullBySuppId();
+
+    /**
      * update supplier export flag.
      * @param suppId suppId
      */
