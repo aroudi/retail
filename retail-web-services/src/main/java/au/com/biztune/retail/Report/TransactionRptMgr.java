@@ -168,7 +168,8 @@ public class TransactionRptMgr {
             final JasperPrint jasperPrint1 = JasperFillManager.fillReport(jasperMasterReport, parameters, beanColDataSource1);
             jasperPrintList.add(jasperPrint1);
 
-            if (txnType.equals(IdBConstant.TXN_TYPE_INVOICE)) {
+            //for new invoices print delivery docket as well.
+            if (txnType.equals(IdBConstant.TXN_TYPE_INVOICE) && (!txnHeaders.get(0).isTxhdPrinted())) {
                 if (Files.notExists(Paths.get(deliveryDocketLineJasperName))) {
                     JasperCompileManager.compileReportToFile(deliveryDocketLineJrxmlName, deliveryDocketLineJasperName);
                 }

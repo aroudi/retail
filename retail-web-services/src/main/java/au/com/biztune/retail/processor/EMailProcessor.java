@@ -85,7 +85,9 @@ public class EMailProcessor implements Processor {
             msg.setContent(multipart);
 
             // sends the e-mail
+            logger.debug("Email : prepare for sending" + toAddresses);
             Transport.send(msg);
+            logger.debug("Email sent to " + toAddresses);
             response.setSucceeded(true);
             return response;
 
@@ -101,27 +103,31 @@ public class EMailProcessor implements Processor {
      * init the mail server.
      */
     private void init() {
-        // sets SMTP server properties
-        final String host = Environment.get("SMTP_HOST");
-        final String port = Environment.get("SMTP_PORT");
-        userName = Environment.get("SMTP_MAIL_FROM");
-        final String password = Environment.get("SMTP_PASSWORD");
+        try {
+            // sets SMTP server properties
+            final String host = Environment.get("SMTP_HOST");
+            final String port = Environment.get("SMTP_PORT");
+            userName = Environment.get("SMTP_MAIL_FROM");
+            final String password = Environment.get("SMTP_PASSWORD");
 
-        final Properties properties = new Properties();
-        properties.put("mail.smtp.host", host);
-        properties.put("mail.smtp.port", port);
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.user", userName);
-        properties.put("mail.password", password);
+            final Properties properties = new Properties();
+            properties.put("mail.smtp.host", host);
+            properties.put("mail.smtp.port", port);
+            properties.put("mail.smtp.auth", "true");
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.user", userName);
+            properties.put("mail.password", password);
 
-        // creates a new session with an authenticator
-        final Authenticator auth = new Authenticator() {
-            public PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(userName, password);
-            }
-        };
-        session = Session.getInstance(properties, auth);
-        logger.info("MailSender initiated.");
+            // creates a new session with an authenticator
+            final Authenticator auth = new Authenticator() {
+                public PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(userName, password);
+                }
+            };
+            session = Session.getInstance(properties, auth);
+            logger.info("EMail Sender initialised.");
+        } catch (Exception e) {
+            logger.error("Exception in initializing EMail", e);
+        }
     }
 }

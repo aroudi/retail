@@ -38,19 +38,19 @@ var cimgApp = angular
   ]);
 
 //SIT
+/*
 var config_data = {
     'SERVER' : 'pos.jomon.com.au',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
+*/
 //DEV
-/*
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
- */
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -386,6 +386,12 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
             return new Date(strDate[2],strDate[1]-1,strDate[0],strDate[3],strDate[4]);
         },
         pdfViewer : function(exportUrl) {
+            this.getStreamData(exportUrl).then(function(response){
+                var blob = new Blob([response.data], {'type': 'application/pdf'});
+                window.open(window.URL.createObjectURL(blob));
+            });
+
+            /*
             ngDialog.openConfirm({
                 template:'views/pages/pdfViewer.html',
                 controller:'pdfViewerCtrl',
@@ -397,9 +403,11 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
                     console.log('Modal promise rejected. Reason:', reason);
                 }
             );
+            */
             //$state.go('dashboard.pdfViewer');
         },
         pdfViewerPostMethod : function(exportUrl, inputForm) {
+            /*
             ngDialog.openConfirm({
                 template:'views/pages/pdfViewer.html',
                 controller:'pdfViewerCtrl',
@@ -411,6 +419,12 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
                     console.log('Modal promise rejected. Reason:', reason);
                 }
             );
+            */
+            this.getStreamDataByPost(inputForm, exportUrl).then(function(response){
+                var blob = new Blob([response.data], {'type': 'application/pdf'});
+                window.open(window.URL.createObjectURL(blob));
+            });
+
             //$state.go('dashboard.pdfViewer');
         },
         displayMessage : function (type, heading,mBody) {
