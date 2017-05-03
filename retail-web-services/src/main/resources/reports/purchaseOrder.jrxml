@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="67"/>
+	<property name="ireport.y" value="68"/>
 	<subDataset name="Table Dataset 1" uuid="34d645cf-a029-4a91-b796-5f67f4c09de0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
@@ -29,6 +29,7 @@
 	<field name="pohComment" class="java.lang.String"/>
 	<field name="pohPrinted" class="java.lang.Boolean"/>
 	<field name="lines" class="java.util.List"/>
+	<field name="pohValueTax" class="java.lang.Double"/>
 	<variable name="Today" class="java.lang.String">
 		<variableExpression><![CDATA[(new SimpleDateFormat("yyyy/MM/dd")).format(new Date())]]></variableExpression>
 	</variable>
@@ -334,7 +335,7 @@
 				<textElement textAlignment="Right">
 					<font size="11"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{pohValueNett} - $F{pohValueGross} ]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{pohValueTax}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="370" y="62" width="78" height="20" uuid="5fc79675-9a1c-4a2c-8f58-2a7c33d074c8"/>
@@ -348,7 +349,7 @@
 				<textElement textAlignment="Right">
 					<font size="11"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{pohValueGross} ]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{pohValueGross}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="370" y="42" width="78" height="20" uuid="136aed69-41cb-445f-b79d-336bf07b0995"/>

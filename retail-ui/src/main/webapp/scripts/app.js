@@ -72,6 +72,7 @@ var service_uri = {
     'SUPPLIER_GET_PRODUCT_LIST_URI' : 'supplier/productList/',
     'UNOM_ALL_URI' : 'unitOfMeasure/all',
     'TAXRULE_ALL_URI' : 'taxRule/all',
+    'TAXLEGVARIANCE_ALL_URI' : 'taxRule/taxLegVariance/allActive',
     'PRODUCT_ALL_URI' : 'product/all',
     'PRODUCT_ALL_PAGING_URI' : 'product/all/paging',
     'PRODUCT_ADD_URI' : 'product/add',
@@ -687,7 +688,6 @@ cimgApp.service('multiPageService', function ($location,$http,$sessionStorage, $
             }
             for (var i = 0; i < pageList.length; i++) {
                 if (pageList[i].id === pageId) {
-                    console.log('splice called');
                     pageList.splice(i, 1);
                     //$sessionStorage.pageList = pageList;
                     return;

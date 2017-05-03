@@ -25,9 +25,12 @@ cimgApp.controller('productPurchaseItemSearchCtrl', function($scope, $state, $ti
                 }
             },
             {field:'unitOfMeasure.unomDesc', displayName:'Size',enableCellEdit:false, width:'10%'},
-            {field:'price', displayName:'price',enableCellEdit:false, width:'10%'},
-            {field:'bulkPrice', displayName:'bulkPrice',enableCellEdit:false, width:'10%'},
+            {field:'taxLegVariance.txlvDesc',displayName:'Tax',enableCellEdit:true,width:'10%'},
+            {field:'costBeforeTax', displayName:'cost(ex tax)',enableCellEdit:true, cellFilter: 'currency', width:'8%'},
+            {field:'price', displayName:'cost(inc tax)',enableCellEdit:true, cellFilter: 'currency', width:'10%'},
             {field:'bulkQty', displayName:'bulkQty',enableCellEdit:false, width:'10%'},
+            {field:'bulkPriceBeforeTax', displayName:'bulk price(exc tax)',enableCellEdit:true, cellFilter: 'currency', width:'7%'},
+            {field:'bulkPrice', displayName:'bulk price(inc tax)',enableCellEdit:true, cellFilter: 'currency', width:'8%'},
             {field:'sprcMinOrdQty', displayName:'Min Order',enableCellEdit:false, width:'10%'}
         ]
     }

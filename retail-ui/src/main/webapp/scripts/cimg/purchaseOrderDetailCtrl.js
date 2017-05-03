@@ -1,8 +1,8 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, SUPPLIER_ALL_URI) {
-
+cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, SUPPLIER_ALL_URI, taxCodeSet) {
+    $scope.taxLegVarianceSet = taxCodeSet.data;
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
         $scope.isViewMode = viewMode;
@@ -14,6 +14,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         showColumnFooter: true,
         enableColumnResizing: true,
         enableSorting:true,
+        enableCellEditOnFocus:true,
         expandableRowTemplate: '<div ui-grid="row.entity.subGridOptions" style ="height: 100px;"></div>',
         expandableRowScope:{
             subGridVariable: 'subGridScopeVariable'
@@ -21,30 +22,35 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         rowTemplate : rowtpl,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'25%'},
-            {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'10%'},
-            {field:'polUnitCost', displayName:'Cost',enableCellEdit:true, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum,
+            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'26%'},
+            {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'5%'},
+            {field:'taxLegVariance.txlvDesc',editType:'dropdown', displayName:'Tax',enableCellEdit:true,width:'8%',
+                editableCellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance" ng-change="grid.appScope.updatePurchaseLineValues(row.entity)" ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
+                //cellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance"  ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
+            },
+            {field:'polUnitCost', displayName:'Cost',enableCellEdit:true, width:'8%', cellFilter: 'currency',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
-            {field:'polQtyOrdered', displayName:'Qty Ordered',enableCellEdit:true, width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+            {field:'polQtyOrdered', displayName:'Qty Ordered',enableCellEdit:true, width:'8%',type: 'number',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
-            {field:'polValueOrdered', displayName:'Value',enableCellEdit:false, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'polQtyReceived', displayName:'Qty Received', enableCellEdit:false,width:'8%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+            {field:'polValueTax', displayName:'Tax value',enableCellEdit:false, width:'7%', cellFilter: 'currency'},
+            {field:'polValueOrdered', displayName:'Total',enableCellEdit:false, width:'7%', cellFilter: 'currency'},
+            {field:'polQtyReceived', displayName:'Qty Received', enableCellEdit:false,width:'8%',type: 'number',
                 cellTooltip: function(row,col) {
                     return row.entity.polFreeText
                 }
             },
-            {field:'polCreationType', displayName:'Type',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+            {field:'polCreationType', displayName:'Created',enableCellEdit:false, width:'7%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }
             },
-            {field:'polStatus', displayName:'Status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+            {field:'polStatus', displayName:'Status',enableCellEdit:false, width:'8%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }
@@ -83,7 +89,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                     }
                 }
                 //update the total value of the line
-                updatePurchaseLineValueOrdered(rowEntity);
+                $scope.updatePurchaseLineValues(rowEntity);
             }
             if (colDef.name == 'polUnitCost') {
                 if (rowEntity.polUnitCost > rowEntity.purchaseItem.price) {
@@ -92,8 +98,9 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                     return;
                 }
                 //update the total value of the line
-                updatePurchaseLineValueOrdered(rowEntity);
+                $scope.updatePurchaseLineValues(rowEntity);
             }
+
         })
     };
     /*
@@ -108,7 +115,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             }
         }
         //update the total value of the line
-        updatePurchaseLineValueOrdered(purchaseLine);
+        updatePurchaseLineValues(purchaseLine);
     })
     */
     initPageData();
@@ -227,15 +234,19 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             'pohId':$scope.purchaseOrderHeader.id,
             'pohOrderNumber':$scope.purchaseOrderHeader.pohOrderNumber,
             'purchaseItem' : item,
-            'polUnitCost' : item.price,
+            'polUnitCost' : item.costBeforeTax,
             'unitOfMeasure' : item.unitOfMeasure,
             'polQtyOrdered' : 0.00,
             'polValueOrdered' : 0.00,
             'unomContents' : item.unitOfMeasure,
             'polCreationType' :  $scope.polCreationTypeManual,
-            'polStatus' :  $scope.statusOnProgress
+            'polStatus' :  $scope.statusOnProgress,
+            'taxLegVariance' :  item.taxLegVariance,
+            'polValueTax' : 0.00,
+            'polValueGross' : 0.00
             //polStatus
         }
+        $scope.updatePurchaseLineValues(purchaseLineObject);
         return purchaseLineObject;
     }
 
@@ -254,11 +265,25 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
 
     }
 
-    function updatePurchaseLineValueOrdered(line) {
+    $scope.updatePurchaseLineValues = function(line) {
+
         if (line == undefined) {
             return;
         }
-        line.polValueOrdered = line.polUnitCost * line.polQtyOrdered;
+        var productsValue = line.polUnitCost * line.polQtyOrdered;
+        if (line.taxLegVariance != undefined && line.taxLegVariance.txlvAmount != undefined) {
+            line.polValueTax = line.polUnitCost * line.taxLegVariance.txlvRate * line.polQtyOrdered;
+        } else {
+            line.polValueTax = 0.00;
+        }
+        if ($scope.purchaseOrderHeader.costsIncludeTax) {
+            line.polValueOrdered = productsValue;
+            line.polValueGross = productsValue*1 - line.polValueTax*1
+        }else {
+            line.polValueGross = productsValue;
+            line.polValueOrdered = line.polValueGross*1 + line.polValueTax*1;
+        }
+        totalTransaction();
     }
 
     $scope.savePoAsDraft = function() {
@@ -354,6 +379,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                 return;
             }
         });
+        totalTransaction();
     }
 
     $scope.changeSupplier = function() {
@@ -552,6 +578,32 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
     });
     $scope.cancel = function() {
         $scope.closeThisDialog('button');
+    }
+
+    function totalTransaction() {
+        var poLineList =  $scope.gridOptions.data;
+        var valueGross = 0.00;
+        var valueNett = 0.00;
+        var valueTax = 0.00;
+        for (var i = 0; i < poLineList.length; i++) {
+
+            if (!poLineList[i].deleted ) {
+                valueNett = valueNett*1 + poLineList[i].polValueOrdered*1 ;
+                valueGross = valueGross*1 + poLineList[i].polValueGross*1;
+                valueTax = valueTax*1 + poLineList[i].polValueTax*1;
+            }
+        }
+        $scope.purchaseOrderHeader.pohValueNett = valueNett;
+        $scope.purchaseOrderHeader.pohValueGross = valueGross;
+        $scope.purchaseOrderHeader.pohValueTax = valueTax;
+    }
+    $scope.onTaxIncludeChange = function() {
+        var poLineList =  $scope.gridOptions.data;
+        for (var i = 0; i < poLineList.length; i++) {
+           if (!poLineList[i].deleted ) {
+               $scope.updatePurchaseLineValues(poLineList[i]);
+            }
+        }
     }
 
 });

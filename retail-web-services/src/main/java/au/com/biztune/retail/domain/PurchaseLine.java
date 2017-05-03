@@ -25,6 +25,8 @@ public class PurchaseLine {
     private double polValueOrdered;
     private double polValueReceived;
     private double polValueInvoiced;
+    private double polValueTax;
+    private double polValueGross;
     private String polFreeText;
     private Timestamp polModified;
     private Timestamp polDateReceived;
@@ -335,5 +337,21 @@ public class PurchaseLine {
 
     public void setPohPrefix(String pohPrefix) {
         this.pohPrefix = pohPrefix;
+    }
+
+    public double getPolValueTax() {
+        return polValueTax;
+    }
+
+    public void setPolValueTax(double polValueTax) {
+        this.polValueTax = polValueTax;
+    }
+
+    public double getPolValueGross() {
+        return polValueGross;
+    }
+
+    public void setPolValueGross(double polValueGross) {
+        this.polValueGross = polValueGross;
     }
 }

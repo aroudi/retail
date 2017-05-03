@@ -1,5 +1,6 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.domain.TaxLegVariance;
 import au.com.biztune.retail.domain.TaxRule;
 
 import java.util.List;
@@ -14,4 +15,9 @@ public interface TaxRuleService {
      */
     List<TaxRule> getAllTaxRules();
 
+    /**
+     * get all taxLegVariance.
+     * @return LIst of TaxLegVariance
+     */
+    List<TaxLegVariance> getAllActiveTaxLegVariance();
 }

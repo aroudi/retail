@@ -102,14 +102,22 @@
                         </div>
                     </div>
                     <div class="row">
-                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                        <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
-                        <button type="button" class="btn btn-success" ng-click="submitPo()" ng-show="!isViewMode">Submit</button>
-                        <button type="button" class="btn btn-success" ng-click="savePoAsDraft()" ng-show="(!isViewMode)&&(purchaseOrderHeader.pohStatus.categoryCode === 'POH_STATUS_IN_PROGRESS')">Save As Draft</button>
-                        <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
+                        <div class="col-lg-6">
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
+                            <button type="button" class="btn btn-success" ng-click="submitPo()" ng-show="!isViewMode">Submit</button>
+                            <button type="button" class="btn btn-success" ng-click="savePoAsDraft()" ng-show="(!isViewMode)&&(purchaseOrderHeader.pohStatus.categoryCode === 'POH_STATUS_IN_PROGRESS')">Save As Draft</button>
+                            <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
 
-                        <!--button type="button" class="btn btn-success" ng-click="exportToPdf()" ng-show="!pageIsNew">Export to PDF</button-->
-                        <button type="button" class="btn btn-info" ng-click="updateLinkedBoqs()" ng-show="(!isViewMode)&&(purchaseOrderHeader.pohStatus.categoryCode=='POH_STATUS_GOOD_RECEIVED' || purchaseOrderHeader.pohStatus.categoryCode=='POH_STATUS_PARTIAL_REC')">Update Linked BOQs</button>
+                            <!--button type="button" class="btn btn-success" ng-click="exportToPdf()" ng-show="!pageIsNew">Export to PDF</button-->
+                            <button type="button" class="btn btn-info" ng-click="updateLinkedBoqs()" ng-show="(!isViewMode)&&(purchaseOrderHeader.pohStatus.categoryCode=='POH_STATUS_GOOD_RECEIVED' || purchaseOrderHeader.pohStatus.categoryCode=='POH_STATUS_PARTIAL_REC')">Update Linked BOQs</button>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Costs include tax:</label>
+                                <input type="checkbox" data-ng-model="purchaseOrderHeader.costsIncludeTax" ng-change="onTaxIncludeChange()">
+                            </div >
+                        </div>
                     </div>
                     <div class="row">
                         &nbsp; &nbsp;
@@ -127,12 +135,22 @@
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <div id="pohDetailList" ui-grid ="gridOptions"  class="grid" ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-cellNav ui-grid-expandable  style="height:550px"  ></div>
+                                        <div id="pohDetailList" ui-grid ="gridOptions"  class="grid" ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-cellNav ui-grid-expandable  style="height:500px"  ></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <row>
+                        <div class="col-lg-6">
+                            <label>Expected Total(ex Tax)</label>
+                            <span>{{purchaseOrderHeader.pohValueGross |currency}}</span>
+                        </div>
+                        <div class="col-lg-6">
+                            <label>Expected Total(inc Tax)</label>
+                            <span>{{purchaseOrderHeader.pohValueNett |currency}}</span>
+                        </div>
+                    </row>
 
                 </div>
             </div>

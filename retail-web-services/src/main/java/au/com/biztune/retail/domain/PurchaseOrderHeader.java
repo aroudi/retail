@@ -30,6 +30,7 @@ public class PurchaseOrderHeader {
     private Timestamp pohConfirmDate;
     private double pohValueGross;
     private double pohValueNett;
+    private double pohValueTax;
     private double pohTotalQty;
     private int pohTotalLines;
     private ConfigCategory pohType;
@@ -51,6 +52,7 @@ public class PurchaseOrderHeader {
     private String pohPrjName;
     private String pohPrjCode;
     private String pohEmailTo;
+    private boolean costsIncludeTax;
 
     /**
      * constructor.
@@ -418,5 +420,21 @@ public class PurchaseOrderHeader {
 
     public void setPohEmailTo(String pohEmailTo) {
         this.pohEmailTo = pohEmailTo;
+    }
+
+    public double getPohValueTax() {
+        return pohValueTax;
+    }
+
+    public void setPohValueTax(double pohValueTax) {
+        this.pohValueTax = pohValueTax;
+    }
+
+    public boolean isCostsIncludeTax() {
+        return costsIncludeTax;
+    }
+
+    public void setCostsIncludeTax(boolean costsIncludeTax) {
+        this.costsIncludeTax = costsIncludeTax;
     }
 }

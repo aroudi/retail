@@ -18,7 +18,9 @@ public class SuppProdPrice {
     private UnitOfMeasure unitOfMeasureContent;
     private double unomQty;
     private double price;
+    private double costBeforeTax;
     private double bulkPrice;
+    private double bulkPriceBeforeTax;
     private double bulkQty;
     @JsonIgnore
     private LegalTender legalTender;
@@ -36,6 +38,7 @@ public class SuppProdPrice {
     private double sprcMinOrdVal;
     private Supplier supplier;
     private boolean deleted;
+    private TaxLegVariance taxLegVariance;
 
     public long getId() {
         return id;
@@ -195,5 +198,29 @@ public class SuppProdPrice {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public double getCostBeforeTax() {
+        return costBeforeTax;
+    }
+
+    public void setCostBeforeTax(double costBeforeTax) {
+        this.costBeforeTax = costBeforeTax;
+    }
+
+    public double getBulkPriceBeforeTax() {
+        return bulkPriceBeforeTax;
+    }
+
+    public void setBulkPriceBeforeTax(double bulkPriceBeforeTax) {
+        this.bulkPriceBeforeTax = bulkPriceBeforeTax;
+    }
+
+    public TaxLegVariance getTaxLegVariance() {
+        return taxLegVariance;
+    }
+
+    public void setTaxLegVariance(TaxLegVariance taxLegVariance) {
+        this.taxLegVariance = taxLegVariance;
     }
 }

@@ -48,4 +48,16 @@ public interface TaxRuleDao {
      * @return list of tax rule name
      */
     List<TaxRuleName> getAllTaxCodes();
+
+    /**
+     * get all active taxLegVariance.
+     * @return list of taxLegVariance
+     */
+    List<TaxLegVariance> getAllActiveTaxLegVariance();
+    /**
+     * get TaxLegVariance By code.
+     * @param code code
+     * @return TaxLegVariance.
+     */
+    TaxLegVariance getTaxLegVarianceByCode(String code);
 }

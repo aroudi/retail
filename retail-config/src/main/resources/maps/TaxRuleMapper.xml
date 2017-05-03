@@ -125,6 +125,21 @@
         WHERE txlv.TXLV_ID = #{value}
     </select>
 
+    <select id="getTaxLegVarianceByCode" resultMap="taxLegVarianceMap" >
+        SELECT
+        <include refid="taxLegVarianceColumns"><property name="alias" value="txlv"/></include>
+        FROM
+        TAX_LEG_VARIANCE txlv
+        WHERE txlv.TXLV_CODE = #{value}
+    </select>
+
+    <select id="getAllActiveTaxLegVariance" resultMap="taxLegVarianceMap" >
+        SELECT
+        <include refid="taxLegVarianceColumns"><property name="alias" value="txlv"/></include>
+        FROM
+        TAX_LEG_VARIANCE txlv
+        WHERE txlv.TXLV_IS_ACTIVE = 1
+    </select>
 
     <select id="getTaxRulesOfProduct" resultMap="taxRuleMap" >
         SELECT

@@ -96,7 +96,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             controller: 'productCtrl',
             templateUrl:'views/pages/product.html',
             access: "user",
-            resolve: {viewMode: function(){return false}}
+            resolve: {viewMode: function(){return false},
+                taxCodeSet: function(baseDataService, TAXLEGVARIANCE_ALL_URI){
+                    console.log('TAXLEGVARIANCE_ALL_URI = ' + TAXLEGVARIANCE_ALL_URI);
+                    return baseDataService.getBaseData(TAXLEGVARIANCE_ALL_URI);
+                }
+            }
         })
         .state('dashboard.listProduct',{
             url:'/listProduct',
@@ -139,7 +144,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             controller: 'purchaseOrderDetailCtrl',
             templateUrl:'views/pages/purchaseOrderDetail.html',
             access: "user",
-            resolve: {viewMode: function(){return false}}
+            resolve: {viewMode: function(){return false},
+                taxCodeSet: function(baseDataService, TAXLEGVARIANCE_ALL_URI){
+                    console.log('TAXLEGVARIANCE_ALL_URI = ' + TAXLEGVARIANCE_ALL_URI);
+                    return baseDataService.getBaseData(TAXLEGVARIANCE_ALL_URI);
+                }
+            }
         })
         .state('dashboard.deliveryNoteList',{
             url:'/deliveryNoteList',

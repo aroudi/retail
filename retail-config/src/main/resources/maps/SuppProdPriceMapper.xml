@@ -12,7 +12,9 @@
         <result column="PART_NO" property="partNo" />
         <result column="UNOM_QTY" property="unomQty" />
         <result column="PRICE" property="price" />
+        <result column="COST_BEFORE_TAX" property="costBeforeTax" />
         <result column="BULK_PRICE" property="bulkPrice" />
+        <result column="BULK_PRICE_BEFORE_TAX" property="bulkPriceBeforeTax" />
         <result column="BULK_QTY" property="bulkQty" />
         <result column="SPRC_MIN_ORD_QTY" property="sprcMinOrdQty" />
         <result column="SPRC_LEAD_TIME" property="sprcLeadTime" />
@@ -24,6 +26,7 @@
         <association property="unitOfMeasureContent" column="UNOM_ID_CONTENT" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="legalTender" column="LEGT_ID" select="au.com.biztune.retail.dao.LegalTenderDao.getLegalTenderById" />
         <association property="supplier" column="SOL_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySolId" />
+        <association property="taxLegVariance" column="TXLV_ID" select="au.com.biztune.retail.dao.TaxRuleDao.getTaxLegVarianceById" />
     </resultMap>
 
     <resultMap id="suppProdPriceLiteMap" type="SuppProdPrice" >
@@ -71,7 +74,9 @@
         <result column="PART_NO" property="partNo" />
         <result column="UNOM_QTY" property="unomQty" />
         <result column="PRICE" property="price" />
+        <result column="COST_BEFORE_TAX" property="costBeforeTax" />
         <result column="BULK_PRICE" property="bulkPrice" />
+        <result column="BULK_PRICE_BEFORE_TAX" property="bulkPriceBeforeTax" />
         <result column="BULK_QTY" property="bulkQty" />
         <result column="SPRC_MIN_ORD_QTY" property="sprcMinOrdQty" />
         <result column="SPRC_LEAD_TIME" property="sprcLeadTime" />
@@ -79,6 +84,7 @@
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="unitOfMeasureContent" column="UNOM_ID_CONTENT" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="legalTender" column="LEGT_ID" select="au.com.biztune.retail.dao.LegalTenderDao.getLegalTenderById" />
+        <association property="taxLegVariance" column="TXLV_ID" select="au.com.biztune.retail.dao.TaxRuleDao.getTaxLegVarianceById" />
     </resultMap>
 
     <sql id="suppProdPriceColumns">
@@ -99,7 +105,10 @@
         ${alias}.SPRC_MIN_ORD_VAL,
         ${alias}.UNOM_ID,
         ${alias}.UNOM_ID_CONTENT,
-        ${alias}.LEGT_ID
+        ${alias}.LEGT_ID,
+        ${alias}.TXLV_ID,
+        ${alias}.COST_BEFORE_TAX,
+        ${alias}.BULK_PRICE_BEFORE_TAX
 </sql>
 
     <select id="getSuppProdPriceByOrguIdAndProdIdAndSuppId" resultMap="suppProdPriceeMap" >
@@ -219,7 +228,10 @@
             SPRC_MIN_ORD_VAL,
             UNOM_ID,
             UNOM_ID_CONTENT,
-            LEGT_ID
+            LEGT_ID,
+            COST_BEFORE_TAX,
+            BULK_PRICE_BEFORE_TAX,
+            TXLV_ID
         ) VALUES (
         #{solId},
         #{prodId}
@@ -327,6 +339,24 @@
         <if test="legalTender == null">
             ,null
         </if>
+        <if test="costBeforeTax != null">
+            ,#{costBeforeTax}
+        </if>
+        <if test="costBeforeTax == null">
+            ,null
+        </if>
+        <if test="bulkPriceBeforeTax != null">
+            ,#{bulkPriceBeforeTax}
+        </if>
+        <if test="bulkPriceBeforeTax == null">
+            ,null
+        </if>
+        <if test="taxLegVariance != null">
+            ,#{taxLegVariance.id}
+        </if>
+        <if test="taxLegVariance == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -335,7 +365,16 @@
         UPDATE SUPP_PROD_PRICE SET
             UNOM_QTY =#{unomQty},
             PRICE =#{price},
+        <if test="costBeforeTax != null">
+            COST_BEFORE_TAX =#{costBeforeTax},
+        </if>
             BULK_PRICE =#{bulkPrice},
+        <if test="bulkPriceBeforeTax != null">
+          BULK_PRICE_BEFORE_TAX =#{bulkPriceBeforeTax},
+        </if>
+        <if test="taxLegVariance != null">
+            TXLV_ID =#{taxLegVariance.id},
+        </if>
             BULK_QTY=#{bulkQty}
         WHERE SPRC_ID = #{id}
     </update>

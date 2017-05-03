@@ -1,8 +1,9 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productCtrl', function($scope, $state, UserService, baseDataService, ngDialog,viewMode, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI) {
+cimgApp.controller('productCtrl', function($scope, $state, UserService, baseDataService, ngDialog,viewMode, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI, taxCodeSet) {
     //set default data on the page
+    $scope.taxLegVarianceSet = taxCodeSet.data;
     initPageData();
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -44,6 +45,7 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
     function initSupplierPriceGrid() {
         $scope.gridOptions = {
             enableFiltering: true,
+            enableCellEditOnFocus:true,
             columnDefs: [
                 {field:'id', visible:false, enableCellEdit:false},
                 {field:'solId', visible:false, enableCellEdit:false},
@@ -53,21 +55,29 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
                         return row.entity.supplier.supplierName
                     }
                 },
-                {field:'catalogueNo', displayName:'CatNo',enableCellEdit:false, width:'20%',
+                {field:'catalogueNo', displayName:'CatNo',enableCellEdit:false, width:'15%',
                     cellTooltip: function(row,col) {
                         return row.entity.catalogueNo
                     }
                 },
+                /*
                 {field:'partNo', enableCellEdit:false, width:'15%',
                     cellTooltip: function(row,col) {
                         return row.entity.partNo
                     }
                 },
+                */
                 {field:'unitOfMeasure.unomCode', displayName:'Size',enableCellEdit:false,width:'8%'},
                 {field:'unomQty',displayName:'Qty', enableCellEdit:true, type: 'number', width:'7%'},
-                {field:'price', enableCellEdit:true, cellFilter: 'currency', width:'10%'},
+                {field:'taxLegVariance.txlvDesc',editType:'dropdown', displayName:'Tax',enableCellEdit:true,width:'10%',
+                    editableCellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance"  ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
+                    //cellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance"  ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
+                },
+                {field:'costBeforeTax', displayName:'cost(ex tax)',enableCellEdit:true, cellFilter: 'currency', width:'8%'},
+                {field:'price', displayName:'cost(inc tax)',enableCellEdit:true, cellFilter: 'currency', width:'10%'},
                 {field:'bulkQty', enableCellEdit:true, type: 'number', width:'7%'},
-                {field:'bulkPrice', enableCellEdit:true, cellFilter: 'currency', width:'8%'},
+                {field:'bulkPriceBeforeTax', displayName:'bulk price(exc tax)',enableCellEdit:true, cellFilter: 'currency', width:'7%'},
+                {field:'bulkPrice', displayName:'bulk price(inc tax)',enableCellEdit:true, cellFilter: 'currency', width:'8%'},
                 {name:'Action',enableCellEdit:false,sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Remove" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-show="row.entity.id < 0" ng-click="grid.appScope.removeSuppProdPrice(row)"></i></a>', width:'5%' }
 
             ]
@@ -135,6 +145,9 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
             "unomQty" : productSupplier.suppUnomQty,
             "price" : productSupplier.suppPrice,
             "bulkQty" : productSupplier.suppBulkQty,
+            "taxLegVariance" : productSupplier.taxLegVariance,
+            "costBeforeTax" : productSupplier.costBeforeTax,
+            "bulkPriceBeforeTax" : productSupplier.bulkPriceBeforeTax,
             "bulkPrice" : productSupplier.suppBulkPrice
         }
         $scope.gridOptions.data.push(suppProdPrice);

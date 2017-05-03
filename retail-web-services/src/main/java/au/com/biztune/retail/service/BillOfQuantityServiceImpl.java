@@ -242,10 +242,18 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 suppProdPrice.setLegalTender(legalTender);
                 if (importedProduct.getCost() != null) {
                     suppProdPrice.setPrice(importedProduct.getCost());
+                    suppProdPrice.setCostBeforeTax(importedProduct.getCost());
                 }
                 suppProdPrice.setSprcCreated(currentTime);
                 suppProdPrice.setSprcModified(currentTime);
                 suppProdPrice.setProdId(product.getId());
+                //insert product tax rule
+                TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(importedProduct.getTaxName());
+                if (taxLegVariance == null) {
+                    taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
+                }
+                suppProdPrice.setTaxLegVariance(taxLegVariance);
+
                 suppProdPriceDao.insert(suppProdPrice);
 
                 //import product price
@@ -292,10 +300,18 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                     suppProdPrice.setLegalTender(legalTender);
                     if (importedProduct.getCost() != null) {
                         suppProdPrice.setPrice(importedProduct.getCost());
+                        suppProdPrice.setCostBeforeTax(importedProduct.getCost());
                     }
                     suppProdPrice.setSprcCreated(currentTime);
                     suppProdPrice.setSprcModified(currentTime);
                     suppProdPrice.setProdId(product.getId());
+                    //insert product tax rule
+                    TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(importedProduct.getTaxName());
+                    if (taxLegVariance == null) {
+                        taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
+                    }
+                    suppProdPrice.setTaxLegVariance(taxLegVariance);
+
                     suppProdPriceDao.insert(suppProdPrice);
                 } else {
                     if (importedProduct.getCost() != null) {

@@ -46,4 +46,15 @@ public class TaxRuleRest {
     public List getAllTaxRules() {
         return taxRuleService.getAllTaxRules();
     }
+    /**
+     * Get All TaxLegVariance.
+     * @return List of TaxLegVariance
+     */
+    @Secured
+    @GET
+    @Path("/taxLegVariance/allActive")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List getAllActiveTaxLegVariance() {
+        return taxRuleService.getAllActiveTaxLegVariance();
+    }
 }

@@ -1,6 +1,7 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.TaxRuleDao;
+import au.com.biztune.retail.domain.TaxLegVariance;
 import au.com.biztune.retail.domain.TaxRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,4 +33,18 @@ public class TaxRuleServiceImpl implements TaxRuleService {
             return null;
         }
     }
+
+    /**
+     * get all taxLegVariance.
+     * @return LIst of TaxLegVariance
+     */
+    public List<TaxLegVariance> getAllActiveTaxLegVariance() {
+        try {
+            return taxRuleDao.getAllActiveTaxLegVariance();
+        } catch (Exception e) {
+            logger.error("Error in getting list of tax leg variance ", e);
+            return null;
+        }
+    }
+
 }

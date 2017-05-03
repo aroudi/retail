@@ -471,10 +471,17 @@ public class ProductServiceImpl implements ProductService {
                 suppProdPrice.setUnomQty(1);
                 suppProdPrice.setLegalTender(legalTender);
                 suppProdPrice.setPrice(cost);
+                suppProdPrice.setCostBeforeTax(cost);
                 suppProdPrice.setSprcCreated(currentTime);
                 suppProdPrice.setSprcModified(currentTime);
                 suppProdPrice.setProdId(product.getId());
                 suppProdPrice.setBulkPrice(bulkPrice);
+                //insert product tax rule
+                TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(taxName);
+                if (taxLegVariance == null) {
+                    taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
+                }
+                suppProdPrice.setTaxLegVariance(taxLegVariance);
                 suppProdPriceDao.insert(suppProdPrice);
 
                 //import product price

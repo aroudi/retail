@@ -51,9 +51,32 @@
                                 <input class="form-control" name="suppUnomQty" data-ng-model="productSupplier.suppUnomQty" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
                             </div >
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-lg-4">
                             <div class="form-group">
-                                <label>Price:
+                                <label>Tax</label>
+                                <!--input class="form-control" data-ng-model="productSupplier.supplier.supplierName" ng-disabled="true">
+                                <button type="button" class="btn btn-success" ng-click="searchSupplier()">Supplier</button-->
+                                <select class="form-control" data-ng-model="productSupplier.taxLegVariance"
+                                        ng-options="tax.txlvDesc for tax in taxLegVarianceSet" >
+                                </select>
+                            </div >
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Cost(before tax):
+                                                                       <span class="btn btn-warning btn-xs" ng-show="mainForm.costBeforeTax.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                                </label>
+                                <input class="form-control" data-ng-model="productSupplier.costBeforeTax" name="costBeforeTax" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" />
+                            </div >
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Cost(after tax):
                                                                        <span class="btn btn-warning btn-xs" ng-show="mainForm.suppPrice.$error.pattern">
                                                                             Invalid!
                                                                        </span>
@@ -63,17 +86,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label>Bulk Price:
-                                                                       <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkPrice.$error.pattern">
-                                                                            Invalid!
-                                                                       </span>
-                                </label>
-                                <input class="form-control" data-ng-model="productSupplier.suppBulkPrice" name="suppBulkPrice" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
-                            </div >
-                        </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="form-group">
                                 <label>Bulk Quantity:
                                                                        <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkQty.$error.pattern">
@@ -81,6 +94,26 @@
                                                                        </span>
                                 </label>
                                 <input class="form-control" name="suppBulkQty" data-ng-model="productSupplier.suppBulkQty" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
+                            </div >
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Bulk Price(Before Tax):
+                                                                       <span class="btn btn-warning btn-xs" ng-show="mainForm.bulkPriceBeforeTax.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                                </label>
+                                <input class="form-control" data-ng-model="productSupplier.bulkPriceBeforeTax" name="bulkPriceBeforeTax" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
+                            </div >
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Bulk Price(After Tax):
+                                                                       <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkPrice.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                                </label>
+                                <input class="form-control" data-ng-model="productSupplier.suppBulkPrice" name="suppBulkPrice" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
                             </div >
                         </div>
                     </div>

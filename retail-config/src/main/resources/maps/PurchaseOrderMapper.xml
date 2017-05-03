@@ -27,6 +27,7 @@
         <result column="POH_CONFIRM_DATE" property="pohConfirmDate" />
         <result column="POH_VALUE_GROSS" property="pohValueGross" />
         <result column="POH_VALUE_NETT" property="pohValueNett" />
+        <result column="POH_VALUE_TAX" property="pohValueTax" />
         <result column="POH_TOTAL_QTY" property="pohTotalQty" />
         <result column="POH_TOTAL_LINES" property="pohTotalLines" />
         <result column="POH_COMMENT" property="pohComment" />
@@ -38,6 +39,7 @@
         <result column="POH_PRINTED" property="pohPrinted" />
         <result column="POH_PRJ_NAME" property="pohPrjName" />
         <result column="POH_PRJ_CODE" property="pohPrjCode" />
+        <result column="COSTS_INCLUDE_TAX" property="costsIncludeTax" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="user" column="POH_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="pohStatus" column="POH_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -67,6 +69,7 @@
         <result column="POH_CONFIRM_DATE" property="pohConfirmDate" />
         <result column="POH_VALUE_GROSS" property="pohValueGross" />
         <result column="POH_VALUE_NETT" property="pohValueNett" />
+        <result column="POH_VALUE_TAX" property="pohValueTax" />
         <result column="POH_TOTAL_QTY" property="pohTotalQty" />
         <result column="POH_TOTAL_LINES" property="pohTotalLines" />
         <result column="POH_COMMENT" property="pohComment" />
@@ -78,6 +81,7 @@
         <result column="POH_PRINTED" property="pohPrinted" />
         <result column="POH_PRJ_NAME" property="pohPrjName" />
         <result column="POH_PRJ_CODE" property="pohPrjCode" />
+        <result column="COSTS_INCLUDE_TAX" property="costsIncludeTax" />
         <association property="user" column="POH_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierFullBySuppId" />
         <association property="pohStatus" column="POH_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -96,6 +100,8 @@
         <result column="POL_QTY_RECEIVED" property="polQtyReceived" />
         <result column="POL_QTY_INVOICED" property="polQtyInvoiced" />
         <result column="POL_VALUE_ORDERED" property="polValueOrdered" />
+        <result column="POL_VALUE_TAX" property="polValueTax" />
+        <result column="POL_VALUE_GROSS" property="polValueGross" />
         <result column="POL_VALUE_RECEIVED" property="polValueReceived" />
         <result column="POL_VALUE_INVOICED" property="polValueInvoiced" />
         <result column="POL_FREE_TEXT" property="polFreeText" />
@@ -110,6 +116,7 @@
         <association property="unomContents" column="UNOM_ID_CONTENTS" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="polCreationType" column="POL_CREATION_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="polStatus" column="POL_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="taxLegVariance" column="TXLV_ID" select="au.com.biztune.retail.dao.TaxRuleDao.getTaxLegVarianceById" />
         <collection property="poBoqLinks" javaType="ArrayList" column="POL_ID" ofType="PoBoqLink" select="au.com.biztune.retail.dao.PoBoqLinkDao.getAllPoBoqLinkPerPolId"/>
     </resultMap>
 
@@ -125,6 +132,8 @@
         <result column="POL_QTY_RECEIVED" property="polQtyReceived" />
         <result column="POL_QTY_INVOICED" property="polQtyInvoiced" />
         <result column="POL_VALUE_ORDERED" property="polValueOrdered" />
+        <result column="POL_VALUE_TAX" property="polValueTax" />
+        <result column="POL_VALUE_GROSS" property="polValueGross" />
         <result column="POL_VALUE_RECEIVED" property="polValueReceived" />
         <result column="POL_VALUE_INVOICED" property="polValueInvoiced" />
         <result column="POL_FREE_TEXT" property="polFreeText" />
@@ -178,7 +187,9 @@
         ${alias}.POH_REVISION,
         ${alias}.POH_PRINTED,
         ${alias}.POH_PRJ_NAME,
-        ${alias}.POH_PRJ_CODE
+        ${alias}.POH_PRJ_CODE,
+        ${alias}.POH_VALUE_TAX,
+        ${alias}.COSTS_INCLUDE_TAX
 
     </sql>
 
@@ -199,6 +210,8 @@
         ${alias}.POL_QTY_RECEIVED,
         ${alias}.POL_QTY_INVOICED,
         ${alias}.POL_VALUE_ORDERED,
+        ${alias}.POL_VALUE_TAX,
+        ${alias}.POL_VALUE_GROSS,
         ${alias}.POL_VALUE_RECEIVED,
         ${alias}.POL_VALUE_INVOICED,
         ${alias}.POL_FREE_TEXT,
@@ -249,7 +262,9 @@
          POH_CONTACT_PHONE,
          POH_REVISION,
          POH_PRJ_NAME,
-         POH_PRJ_CODE
+         POH_PRJ_CODE,
+         POH_VALUE_TAX,
+         COSTS_INCLUDE_TAX
         ) VALUES (
         #{orgUnit.id},
         #{pohOrderNumber}
@@ -474,6 +489,18 @@
         <if test="pohPrjCode == null">
             ,null
         </if>
+        <if test="pohValueTax != null">
+            ,#{pohValueTax}
+        </if>
+        <if test="pohValueTax == null">
+            ,null
+        </if>
+        <if test="costsIncludeTax != null">
+            ,#{costsIncludeTax}
+        </if>
+        <if test="costsIncludeTax == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -576,6 +603,12 @@
         <if test="pohPrjCode != null">
             ,POH_PRJ_CODE = #{pohPrjCode}
         </if>
+        <if test="pohValueTax != null">
+            ,POH_VALUE_TAX = #{pohValueTax}
+        </if>
+        <if test="costsIncludeTax != null">
+            ,COSTS_INCLUDE_TAX = #{costsIncludeTax}
+        </if>
         WHERE POH_ID = #{id}
     </update>
 
@@ -610,7 +643,9 @@
         POL_CREATION_TYPE,
         POL_STATUS,
         POL_PROD_ID,
-        POL_SUPP_ID
+        POL_SUPP_ID,
+        POL_VALUE_TAX,
+        POL_VALUE_GROSS
         ) VALUES (
         #{pohId}
         <if test="pohOrderNumber != null">
@@ -802,6 +837,18 @@
         <if test="polSuppId == null">
             ,null
         </if>
+        <if test="polValueTax != null">
+            ,#{polValueTax}
+        </if>
+        <if test="polValueTax == null">
+            ,null
+        </if>
+        <if test="polValueGross != null">
+            ,#{polValueGross}
+        </if>
+        <if test="polValueGross == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -833,7 +880,7 @@
         </if>
 
         <if test="taxLegVariance != null">
-            ,TXLV_ID = #{taxLegVariance}
+            ,TXLV_ID = #{taxLegVariance.id}
         </if>
 
         <if test="unitOfMeasure != null">
@@ -906,6 +953,12 @@
         </if>
         <if test="polStatus != null">
             ,POL_STATUS = #{polStatus.id}
+        </if>
+        <if test="polValueTax != null">
+            ,POL_VALUE_TAX = #{polValueTax}
+        </if>
+        <if test="polValueGross != null">
+            ,POL_VALUE_GROSS = #{polValueGross}
         </if>
         WHERE POL_ID = #{id}
     </update>

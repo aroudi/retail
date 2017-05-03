@@ -522,4 +522,6 @@ public interface IdBConstant {
      * CUSTOMER GRADE CODE
      */
     String CUSTOMER_GRADE_DEFAULT= "Default";
+
+    String DEFAULT_PRODUCT_TAX_CODE = "GST";
 }
