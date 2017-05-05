@@ -150,7 +150,11 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
                     controller:'purchaseOrderDetailCtrl',
                     className: 'ngdialog-pdfView',
                     closeByDocument:false,
-                    resolve: {viewMode: function(){return true}}
+                    resolve: {viewMode: function(){return true},
+                        taxCodeSet: function(baseDataService, TAXLEGVARIANCE_ALL_URI){
+                            return baseDataService.getBaseData(TAXLEGVARIANCE_ALL_URI);
+                        }
+                    }
                 }).then (function (){
                     }, function(reason) {
                         console.log('Modal promise rejected. Reason:', reason);

@@ -1,8 +1,8 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI) {
-
+cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI, taxCodeSet) {
+    $scope.taxLegVarianceSet = taxCodeSet.data;
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
         $scope.isViewMode = viewMode;
@@ -13,13 +13,18 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         showGridFooter: true,
         showColumnFooter: true,
         enableColumnResizing: true,
+        enableCellEditOnFocus:true,
         enableSorting:true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'35%'},
+            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'25%'},
             //{field:'dlnlProductSize.unomDesc', displayName:'Product Size', enableCellEdit:false, width:'8%'},
-            {field:'dlnlCaseSize.unomDesc', displayName:'Case Size', enableCellEdit:false, width:'7%'},
-            {field:'dlnlUnitCost', displayName:'Case Cost',enableCellEdit:true, width:'8%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'dlnlCaseSize.unomDesc', displayName:'Case Size', enableCellEdit:false, width:'5%'},
+            {field:'dlnlUnitCost', displayName:'Case Cost',enableCellEdit:true, width:'5%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'taxLegVariance.txlvDesc',editType:'dropdown', displayName:'Tax',enableCellEdit:true,width:'8%',
+                editableCellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance" ng-change="grid.appScope.updateLineTotalCost(row.entity)" ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
+                //cellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance"  ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
+            },
             //polQtyOrdered
             {field:'polQty', displayName:'Purchased',enableCellEdit:false, width:'6%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
             //{field:'rcvdCaseSize.unomDesc', displayName:'Recd Case Size', enableCellEdit:false, width:'8%'},
@@ -29,6 +34,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
                 }
             },
             {field:'backOrder()', displayName:'Back Order',enableCellEdit:false, width:'5%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'dlnlValueTax', displayName:'Tax value',enableCellEdit:false, width:'7%', cellFilter: 'currency'},
             {field:'totalCost', displayName:'Total Cost',enableCellEdit:false, width:'8%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'dlnlDiscrepancy', displayName:'Discrepancy',enableCellEdit:false, type:'boolean', width:'6%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-model="row.entity.dlnlDiscrepancy">',
                 cellClass:
@@ -77,7 +83,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         }
 
         //update the total value of the line
-        updateLineTotalCost(deliveryNoteLine);
+        $scope.updateLineTotalCost(deliveryNoteLine);
     })
 
     initPageData();
@@ -90,6 +96,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             $scope.deliveryNoteHeader.freightAmount = 0.00;
             $scope.pageIsNew = true;
             $scope.deliveryNoteHeader.delnSurcharge = 0.00;
+            $scope.deliveryNoteHeader.costsIncludeTax = false;
         } else {
             $scope.deliveryNoteHeader = angular.copy(baseDataService.getRow());
             $scope.gridOptions.data = $scope.deliveryNoteHeader.lines;
@@ -176,11 +183,12 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         $scope.deliveryNoteHeader.pohId = purchaseOrder.id;
         for (var i = 0; i < purchaseOrder.lines.length; i++) {
             var createdLine = createDeliveryNoteLine(purchaseOrder.lines[i]);
-            updateLineTotalCost(createdLine);
+            $scope.updateLineTotalCost(createdLine);
             createdLine.backOrder = function() {
                 return this.polQty - this.rcvdQty;
             }
             $scope.gridOptions.data.push(createdLine);
+            calculateSubTotal();
         }
 
     }
@@ -205,16 +213,37 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             'rcvdProductSize' :  $scope.unomContents,
             'rcvdQty' :  purchaseOrderLine.polQtyOrdered - purchaseOrderLine.polQtyReceived,
             'dlnlDiscrepancy' : false,
-            'polQty' : purchaseOrderLine.polQtyOrdered
+            'polQty' : purchaseOrderLine.polQtyOrdered,
+            'taxLegVariance' : purchaseOrderLine.taxLegVariance,
+            'delnValueTax' : purchaseOrderLine.polValueTax,
+            'delnValueGross' : purchaseOrderLine.polValueGross
         }
         return deliveryNoteLineObject;
     }
 
-    function updateLineTotalCost(line) {
+    $scope.updateLineTotalCost = function(line) {
         if (line == undefined) {
             return;
         }
-        line.totalCost = line.dlnlUnitCost * line.rcvdQty;
+
+        var productsValue = line.dlnlUnitCost * line.rcvdQty;
+        console.log('productsValue = ' + productsValue);
+        if (line.taxLegVariance != undefined && line.taxLegVariance.txlvAmount != undefined) {
+            line.delnValueTax = line.dlnlUnitCost * line.taxLegVariance.txlvRate * line.rcvdQty;
+        } else {
+            line.delnValueTax = 0.00;
+        }
+        if ($scope.deliveryNoteHeader.costsIncludeTax) {
+            line.totalCost = productsValue;
+            line.delnValueGross = productsValue*1 - line.delnValueTax*1
+        }else {
+            line.delnValueGross = productsValue;
+            line.totalCost = line.delnValueGross*1 + line.delnValueTax*1;
+        }
+
+
+
+        //line.totalCost = line.dlnlUnitCost * line.rcvdQty;
         calculateSubTotal();
     }
     $scope.saveDeliveryNote = function () {
@@ -289,16 +318,23 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
     function calculateSubTotal() {
         var lineList =  $scope.gridOptions.data;
         var valueNett = 0.00;
+        var valueGross = 0.00;
+        var valueTax = 0.00;
         for (var i = 0; i < lineList.length; i++) {
             if (!lineList[i].deleted) {
                 valueNett = valueNett*1 + lineList[i].totalCost*1 ;
+                valueGross = valueGross*1 + lineList[i].dlnlValueGross*1 ;
+                valueTax = valueTax*1 + lineList[i].dlnlValueTax*1 ;
             }
         }
         $scope.deliveryNoteHeader.delnValueNett = valueNett;
+        $scope.deliveryNoteHeader.delnValueGross = valueGross;
+        $scope.deliveryNoteHeader.delnTax = valueTax;
         $scope.calculateTotal();
     }
 
     $scope.calculateTotal = function() {
+        console.log('total called');
         $scope.deliveryNoteHeader.freightTax = $scope.deliveryNoteHeader.freightAmount*$scope.deliveryNoteHeader.freightTxrl.taxLegVariance.txlvRate*1
         $scope.deliveryNoteHeader.delnTotal = $scope.deliveryNoteHeader.delnValueNett*1 + $scope.deliveryNoteHeader.freightAmount*1 + $scope.deliveryNoteHeader.freightTax*1 + $scope.deliveryNoteHeader.delnSurcharge*1;
     }
@@ -334,4 +370,13 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
     $scope.cancel = function() {
         $scope.closeThisDialog('button');
     }
+    $scope.onTaxIncludeChange = function() {
+        var poLineList =  $scope.gridOptions.data;
+        for (var i = 0; i < poLineList.length; i++) {
+            if (!poLineList[i].deleted ) {
+                $scope.updateLineTotalCost(poLineList[i]);
+            }
+        }
+    }
+
 });

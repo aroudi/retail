@@ -71,10 +71,19 @@
                         </div>
                     </div>
                     <div class="row">
-                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                        <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
-                        <button type="button" class="btn btn-success" ng-click="saveDeliveryNote()" ng-disabled="disablePage == true" ng-show="!isViewMode">Submit</button>
-                        <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
+                        <div class="col-lg-6">
+
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
+                            <button type="button" class="btn btn-success" ng-click="saveDeliveryNote()" ng-disabled="disablePage == true" ng-show="!isViewMode">Submit</button>
+                            <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Costs include tax:</label>
+                                <input type="checkbox" data-ng-model="deliveryNoteHeader.costsIncludeTax" ng-change="onTaxIncludeChange()">
+                            </div >
+                        </div>
 
                     </div>
                     <div class="row">

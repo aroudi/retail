@@ -24,6 +24,7 @@
         <result column="DELN_TOTAL" property="delnTotal" />
         <result column="DELN_TAX" property="delnTax" />
         <result column="DELN_SURCHARGE" property="delnSurcharge" />
+        <result column="COSTS_INCLUDE_TAX" property="costsIncludeTax" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="user" column="DELN_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -52,6 +53,7 @@
         <result column="FREIGHT_TAX" property="freightTax" />
         <result column="FREIGHT_TAX_CODE" property="freightTaxCode" />
         <result column="DELN_SURCHARGE" property="delnSurcharge" />
+        <result column="COSTS_INCLUDE_TAX" property="costsIncludeTax" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="user" column="DELN_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -79,6 +81,7 @@
         <result column="DELN_TOTAL" property="delnTotal" />
         <result column="DELN_TAX" property="delnTax" />
         <result column="DELN_SURCHARGE" property="delnSurcharge" />
+        <result column="COSTS_INCLUDE_TAX" property="costsIncludeTax" />
         <association property="freightTxrl" column="FREIGHT_TXRL_ID" select="au.com.biztune.retail.dao.TaxRuleDao.getTaxRuleById" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -94,6 +97,8 @@
         <result column="DLNL_UNIT_COST" property="dlnlUnitCost" />
         <result column="RCVD_QTY" property="rcvdQty" />
         <result column="TOTAL_COST" property="totalCost" />
+        <result column="DLNL_VALUE_TAX" property="delnValueTax" />
+        <result column="DLNL_VALUE_GROSS" property="delnValueGross" />
         <result column="DLNL_QTY_REJECTED" property="dlnlQtyRegected" />
         <result column="DLNL_DISCREPANCY" property="dlnlDiscrepancy" />
         <result column="DLNL_QTY" property="dlnlQty" />
@@ -105,6 +110,7 @@
         <association property="dlnlProductSize" column="DLNL_PRODUCT_SIZE" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="rcvdCaseSize" column="RCVD_CASE_SIZE" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="rcvdProductSize" column="RCVD_PRODUCT_SIZE" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
+        <association property="taxLegVariance" column="TXLV_ID" select="au.com.biztune.retail.dao.TaxRuleDao.getTaxLegVarianceById" />
     </resultMap>
 
     <sql id="deliveryNoteHeaderColumns">
@@ -134,7 +140,8 @@
         ${alias}.FREIGHT_TAX_CODE,
         ${alias}.DELN_TOTAL,
         ${alias}.DELN_SURCHARGE,
-        ${alias}.DELN_TAX
+        ${alias}.DELN_TAX,
+        ${alias}.COSTS_INCLUDE_TAX
     </sql>
 
     <sql id="deliveryNoteLineColumns">
@@ -156,7 +163,10 @@
         ${alias}.DLNL_STATUS,
         ${alias}.DLNL_DISCREPANCY,
         ${alias}.POL_QTY,
-        ${alias}.DLNL_COMMENT
+        ${alias}.DLNL_COMMENT,
+        ${alias}.DLNL_VALUE_GROSS,
+        ${alias}.DLNL_VALUE_TAX,
+        ${alias}.TXLV_ID
     </sql>
 
     <insert id="insertDeliveryNoteHeader" parameterType="DeliveryNoteHeader" useGeneratedKeys="true" keyProperty="id" keyColumn="DELN_ID">
@@ -186,7 +196,8 @@
             FREIGHT_TAX_CODE,
             DELN_TOTAL,
             DELN_TAX,
-            DELN_SURCHARGE
+            DELN_SURCHARGE,
+            COSTS_INCLUDE_TAX
         ) VALUES (
         #{orguId}
         <if test="delnNoteNumber != null">
@@ -339,6 +350,12 @@
         <if test="delnSurcharge == null">
             ,null
         </if>
+        <if test="costsIncludeTax != null">
+            ,#{costsIncludeTax}
+        </if>
+        <if test="costsIncludeTax == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -420,6 +437,9 @@
         <if test="delnSurcharge != null">
             ,DELN_SURCHARGE = #{delnSurcharge}
         </if>
+        <if test="costsIncludeTax != null">
+            ,COSTS_INCLUDE_TAX = #{costsIncludeTax}
+        </if>
         WHERE DELN_ID = #{id}
     </update>
 
@@ -443,7 +463,10 @@
             DLNL_STATUS,
             DLNL_DISCREPANCY,
             POL_QTY,
-            DLNL_COMMENT
+            DLNL_COMMENT,
+            DLNL_VALUE_GROSS,
+            DLNL_VALUE_TAX,
+            TXLV_ID
         ) VALUES (
         #{delnId}
         <if test="polId != null">
@@ -562,6 +585,24 @@
         <if test="dlnlComment == null">
             ,null
         </if>
+        <if test="delnValueGross != null">
+            ,#{delnValueGross}
+        </if>
+        <if test="delnValueGross == null">
+            ,null
+        </if>
+        <if test="delnValueTax != null">
+            ,#{delnValueTax}
+        </if>
+        <if test="delnValueTax == null">
+            ,null
+        </if>
+        <if test="taxLegVariance != null">
+            ,#{taxLegVariance.id}
+        </if>
+        <if test="taxLegVariance == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -632,6 +673,15 @@
         </if>
         <if test="dlnlComment != null">
             ,DLNL_COMMENT = #{dlnlComment}
+        </if>
+        <if test="delnValueTax != null">
+            ,DLNL_VALUE_TAX = #{delnValueTax}
+        </if>
+        <if test="delnValueGross != null">
+            ,DLNL_VALUE_GROSS = #{delnValueGross}
+        </if>
+        <if test="taxLegVariance != null">
+            ,TXLV_ID = #{taxLegVariance.id}
         </if>
         WHERE DLNL_ID = #{id}
     </update>

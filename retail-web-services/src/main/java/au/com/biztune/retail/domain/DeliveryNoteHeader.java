@@ -37,6 +37,7 @@ public class DeliveryNoteHeader {
     private double delnTotal;
     private double delnTax;
     private double delnSurcharge;
+    private boolean costsIncludeTax;
 
 
     public long getId() {
@@ -277,5 +278,13 @@ public class DeliveryNoteHeader {
 
     public void setDelnSurcharge(double delnSurcharge) {
         this.delnSurcharge = delnSurcharge;
+    }
+
+    public boolean isCostsIncludeTax() {
+        return costsIncludeTax;
+    }
+
+    public void setCostsIncludeTax(boolean costsIncludeTax) {
+        this.costsIncludeTax = costsIncludeTax;
     }
 }

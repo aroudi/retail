@@ -18,12 +18,15 @@ public class DeliveryNoteLine {
     private UnitOfMeasure rcvdProductSize;
     private double rcvdQty;
     private double totalCost;
+    private double delnValueTax;
+    private double delnValueGross;
     private int dlnlQtyRegected;
     private ConfigCategory dlnlStatus;
     private boolean dlnlDiscrepancy;
     private double polQty;
     private String dlnlComment;
     private boolean deleted;
+    private TaxLegVariance taxLegVariance;
     public long getId() {
         return id;
     }
@@ -182,5 +185,29 @@ public class DeliveryNoteLine {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public double getDelnValueTax() {
+        return delnValueTax;
+    }
+
+    public void setDelnValueTax(double delnValueTax) {
+        this.delnValueTax = delnValueTax;
+    }
+
+    public double getDelnValueGross() {
+        return delnValueGross;
+    }
+
+    public void setDelnValueGross(double delnValueGross) {
+        this.delnValueGross = delnValueGross;
+    }
+
+    public TaxLegVariance getTaxLegVariance() {
+        return taxLegVariance;
+    }
+
+    public void setTaxLegVariance(TaxLegVariance taxLegVariance) {
+        this.taxLegVariance = taxLegVariance;
     }
 }

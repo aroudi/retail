@@ -162,7 +162,11 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             controller: 'deliveryNoteCtrl',
             templateUrl:'views/pages/deliveryNote.html',
             access: "user",
-            resolve: {viewMode: function(){return false}}
+            resolve: {viewMode: function(){return false},
+                taxCodeSet: function(baseDataService, TAXLEGVARIANCE_ALL_URI){
+                    return baseDataService.getBaseData(TAXLEGVARIANCE_ALL_URI);
+                }
+            }
         })
         .state('dashboard.createSaleTransaction',{
             url:'/createSaleTransaction',

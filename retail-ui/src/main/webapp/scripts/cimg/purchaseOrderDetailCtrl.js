@@ -170,6 +170,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             $scope.purchaseOrderHeader.pohExpDeliveryStr = new Date();
             $scope.purchaseOrderHeader.pohCreatedDateStr = new Date();
             $scope.purchaseOrderHeader.id = -1;
+            $scope.purchaseOrderHeader.costsIncludeTax = false;
             $scope.pageIsNew = true;
         } else {
             $scope.purchaseOrderHeader = angular.copy(baseDataService.getRow());
