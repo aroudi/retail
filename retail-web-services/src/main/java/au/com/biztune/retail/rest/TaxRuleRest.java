@@ -2,8 +2,10 @@
 
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.domain.TaxLegVariance;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.TaxRuleService;
+import au.com.biztune.retail.util.IdBConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +58,17 @@ public class TaxRuleRest {
     @Produces(MediaType.APPLICATION_JSON)
     public List getAllActiveTaxLegVariance() {
         return taxRuleService.getAllActiveTaxLegVariance();
+    }
+
+    /**
+     * Get TaxLegVariance by code.
+     * @return TaxLegVariance
+     */
+    @Secured
+    @GET
+    @Path("/taxLegVariance/gstCode")
+    @Produces(MediaType.APPLICATION_JSON)
+    public TaxLegVariance getGstTaxLegVariance() {
+        return taxRuleService.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
     }
 }

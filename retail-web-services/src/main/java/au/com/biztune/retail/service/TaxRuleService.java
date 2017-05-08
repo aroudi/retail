@@ -20,4 +20,11 @@ public interface TaxRuleService {
      * @return LIst of TaxLegVariance
      */
     List<TaxLegVariance> getAllActiveTaxLegVariance();
+
+    /**
+     * get tax leg variance by code.
+     * @param taxCode taxCode
+     * @return taxLegVariance
+     */
+    TaxLegVariance getTaxLegVarianceByCode(String taxCode);
 }

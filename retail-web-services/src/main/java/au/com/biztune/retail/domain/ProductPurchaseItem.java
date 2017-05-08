@@ -13,12 +13,15 @@ public class ProductPurchaseItem {
     private UnitOfMeasure unitOfMeasureContent;
     private double unomQty;
     private double price;
+    private double costBeforeTax;
     private double bulkPrice;
+    private double bulkPriceBeforeTax;
     private double bulkQty;
     private LegalTender legalTender;
     private double sprcMinOrdQty;
     private long sprcLeadTime;
     private double sprcMinOrdVal;
+    private TaxLegVariance taxLegVariance;
 
     public long getId() {
         return id;
@@ -138,5 +141,29 @@ public class ProductPurchaseItem {
 
     public void setSprcMinOrdVal(double sprcMinOrdVal) {
         this.sprcMinOrdVal = sprcMinOrdVal;
+    }
+
+    public double getCostBeforeTax() {
+        return costBeforeTax;
+    }
+
+    public void setCostBeforeTax(double costBeforeTax) {
+        this.costBeforeTax = costBeforeTax;
+    }
+
+    public double getBulkPriceBeforeTax() {
+        return bulkPriceBeforeTax;
+    }
+
+    public void setBulkPriceBeforeTax(double bulkPriceBeforeTax) {
+        this.bulkPriceBeforeTax = bulkPriceBeforeTax;
+    }
+
+    public TaxLegVariance getTaxLegVariance() {
+        return taxLegVariance;
+    }
+
+    public void setTaxLegVariance(TaxLegVariance taxLegVariance) {
+        this.taxLegVariance = taxLegVariance;
     }
 }

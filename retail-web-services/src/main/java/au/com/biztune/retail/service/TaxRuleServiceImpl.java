@@ -47,4 +47,18 @@ public class TaxRuleServiceImpl implements TaxRuleService {
         }
     }
 
+    /**
+     * get tax leg variance by code.
+     * @param taxCode taxCode
+     * @return taxLegVariance
+     */
+    public TaxLegVariance getTaxLegVarianceByCode(String taxCode) {
+        try {
+            return taxRuleDao.getTaxLegVarianceByCode(taxCode);
+        } catch (Exception e) {
+            logger.error("Error in getting tax leg variance by code ", e);
+            return null;
+        }
+    }
+
 }

@@ -1879,3 +1879,6 @@ go
 
 ALTER TABLE DELIVERY_NOTE_HEADER ADD COSTS_INCLUDE_TAX BIT DEFAULT 0
 GO
+
+alter table delivery_note_line drop constraint DELIVERY_NOTE_LINE_FK2
+go

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, SUPPLIER_ALL_URI, taxCodeSet) {
+cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, SUPPLIER_ALL_URI, taxCodeSet, TAXLEGVARIANCE_GST_URI) {
     $scope.taxLegVarianceSet = taxCodeSet.data;
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -163,6 +163,10 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             $scope.purchaseOrderHeader.pohStatus = baseDataService.populateSelectList($scope.purchaseOrderHeader.pohStatus,$scope.pohStatusSet);
             managePoStatusDisplay();
         });
+        baseDataService.getBaseData(TAXLEGVARIANCE_GST_URI).then(function(response){
+            $scope.gstTaxLegVariance = response.data;
+        });
+
         if ( baseDataService.getIsPageNew()) {
             $scope.purchaseOrderHeader = {};
             $scope.purchaseOrderHeader.pohStatus = $scope.statusOnProgress;
@@ -225,6 +229,12 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
     };
     function createPurchaseLine (item) {
         var rowId;
+        var taxLegVar;
+        if (item.taxLegVariance == undefined || item.taxLegVariance == null) {
+            taxLegVar = $scope.gstTaxLegVariance;
+        } else {
+            taxLegVar = item.taxLegVariance;
+        }
         if ($scope.gridOptions.data == undefined && $scope.gridOptions.data ==null) {
             rowId = -2000;
         } else {
@@ -242,7 +252,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             'unomContents' : item.unitOfMeasure,
             'polCreationType' :  $scope.polCreationTypeManual,
             'polStatus' :  $scope.statusOnProgress,
-            'taxLegVariance' :  item.taxLegVariance,
+            'taxLegVariance' :  taxLegVar,
             'polValueTax' : 0.00,
             'polValueGross' : 0.00
             //polStatus

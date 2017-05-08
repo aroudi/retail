@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI, taxCodeSet) {
+cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI, taxCodeSet, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, TAXLEGVARIANCE_GST_URI) {
     $scope.taxLegVarianceSet = taxCodeSet.data;
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -17,12 +17,19 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         enableSorting:true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'25%'},
+            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'22%'},
             //{field:'dlnlProductSize.unomDesc', displayName:'Product Size', enableCellEdit:false, width:'8%'},
-            {field:'dlnlCaseSize.unomDesc', displayName:'Case Size', enableCellEdit:false, width:'5%'},
-            {field:'dlnlUnitCost', displayName:'Case Cost',enableCellEdit:true, width:'5%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'dlnlCaseSize.unomDesc', displayName:'Size', enableCellEdit:false, width:'5%'},
+            {field:'dlnlUnitCost', displayName:'Cost',enableCellEdit:true, width:'5%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum,
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            },
             {field:'taxLegVariance.txlvDesc',editType:'dropdown', displayName:'Tax',enableCellEdit:true,width:'8%',
-                editableCellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance" ng-change="grid.appScope.updateLineTotalCost(row.entity)" ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
+                editableCellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance" ng-change="grid.appScope.updateLineTotalCost(row.entity)" ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
                 //cellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance"  ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
             },
             //polQtyOrdered
@@ -33,8 +40,8 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
                     return 'editModeColor'
                 }
             },
-            {field:'backOrder()', displayName:'Back Order',enableCellEdit:false, width:'5%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'dlnlValueTax', displayName:'Tax value',enableCellEdit:false, width:'7%', cellFilter: 'currency'},
+            {field:'backOrder()', displayName:'Back Order',enableCellEdit:false, width:'8%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'delnValueTax', displayName:'Tax value',enableCellEdit:false, width:'7%', cellFilter: 'currency'},
             {field:'totalCost', displayName:'Total Cost',enableCellEdit:false, width:'8%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'dlnlDiscrepancy', displayName:'Discrepancy',enableCellEdit:false, type:'boolean', width:'6%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-model="row.entity.dlnlDiscrepancy">',
                 cellClass:
@@ -141,6 +148,9 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             $scope.deliveryNoteHeader.supplier = baseDataService.populateSelectList($scope.deliveryNoteHeader.supplier,$scope.supplierSet);
             //$scope.changeSupplier();
         });
+        baseDataService.getBaseData(TAXLEGVARIANCE_GST_URI).then(function(response){
+            $scope.gstTaxLegVariance = response.data;
+        });
    }
 
     $scope.cancelForm = function() {
@@ -195,10 +205,16 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
 
     function createDeliveryNoteLine (purchaseOrderLine) {
         var rowId;
+        var taxLegVar;
         if ($scope.gridOptions.data == undefined && $scope.gridOptions.data ==null) {
             rowId = -2000;
         } else {
             rowId = $scope.gridOptions.data.length - 2000;  //in case of having record, don't mixed up with existing recoreds.
+        }
+        if (purchaseOrderLine.taxLegVariance == undefined || purchaseOrderLine.taxLegVariance == null) {
+            taxLegVar = $scope.gstTaxLegVariance;
+        } else {
+            taxLegVar = purchaseOrderLine.taxLegVariance;
         }
         var deliveryNoteLineObject = {
             'id':rowId,
@@ -214,10 +230,44 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             'rcvdQty' :  purchaseOrderLine.polQtyOrdered - purchaseOrderLine.polQtyReceived,
             'dlnlDiscrepancy' : false,
             'polQty' : purchaseOrderLine.polQtyOrdered,
-            'taxLegVariance' : purchaseOrderLine.taxLegVariance,
+            'taxLegVariance' : taxLegVar,
             'delnValueTax' : purchaseOrderLine.polValueTax,
             'delnValueGross' : purchaseOrderLine.polValueGross
         }
+        return deliveryNoteLineObject;
+    }
+
+    function createDeliveryNoteLineFromProduct (productPurchaseItem) {
+        var rowId;
+        var taxLegVar;
+        if (productPurchaseItem.taxLegVariance == undefined || productPurchaseItem.taxLegVariance == null) {
+            taxLegVar = $scope.gstTaxLegVariance;
+        } else {
+            taxLegVar = productPurchaseItem.taxLegVariance;
+        }
+        if ($scope.gridOptions.data == undefined && $scope.gridOptions.data ==null) {
+            rowId = -2000;
+        } else {
+            rowId = $scope.gridOptions.data.length - 2000;  //in case of having record, don't mixed up with existing recoreds.
+        }
+        var deliveryNoteLineObject = {
+            'id':rowId,
+            'delnId':$scope.deliveryNoteHeader.id,
+            'purchaseItem' : productPurchaseItem,
+            'dlnlCaseSize' : productPurchaseItem.unitOfMeasure,
+            'dlnlProductSize' : productPurchaseItem.unitOfMeasureContent,
+            'dlnlUnitCost' : productPurchaseItem.costBeforeTax,
+            'dlnlQty' : 1,
+            'rcvdCaseSize' : productPurchaseItem.unitOfMeasure,
+            'rcvdProductSize' : productPurchaseItem.unitOfMeasureContent,
+            'rcvdQty' :  1,
+            'dlnlDiscrepancy' : false,
+            'polQty' : 0,
+            'taxLegVariance' : taxLegVar,
+            'delnValueTax' : 0,
+            'delnValueGross' : 0
+        }
+        $scope.updateLineTotalCost(deliveryNoteLineObject);
         return deliveryNoteLineObject;
     }
 
@@ -323,8 +373,8 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         for (var i = 0; i < lineList.length; i++) {
             if (!lineList[i].deleted) {
                 valueNett = valueNett*1 + lineList[i].totalCost*1 ;
-                valueGross = valueGross*1 + lineList[i].dlnlValueGross*1 ;
-                valueTax = valueTax*1 + lineList[i].dlnlValueTax*1 ;
+                valueGross = valueGross*1 + lineList[i].delnValueGross*1 ;
+                valueTax = valueTax*1 + lineList[i].delnValueTax*1 ;
             }
         }
         $scope.deliveryNoteHeader.delnValueNett = valueNett;
@@ -379,4 +429,62 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         }
     }
 
+    $scope.searchProduct = function () {
+        if ($scope.deliveryNoteHeader.supplier === undefined || $scope.deliveryNoteHeader.supplier.id === -1) {
+            baseDataService.displayMessage('info','Warning!','Please select supplier');
+            return;
+        }
+        ngDialog.openConfirm({
+            template:'views/pages/productSaleItemSearch.html',
+            controller:'productPurchaseItemSearchCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false,
+            resolve: {supplier: function(){return $scope.deliveryNoteHeader.supplier}}
+        }).then (function (selectedItems){
+                if (selectedItems != undefined) {
+                    for (var i = 0; i < selectedItems.length; i++) {
+                        var selectedProduct = selectedItems[i];
+                        if (checkIfProductHasBeenSelected(selectedProduct)) {
+                            continue;
+                        }
+                        var line = createDeliveryNoteLineFromProduct(selectedProduct);
+                        $scope.gridOptions.data.push(line);
+                    }
+                }
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    };
+    function checkIfProductHasBeenSelected(item) {
+
+        for (var i = 0; i<$scope.gridOptions.data.length; i++) {
+            if ($scope.gridOptions.data[i].purchaseItem.prodId == item.prodId) {
+                return true;
+            }
+        }
+        return false;
+    }
+    $scope.searchProductByCatalogNo = function(keyEvent) {
+        if (keyEvent.which != 13) {
+            return
+        }
+        if ($scope.deliveryNoteHeader.supplier === undefined) {
+            baseDataService.displayMessage('info','Warning!','Please select supplier');
+            return;
+        }
+        var searchUri = GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI + $scope.deliveryNoteHeader.supplier.id + '/' + $scope.searchByCatalog;
+        baseDataService.getBaseData(searchUri).then(function(response){
+            var selectedProduct = response.data;
+            if (selectedProduct === null || selectedProduct === undefined || selectedProduct.catalogueNo == undefined) {
+                baseDataService.displayMessage('info','Warning!','product not found!!!');
+                return;
+            }
+            if (checkIfProductHasBeenSelected(selectedProduct)) {
+                return;
+            }
+            var line = createDeliveryNoteLineFromProduct(selectedProduct);
+            $scope.gridOptions.data.push(line);
+        });
+    }
 });

@@ -199,7 +199,8 @@ var type_constant = {
     'SESSION_EVENT_TYPE_FLOAT' : 'categories/SESSION_EVENT_TYPE/SESSION_EVENT_TYPE_FLOAT',
     'SESSION_EVENT_TYPE_PICKUP' : 'categories/SESSION_EVENT_TYPE/SESSION_EVENT_TYPE_PICKUP',
     'CASH_SESSION_STATE_ENDED' : 'categories/SESSION_STATE/SESSION_STATE_ENDED',
-    'PRICING_GRADE_DEFAULT' : 'categories/getCustomerGrade/Default'
+    'PRICING_GRADE_DEFAULT' : 'categories/getCustomerGrade/Default',
+    'TAXLEGVARIANCE_GST_URI' : 'taxRule/taxLegVariance/gstCode'
 }
 
 angular.forEach(config_data, function(key, value) {

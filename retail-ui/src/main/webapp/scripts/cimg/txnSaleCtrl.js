@@ -153,7 +153,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                             'Qty Refund:' +  row.entity.txdeQtyTotalRefund
                     }
                 },
-                {field: 'calculatedLineValue', displayName: 'Aomount', enableCellEdit: false, cellFilter: 'currency', width: '9%'},
+                {field: 'calculatedLineValue', displayName: 'Amount', enableCellEdit: false, cellFilter: 'currency', width: '9%'},
                 {field: 'calculatedLineTax', displayName: 'Tax', cellFilter: 'currency', footerCellFilter: 'currency',enableCellEdit: false, width: '7%'},
                 {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'},
                 {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="grid.appScope.isTxnLineVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
