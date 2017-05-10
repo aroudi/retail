@@ -269,7 +269,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
     $scope.createTransactionRefund = function () {
 
         //check if we have outstanding amount to pay
-        if (maxPaymentAllowed() < 0) {
+        if (maxPaymentAllowed() > 0) {
             baseDataService.displayMessage("info","Warning", "Payment is due!!!");
             return;
         }

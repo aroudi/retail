@@ -24,6 +24,7 @@
         <result column="TXIV_PRINTED" property="txhdPrinted" />
         <result column="TXIV_PO_NR" property="txhdPoNo" />
         <result column="TXIV_EMAIL_TO" property="txhdEmailTo" />
+        <result column="TXIV_FULLY_REFUNDED" property="txivFullyRefunded" />
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="user" column="TXIV_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="invoiceTxnType" column="TXIV_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -52,6 +53,7 @@
         <result column="TXIV_PRINTED" property="txhdPrinted" />
         <result column="TXIV_PO_NR" property="txhdPoNo" />
         <result column="TXIV_EMAIL_TO" property="txhdEmailTo" />
+        <result column="TXIV_FULLY_REFUNDED" property="txivFullyRefunded" />
         <!--association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" /-->
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="invoiceTxnType" column="TXIV_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -138,7 +140,8 @@
         ${alias}.TXIV_CONTACT_PHONE,
         ${alias}.TXIV_PRINTED,
         ${alias}.TXIV_PO_NR,
-        ${alias}.TXIV_EMAIL_TO
+        ${alias}.TXIV_EMAIL_TO,
+        ${alias}.TXIV_FULLY_REFUNDED
     </sql>
 
     <sql id="invoiceDetailColumns">
@@ -521,6 +524,10 @@
 
     <update id="updateTxnPrintStatus" >
         UPDATE INVOICE SET TXIV_PRINTED = #{param2} WHERE TXIV_ID = #{param1}
+    </update>
+
+    <update id="updateInvoiceRefundStatus" >
+        UPDATE INVOICE SET TXIV_FULLY_REFUNDED = 1 WHERE TXIV_ID = #{param1}
     </update>
 
     <select id="getInvoicesOfProduct" resultMap="productSaleMap" >

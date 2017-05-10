@@ -120,6 +120,12 @@ public interface InvoiceDao {
     void updateTxnPrintStatus(long invoiceId, boolean printed);
 
     /**
+     * update invoice to fully refunded.
+     * @param invoiceId invoiceId
+     */
+    void updateInvoiceRefundStatus(long invoiceId);
+
+    /**
      * get all invoices for specific product.
      * @param productId productId
      * @return List of invoices for product.

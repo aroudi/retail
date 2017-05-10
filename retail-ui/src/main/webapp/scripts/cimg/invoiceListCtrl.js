@@ -163,6 +163,10 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
             alert('row is undefined');
             return;
         }
+        if (row.entity.txivFullyRefunded == 1) {
+            baseDataService.displayMessage('info','Warning!!','this invoice had been fully refunded.');
+            return;
+        }
         var txnSaleGetURI = INVOICE_GET_URI + row.entity.id;
         baseDataService.getBaseData(txnSaleGetURI).then(function(response){
             var txnDetailList = response.data.txnDetailFormList;

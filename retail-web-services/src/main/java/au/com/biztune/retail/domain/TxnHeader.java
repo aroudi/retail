@@ -45,7 +45,8 @@ public class TxnHeader {
     private boolean txhdPrinted;
     private CustomerAccountDebt customerAccountDebt;
     private String txhdPoNo;
-
+    //only for invoices to see it had been fully refunded or not
+    private boolean txivFullyRefunded;
     /**
      * add txn detail to txn header.
      * @param txnDetail txnDetail
@@ -354,5 +355,13 @@ public class TxnHeader {
 
     public void setTxhdEmailTo(String txhdEmailTo) {
         this.txhdEmailTo = txhdEmailTo;
+    }
+
+    public boolean isTxivFullyRefunded() {
+        return txivFullyRefunded;
+    }
+
+    public void setTxivFullyRefunded(boolean txivFullyRefunded) {
+        this.txivFullyRefunded = txivFullyRefunded;
     }
 }

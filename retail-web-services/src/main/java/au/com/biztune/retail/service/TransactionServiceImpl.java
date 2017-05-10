@@ -793,6 +793,7 @@ public class TransactionServiceImpl implements TransactionService {
             final ConfigCategory txnItemType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_LINE_TYPE, IdBConstant.TXN_LINE_TYPE_REFUND);
 
             TxnDetail txnDetail = null;
+            boolean invoiceIsFullyRefunded = true;
             final ConfigCategory txnLineType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_LINE_TYPE, IdBConstant.TXN_LINE_TYPE_REFUND);
             for (TxnDetailForm txnDetailForm: txnHeaderForm.getTxnDetailFormList()) {
                 if (txnDetailForm == null) {
@@ -842,6 +843,13 @@ public class TransactionServiceImpl implements TransactionService {
                 //update refund amount on parent transaction
                 double newBalance = 0.00;
                 if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
+                    //check if item is fully refund
+                    logger.info("txnDetailForm.getTxdeQtyTotalInvoiced() = " + txnDetailForm.getTxdeQtyTotalInvoiced());
+                    logger.info("txnDetailForm.getTxdeQtyTotalRefund()" + txnDetailForm.getTxdeQtyTotalRefund());
+                    logger.info("txnDetailForm.getTxdeQtyRefund()" + txnDetailForm.getTxdeQtyRefund());
+                    if (txnDetailForm.getTxdeQtyTotalInvoiced() > (txnDetailForm.getTxdeQtyTotalRefund() + txnDetailForm.getTxdeQtyRefund())) {
+                        invoiceIsFullyRefunded = false;
+                    }
                     invoiceDao.updateInvoiceRefundItem(txnDetailForm.getTxdeQtyTotalRefund() + txnDetailForm.getTxdeQtyRefund(), txnDetailForm.getId());
                     //update total refund on parent sale transaction.
                     final TxnDetail txnDetail1 = txnDao.getTxnDetailPerId(txnDetailForm.getParentId());
@@ -851,6 +859,10 @@ public class TransactionServiceImpl implements TransactionService {
                     newBalance = txnDetailForm.getTxdeQtyBalance();
                     txnDao.updateTxnSaleRefundItem(txnDetailForm.getTxdeQtyTotalRefund() + txnDetailForm.getTxdeQtyRefund(), newBalance, txnDetailForm.getId());
                 }
+            }
+            //if invoice if fully refunded, update the status
+            if (invoiceIsFullyRefunded) {
+                invoiceDao.updateInvoiceRefundStatus(txnHeaderForm.getId());
             }
             //calculate amount refund to account.
             double amountRefundToAccount = 0.00;
@@ -1237,7 +1249,7 @@ public class TransactionServiceImpl implements TransactionService {
             final long rowNoFrom = (searchForm.getPageNo() - 1) * searchForm.getPageSize() + 1;
             final long rowNoTo = rowNoFrom + searchForm.getPageSize() - 1;
             //final ProductSearchForm productSearchForm = new ProductSearchForm();
-            final List<SearchClause> searchClauseList = SearchClauseBuilder.buildSearchWhereCluase(searchForm, "TXN_HEADER");
+            final List<SearchClause> searchClauseList = SearchClauseBuilder.buildSearchWhereCluase(searchForm, "INVOICE");
             searchForm.setResult(invoiceDao.searchInvoicePaging(sessionState.getStore().getId(), txnType, searchClauseList, rowNoFrom, rowNoTo));
             searchForm.setTotalRecords(invoiceDao.getInvoiceQueryTotalRows(sessionState.getStore().getId(), txnType, searchClauseList));
             return searchForm;

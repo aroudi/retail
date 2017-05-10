@@ -1882,3 +1882,6 @@ GO
 
 alter table delivery_note_line drop constraint DELIVERY_NOTE_LINE_FK2
 go
+
+ALTER TABLE INVOICE ADD TXIV_FULLY_REFUNDED BIT DEFAULT 0;
+go
