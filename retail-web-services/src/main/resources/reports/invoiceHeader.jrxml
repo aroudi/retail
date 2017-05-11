@@ -248,7 +248,7 @@
 				<reportElement x="5" y="0" width="561" height="110" uuid="3141b3cf-f686-4318-a72a-aa51bccee833"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
                       ($F{txnDetails})]]></dataSourceExpression>
-				<subreportExpression><![CDATA[$F{txhdTxnType}.getCategoryCode().equals("TXN_TYPE_INVOICE")? ($P{SUBREPORT_DIR} + "txnLine.jasper"): ($P{SUBREPORT_DIR} + "saleOrderLine.jasper") ]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "txnLine.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>

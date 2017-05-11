@@ -101,16 +101,18 @@ public class TransactionRptMgr {
                 txnHeader.setTxhdState(txnState);
             }
             //get account debt for customer on this transaction
-            final CustomerAccountDebt customerAccountDebt = customerAccountDebtDao.getCustomerAccountDebtPerCustomerIdAndTxhdId(txnHeader.getCustomer().getId(), inoiceId);
+            if (txnHeader.getCustomer() != null) {
+                final CustomerAccountDebt customerAccountDebt = customerAccountDebtDao.getCustomerAccountDebtPerCustomerIdAndTxhdId(txnHeader.getCustomer().getId(), inoiceId);
 
-            if (customerAccountDebt != null) {
-                txnHeader.setCustomerAccountDebt(customerAccountDebt);
+                if (customerAccountDebt != null) {
+                    txnHeader.setCustomerAccountDebt(customerAccountDebt);
+                }
             }
             txnHeaders.add(txnHeader);
             invoiceDao.updateTxnPrintStatus(inoiceId, true);
             return createTransactionPdfStream(txnHeaders, txnHeader.getInvoiceTxnType().getCategoryCode());
         } catch (Exception e) {
-            logger.error("Exception in returning transaction header");
+            logger.error("Exception in returning transaction header", e);
             return null;
         }
     }
@@ -143,25 +145,20 @@ public class TransactionRptMgr {
             final Map<String, Object> parameters = new HashMap<String, Object>();
             final List<JasperPrint> jasperPrintList = new ArrayList<JasperPrint>();
             parameters.put("SUBREPORT_DIR", pathStr + "/");
-
-            if (txnType.equals(IdBConstant.TXN_TYPE_INVOICE)) {
-                reportHeaderJrxmlName = pathStr + "/" + invoiceHeaderFileName + ".jrxml";
-                if (Files.notExists(Paths.get(reportTxnLineJasperName))) {
-                    JasperCompileManager.compileReportToFile(reportTxnLineJrxmlName, reportTxnLineJasperName);
-                }
-            } else if (txnType.equals(IdBConstant.TXN_TYPE_REFUND)) {
-                reportHeaderJrxmlName = pathStr + "/" + invoiceHeaderFileName + ".jrxml";
-                if (Files.notExists(Paths.get(saleOrderLineJasperName))) {
-                    JasperCompileManager.compileReportToFile(saleOrderLineJrxmlName, saleOrderLineJasperName);
-                }
-            } else {
-                reportHeaderJrxmlName = pathStr + "/" + saleOrderHeaderFileName + ".jrxml";
-                if (Files.notExists(Paths.get(saleOrderLineJasperName))) {
-                    JasperCompileManager.compileReportToFile(saleOrderLineJrxmlName, saleOrderLineJasperName);
-                }
+            if (Files.notExists(Paths.get(reportTxnLineJasperName))) {
+                JasperCompileManager.compileReportToFile(reportTxnLineJrxmlName, reportTxnLineJasperName);
+            }
+            if (Files.notExists(Paths.get(saleOrderLineJasperName))) {
+                JasperCompileManager.compileReportToFile(saleOrderLineJrxmlName, saleOrderLineJasperName);
             }
             if (Files.notExists(Paths.get(reportTxnMediaJasperName))) {
                 JasperCompileManager.compileReportToFile(reportTxnMediaJrxmlName, reportTxnMediaJasperName);
+            }
+
+            if (txnType.equals(IdBConstant.TXN_TYPE_INVOICE) || txnType.equals(IdBConstant.TXN_TYPE_REFUND)) {
+                reportHeaderJrxmlName = pathStr + "/" + invoiceHeaderFileName + ".jrxml";
+            } else {
+                reportHeaderJrxmlName = pathStr + "/" + saleOrderHeaderFileName + ".jrxml";
             }
 
             final JasperReport jasperMasterReport = JasperCompileManager.compileReport(reportHeaderJrxmlName);

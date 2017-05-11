@@ -6,12 +6,12 @@ cimgApp.controller('cashSessionListCtrl', function($scope, $state, $timeout,base
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
-            {name:'Action',enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Add Float" tooltip-placement="bottom" class="fa fa-calculator fa-2x" ng-show="grid.appScope.isSessionActive(row)" ng-click="grid.appScope.addFloat(row)"></i></a> <a href=""><i tooltip="Pickup Float" tooltip-placement="bottom" class="fa fa-dollar fa-2x" ng-show="grid.appScope.isSessionActive(row)" ng-click="grid.appScope.pickupFloat(row)"></i></a> <a href=""><i tooltip="End Session" ng-show="grid.appScope.isSessionActive(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.endSession(row)"></i></a> <a href=""><i tooltip="Reconcile Session" tooltip-placement="bottom" class="fa fa-bank fa-2x" ng-click="grid.appScope.reconcileSession(row)"></i></a>', width:'20%' },
-            {field:'id', visible:false, enableCellEdit:false},
+            {name:'Action',enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Add Float" tooltip-placement="bottom" class="fa fa-calculator fa-2x" ng-show="grid.appScope.isSessionActive(row)" ng-click="grid.appScope.addFloat(row)"></i></a> <a href=""><i tooltip="Pickup Float" tooltip-placement="bottom" class="fa fa-dollar fa-2x" ng-show="grid.appScope.isSessionActive(row)" ng-click="grid.appScope.pickupFloat(row)"></i></a> <a href=""><i tooltip="End Session" ng-show="grid.appScope.isSessionActive(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.endSession(row)"></i></a> <a href=""><i tooltip="Reconcile Session" tooltip-placement="bottom" class="fa fa-bank fa-2x" ng-click="grid.appScope.reconcileSession(row)"></i></a>', width:'15%' },
+            {field:'id', displayName:'Cash Session#', enableCellEdit:false, width:'10%'},
             {field:'cssnOperator.usrFirstName', displayName:'First Name', enableCellEdit:false, width:'15%'},
             {field:'cssnOperator.usrSurName', displayName:'SurName',enableCellEdit:false, width:'20%'},
             {field:'cssnStartDate', displayName:'Created on',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
-            {field:'cssnStatus', displayName:'Status',enableCellEdit:false, width:'15%', cellFilter:'configCategoryFilter',
+            {field:'cssnStatus', displayName:'Status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }

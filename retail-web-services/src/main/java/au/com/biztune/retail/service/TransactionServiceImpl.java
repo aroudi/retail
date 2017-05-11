@@ -688,7 +688,8 @@ public class TransactionServiceImpl implements TransactionService {
                 }
             }
             //check if customer has used from his credit account.
-            if (txnHeaderForm.getCustomer().getCustomerType().getCategoryCode().equals(IdBConstant.CUSTOMER_TYPE_ACCOUNT)
+            if ((txnHeaderForm.getCustomer() != null) && (txnHeaderForm.getCustomer().getCustomerType() != null)
+                    && txnHeaderForm.getCustomer().getCustomerType().getCategoryCode().equals(IdBConstant.CUSTOMER_TYPE_ACCOUNT)
                     && (txnHeaderForm.getTxhdValueCredit() > 0))
             {
                 final CustomerAccountDebt customerAccountDebt = new CustomerAccountDebt();
@@ -896,7 +897,8 @@ public class TransactionServiceImpl implements TransactionService {
             cashSessionService.processSessionEvent(txnHeader, IdBConstant.SESSION_EVENT_TYPE_TXN);
             ////////////////////////////////////////////////////
             //check if customer has used from his credit account.
-            if (txnHeaderForm.getCustomer().getCustomerType().getCategoryCode().equals(IdBConstant.CUSTOMER_TYPE_ACCOUNT)
+            if ((txnHeaderForm.getCustomer() != null) && (txnHeaderForm.getCustomer().getCustomerType() != null)
+                    && txnHeaderForm.getCustomer().getCustomerType().getCategoryCode().equals(IdBConstant.CUSTOMER_TYPE_ACCOUNT)
                     && (Math.abs(amountRefundToAccount) > 0))
             {
                 final CustomerAccountDebt customerAccountDebt =

@@ -1885,3 +1885,9 @@ go
 
 ALTER TABLE INVOICE ADD TXIV_FULLY_REFUNDED BIT DEFAULT 0;
 go
+
+alter table TXN_HEADER drop constraint TXN_HEADER_FK5
+go
+
+alter table INVOICE drop constraint INVOICE_FK4
+go

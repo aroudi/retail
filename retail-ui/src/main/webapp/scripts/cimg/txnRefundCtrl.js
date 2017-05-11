@@ -61,7 +61,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
                     }
                 },
                 {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false, width: '7%'},
-                {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency', width: '10%'},
+                {field: 'txdeValueGross', displayName: 'Price',enableCellEdit: false, cellFilter: 'currency', width: '10%'},
                 {field: 'txidSurcharge', displayName: 'Surcharge', cellFilter: 'number', width: '7%'},
                 {field: 'txdeQtyTotalInvoiced', displayName: 'Qty Invoiced', enableCellEdit: false, type: 'number', width: '8%'},
                 {field: 'txdeQtyRefund', displayName: 'Qty Refund', type: 'number', width: '7%'},
@@ -122,8 +122,9 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
             if (newBalance < 0) {
                 baseDataService.displayMessage('info','Invalid Qty', 'Refund Quantity is higher than total invoiced Quantity !!!');
                 if (event.targetScope.col.field == 'txdeQtyRefund') {
+                    txnDetail['txdeQtyRefund'] = $scope.txdeQtyRefundBeforeEditting;
                     //txnDetail.txdeQtyInvoice = $scope.txdeQtyInvoicedBeforeEditting;
-                    txnDetail[event.targetScope.col.field] = $scope.txdeQtyRefundBeforeEditting;
+                    //txnDetail[event.targetScope.col.field] = $scope.txdeQtyRefundBeforeEditting;
                 }
                 return;
             }
