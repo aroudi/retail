@@ -87,6 +87,10 @@ dependencies {
     compile group:'net.sf.opencsv', name:'opencsv', version :'2.3'
     //javax.mail
     compile group:'javax.mail', name:'mail', version :'1.4.7'
+    //aspectj
+    compile group:'org.aspectj', name:'aspectjrt', version :'1.8.2'
+    compile group:'org.aspectj', name:'aspectjweaver', version :'1.8.2'
+
 
 }
 

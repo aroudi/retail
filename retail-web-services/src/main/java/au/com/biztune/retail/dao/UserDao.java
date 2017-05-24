@@ -240,4 +240,10 @@ public interface UserDao {
      * @return user
      */
     AppUser getUserByUserIdAndPassword(long userId, String password);
+
+    /**
+     * get all active users.
+     * @return list of active users
+     */
+    List<AppUser> getAllActiveUsers();
 }

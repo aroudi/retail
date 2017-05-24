@@ -420,4 +420,12 @@
         ROLE_ID = #{value}
     </delete>
 
+    <select id="getAllActiveUsers" resultMap="appUserMap" >
+        SELECT
+        <include refid="appUserColumns"><property name="alias" value="usr"/></include>
+        FROM
+        APP_USER usr
+        WHERE
+        usr.USR_DELETED != 1 and usr.USR_ACTIVE = 1
+    </select>
 </mapper>

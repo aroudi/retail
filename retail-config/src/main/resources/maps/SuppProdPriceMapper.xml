@@ -81,6 +81,9 @@
         <result column="SPRC_MIN_ORD_QTY" property="sprcMinOrdQty" />
         <result column="SPRC_LEAD_TIME" property="sprcLeadTime" />
         <result column="SPRC_MIN_ORD_VAL" property="sprcMinOrdVal" />
+        <result column="PROD_SKU" property="prodSku" />
+        <result column="PROD_NAME" property="prodName" />
+        <result column="PROD_DESC" property="prodDesc" />
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="unitOfMeasureContent" column="UNOM_ID_CONTENT" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="legalTender" column="LEGT_ID" select="au.com.biztune.retail.dao.LegalTenderDao.getLegalTenderById" />
@@ -178,9 +181,10 @@
 
     <select id="getProductPurchaseItemPerSprcId" resultMap="suppPurchaseProdMap" >
         SELECT
-        <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>
+        <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>,
+        prod.PROD_SKU, prod.PROD_NAME, prod.PROD_DESC
         FROM
-        SUPP_PROD_PRICE spp
+        SUPP_PROD_PRICE spp inner join PRODUCT prod on (spp.PROD_ID = prod.PROD_ID)
         WHERE
         spp.SPRC_ID= #{value}
     </select>

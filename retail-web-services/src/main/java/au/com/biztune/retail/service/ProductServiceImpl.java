@@ -5,10 +5,13 @@ import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.form.ProductSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.session.DataChangeIndicator;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.IdBConstant;
 import au.com.biztune.retail.util.SearchClause;
 import au.com.biztune.retail.util.SearchClauseBuilder;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import java.util.List;
  * Created by arash on 23/03/2016.
  */
 @Component
+@Aspect
 public class ProductServiceImpl implements ProductService {
     private final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
@@ -63,6 +67,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ConfigCategoryService configCategoryService;
+
+    @Autowired
+    private UserDao userDao;
     /**
      * add product and its related objects.
      * @param productForm productForm
@@ -92,6 +99,7 @@ public class ProductServiceImpl implements ProductService {
             createProuTxrlLink(productForm, product);
             createSuppProdPrice(productForm, product);
             createProductPrice(productForm, product);
+            updateDataChangeIndicators();
             return response;
         } catch (Exception e) {
             logger.error("Exception in saving Product: ", e);
@@ -511,6 +519,7 @@ public class ProductServiceImpl implements ProductService {
                 price1.setPrceToDate(currentTime);
                 price1.setPrceSetCentral(false);
                 priceDao.insert(price1);
+                updateDataChangeIndicators();
             }
             return product;
         } catch (Exception e) {
@@ -549,6 +558,27 @@ public class ProductServiceImpl implements ProductService {
         } catch (Exception e) {
             logger.error("Error in retrieving product list", e);
             return null;
+        }
+    }
+
+    /**
+     * whenever there is a product update, set the change indicator.
+     */
+    @After("execution(* au.com.biztune.retail.service.ProductServiceImpl.addProduct*(..))")
+    public void updateDataChangeIndicators() {
+        try {
+            logger.info("Aspect for product change invoiked.");
+            final List<AppUser> appUsers = userDao.getAllActiveUsers();
+            if (appUsers == null || appUsers.isEmpty()) {
+                return;
+            }
+            final DataChangeIndicator dataChangeIndicator = new DataChangeIndicator();
+            dataChangeIndicator.setProductDataUpdated(true);
+            for (AppUser appUser : appUsers) {
+                sessionState.addDataChangeIndicator(appUser.getId(), dataChangeIndicator);
+            }
+        } catch (Exception e) {
+            logger.error("Exception in updating product change indicator.", e);
         }
     }
 }

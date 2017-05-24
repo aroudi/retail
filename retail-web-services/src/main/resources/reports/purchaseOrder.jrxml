@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="68"/>
+	<property name="ireport.y" value="0"/>
 	<subDataset name="Table Dataset 1" uuid="34d645cf-a029-4a91-b796-5f67f4c09de0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
@@ -67,7 +67,7 @@
 					<textElement>
 						<font size="12" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{pohOrderNumber} + " (rev-" + $F{pohRevision} + ")"]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{pohPrefix} != null)?$F{pohPrefix} + "-" + $F{pohOrderNumber} + " (rev-" + $F{pohRevision} + ")":$F{pohOrderNumber} + " (rev-" + $F{pohRevision} + ")"]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="387" y="83" width="26" height="20" uuid="10d9aa5a-6740-4f54-994d-6b454160b053"/>
@@ -76,8 +76,8 @@
 					</textElement>
 					<text><![CDATA[No.]]></text>
 				</staticText>
-				<textField isBlankWhenNull="true">
-					<reportElement x="448" y="170" width="103" height="18" uuid="727a8bb3-0b39-443d-a56a-5fe2929bea8c"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="460" y="147" width="94" height="18" uuid="727a8bb3-0b39-443d-a56a-5fe2929bea8c"/>
 					<textElement>
 						<font fontName="Arial"/>
 					</textElement>
@@ -154,8 +154,8 @@
 				</textElement>
 				<text><![CDATA[Date:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="448" y="256" width="103" height="18" uuid="38213154-9d94-430a-a9b9-491d32154c40"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="479" y="234" width="72" height="18" uuid="38213154-9d94-430a-a9b9-491d32154c40"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
@@ -222,21 +222,21 @@
 				<text><![CDATA[Fax:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="426" y="189" width="63" height="20" uuid="d382d835-fdfb-4818-b2dd-08a28398ddb9"/>
+				<reportElement x="426" y="189" width="53" height="20" uuid="d382d835-fdfb-4818-b2dd-08a28398ddb9"/>
 				<textElement>
 					<font size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Order No.]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="448" y="216" width="103" height="18" uuid="870b9fc5-f78b-416d-93ea-6964ebcf117a"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="479" y="191" width="72" height="18" uuid="870b9fc5-f78b-416d-93ea-6964ebcf117a"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{pohOrderNumber} + " (rev-" + $F{pohRevision} + ")"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{pohPrefix} != null)?$F{pohPrefix} + "-" + $F{pohOrderNumber} + " (rev-" + $F{pohRevision} + ")":$F{pohOrderNumber} + " (rev-" + $F{pohRevision} + ")"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="426" y="234" width="78" height="20" uuid="16a06898-6452-4c98-a1bf-c6dcd7b8e962"/>
+				<reportElement x="426" y="232" width="53" height="20" uuid="16a06898-6452-4c98-a1bf-c6dcd7b8e962"/>
 				<textElement>
 					<font size="10" isBold="false"/>
 				</textElement>

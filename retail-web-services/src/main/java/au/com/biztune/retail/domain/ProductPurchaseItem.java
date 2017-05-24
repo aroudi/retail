@@ -22,6 +22,10 @@ public class ProductPurchaseItem {
     private long sprcLeadTime;
     private double sprcMinOrdVal;
     private TaxLegVariance taxLegVariance;
+    private String prodSku;
+    private String prodDesc;
+    private String prodName;
+
 
     public long getId() {
         return id;
@@ -165,5 +169,29 @@ public class ProductPurchaseItem {
 
     public void setTaxLegVariance(TaxLegVariance taxLegVariance) {
         this.taxLegVariance = taxLegVariance;
+    }
+
+    public String getProdSku() {
+        return prodSku;
+    }
+
+    public void setProdSku(String prodSku) {
+        this.prodSku = prodSku;
+    }
+
+    public String getProdName() {
+        return prodName;
+    }
+
+    public void setProdName(String prodName) {
+        this.prodName = prodName;
+    }
+
+    public String getProdDesc() {
+        return prodDesc;
+    }
+
+    public void setProdDesc(String prodDesc) {
+        this.prodDesc = prodDesc;
     }
 }

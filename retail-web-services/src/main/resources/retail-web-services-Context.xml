@@ -4,7 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
-       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:cache="http://www.springframework.org/schema/cache" xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        	http://www.springframework.org/schema/beans/spring-beans.xsd
        	http://www.springframework.org/schema/cache
@@ -12,12 +12,19 @@
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/tx
-		http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        <!--http://www.springframework.org/schema/aop-->
 
+    <aop:aspectj-autoproxy />
 	<context:spring-configured/>
     <context:annotation-config/>
     <context:component-scan base-package="au.com.biztune.retail" />
     <tx:annotation-driven transaction-manager="transactionManager"/>
+
+
     <import resource="classpath:application-context-dao.xml"/>
     <import resource="classpath:application-context-report.xml"/>
     <bean id="transactionManager"
@@ -27,10 +34,6 @@
     <bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
         <property name="caches">
             <set>
-                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"
-                        p:name="lines"/>
-                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"
-                      p:name="scripts"/>
             </set>
         </property>
     </bean>

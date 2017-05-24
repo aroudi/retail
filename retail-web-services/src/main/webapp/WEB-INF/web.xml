@@ -42,4 +42,11 @@
     <servlet-name>jersey-servlet</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
+    <resource-ref>
+        <description>SqlServer Spring JNDI Datasource</description>
+        <res-ref-name>jdbc/springSqlServerDataSource</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
 </web-app>

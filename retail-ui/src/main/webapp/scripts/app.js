@@ -38,19 +38,19 @@ var cimgApp = angular
   ]);
 
 //SIT
-/*
 var config_data = {
     'SERVER' : 'pos.jomon.com.au',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
-*/
 //DEV
+/*
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
+*/
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -160,7 +160,8 @@ var service_uri = {
     'ACCOUNT_UPDATE_CODE_URI' : 'accounting/updateAccounts',
     'ACCOUNTING_EXPORT_ALL_URI' : 'accounting/getAllAccountingExport',
     'ACCOUNTING_EXPORT_GET_CONTENT_URI' : 'accounting/getAccountingExport/',
-    'PRICING_GRADE_UPDATE_BATCH_URI' : 'categories/updatePricingGrades'
+    'PRICING_GRADE_UPDATE_BATCH_URI' : 'categories/updatePricingGrades',
+    'GET_DATA_CHANGE_INDICATOR_URI' : 'user/getDataChangeIndicator/'
 }
 
 var response_status = {
@@ -231,7 +232,7 @@ cimgApp.service('configService', function (SERVER,PORT,WEBAPP) {
 
 });
 
-cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog, configService, UserService) {
+cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDialog, configService, $sessionStorage,UserService, GET_DATA_CHANGE_INDICATOR_URI, PRODUCT_SALE_ITEM_ALL_URI) {
 
     var row;
     var rowId;
@@ -481,6 +482,44 @@ cimgApp.service('baseDataService', function ($location, $http, $window,ngDialog,
     },
     getPdfContent: function () {
         return pdfFile;
+    },
+    getCacheProductList: function() {
+        var deferred = $q.defer();
+        //check if data does not exist in the cache then retreive data from the server and put in the cache;
+        if ( $sessionStorage.productList == undefined ||  $sessionStorage.productList == null) {
+            console.log('cache is empty. fetch from server and put in cache');
+            this.getBaseData(PRODUCT_SALE_ITEM_ALL_URI).then(function(response){
+                var data = response.data;
+                delete $sessionStorage.productList;
+                $sessionStorage.productList = data;
+                deferred.resolve($sessionStorage.productList);
+                //return deferred.promise;
+            });
+        } else {
+            //check if there is any update on the server. if so return the updated data and store in cache.
+            var dataChangeIndicatorUri = GET_DATA_CHANGE_INDICATOR_URI + UserService.getUser().id;
+            console.log('check for updates');
+            this.getBaseData(dataChangeIndicatorUri).then(function(response){
+                var dataChangeIndicator = response.data;
+                if (dataChangeIndicator.productDataUpdated) {
+                    console.log('updates available');
+                    this.getBaseData(PRODUCT_SALE_ITEM_ALL_URI).then(function(response){
+                        var data = response.data;
+                        delete $sessionStorage.productList;
+                        $sessionStorage.productList = data;
+                        console.log('getting updates and put in cache');
+                        deferred.resolve(data);
+                        //return deferred.promise;
+                        //return $sessionStorage.productList;
+                    });
+                } else {
+                    console.log('update not available. read from cache');
+                    //return $sessionStorage.productList;
+                    deferred.resolve($sessionStorage.productList);
+                }
+            });
+        }
+        return deferred.promise;
     }
 
 

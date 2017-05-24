@@ -19,6 +19,10 @@ public class SessionState {
     private HashMap<String, AppUser> tokens;
     private final Logger logger = LoggerFactory.getLogger(SessionState.class);
     private AppUser appUser;
+    /**
+     * determin if data has been changed for specific data. the key is UserId and the object determine if specific data has been changed or not.
+     */
+    private HashMap<Long, DataChangeIndicator> dataChangeIndicatorHashMap;
 
     /**
      * add token to the session.
@@ -56,6 +60,26 @@ public class SessionState {
             logger.error("Exception in removing token.", e);
         }
     }
+
+    /**
+     * when specific data changed, we need to inform user about it.
+     * @param key UserId
+     * @param dataChangeIndicator new data indicator
+     */
+    public void addDataChangeIndicator(Long key, DataChangeIndicator dataChangeIndicator) {
+        try {
+            if (dataChangeIndicatorHashMap == null) {
+                dataChangeIndicatorHashMap = new HashMap<Long, DataChangeIndicator>();
+            }
+            if (dataChangeIndicatorHashMap.containsKey(key)) {
+                dataChangeIndicatorHashMap.remove(key);
+            }
+            dataChangeIndicatorHashMap.put(key, dataChangeIndicator);
+        } catch (Exception e) {
+            logger.error("Exception in updating data change indicator: ", e);
+        }
+    }
+
     /**
      * Return User from token.
      * @param key key
@@ -71,6 +95,31 @@ public class SessionState {
             return null;
         }
     }
+
+    /**
+     * get datachange indicators per user id. check if data has been changed. read data and mark it as read.
+     * @param key userId
+     * @return all data change indicators.
+     */
+    public DataChangeIndicator getDataChangeIndicatorsPerUserId(Long key) {
+        final DataChangeIndicator dataChangeIndicator = new DataChangeIndicator();
+        final DataChangeIndicator originalDataChangeIndicator;
+        if (dataChangeIndicatorHashMap == null) {
+            return null;
+        }
+        if (dataChangeIndicatorHashMap.containsKey(key)) {
+            originalDataChangeIndicator = (DataChangeIndicator) dataChangeIndicatorHashMap.get(key);
+            if (originalDataChangeIndicator.isProductDataUpdated()) {
+                dataChangeIndicator.setProductDataUpdated(false);
+            }
+            dataChangeIndicatorHashMap.remove(key);
+            dataChangeIndicatorHashMap.put(key, dataChangeIndicator);
+            return originalDataChangeIndicator;
+        } else {
+            return null;
+        }
+    }
+
     public OrgUnit getOrgUnit() {
         return orgUnit;
     }

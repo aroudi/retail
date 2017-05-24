@@ -111,7 +111,7 @@
         FROM
         CUSTOMER C
         LEFT OUTER JOIN
-        CUSTOMER_GRADE g on (c.grade_id = g.grade_id)
+        CUSTOMER_GRADE g on (c.grade_id = g.grade_id) order by c.company_name
     </select>
 
     <select id="getCustomerByCode" resultMap="customerMap" >
@@ -383,6 +383,9 @@
             </if>
             <if test="mobile != null">
                 ,Mobile = #{mobile}
+            </if>
+            <if test="phone != null">
+                ,phone = #{phone}
             </if>
             <if test="webSite != null">
                 ,Web_Site = #{webSite}

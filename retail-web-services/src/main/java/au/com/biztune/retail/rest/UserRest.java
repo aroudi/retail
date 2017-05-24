@@ -6,6 +6,8 @@ import au.com.biztune.retail.form.LoginForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.UserService;
+import au.com.biztune.retail.session.DataChangeIndicator;
+import au.com.biztune.retail.session.SessionState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,9 @@ public class UserRest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SessionState sessionState;
 
     /**
      * Returns list of customers.
@@ -239,5 +244,18 @@ public class UserRest {
         return userService.changePassword(changePasswordForm);
     }
 
+
+    /**
+     * get data change indicator by Id.
+     * @param id id.
+     * @return DataChangeIndicator
+     */
+    @Secured
+    @GET
+    @Path("/getDataChangeIndicator/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public DataChangeIndicator getDataChangeIndicatorByUserId (@PathParam("id") long id) {
+        return sessionState.getDataChangeIndicatorsPerUserId(id);
+    }
 
 }

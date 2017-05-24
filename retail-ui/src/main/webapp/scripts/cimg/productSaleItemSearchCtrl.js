@@ -56,10 +56,17 @@ cimgApp.controller('productSaleItemSearchCtrl', function($scope, $state, $timeou
     };
     getAllProductSaleItems();
     function getAllProductSaleItems() {
+        //todo:get products from cache.
+        /*
+        baseDataService.getCacheProductList().then(function(result){
+            $scope.gridOptions.data = result;
+            console.log('returning from cache function');
+            $scope.setFocusOnSku();
+        });
+        */
         baseDataService.getBaseData(PRODUCT_SALE_ITEM_ALL_URI).then(function(response){
             var data = angular.copy(response.data);
             $scope.gridOptions.data = data;
-            $scope.setFocusOnSku();
         });
     }
 
