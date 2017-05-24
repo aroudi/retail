@@ -1891,3 +1891,5 @@ go
 
 alter table INVOICE drop constraint INVOICE_FK4
 go
+
+--  UP TO THIS POINT APPLIED TO JOMON ON 24/05/2017
