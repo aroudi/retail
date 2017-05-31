@@ -32,7 +32,6 @@ public class SuppProdPrice {
     private Timestamp sprcCreated;
     @JsonIgnore
     private Timestamp sprcModified;
-    @JsonIgnore
     private boolean sprcPrefferBuy;
     @JsonIgnore
     private double sprcMinOrdVal;

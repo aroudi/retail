@@ -128,9 +128,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         return row.entity.product.prodSku
                     }
                 },
-                {field: 'product.prodName', displayName: 'Name', enableCellEdit: false, width: '20%',
+                {field: 'txdeProdName', displayName: 'Name', enableCellEdit: true, width: '20%',
                     cellTooltip: function(row,col) {
-                        return row.entity.product.prodName
+                        return row.entity.txdeProdName
                     }
                 },
                 {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false, width: '5%'},
@@ -246,7 +246,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     txnDetail['txdeValueGross'] = $scope.txdeValueGrossBeforeEditting;
                     return;
                 }
-                var originalPrice = txnDetail.product.sellPrice.prcePrice*1;
+                var originalPrice = calculateSalePrice(txnDetail.product);
                 if (txnDetail.txdeValueGross < originalPrice ) {
                     baseDataService.displayMessage('info','Warnning', 'You can not set the price below original which is $' + originalPrice );
                     txnDetail['txdeValueGross'] = $scope.txdeValueGrossBeforeEditting;
@@ -411,6 +411,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                             txnDetail.product = product;
                             txnDetail.unitOfMeasure = txnDetail.product.sellPrice.unitOfMeasure;
                             txnDetail.txdeQtyTotalInvoiced =  0;
+                            txnDetail.txdeProdName = txnDetail.product.prodName;
                             txnDetail.txdeQuantitySold =  1;
                             txnDetail.originalQuantity =  1;
                             if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') {
@@ -451,6 +452,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             var txnDetail = createTxnDetail();
             txnDetail.product = product;
             txnDetail.unitOfMeasure = txnDetail.product.sellPrice.unitOfMeasure;
+            txnDetail.txdeProdName = txnDetail.product.prodName;
             txnDetail.txdeQtyTotalInvoiced =  0;
             txnDetail.txdeQuantitySold =  1;
             txnDetail.txdeQtyInvoiced =  0;
@@ -483,13 +485,18 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         return txnDetailObject;
     }
     function evaluatRowItem (txnDetail, newAdded) {
-        txnDetail.txdeTax = calculateTaxRate(txnDetail.product);
-        txnDetail.txdeValueLine = txnDetail.product.sellPrice.prcePrice;
-        txnDetail.txdeProfitMargin = getProfitMargin();
-        txnDetail.txdeValueProfit =  txnDetail.txdeValueLine*txnDetail.txdeProfitMargin;
-        if (newAdded == true) {
-            txnDetail.txdeValueGross =  txnDetail.txdeValueProfit*1 + txnDetail.txdeValueLine*1;
+        //if cost is not defined for product, set it to sell price.
+        if (txnDetail.product.costPrice == undefined || txnDetail.product.costPrice == null) {
+            txnDetail.product.costPrice = txnDetail.product.sellPrice;
         }
+        txnDetail.txdeTax = calculateTaxRate(txnDetail.product);
+        txnDetail.txdeValueLine = calculateBasePrice(txnDetail.product);
+        if (newAdded == true) {
+            txnDetail.txdeValueGross =  calculateSalePrice(txnDetail.product);//txnDetail.txdeValueProfit*1 + txnDetail.txdeValueLine*1;
+        }
+        txnDetail.txdeProfitMargin = ((txnDetail.txdeValueGross - txnDetail.txdeValueLine)*1)/100; //getProfitMargin();
+        txnDetail.txdeValueProfit = txnDetail.txdeValueGross*1 - txnDetail.txdeValueLine*1; //txnDetail.txdeValueLine*txnDetail.txdeProfitMargin;
+
         txnDetail.txdeValueNet =  (txnDetail.txdeValueGross * txnDetail.txdeTax)*1 + txnDetail.txdeValueGross*1;
         txnDetail.txdeQtyBalance = calculateBalance(txnDetail);//txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
 
@@ -520,15 +527,62 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         return taxValue;
     }
 
-    function getProfitMargin () {
+    function calculateSalePrice (productSaleItem) {
+        var priceRule='';
+        var rate;
+        //get default price rule if customer is null
         if ($scope.customer == undefined || $scope.customer==null || $scope.customer.grade == undefined) {
             if ($scope.customerGradeDefault != undefined && $scope.customerGradeDefault != null && $scope.customerGradeDefault.rate != undefined) {
-                return $scope.customerGradeDefault.rate;
-            } else {
-                return 0.20;
+                priceRule = $scope.customerGradeDefault.description;
+                rate = $scope.customerGradeDefault.rate;
             }
+        } else {
+            priceRule = $scope.customer.grade.description;
+            rate = $scope.customer.grade.rate;
         }
-        return $scope.customer.grade.rate;
+        switch (priceRule) {
+            case 'Cost + %' :
+                return productSaleItem.costPrice.prcePrice*(1 + rate*1);
+            case 'Cost + $' :
+                return productSaleItem.costPrice.prcePrice*1 + rate*1;
+            case 'Fixed $' :
+                return rate;
+            case 'RRP - $' :
+                return productSaleItem.sellPrice.prcePrice*1 - rate*1;
+            case 'RRP - %' :
+                return productSaleItem.sellPrice.prcePrice*(1 - rate*1);
+            default:
+                return productSaleItem.sellPrice.prcePrice;
+        }
+    }
+
+    function calculateBasePrice (productSaleItem) {
+        var priceRule='';
+        var rate;
+        //get default price rule if customer is null
+        if ($scope.customer == undefined || $scope.customer==null || $scope.customer.grade == undefined) {
+            if ($scope.customerGradeDefault != undefined && $scope.customerGradeDefault != null && $scope.customerGradeDefault.rate != undefined) {
+                priceRule = $scope.customerGradeDefault.description;
+                rate = $scope.customerGradeDefault.rate;
+            }
+        } else {
+            priceRule = $scope.customer.grade.description;
+            rate = $scope.customer.grade.rate;
+        }
+        switch (priceRule) {
+            case 'Cost + %' :
+                return productSaleItem.costPrice.prcePrice*1;
+            case 'Cost + $' :
+                return productSaleItem.costPrice.prcePrice*1;
+            case 'Fixed $' :
+                return rate;
+            case 'RRP - $' :
+                return productSaleItem.sellPrice.prcePrice*1;
+            case 'RRP - %' :
+                return productSaleItem.sellPrice.prcePrice*1;
+            default:
+                return productSaleItem.sellPrice.prcePrice;
+        }
     }
 
     $scope.addTxnMedia= function() {
@@ -690,7 +744,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             if (!txnDetailList[i].txdeItemVoid && !txnDetailList[i].deleted ) {
                 valueNett = valueNett*1 + txnDetailList[i].txdeValueNet*quantity*1 ;
                 valueGross = valueGross*1 + txnDetailList[i].txdeValueGross*quantity*1;
-                valueTax = valueTax*1 + txnDetailList[i].txdeTax*txnDetailList[i].txdeValueLine*quantity*1;
+                valueTax = valueTax*1 + txnDetailList[i].txdeTax*txnDetailList[i].txdeValueGross*quantity*1;
             }
         }
         $scope.txnHeaderForm.txhdValueNett = valueNett;

@@ -42,6 +42,7 @@ public class TxnDetailForm {
     //for invoice detail, store the id of txn_detail
     private long parentId;
     private double txidSurcharge;
+    private String txdeProdName;
 
 
 
@@ -291,5 +292,13 @@ public class TxnDetailForm {
 
     public void setTxidSurcharge(double txidSurcharge) {
         this.txidSurcharge = txidSurcharge;
+    }
+
+    public String getTxdeProdName() {
+        return txdeProdName;
+    }
+
+    public void setTxdeProdName(String txdeProdName) {
+        this.txdeProdName = txdeProdName;
     }
 }

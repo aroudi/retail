@@ -156,6 +156,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
                 }
                 $scope.clientSet.unshift(client);
             }
+            $scope.client = baseDataService.populateSelectList($scope.client,$scope.clientSet);
         });
         baseDataService.getBaseData(PROJECT_GET_ALL_URI).then(function(response){
             $scope.projectSet = response.data;
@@ -166,6 +167,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
                 }
                 $scope.projectSet.unshift(project);
             }
+            $scope.project = baseDataService.populateSelectList($scope.project,$scope.projectSet);
         });
         baseDataService.getBaseData(BOQ_STATUS_URI).then(function(response){
             $scope.statusSet = response.data;
@@ -177,6 +179,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
                 }
                 $scope.statusSet.unshift(status);
             }
+            $scope.status = baseDataService.populateSelectList($scope.status,$scope.statusSet);
         });
     }
 });

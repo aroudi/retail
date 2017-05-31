@@ -131,6 +131,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
                 }
                 $scope.supplierSet.unshift(supplier);
             }
+            $scope.supplier = baseDataService.populateSelectList($scope.supplier,$scope.supplierSet);
         });
     }
 

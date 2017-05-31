@@ -91,6 +91,7 @@
         <result column="TXDE_DETAIL_LEVEL" property="txdeDetailLevel" />
         <result column="TXDE_PARENT_DETAIL" property="txdeParentDetail" />
         <result column="TXDE_DISC_PRICE" property="txdeDiscPrice" />
+        <result column="TXDE_PROD_NAME" property="txdeProdName" />
         <association property="product" column="TXDE_PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductSaleItemPerProdId" />
         <association property="unitOfMeasure" column="TXDE_UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="txdeDetailType" column="TXDE_DETAIL_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -178,7 +179,8 @@
         ${alias}.TXDE_DETAIL_TYPE,
         ${alias}.TXDE_DISC_PRICE,
         ${alias}.TXDE_RETURN_ORGU_ID,
-        ${alias}.TXDE_RETURN_STORE_ID
+        ${alias}.TXDE_RETURN_STORE_ID,
+        ${alias}.TXDE_PROD_NAME
     </sql>
 
     <sql id="txnMediaColumns">
@@ -487,7 +489,8 @@
         TXDE_DETAIL_TYPE,
         TXDE_DISC_PRICE,
         TXDE_RETURN_ORGU_ID,
-        TXDE_RETURN_STORE_ID
+        TXDE_RETURN_STORE_ID,
+        TXDE_PROD_NAME
         ) VALUES (
         #{orguId},
         #{storeId},
@@ -652,6 +655,12 @@
         <if test="txdeReturnStoreId == null">
             ,null
         </if>
+        <if test="txdeProdName != null">
+            ,#{txdeProdName}
+        </if>
+        <if test="txdeProdName == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -726,6 +735,9 @@
         </if>
         <if test="txdeReturnStoreId != null">
             ,TXDE_RETURN_STORE_ID = #{txdeReturnStoreId}
+        </if>
+        <if test="txdeProdName != null">
+            ,TXDE_PROD_NAME = #{txdeProdName}
         </if>
         WHERE TXDE_ID = #{id}
     </update>

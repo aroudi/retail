@@ -85,7 +85,7 @@
                                                     </div>
                                                     <div class="col-lg-2">
                                                         <div class="form-group">
-                                                            <label>Tax Rules Applied:</label>
+                                                            <label>Tax:</label>
                                                             <select multiple class="form-control" data-ng-model="productForm.taxRules"
                                                                     ng-options="type.txrlDesc for type in taxRuleSet" >
                                                             </select>
@@ -117,7 +117,7 @@
                                         <div class="panel-body">
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <div class="col-lg-4">
+                                                    <div class="col-lg-3">
                                                         <div class="form-group">
                                                             <label>Unit Of Measure</label>
                                                             <select class="form-control" data-ng-model="productForm.prceUnitOfMeasure"
@@ -125,7 +125,7 @@
                                                             </select>
                                                         </div >
                                                     </div >
-                                                    <div class="col-lg-4">
+                                                    <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Quantity:
                                                                        <span class="btn btn-warning btn-xs" ng-show="mainForm.prceUnomQty.$error.pattern">
@@ -135,27 +135,19 @@
                                                             <input class="form-control" name="prceUnomQty" data-ng-model="productForm.prceUnomQty" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
                                                         </div >
                                                     </div>
-                                                    <div class="col-lg-4">
+                                                    <div class="col-lg-2">
                                                         <div class="form-group">
-                                                            <label>Price</label>
+                                                            <label>Cost</label>
+                                                            <input class="form-control" data-ng-model="productForm.costPrice" type="text" data-blur-currency>
+                                                        </div >
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label>RRP</label>
                                                             <input class="form-control" data-ng-model="productForm.prcePrice" type="text" data-blur-currency>
                                                         </div >
                                                     </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="col-lg-4">
-                                                        <div class="form-group">
-                                                            <label>Margin:
-                                                                       <span class="btn btn-warning btn-xs" ng-show="mainForm.prceMargin.$error.pattern">
-                                                                            Invalid!
-                                                                       </span>
-                                                            </label>
-                                                            <input class="form-control" name="prceMargin" data-ng-model="productForm.prceMargin" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
-                                                        </div >
-                                                    </div >
-                                                    <div class="col-lg-4">
+                                                    <div class="col-lg-3">
                                                         <label>Tax Included</label>
                                                         <div class="form-group">
                                                             <label class="checkbox-inline">
@@ -168,6 +160,20 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <!--div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label>Margin:
+                                                                       <span class="btn btn-warning btn-xs" ng-show="mainForm.prceMargin.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                                                            </label>
+                                                            <input class="form-control" name="prceMargin" data-ng-model="productForm.prceMargin" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
+                                                        </div >
+                                                    </div >
+                                                </div>
+                                            </div-->
                                         </div>
                                     </div>
                                 </div>

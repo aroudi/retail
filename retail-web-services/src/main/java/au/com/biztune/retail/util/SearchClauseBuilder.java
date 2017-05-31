@@ -168,6 +168,10 @@ public class SearchClauseBuilder {
                 searchClause = new SearchClause("prod.PROD_SKU", " like ", "%" + searchForm.getProdSku() + "%");
                 clauseList.add(searchClause);
             }
+            if (searchForm.getReference() != null && !searchForm.getReference().isEmpty()) {
+                searchClause = new SearchClause("prod.REFERENCE", " like ", "%" + searchForm.getReference() + "%");
+                clauseList.add(searchClause);
+            }
             if (searchForm.getProdName() != null && !searchForm.getProdName().isEmpty()) {
                 searchClause = new SearchClause("prod.PROD_NAME", " like ", "%" + searchForm.getProdName() + "%");
                 clauseList.add(searchClause);

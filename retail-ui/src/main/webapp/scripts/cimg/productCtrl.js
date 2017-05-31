@@ -50,6 +50,16 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
                 {field:'id', visible:false, enableCellEdit:false},
                 {field:'solId', visible:false, enableCellEdit:false},
                 {field:'prodId', visible:false, enableCellEdit:false},
+                {field:'sprcPrefferBuy', displayName:'Default Supplier',enableCellEdit:true, type:'boolean', width:'6%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-change="grid.appScope.selectDefaultSupplier(row.entity)" ng-model="row.entity.sprcPrefferBuy">',
+                    cellClass:
+                        function(grid, row, col, rowRenderIndex, colRenderIndex) {
+                            if (grid.getCellValue(row, col) === true) {
+                                return 'green';
+                            } else {
+                                return 'amber'
+                            }
+                        }
+                },
                 {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'20%',
                     cellTooltip: function(row,col) {
                         return row.entity.supplier.supplierName
@@ -245,6 +255,28 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
 
     $scope.cancel = function() {
         $scope.closeThisDialog('button');
+    },
+
+    $scope.selectDefaultSupplier = function(row) {
+        console.log('selectDefaultSupplier called');
+        var selectedCount = 0;
+        if (row.sprcPrefferBuy) {
+            for (i=0; i<$scope.gridOptions.data.length; i++) {
+                if ($scope.gridOptions.data[i].sprcPrefferBuy) {
+                    selectedCount ++;
+                }
+            }
+            if (selectedCount > 1) {
+                baseDataService.displayMessage('info','Warning', 'You can only have one default supplier');
+                row.sprcPrefferBuy = false;
+                return;
+            }
+            $scope.productForm.prceUnitOfMeasure = baseDataService.populateSelectList(row.unitOfMeasure,$scope.unitOfMeasureSet);
+            $scope.productForm.prceUnomQty = row.unomQty;
+            $scope.productForm.costPrice = row.price;
+        }
+        //set the product cost and other items per default supplier
+        //$scope.productForm.prceUnitOfMeasure = row.unitOfMeasure;
     }
 
 });

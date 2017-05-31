@@ -77,12 +77,15 @@ public class CustomerStatementRptMgr {
                 if (customer == null) {
                     continue;
                 }
+                customerStatementReport = new CustomerStatementReport();
+                customerStatementReport.setCustomer(customer);
                 dateTo = DateUtil.stringToDate(accountDebtRptForm.getToDate(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
                 if (dateTo == null) {
                     dateTo = new Timestamp(new Date().getTime());
                 }
                 customerAccountDebtList = customerAccountDebtDao.customerAccountPaymentReportPerCustomer(dateTo, customer.getId());
                 if (customerAccountDebtList == null || customerAccountDebtList.size() < 1) {
+                    reportList.add(customerStatementReport);
                     continue;
                 }
                 try {
@@ -90,8 +93,6 @@ public class CustomerStatementRptMgr {
                 } catch (Exception e1) {
                     debtBalance = 0.00;
                 }
-                customerStatementReport = new CustomerStatementReport();
-                customerStatementReport.setCustomer(customer);
                 customerStatementReport.setTotalDebtBalance(debtBalance);
                 logger.info("accountDebtRptForm.getToDate() = " + accountDebtRptForm.getToDate());
                 logger.info("dateTo = " + dateTo);

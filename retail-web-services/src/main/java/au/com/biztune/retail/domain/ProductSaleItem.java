@@ -24,6 +24,7 @@ public class ProductSaleItem {
     private String prodClass;
     private String prodWarrantyText;
     private Price sellPrice;
+    private Price costPrice;
     private ProdOrguLink prodOrguLink;
 
     public long getId() {
@@ -176,5 +177,13 @@ public class ProductSaleItem {
 
     public void setProdOrguLink(ProdOrguLink prodOrguLink) {
         this.prodOrguLink = prodOrguLink;
+    }
+
+    public Price getCostPrice() {
+        return costPrice;
+    }
+
+    public void setCostPrice(Price costPrice) {
+        this.costPrice = costPrice;
     }
 }

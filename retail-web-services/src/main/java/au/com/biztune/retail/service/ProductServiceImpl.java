@@ -180,6 +180,9 @@ public class ProductServiceImpl implements ProductService {
                         productForm.setPrceMargin(price.getMargin());
                         productForm.setPrcePrice(price.getPrcePrice());
                     }
+                    if (price.getPriceCode().getPrccCode().equals(IdBConstant.COST_PRICE_CODE)) {
+                        productForm.setCostPrice(price.getPrcePrice());
+                    }
                 }
             }
             return productForm;
@@ -281,7 +284,7 @@ public class ProductServiceImpl implements ProductService {
 
     private void createProductPrice(ProductForm productForm, Product product) {
         final PriceBand priceBand = priceBandDao.getPriceBandPerCode(IdBConstant.PRICE_BAND_CODE);
-        final PriceCode priceCode1 = priceDao.getProductPriceCodePerCode(IdBConstant.SELL_PRICE_CODE);
+        PriceCode priceCode1 = priceDao.getProductPriceCodePerCode(IdBConstant.SELL_PRICE_CODE);
         final Price price1 = new Price();
         price1.setUnitOfMeasure(productForm.getPrceUnitOfMeasure());
         price1.setUnomQty(productForm.getPrceUnomQty());
@@ -298,6 +301,12 @@ public class ProductServiceImpl implements ProductService {
         price1.setPrceSetCentral(false);
         priceDao.insert(price1);
         logger.info("price inserted");
+        //insert cost
+        priceCode1 = priceDao.getProductPriceCodePerCode(IdBConstant.COST_PRICE_CODE);
+        price1.setPriceCode(priceCode1);
+        price1.setPrcePrice(productForm.getCostPrice());
+        priceDao.insert(price1);
+
     }
 
     private void deleteProductRelatedObjects(ProductForm productForm) {
@@ -500,7 +509,7 @@ public class ProductServiceImpl implements ProductService {
                 final Price prodPrice = new Price();
                 //get price code
 
-                final PriceCode priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.SELL_PRICE_CODE);
+                PriceCode priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.SELL_PRICE_CODE);
 
 
                 final Price price1 = new Price();
@@ -519,6 +528,12 @@ public class ProductServiceImpl implements ProductService {
                 price1.setPrceToDate(currentTime);
                 price1.setPrceSetCentral(false);
                 priceDao.insert(price1);
+                //SET COST
+                price1.setPrcePrice(cost);
+                priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.COST_PRICE_CODE);
+                price1.setPriceCode(priceCode);
+                priceDao.insert(price1);
+
                 updateDataChangeIndicators();
             }
             return product;

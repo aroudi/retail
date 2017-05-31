@@ -185,6 +185,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdePriceSold(txnDetailForm.getTxdePriceSold());
                 txnDetail.setTxdeLineRefund(txnDetailForm.isTxdeLineRefund());
                 txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
+                txnDetail.setTxdeProdName(txnDetailForm.getTxdeProdName());
                 txnDetail.setOriginalQuantity(txnDetailForm.getOriginalQuantity());
                 if (txnDetailForm.getId() < 0) {
                     final ConfigCategory txntLineType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_LINE_TYPE, IdBConstant.TXN_LINE_TYPE_SALE);
@@ -477,6 +478,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetailForm.setTxdeLineRefund(txnDetail.isTxdeLineRefund());
                 txnDetailForm.setTxdeItemVoid(txnDetail.isTxdeItemVoid());
                 txnDetailForm.setTxdeDetailType(txnDetail.getTxdeDetailType());
+                txnDetailForm.setTxdeProdName(txnDetail.getTxdeProdName());
                 txnDetailForm.setCalculatedLineValue(txnDetailForm.getTxdeQuantitySold() * txnDetailForm.getTxdeValueGross());
                 txnDetailForm.setCalculatedLineTax(txnDetailForm.getTxdeTax() * txnDetailForm.getCalculatedLineValue());
                 txnDetailForm.setTxidSurcharge(txnDetail.getTxidSurcharge());
@@ -623,6 +625,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
                 txnDetail.setTxdeParentDetail(txnDetailForm.getId());
                 txnDetail.setTxidSurcharge(txnDetailForm.getTxidSurcharge());
+                txnDetail.setTxdeProdName(txnDetailForm.getTxdeProdName());
                 if (txnLineType != null) {
                     txnDetail.setTxdeDetailType(txnLineType);
                 }
@@ -827,6 +830,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdePriceSold(txnDetailForm.getTxdePriceSold());
                 txnDetail.setTxdeLineRefund(true);
                 txnDetail.setTxidSurcharge(txnDetailForm.getTxidSurcharge());
+                txnDetail.setTxdeProdName(txnDetailForm.getTxdeProdName());
                 //txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
                 if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
                     txnDetail.setTxdeParentDetail(txnDetailForm.getParentId());

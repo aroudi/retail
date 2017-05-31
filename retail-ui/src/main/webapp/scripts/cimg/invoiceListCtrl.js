@@ -114,7 +114,6 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
         });
         baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
             $scope.customerSet = response.data;
-            $scope.client = baseDataService.populateSelectList($scope.customer,$scope.customerSet);
             if ($scope.customerSet.length > 0) {
                 var customer = {
                     "id" : -1,
@@ -122,6 +121,7 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
                 }
                 $scope.customerSet.unshift(customer);
             }
+            $scope.client = baseDataService.populateSelectList($scope.client,$scope.customerSet);
         });
     }
 

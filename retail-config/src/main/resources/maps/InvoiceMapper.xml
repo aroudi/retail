@@ -84,6 +84,8 @@
         <result column="TXDE_DETAIL_LEVEL" property="txdeDetailLevel" />
         <result column="TXDE_ID" property="txdeParentDetail" />
         <result column="TXDE_DISC_PRICE" property="txdeDiscPrice" />
+        <result column="TXDE_DISC_PRICE" property="txdeDiscPrice" />
+        <result column="TXDE_PROD_NAME" property="txdeProdName" />
         <result column="TXID_SURCHARGE" property="txidSurcharge" />
         <association property="product" column="TXDE_PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductSaleItemPerProdId" />
         <association property="unitOfMeasure" column="TXDE_UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />

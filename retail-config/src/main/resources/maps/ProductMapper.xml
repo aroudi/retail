@@ -125,6 +125,7 @@
         <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
         <association resultMap="prodOrguLinkDetailMap" property="prodOrguLink" />
         <association property="sellPrice" column="PROD_ID" select="au.com.biztune.retail.dao.PriceDao.getProductSellPricePerProdId" />
+        <association property="costPrice" column="PROD_ID" select="au.com.biztune.retail.dao.PriceDao.getProductCostPricePerProdId" />
     </resultMap>
 
     <resultMap id="productSaleItemLiteMap" type="ProductSaleItem" >

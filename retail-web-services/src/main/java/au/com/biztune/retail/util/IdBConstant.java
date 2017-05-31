@@ -23,6 +23,10 @@ public interface IdBConstant {
      */
     String SELL_PRICE_CODE = "SELL_PRICE";
     /**
+     * COST_PRICE CODE.
+     */
+    String COST_PRICE_CODE = "COST_PRICE";
+    /**
      * SELL_PRICE CODE.
      */
     String PRICE_BAND_CODE = "A";

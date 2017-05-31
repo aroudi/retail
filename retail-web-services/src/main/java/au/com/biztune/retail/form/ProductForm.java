@@ -25,6 +25,8 @@ public class ProductForm {
     private double prcePrice;
     private double prceMargin;
     private boolean prceTaxIncluded;
+    private double costPrice;
+
     private String prodLocation;
 
     public long getProdId() {
@@ -169,6 +171,14 @@ public class ProductForm {
 
     public void setProdLocation(String prodLocation) {
         this.prodLocation = prodLocation;
+    }
+
+    public double getCostPrice() {
+        return costPrice;
+    }
+
+    public void setCostPrice(double costPrice) {
+        this.costPrice = costPrice;
     }
 }
 

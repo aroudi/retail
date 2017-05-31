@@ -32,6 +32,13 @@ public interface PriceDao {
     Price getProductSellPricePerProdId(long prodId);
 
     /**
+     * get Product Cost per Product Id. the product cost is the cost of default supplier
+     * @param  prodId prodId
+     * @return Price.
+     */
+    Price getProductCostPricePerProdId(long prodId);
+
+    /**
      * get Product Price Per Id.
      * @param priceId priceId
      * @return Price

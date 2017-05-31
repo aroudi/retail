@@ -175,6 +175,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
                 }
                 $scope.supplierSet.unshift(supplier);
             }
+            $scope.supplier = baseDataService.populateSelectList($scope.supplier,$scope.supplierSet);
         });
         var pageNo = paginationOptions.pageNumber*1 ;
         var pagingUrl = PRODUCT_ALL_PAGING_URI + '/' + pageNo + '/' + paginationOptions.pageSize;

@@ -47,6 +47,7 @@ public class TxnDetail {
     private long parentId;
     private double txidSurcharge;
     private double txdeQuantityOrdered;
+    private String txdeProdName;
 
 
 
@@ -440,5 +441,13 @@ public class TxnDetail {
 
     public void setTxdeQuantityOrdered(double txdeQuantityOrdered) {
         this.txdeQuantityOrdered = txdeQuantityOrdered;
+    }
+
+    public String getTxdeProdName() {
+        return txdeProdName;
+    }
+
+    public void setTxdeProdName(String txdeProdName) {
+        this.txdeProdName = txdeProdName;
     }
 }

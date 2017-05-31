@@ -7,8 +7,8 @@ import au.com.biztune.retail.domain.GeneralSearchForm;
  */
 public class ProductSearchForm extends GeneralSearchForm {
     private String prodSku;
-    private String reference;
     private String prodName;
+    private String reference;
     private long prodTypeId;
 
     public String getProdSku() {
@@ -42,4 +42,5 @@ public class ProductSearchForm extends GeneralSearchForm {
     public void setProdTypeId(long prodTypeId) {
         this.prodTypeId = prodTypeId;
     }
+
 }

@@ -88,6 +88,19 @@
         AND prcc.prcc_code = 'SELL_PRICE'
     </select>
 
+    <select id="getProductCostPricePerProdId" resultMap="priceMap" >
+        SELECT
+        <include refid="priceColumns"><property name="alias" value="prce"/></include>,
+        <include refid="priceCodeColumns"><property name="alias" value="prcc"/></include>
+        FROM
+        PRICE prce
+        INNER JOIN
+        PRICE_CODE prcc on (prce.PRCC_ID = prcc.PRCC_ID)
+        WHERE
+        prce.PROD_ID = #{value1}
+        AND prcc.prcc_code = 'COST_PRICE'
+    </select>
+
     <select id="getProductPricePerPriceId" resultMap="priceMap" >
         SELECT
         <include refid="priceColumns"><property name="alias" value="prce"/></include>,

@@ -58,7 +58,7 @@
                                 <label>Tax</label>
                                 <!--input class="form-control" data-ng-model="productSupplier.supplier.supplierName" ng-disabled="true">
                                 <button type="button" class="btn btn-success" ng-click="searchSupplier()">Supplier</button-->
-                                <select class="form-control" data-ng-model="productSupplier.taxLegVariance"
+                                <select class="form-control" data-ng-model="productSupplier.taxLegVariance" ng-change="calculatePriceAfterTax()"
                                         ng-options="tax.txlvDesc for tax in taxLegVarianceSet" >
                                 </select>
                             </div >
@@ -71,7 +71,7 @@
                                                                             Invalid!
                                                                        </span>
                                 </label>
-                                <input class="form-control" data-ng-model="productSupplier.costBeforeTax" name="costBeforeTax" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" />
+                                <input class="form-control" data-ng-model="productSupplier.costBeforeTax" ng-change="calculatePriceAfterTax()" name="costBeforeTax" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" />
                             </div >
                         </div>
                         <div class="col-lg-4">
@@ -103,7 +103,7 @@
                                                                             Invalid!
                                                                        </span>
                                 </label>
-                                <input class="form-control" data-ng-model="productSupplier.bulkPriceBeforeTax" name="bulkPriceBeforeTax" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
+                                <input class="form-control" data-ng-model="productSupplier.bulkPriceBeforeTax" ng-change="calculatePriceAfterTax()" name="bulkPriceBeforeTax" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
                             </div >
                         </div>
                         <div class="col-lg-4">

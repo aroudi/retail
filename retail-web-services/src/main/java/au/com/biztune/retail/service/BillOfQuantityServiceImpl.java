@@ -264,7 +264,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 final Price prodPrice = new Price();
                 //get price code
 
-                final PriceCode priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.SELL_PRICE_CODE);
+                PriceCode priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.SELL_PRICE_CODE);
 
 
                 final Price price1 = new Price();
@@ -283,6 +283,14 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 price1.setPrceToDate(currentTime);
                 price1.setPrceSetCentral(false);
                 priceDao.insert(price1);
+
+                //INSERT COST PRICE, SAME AS SELL PRICE
+                priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.COST_PRICE_CODE);
+                price1.setPriceCode(priceCode);
+                price1.setPrcePrice(importedProduct.getSellPrice());
+                priceDao.insert(price1);
+
+
             //if product exists, update supplier information
             } else {
                 //check if this product is already assigned to the supplier

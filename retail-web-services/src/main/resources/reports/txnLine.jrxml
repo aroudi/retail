@@ -23,6 +23,7 @@
 	<field name="txdeQtyInvoiced" class="java.lang.Double"/>
 	<field name="txdeQuantityOrdered" class="java.lang.Double"/>
 	<field name="txdeValueLine" class="java.lang.Double"/>
+	<field name="txdeProdName" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -144,7 +145,7 @@
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{product}.getProdName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{txdeProdName}!=null ? $F{txdeProdName} :  $F{product}.getProdName()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="498" y="6" width="65" height="13" uuid="525ca675-4786-491a-bca8-56c862ac11ca"/>

@@ -38,19 +38,19 @@ var cimgApp = angular
   ]);
 
 //SIT
+/*
 var config_data = {
     'SERVER' : 'pos.jomon.com.au',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
+*/
 //DEV
-/*
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
-*/
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -201,7 +201,8 @@ var type_constant = {
     'SESSION_EVENT_TYPE_PICKUP' : 'categories/SESSION_EVENT_TYPE/SESSION_EVENT_TYPE_PICKUP',
     'CASH_SESSION_STATE_ENDED' : 'categories/SESSION_STATE/SESSION_STATE_ENDED',
     'PRICING_GRADE_DEFAULT' : 'categories/getCustomerGrade/Default',
-    'TAXLEGVARIANCE_GST_URI' : 'taxRule/taxLegVariance/gstCode'
+    'TAXLEGVARIANCE_GST_URI' : 'taxRule/taxLegVariance/gstCode',
+    'PRICING_RULE_URI' : 'categories/PRICING_RULES'
 }
 
 angular.forEach(config_data, function(key, value) {
@@ -320,12 +321,14 @@ cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDia
             return selectedItem
         },
         populateMultiSelectList: function (selectName, sourceData) {
-            if (selectName==null)
+            /*
+            if (selectName==null || selectName == undefined)
                 return;
+            */
             var lineArr = sourceData;
             var newLines=[];
             var selectedLines = selectName;
-            if (selectedLines.length <1) {
+            if (selectedLines == undefined || selectedLines == null || selectedLines.length <1) {
                 if (lineArr.length>0) {
                     newLines.push(lineArr[0]);
                     return newLines;
