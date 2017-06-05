@@ -4,19 +4,22 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, CUSTOMER_GET_ACCOUNT_DEBT_URI, TXN_ADD_ACC_PAYMENT) {
+cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, CUSTOMER_GET_ACCOUNT_DEBT_URI, TXN_ADD_ACC_PAYMENT, PAYMENT_MEDIA_ALL_URI) {
 
     initPageData();
     initDebtList();
     initTxnMediaList();
 
+    /*
     $scope.onMediaTypeChange = function () {
         var paymentMediaOfTypeUri = PAYMENT_MEDIA_OF_TYPE_URI + $scope.mediaType.id;
         baseDataService.getBaseData(paymentMediaOfTypeUri).then(function(response){
             $scope.paymentMediaSet = response.data;
             $scope.paymentMedia = baseDataService.populateSelectList($scope.paymentMedia,$scope.paymentMediaSet);
+
         });
     }
+    */
 
 
     function initPageData() {
@@ -24,10 +27,12 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
         $scope.debtorPaymentForm.total = 0.00;
         $scope.debtorPaymentForm.amountDue = 0.00
 
-        baseDataService.getBaseData(MEDIA_TYPE_ALL_URI).then(function(response){
-            $scope.mediaTypeSet = response.data;
-            $scope.mediaType = baseDataService.populateSelectList($scope.mediaType,$scope.mediaTypeSet);
-            $scope.onMediaTypeChange();
+        baseDataService.getBaseData(PAYMENT_MEDIA_ALL_URI).then(function(response){
+            //$scope.mediaTypeSet = response.data;
+            //$scope.mediaType = baseDataService.populateSelectList($scope.mediaType,$scope.mediaTypeSet);
+            //$scope.onMediaTypeChange();
+            $scope.paymentMediaSet = response.data;
+            $scope.paymentMedia = baseDataService.populateSelectList($scope.paymentMedia,$scope.paymentMediaSet);
         });
     }
     function initDebtList() {
@@ -42,7 +47,7 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
                 {field: 'cadDueDate', displayName:'Due Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
                 {field: 'txhdTxnNr', displayName: 'Invoice No.', width: '15%'},
                 {field: 'cadAmountDebt', displayName: 'Amount Owing', enableCellEdit: false, cellFilter: 'currency', width: '10%', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-                {field: 'paying', displayName: 'Paying', enableCellEdit: true, cellFilter: 'currency', width: '10%', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+                {field: 'paying', displayName: 'Paying', enableCellEdit: true, cellClass:"blue", cellFilter: 'currency', width: '10%', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
                 {field: 'balance', displayName: 'Balance', enableCellEdit: false, cellFilter: 'currency', width: '10%',footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum}
             ]
         }

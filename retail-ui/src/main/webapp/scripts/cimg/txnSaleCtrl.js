@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI) {
 
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -79,10 +79,13 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 $scope.txnHeaderForm.txhdState = response.data;
             });
         }
-        baseDataService.getBaseData(MEDIA_TYPE_ALL_URI).then(function(response){
-            $scope.mediaTypeSet = response.data;
-            $scope.mediaType = baseDataService.populateSelectList($scope.mediaType,$scope.mediaTypeSet);
-            $scope.onMediaTypeChange();
+        baseDataService.getBaseData(PAYMENT_MEDIA_ALL_URI).then(function(response){
+            //$scope.mediaTypeSet = response.data;
+            //$scope.mediaType = baseDataService.populateSelectList($scope.mediaType,$scope.mediaTypeSet);
+            //$scope.onMediaTypeChange();
+            $scope.paymentMediaSet = response.data;
+            $scope.paymentMedia = baseDataService.populateSelectList($scope.paymentMedia,$scope.paymentMediaSet);
+
         });
         baseDataService.getBaseData(MEDIA_TYPE_GET_BYNAME_URI+'Account').then(function(response){
             $scope.mediaTypeAccount = response.data;
@@ -104,6 +107,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         });
     }
 
+    /*
     $scope.onMediaTypeChange = function () {
         var paymentMediaOfTypeUri = PAYMENT_MEDIA_OF_TYPE_URI + $scope.mediaType.id;
         baseDataService.getBaseData(paymentMediaOfTypeUri).then(function(response){
@@ -111,6 +115,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.paymentMedia = baseDataService.populateSelectList($scope.paymentMedia,$scope.paymentMediaSet);
         });
     }
+    */
 
     function initTxnDetail() {
         var rowtpl='<div ng-class="{\'blue\':row.entity.txdeItemVoid==false, \'red\':row.entity.txdeItemVoid==true }"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
@@ -356,15 +361,17 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             closeByDocument:false
         }).then (function (value){
                 $scope.customer = value;
-                var mediaType;
+                //var mediaType;
                 $scope.txnHeaderForm.txhdDlvAddress = $scope.customer.address2;
+                /*
                 if ($scope.customer.customerType.categoryCode == 'CUSTOMER_TYPE_ACCOUNT') {
                     mediaType = $scope.mediaTypeAccount;
                 } else {
                     mediaType = $scope.mediaTypeCash;
                 }
-                $scope.mediaType = baseDataService.populateSelectList(mediaType,$scope.mediaTypeSet);
-                $scope.onMediaTypeChange();
+                */
+                //$scope.mediaType = baseDataService.populateSelectList(mediaType,$scope.mediaTypeSet);
+                //$scope.onMediaTypeChange();
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }
@@ -372,9 +379,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     };
 
     $scope.onCustomerChange = function () {
-        var mediaType;
+        //var mediaType;
         $scope.txnHeaderForm.txhdDlvAddress = $scope.customer.address2;
         $scope.txnHeaderForm.txhdEmailTo = $scope.customer.email;
+        /*
         if ($scope.customer.customerType.categoryCode == 'CUSTOMER_TYPE_ACCOUNT') {
             mediaType = $scope.mediaTypeAccount;
         } else {
@@ -382,6 +390,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
         $scope.mediaType = baseDataService.populateSelectList(mediaType,$scope.mediaTypeSet);
         $scope.onMediaTypeChange();
+        */
     }
 
     $scope.searchProduct = function () {

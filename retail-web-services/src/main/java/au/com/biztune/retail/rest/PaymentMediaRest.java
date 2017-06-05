@@ -62,6 +62,18 @@ public class PaymentMediaRest {
     }
 
     /**
+     * get all payment medias.
+     * @return List of PaymentMedia
+     */
+    @Secured
+    @GET
+    @Path("/getAll")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List getAllPaymentMedias() {
+        return paymentMediaService.getAllPaymentMedias();
+    }
+
+    /**
      * get all media types of specific media type.
      * @param mediaTypeName mediaTypeName
      * @return List of PaymentMedia

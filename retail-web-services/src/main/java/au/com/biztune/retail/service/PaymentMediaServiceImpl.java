@@ -60,4 +60,16 @@ public class PaymentMediaServiceImpl implements PaymentMediaService {
             return null;
         }
     }
+    /**
+     * get all payment medias.
+     * @return UnitOfMeasure
+     */
+    public List<PaymentMedia> getAllPaymentMedias() {
+        try {
+            return paymentMediaDao.getAllPaymentMedias();
+        } catch (Exception e) {
+            logger.error("Error in getting payment medias: ", e);
+            return null;
+        }
+    }
 }

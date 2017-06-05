@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog,baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI) {
+cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog,baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI, TAXLEGVARIANCE_ALL_URI) {
 
     $scope.getPage = function(){
         $scope.productSearchForm.pageNo = paginationOptions.pageNumber*1 ;
@@ -141,7 +141,12 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
                 controller:'productCtrl',
                 className: 'ngdialog-pdfView',
                 closeByDocument:false,
-                resolve: {viewMode: function(){return true}}
+                resolve: {viewMode: function(){return true},
+                    taxCodeSet: function(baseDataService, TAXLEGVARIANCE_ALL_URI){
+                    console.log('TAXLEGVARIANCE_ALL_URI = ' + TAXLEGVARIANCE_ALL_URI);
+                    return baseDataService.getBaseData(TAXLEGVARIANCE_ALL_URI);
+                }
+                }
             }).then (function (){
                 }, function(reason) {
                     console.log('Modal promise rejected. Reason:', reason);

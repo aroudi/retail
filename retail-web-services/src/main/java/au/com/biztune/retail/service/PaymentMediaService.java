@@ -12,21 +12,31 @@ import java.util.List;
 public interface PaymentMediaService {
     /**
      * get all payment medias of specific mediatype.
-     * @param  mediaTypeId mediaTypeId
+     *
+     * @param mediaTypeId mediaTypeId
      * @return UnitOfMeasure
      */
     List<PaymentMedia> getAllPaymentMediaOfType(long mediaTypeId);
 
     /**
      * get all payment medias.
+     *
      * @return LIst of PaymentMedia
      */
     List<MediaType> getAllMediaTypes();
 
     /**
      * get mediatype by name.
+     *
      * @param mediaTypeName mediaTypeName
      * @return media type.
      */
     MediaType getMediaTypeByName(String mediaTypeName);
+
+    /**
+     * get all payment medias.
+     *
+     * @return UnitOfMeasure
+     */
+    List<PaymentMedia> getAllPaymentMedias();
 }

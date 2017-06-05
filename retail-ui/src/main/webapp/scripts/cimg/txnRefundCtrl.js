@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, TXN_REFUND_URI, TXN_MEDIA_REFUND, INVOICE_EXPORT_PDF) {
+cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_REFUND_URI, TXN_MEDIA_REFUND, INVOICE_EXPORT_PDF, PAYMENT_MEDIA_ALL_URI) {
 
 
     //select all rows for refund
@@ -25,12 +25,15 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         //select all rows for refund
         baseDataService.setRow({});
         baseDataService.setIsPageNew(true);
-        baseDataService.getBaseData(MEDIA_TYPE_ALL_URI).then(function(response){
-            $scope.mediaTypeSet = response.data;
-            $scope.mediaType = baseDataService.populateSelectList($scope.mediaType,$scope.mediaTypeSet);
-            $scope.onMediaTypeChange();
+        baseDataService.getBaseData(PAYMENT_MEDIA_ALL_URI).then(function(response){
+            //$scope.mediaTypeSet = response.data;
+            //$scope.mediaType = baseDataService.populateSelectList($scope.mediaType,$scope.mediaTypeSet);
+            //$scope.onMediaTypeChange();
+            $scope.paymentMediaSet = response.data;
+            $scope.paymentMedia = baseDataService.populateSelectList($scope.paymentMedia,$scope.paymentMediaSet);
         });
     }
+    /*
     $scope.onMediaTypeChange = function () {
         var paymentMediaOfTypeUri = PAYMENT_MEDIA_OF_TYPE_URI + $scope.mediaType.id;
         baseDataService.getBaseData(paymentMediaOfTypeUri).then(function(response){
@@ -38,6 +41,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
             $scope.paymentMedia = baseDataService.populateSelectList($scope.paymentMedia,$scope.paymentMediaSet);
         });
     }
+    */
 
     function initTxnDetail() {
         var rowtpl='<div ng-class="{\'blue\':row.entity.txdeItemVoid==false, \'red\':row.entity.txdeItemVoid==true }"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';

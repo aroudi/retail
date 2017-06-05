@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialog, baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, TXN_TYPE_INVOICE, TXN_TYPE_REFUND, INVOICE_SEARCH_URI, INVOICE_SEARCH_PAGING_URI, CUSTOMER_ALL_URI) {
+cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialog, baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, TXN_TYPE_INVOICE, TXN_TYPE_REFUND, INVOICE_SEARCH_URI, INVOICE_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, DELIVERY_DOCKET_REPRINT_URI) {
 
     $scope.showRefNo = function(row) {
         if (row.txhdOrigTxnNr == undefined || row.txhdOrigTxnNr == null) {
@@ -58,14 +58,14 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
         useExternalSorting:true,
         enableFiltering: true,
         columnDefs: [
-            {name:'Action',enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row, false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.editTransaction(row, true)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>&nbsp;<a href=""><i tooltip="Refund" tooltip-placement="bottom" class="fa fa-backward fa-2x" ng-show="grid.appScope.displayRefundOption(row)" ng-click="grid.appScope.refundTransaction(row)"></i></a>', width:'10%' },
+            {name:'Action',enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.editTransaction(row, true)"></i></a>&nbsp;<a href=""><i tooltip="Reprint" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>&nbsp;<a href=""><i tooltip="Reprint Delivery Docket" tooltip-placement="bottom" class="fa fa-newspaper-o fa-2x" ng-show="grid.appScope.displayRefundOption(row)" ng-click="grid.appScope.reprintDeliveryDocket(row)"></i></a>&nbsp;<a href=""><i tooltip="Refund" tooltip-placement="bottom" class="fa fa-backward fa-2x" ng-show="grid.appScope.displayRefundOption(row)" ng-click="grid.appScope.refundTransaction(row)"></i></a>', width:'15%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
             {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'15%'},
             {field:'txhdOrigTxnNr', cellTemplate: txnNumberTemplate,displayName:'Ref No',enableCellEdit:false, width:'10%'},
             {field:'txhdTxnNr', displayName:'Invoice/Refund No',enableCellEdit:false, width:'15%'},
-            {field:'invoiceTxnType.displayName', displayName:'Type',enableCellEdit:false, width:'10%',
+            {field:'invoiceTxnType.displayName', displayName:'Type',enableCellEdit:false, width:'5%',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     if (grid.getCellValue(row, col) === 'INVOICE') {
                         return 'green';
@@ -181,6 +181,11 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
     }
     $scope.exportToPdf = function(row) {
         var exportUrl = INVOICE_EXPORT_PDF + row.entity.id;
+        baseDataService.pdfViewer(exportUrl);
+    }
+    $scope.reprintDeliveryDocket = function(row) {
+        console.log('reprint delivery docket called');
+        var exportUrl = DELIVERY_DOCKET_REPRINT_URI + row.entity.id;
         baseDataService.pdfViewer(exportUrl);
     }
     $scope.searchCustomer = function () {

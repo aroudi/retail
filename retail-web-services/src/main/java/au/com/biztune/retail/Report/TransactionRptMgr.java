@@ -118,6 +118,37 @@ public class TransactionRptMgr {
     }
 
     /**
+     * reprint delivery docket.
+     * @param inoiceId inoiceId
+     * @return delivery docket as pdf
+     */
+    public StreamingOutput reprintDeliveryDocket(long inoiceId) {
+        try {
+            final List<TxnHeader> txnHeaders = new ArrayList<TxnHeader>();
+            final TxnHeader txnHeader = invoiceDao.getInvoiceHeaderPerInvoiceId(inoiceId);
+            txnHeader.setTxhdTxnType(txnHeader.getInvoiceTxnType());
+            //set txn_state to invoice
+            final ConfigCategory txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_FINAL);
+            if (txnState != null) {
+                txnHeader.setTxhdState(txnState);
+            }
+            //get account debt for customer on this transaction
+            if (txnHeader.getCustomer() != null) {
+                final CustomerAccountDebt customerAccountDebt = customerAccountDebtDao.getCustomerAccountDebtPerCustomerIdAndTxhdId(txnHeader.getCustomer().getId(), inoiceId);
+
+                if (customerAccountDebt != null) {
+                    txnHeader.setCustomerAccountDebt(customerAccountDebt);
+                }
+            }
+            txnHeaders.add(txnHeader);
+            //invoiceDao.updateTxnPrintStatus(inoiceId, true);
+            return reprintDeliveryDocket(txnHeaders);
+        } catch (Exception e) {
+            logger.error("Exception in returning transaction header", e);
+            return null;
+        }
+    }
+    /**
      * export Transaction to PDF.
      * @param txnHeaders txnHeaders
      * @param txnType txnType
@@ -200,6 +231,58 @@ public class TransactionRptMgr {
             }
 
             return streamingOutput;
+        } catch (Exception e) {
+            logger.error("Exception in exporting Transaction as pdf: ", e);
+            return null;
+        }
+    }
+
+
+    /**
+     * reprint DeliveryDocket.
+     * @param txnHeaders txnHeaders
+     * @return delivery docket pdf streaming.
+     */
+    public StreamingOutput reprintDeliveryDocket(List<TxnHeader> txnHeaders) {
+        StreamingOutput deliverystreamingOutput = null;
+        try {
+            final String pathStr = reportPath.getURL().getPath();
+            final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            final JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(txnHeaders);
+            final JRBeanCollectionDataSource beanColDataSource2 = new JRBeanCollectionDataSource(txnHeaders);
+            final String deliveryDocketHeaderJrxmlName = pathStr + "/" + deliveryDocketHeaderFileName + ".jrxml";
+            final String deliveryDocketLineJrxmlName = pathStr + "/" + deliveryDocketLineFileName + ".jrxml";
+            final String deliveryDocketLineJasperName = IS_WINDOWS ? (pathStr + "/" + deliveryDocketLineFileName + ".jasper").substring(1) : (pathStr + "/" + deliveryDocketLineFileName + ".jasper");
+            JasperReport jasperDeliveryDocketReport = null;
+            JasperPrint jasperPrint2 = null;
+            final Map<String, Object> parameters = new HashMap<String, Object>();
+            final List<JasperPrint> jasperPrintList = new ArrayList<JasperPrint>();
+            parameters.put("SUBREPORT_DIR", pathStr + "/");
+
+
+            if (Files.notExists(Paths.get(deliveryDocketLineJasperName))) {
+                JasperCompileManager.compileReportToFile(deliveryDocketLineJrxmlName, deliveryDocketLineJasperName);
+            }
+            jasperDeliveryDocketReport = JasperCompileManager.compileReport(deliveryDocketHeaderJrxmlName);
+            jasperPrint2 = JasperFillManager.fillReport(jasperDeliveryDocketReport, parameters, beanColDataSource2);
+            jasperPrintList.add(jasperPrint2);
+
+            final JRPdfExporter exporter = new JRPdfExporter();
+            exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
+            exporter.exportReport();
+            deliverystreamingOutput = new StreamingOutput() {
+                @Override
+                public void write(OutputStream output2) throws IOException, WebApplicationException {
+                    final byte[] bytes = byteArrayOutputStream.toByteArray();
+                    output2.write(bytes);
+                    logger.info("PDF content = " + bytes.toString());
+                    logger.info("PDF length = " + bytes.length);
+                    output2.flush();
+                }
+            };
+
+            return deliverystreamingOutput;
         } catch (Exception e) {
             logger.error("Exception in exporting Transaction as pdf: ", e);
             return null;

@@ -136,6 +136,21 @@ public class TransactionRest {
         return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = transaction" + invoiceId + ".pdf").build();
     }
 
+
+    /**
+     * reprint delivery docket.
+     * @param invoiceId invoiceId
+     * @return Stream output.
+     */
+    @Secured
+    @Path("/reprintDeliveryDocket/{invoiceId}")
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response reprintDeliveryDocket(@PathParam("invoiceId") long invoiceId) {
+        final StreamingOutput streamingOutput = transactionRptMgr.reprintDeliveryDocket(invoiceId);
+        return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = transaction" + invoiceId + ".pdf").build();
+    }
+
     /**
      * Returns list of Invoice.
      * @return list of Invoice
