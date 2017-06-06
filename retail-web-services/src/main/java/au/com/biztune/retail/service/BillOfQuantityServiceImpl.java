@@ -199,8 +199,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 supplierDao.insertSuppOrguLink(suppOrguLink);
                 supplier.setSuppOrguLink(suppOrguLink);
             }
-            //insert product
-            Product product = productDao.getProductPerReference(importedProduct.getReference());
+            //insert product. search product per catalogueNo. if dose not exist, add it
+            Product product = productDao.getProductPerSku(importedProduct.getCatalogueNo());
             if (product == null) {
                 prodIsNew = true;
                 product = new Product();
@@ -287,7 +287,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 //INSERT COST PRICE, SAME AS SELL PRICE
                 priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.COST_PRICE_CODE);
                 price1.setPriceCode(priceCode);
-                price1.setPrcePrice(importedProduct.getSellPrice());
+                price1.setPrcePrice(importedProduct.getCost());
                 priceDao.insert(price1);
 
 

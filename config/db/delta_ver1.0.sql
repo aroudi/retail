@@ -1916,3 +1916,35 @@ go
 
 ALTER TABLE TXN_DETAIL ADD TXDE_PROD_NAME VARCHAR(500)
 GO
+
+
+alter table PRODUCT
+ alter column PROD_SKU VARCHAR(200) NOT NULL
+go
+
+alter table PRODUCT
+ alter column REFERENCE VARCHAR(200) NULL
+go
+
+alter table PRODUCT
+ alter column PROD_NAME VARCHAR(500) NOT NULL
+go
+
+alter table PRODUCT
+ alter column PROD_RECEIPT_DESC VARCHAR(1000)
+go
+
+alter table PRODUCT
+ alter column PROD_BRAND VARCHAR(200)
+go
+
+alter table PRODUCT
+ alter column PROD_CLASS VARCHAR(200)
+go
+
+alter table PRODUCT
+  alter column PROD_WARRANTY_TEXT VARCHAR(1024)
+go
+
+--  UP TO THIS POINT APPLIED TO JOMON ON 06/06/2017
+

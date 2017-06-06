@@ -65,8 +65,7 @@ cimgApp.controller('productSaleItemSearchCtrl', function($scope, $state, $timeou
         });
         */
         baseDataService.getBaseData(PRODUCT_SALE_ITEM_ALL_URI).then(function(response){
-            var data = angular.copy(response.data);
-            $scope.gridOptions.data = data;
+            $scope.gridOptions.data = response.data;
         });
     }
 
@@ -74,10 +73,12 @@ cimgApp.controller('productSaleItemSearchCtrl', function($scope, $state, $timeou
         if ($scope.selectedOption != undefined) {
             //$scope.confirm($scope.selectedOption);
             $scope.confirm($scope.gridApi.selection.getSelectedRows());
+            //$scope.$destroy();
         }
     }
 
     $scope.cancel = function() {
+        //$scope.$destroy();
         $scope.closeThisDialog('button');
     }
 
@@ -85,5 +86,8 @@ cimgApp.controller('productSaleItemSearchCtrl', function($scope, $state, $timeou
         /* stuff here to add a new item... */
         $scope.$broadcast('focusOnMe');
     };
-
+    $scope.$on('$destroy', function () {
+        console.log("destroy scope of controller before exit");
+        delete $scope.gridOptions.data;
+    });
 });
