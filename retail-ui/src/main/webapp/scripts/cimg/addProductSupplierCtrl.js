@@ -30,10 +30,12 @@ cimgApp.controller('addProductSupplierCtrl', function($scope, baseDataService,ng
     }
 
     $scope.submit = function () {
-        if ($scope.productSupplier != undefined) {
+        if ($scope.productSupplier.supplier == undefined || $scope.productSupplier.supplier.id == -1 ) {
             //$scope.confirm($scope.selectedOption);
-            $scope.confirm($scope.productSupplier);
+            baseDataService.displayMessage('info', 'Supplier', 'Please select supplier');
+            return;
         }
+        $scope.confirm($scope.productSupplier);
     }
     $scope.cancel = function() {
         productSupplierObject = $scope.productSupplierBackup;

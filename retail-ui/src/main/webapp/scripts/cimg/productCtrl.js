@@ -46,11 +46,15 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
         $scope.gridOptions = {
             enableFiltering: true,
             enableCellEditOnFocus:true,
+            expandableRowTemplate: '<div ui-grid="row.entity.subGridOptions" ui-grid-edit ui-grid-selection ui-grid-cellNav style ="height: 200px; width:50%;"></div>',
+            expandableRowScope : {
+              subGridVariable: 'subGridScopeVariable'
+            },
             columnDefs: [
                 {field:'id', visible:false, enableCellEdit:false},
                 {field:'solId', visible:false, enableCellEdit:false},
                 {field:'prodId', visible:false, enableCellEdit:false},
-                {field:'sprcPrefferBuy', displayName:'Default Supplier',enableCellEdit:true, type:'boolean', width:'6%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-change="grid.appScope.selectDefaultSupplier(row.entity)" ng-model="row.entity.sprcPrefferBuy">',
+                {field:'sprcPrefferBuy', displayName:'Default Supplier',enableCellEdit:true, type:'boolean', width:'10%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-change="grid.appScope.selectDefaultSupplier(row.entity)" ng-model="row.entity.sprcPrefferBuy">',
                     cellClass:
                         function(grid, row, col, rowRenderIndex, colRenderIndex) {
                             if (grid.getCellValue(row, col) === true) {
@@ -60,12 +64,12 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
                             }
                         }
                 },
-                {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'20%',
+                {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'28%',
                     cellTooltip: function(row,col) {
                         return row.entity.supplier.supplierName
                     }
                 },
-                {field:'catalogueNo', displayName:'CatNo',enableCellEdit:false, width:'15%',
+                {field:'catalogueNo', displayName:'CatNo',enableCellEdit:false, width:'20%',
                     cellTooltip: function(row,col) {
                         return row.entity.catalogueNo
                     }
@@ -78,16 +82,13 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
                 },
                 */
                 {field:'unitOfMeasure.unomCode', displayName:'Size',enableCellEdit:false,width:'8%'},
-                {field:'unomQty',displayName:'Qty', enableCellEdit:true, type: 'number', width:'7%'},
-                {field:'taxLegVariance.txlvDesc',editType:'dropdown', displayName:'Tax',enableCellEdit:true,width:'10%',
+                {field:'unomQty',displayName:'Qty', enableCellEdit:true, type: 'number', width:'8%'},
+                {field:'taxLegVariance.txlvDesc',editType:'dropdown', displayName:'Tax',enableCellEdit:true,width:'12%',
                     editableCellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance"  ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
                     //cellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance"  ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
                 },
-                {field:'costBeforeTax', displayName:'cost(ex tax)',enableCellEdit:true, cellFilter: 'currency', width:'8%'},
+                {field:'costBeforeTax', displayName:'cost(ex tax)',enableCellEdit:true, cellFilter: 'currency', width:'10%'},
                 {field:'price', displayName:'cost(inc tax)',enableCellEdit:true, cellFilter: 'currency', width:'10%'},
-                {field:'bulkQty', enableCellEdit:true, type: 'number', width:'7%'},
-                {field:'bulkPriceBeforeTax', displayName:'bulk price(exc tax)',enableCellEdit:true, cellFilter: 'currency', width:'7%'},
-                {field:'bulkPrice', displayName:'bulk price(inc tax)',enableCellEdit:true, cellFilter: 'currency', width:'8%'},
                 {name:'Action',enableCellEdit:false,sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Remove" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-show="row.entity.id < 0" ng-click="grid.appScope.removeSuppProdPrice(row)"></i></a>', width:'5%' }
 
             ]
@@ -110,6 +111,9 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
 
         if (!$scope.isNewPage) {
             $scope.gridOptions.data = $scope.productForm.suppProdPrices;
+            for (i=0; i<$scope.gridOptions.data.length; i++) {
+                displayBulkPrices($scope.gridOptions.data[i]);
+            }
         }
     }
     $scope.addSuppProdPrice = function () {
@@ -155,13 +159,114 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
             "unomQty" : productSupplier.suppUnomQty,
             "price" : productSupplier.suppPrice,
             "bulkQty" : productSupplier.suppBulkQty,
+            "bulkQty2" : productSupplier.suppBulkQty2,
+            "bulkQty3" : productSupplier.suppBulkQty3,
+            "bulkQty4" : productSupplier.suppBulkQty4,
+            "bulkQty5" : productSupplier.suppBulkQty5,
             "taxLegVariance" : productSupplier.taxLegVariance,
             "costBeforeTax" : productSupplier.costBeforeTax,
             "bulkPriceBeforeTax" : productSupplier.bulkPriceBeforeTax,
-            "bulkPrice" : productSupplier.suppBulkPrice
+            "bulkPrice" : productSupplier.suppBulkPrice,
+            "bulkPrice2" : productSupplier.suppBulkPrice2,
+            "bulkPrice3" : productSupplier.suppBulkPrice3,
+            "bulkPrice4" : productSupplier.suppBulkPrice4,
+            "bulkPrice5" : productSupplier.suppBulkPrice5
         }
+        displayBulkPrices(suppProdPrice);
         $scope.gridOptions.data.push(suppProdPrice);
     };
+    function displayBulkPrices(productSupplier) {
+        productSupplier.subGridOptions = {
+            enableRowSelection :false,
+            enableCellEditOnFocus:true,
+            enableColumnResizing: true,
+            columnDefs :[
+                {field:"name",visible:false},
+                {field:"qty", displayName:'Bulk Qty',enableCellEdit:true, type: 'number', width:'20%', visible:true},
+                {field:"value", displayName:'Bulk Price',enableCellEdit:true, cellFilter: 'currency', width:'20%', visible:true}
+            ],
+            data:[]
+        }
+        if (productSupplier.bulkQty !=undefined && productSupplier.bulkPrice != undefined) {
+            console.log('bulk1 processing');
+            bulkPrice =  {
+                "name" : "bulk1",
+                "qty" : productSupplier.bulkQty,
+                "value" : productSupplier.bulkPrice
+            }
+            productSupplier.subGridOptions.data.push(bulkPrice);
+        }
+        if (productSupplier.bulkQty2 !=undefined && productSupplier.bulkPrice2 != undefined) {
+            bulkPrice ={
+                "name" : "bulk2",
+                "qty" : productSupplier.bulkQty2,
+                "value" : productSupplier.bulkPrice2
+                }
+                productSupplier.subGridOptions.data.push(bulkPrice);
+        }
+        if (productSupplier.bulkQty3 !=undefined && productSupplier.bulkPrice3 != undefined) {
+            bulkPrice ={
+                "name" : "bulk3",
+                "qty" : productSupplier.bulkQty3,
+                "value" : productSupplier.bulkPrice3
+            }
+            productSupplier.subGridOptions.data.push(bulkPrice);
+        }
+        if (productSupplier.bulkQty4 !=undefined && productSupplier.bulkPrice4 != undefined) {
+            bulkPrice ={
+                "name" : "bulk4",
+                "qty" : productSupplier.bulkQty4,
+                "value" : productSupplier.bulkPrice4
+            }
+            productSupplier.subGridOptions.data.push(bulkPrice);
+        }
+        if (productSupplier.bulkQty5 !=undefined && productSupplier.bulkPrice5 != undefined) {
+            bulkPrice ={
+                "name" : "bulk5",
+                "qty" : productSupplier.bulkQty5,
+                "value" : productSupplier.bulkPrice5
+            }
+            productSupplier.subGridOptions.data.push(bulkPrice);
+        }
+    }
+
+    /**
+     * save bulkprice and delete subGridOptions.
+     */
+    function saveBulkPrices() {
+        for (i=0; i<$scope.gridOptions.data.length; i++) {
+            productSupplier = $scope.gridOptions.data[i];
+            if (productSupplier.subGridOptions != undefined && productSupplier.subGridOptions.data != undefined) {
+                for (j=0; j<productSupplier.subGridOptions.data.length; j++) {
+                    bulkPrice = productSupplier.subGridOptions.data[j];
+                    if (bulkPrice == undefined || bulkPrice == null) {
+                        continue;
+                    }
+                    switch (bulkPrice.name) {
+                        case 'bulk1' :
+                            productSupplier.bulkPrice = bulkPrice.value;
+                            productSupplier.bulkQty = bulkPrice.qty;
+                        case 'bulk2' :
+                            productSupplier.bulkPrice2 = bulkPrice.value;
+                            productSupplier.bulkQty2 = bulkPrice.qty;
+                        case 'bulk3' :
+                            productSupplier.bulkPrice3 = bulkPrice.value;
+                            productSupplier.bulkQty3 = bulkPrice.qty;
+                        case 'bulk4' :
+                            productSupplier.bulkPrice4 = bulkPrice.value;
+                            productSupplier.bulkQty4 = bulkPrice.qty;
+                        case 'bulk5' :
+                            productSupplier.bulkPrice5 = bulkPrice.value;
+                            productSupplier.bulkQty5 = bulkPrice.qty;
+                        default:
+                    }
+
+                }
+            }
+            delete productSupplier.subGridOptions;
+        }
+
+    }
 
     $scope.removeSuppProdPrice = function(row) {
         if (row == undefined || row.entity == undefined) {
@@ -202,6 +307,7 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
         */
 
         //$scope.facility.lastModifiedBy = userId;
+        saveBulkPrices();
         $scope.productForm.suppProdPrices = $scope.gridOptions.data;
         var rowObject = $scope.productForm;
         baseDataService.addRow(rowObject, PRODUCT_ADD_URI).then(function(response) {

@@ -1057,6 +1057,16 @@ cimgApp.directive('focusOn', function() {
     };
 });
 
+cimgApp.run(function ($window) {
+    var windowElement = angular.element($window);
+    windowElement.on('onbeforeunload', function (event) {
+        //event.returnValue = "Refresh is disabled";
+        console.log('page refreshed');
+        event.preventDefault();
+    });
+
+})
+
 /*
 cimgApp.config(['ChartJsProvider', function(ChartJsProvider){
     ChartJsProvider.setOptions({ chartColors : [ '#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'],

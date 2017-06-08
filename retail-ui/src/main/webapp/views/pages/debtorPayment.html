@@ -24,6 +24,12 @@
                                                                 <input class="form-control" data-ng-model="customer.companyName" ng-disabled="true">
                                                             </div >
                                                     </div >
+                                                    <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label>Payment Amount:</label>
+                                                            <input class="form-control" type="number" min="0" name="totalPayment" data-ng-model="totalPayment" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10"> <button type="button" class="btn btn-primary" ng-click="allocatePayment()">Allocate</button>
+                                                        </div >
+                                                    </div >
                                                 </div>
                                             </div>
                                         </div>

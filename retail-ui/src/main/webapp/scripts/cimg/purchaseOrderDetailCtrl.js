@@ -88,6 +88,8 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                         return;
                     }
                 }
+                //calculate bulk price
+                rowEntity.polUnitCost = calculateBulkPrice(rowEntity.purchaseItem, rowEntity.polQtyOrdered, rowEntity.polUnitCost);
                 //update the total value of the line
                 $scope.updatePurchaseLineValues(rowEntity);
             }
@@ -562,7 +564,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             return;
         }
 
-        $scope.purchaseOrderHeader.lines = $scope.gridOptions.data
+        $scope.purchaseOrderHeader.lines = $scope.gridOptions.data;
         var pageId;
         if ($scope.pageData === undefined) {
             pageId = -1;
@@ -616,5 +618,26 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             }
         }
     }
+    function calculateBulkPrice(purchaseItem, qty, defaultPrice) {
+        if (qty >= purchaseItem.bulkQty5) {
+            return purchaseItem.bulkPrice5;
+        }
+        if (qty >= purchaseItem.bulkQty4) {
+            return purchaseItem.bulkPrice4;
 
+        }
+        if (qty >= purchaseItem.bulkQty3) {
+            return purchaseItem.bulkPrice3;
+
+        }
+        if (qty >= purchaseItem.bulkQty2) {
+            return purchaseItem.bulkPrice2;
+
+        }
+        if (qty >= purchaseItem.bulkQty) {
+            return purchaseItem.bulkPrice;
+
+        }
+        return defaultPrice;
+    }
 });

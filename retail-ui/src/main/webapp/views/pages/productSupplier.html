@@ -86,9 +86,9 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-4">
+                        <div class="col-lg-2">
                             <div class="form-group">
-                                <label>Bulk Quantity:
+                                <label>Bulk Quantity 1:
                                                                        <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkQty.$error.pattern">
                                                                             Invalid!
                                                                        </span>
@@ -96,19 +96,51 @@
                                 <input class="form-control" name="suppBulkQty" data-ng-model="productSupplier.suppBulkQty" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
                             </div >
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-2">
                             <div class="form-group">
-                                <label>Bulk Price(Before Tax):
-                                                                       <span class="btn btn-warning btn-xs" ng-show="mainForm.bulkPriceBeforeTax.$error.pattern">
+                                <label>Bulk Quantity 2:
+                                    <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkQty2.$error.pattern">
                                                                             Invalid!
                                                                        </span>
                                 </label>
-                                <input class="form-control" data-ng-model="productSupplier.bulkPriceBeforeTax" ng-change="calculatePriceAfterTax()" name="bulkPriceBeforeTax" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
+                                <input class="form-control" name="suppBulkQty2" data-ng-model="productSupplier.suppBulkQty2" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
                             </div >
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-2">
                             <div class="form-group">
-                                <label>Bulk Price(After Tax):
+                                <label>Bulk Quantity 3:
+                                    <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkQty3.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                                </label>
+                                <input class="form-control" name="suppBulkQty3" data-ng-model="productSupplier.suppBulkQty3" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
+                            </div >
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label>Bulk Quantity 4:
+                                    <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkQty4.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                                </label>
+                                <input class="form-control" name="suppBulkQty4" data-ng-model="productSupplier.suppBulkQty4" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
+                            </div >
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label>Bulk Quantity 5:
+                                    <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkQty5.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                                </label>
+                                <input class="form-control" name="suppBulkQty5" data-ng-model="productSupplier.suppBulkQty5" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
+                            </div >
+                        </div>
+                    </div>
+                  <div class="row">
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label>Bulk Price 1:
                                                                        <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkPrice.$error.pattern">
                                                                             Invalid!
                                                                        </span>
@@ -116,6 +148,46 @@
                                 <input class="form-control" data-ng-model="productSupplier.suppBulkPrice" name="suppBulkPrice" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
                             </div >
                         </div>
+                      <div class="col-lg-2">
+                          <div class="form-group">
+                              <label>Bulk Price 2:
+                                  <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkPrice2.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                              </label>
+                              <input class="form-control" data-ng-model="productSupplier.suppBulkPrice2" name="suppBulkPrice2" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
+                          </div >
+                      </div>
+                      <div class="col-lg-2">
+                          <div class="form-group">
+                              <label>Bulk Price 3:
+                                  <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkPrice3.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                              </label>
+                              <input class="form-control" data-ng-model="productSupplier.suppBulkPrice3" name="suppBulkPrice3" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
+                          </div >
+                      </div>
+                      <div class="col-lg-2">
+                          <div class="form-group">
+                              <label>Bulk Price 4:
+                                  <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkPrice4.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                              </label>
+                              <input class="form-control" data-ng-model="productSupplier.suppBulkPrice4" name="suppBulkPrice4" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
+                          </div >
+                      </div>
+                      <div class="col-lg-2">
+                          <div class="form-group">
+                              <label>Bulk Price 5:
+                                  <span class="btn btn-warning btn-xs" ng-show="mainForm.suppBulkPrice5.$error.pattern">
+                                                                            Invalid!
+                                                                       </span>
+                              </label>
+                              <input class="form-control" data-ng-model="productSupplier.suppBulkPrice5" name="suppBulkPrice5" type="text" maxlength="15" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" >
+                          </div >
+                      </div>
                     </div>
               </form>
             </div>

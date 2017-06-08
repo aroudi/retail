@@ -229,5 +229,33 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
         var maxPayment = (Math.round($scope.debtorPaymentForm.amountDue*Math.pow(10,1))/Math.pow(10,1)).toFixed(2);
         return maxPayment;
     }
+    $scope.allocatePayment = function() {
+        if ($scope.totalPayment == undefined || $scope.totalPayment <=0) {
+            return;
+        }
+        resetPayments();
+        var paymentLeft = angular.copy($scope.totalPayment);
+        for (var i = 0; i < $scope.debtList.data.length; i++) {
+            row = $scope.debtList.data[i];
+            if (row.cadAmountDebt<=paymentLeft) {
+                row.paying = row.cadAmountDebt;
+                paymentLeft = paymentLeft - row.cadAmountDebt;
+            } else {
+                row.paying = paymentLeft;
+                paymentLeft = 0;
+            }
+            totalTransaction();
+            if (paymentLeft <= 0) {
+                break;
+            }
 
+        }
+    }
+    function resetPayments() {
+        for (var i = 0; i < $scope.debtList.data.length; i++) {
+            row = $scope.debtList.data[i];
+            row.paying = 0.00;
+        }
+
+    }
 });
