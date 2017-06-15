@@ -5,11 +5,8 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
 
     initPageData();
     function initPageData() {
-        $scope.enableSubmit = false;
         $scope.purchaseOrderHeader = {};
         $scope.boqDetail = {};
-        $scope.boqDetail.quantity = 0.0;
-        $scope.boqDetail.qtyOnStock = 0.0;
         baseDataService.getBaseData(POL_CREATION_TYPE_MANUAL).then(function(response){
             $scope.boqDetail.bqdCreationType = response.data;
         });
@@ -31,21 +28,46 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
         rowTemplate : rowtpl,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'25%'},
-            {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'10%'},
-            {field:'polUnitCost', displayName:'Cost',enableCellEdit:false, width:'10%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum,
+            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'20%'},
+            {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'8%'},
+            {field:'polUnitCost', displayName:'Cost',enableCellEdit:false, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
-            {field:'polQtyOrdered', displayName:'Qty Ordered',enableCellEdit:false, width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+            {field:'polQtyOrdered', displayName:'Ordered',enableCellEdit:false, width:'8%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
-            {field:'polValueOrdered', displayName:'Value',enableCellEdit:false, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'calculateQtyAssigned()', displayName:'Balance', enableCellEdit:false,width:'10%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'polCreationType', displayName:'Type',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+            //{field:'polValueOrdered', displayName:'Value',enableCellEdit:false, width:'7%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'calculateQtyAssigned()', displayName:'Available', enableCellEdit:false,width:'7%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'boqQuantity', displayName:'BOQ Qty',enableCellEdit:true, width:'10%',type: 'number',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            },
+            {field:'qtyOnStock', displayName:'In Stock Qty',enableCellEdit:true, width:'10%',type: 'number',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            },
+            {field:'comment', displayName:'In Stock Location', enableCellEdit:true, width:'10%',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            },
+            {field:'qtyBalance', displayName:'Balance',enableCellEdit:false, width:'7%',type: 'number',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            },
+            {field:'changeComment', displayName:'Comments', enableCellEdit:true, width:'13%',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            }
+            /*{field:'polCreationType', displayName:'Type',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }
@@ -54,37 +76,44 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }
-            }
+            }*/
         ]
     }
     $scope.gridOptions.enableRowSelection = true;
-    $scope.gridOptions.multiSelect = false;
-    $scope.gridOptions.noUnselect= true;
+    $scope.gridOptions.multiSelect = true;
+    //$scope.gridOptions.noUnselect= true;
 
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
-        gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-            //baseDataService.setRow(row.entity);
-            $scope.selectedOption = row.entity;
-            var quantityCanBeAssignedFromPO = calculateQtyAssigned($scope.selectedOption);
-            if (quantityCanBeAssignedFromPO > 0) {
-                $scope.boqDetail.quantity = quantityCanBeAssignedFromPO;
-                $scope.boqDetail.qtyBalance =quantityCanBeAssignedFromPO;
-                $scope.enableSubmit = true;
-            } else {
-                baseDataService.displayMessage('info','Invalid Quantity', 'Quantity is invalid')
-                $scope.enableSubmit = false;
-            }
-
-        });
         gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef){
-        })
+            if (colDef.name == 'boqQuantity') {
+                $scope.boqQuantityBeforeEditting = rowEntity.boqQuantity;
+            }
+            if (colDef.name == 'qtyBalance') {
+                $scope.qtyBalanceBeforeEditting = rowEntity.qtyBalance;
+            }
+        });
 
         gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef){
         })
     };
 
+    $scope.$on('uiGridEventEndCellEdit', function (event) {
+        var rowEntity = event.targetScope.row.entity;
+        if (rowEntity.qtyOnStock == undefined) {
+            rowEntity['qtyOnStock'] = 0;
+        }
+        if (rowEntity.boqQuantity == undefined) {
+            rowEntity['boqQuantity'] = calculateQtyAssigned(rowEntity);
+        }
+        if (rowEntity.boqQuantity > calculateQtyAssigned(rowEntity)) {
+            baseDataService.displayMessage('Warning','Invalid Qty', 'Qty entered is more than available qty');
+            rowEntity['boqQuantity'] = $scope.boqQuantityBeforeEditting;
+            return
+        }
+        rowEntity['qtyBalance'] =rowEntity.boqQuantity*1 - rowEntity.qtyOnStock*1;
+    });
 
     function displayLinkedBoqs(line) {
         line.subGridOptions = {
@@ -134,8 +163,7 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
             resolve: {searchUrl: function(){return POH_GET_ALL_POH_NOT_FULLY_RECEIVED_URI}}
         }).then (function (selectedItem){
                 if (selectedItem != undefined) {
-                    var purchaseOrderHeader = selectedItem;
-                    $scope.purchaseOrderHeader = angular.copy(purchaseOrderHeader);
+                    $scope.purchaseOrderHeader = selectedItem;
                     $scope.gridOptions.data = $scope.purchaseOrderHeader.lines;
                     angular.forEach($scope.gridOptions.data,function(row){
                         row.calculateQtyAssigned = function() {
@@ -146,12 +174,14 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
                             for (i=0; i < this.poBoqLinks.length; i++) {
                                 qty = qty - this.poBoqLinks[i].boqQtyTotal;
                             }
+                            //this.boqQuantity = qty;
                             return qty;
                         }
                     });
                     $scope.purchaseOrderHeader.pohExpDeliveryStr = new Date($scope.purchaseOrderHeader.pohExpDeliveryStr);
                     for (i=0; i<$scope.gridOptions.data.length; i++) {
-                        displayLinkedBoqs($scope.gridOptions.data[i])
+                        $scope.gridOptions.data[i].boqQuantity = $scope.gridOptions.data[i].calculateQtyAssigned();
+                        displayLinkedBoqs($scope.gridOptions.data[i]);
                     }
                     baseDataService.setRow({});
                     baseDataService.setIsPageNew(true);
@@ -163,29 +193,33 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
     };
 
     $scope.submit = function () {
-        if ($scope.selectedOption != undefined) {
-            var quantityCanBeAssignedFromPO = calculateQtyAssigned($scope.selectedOption);
-            if (quantityCanBeAssignedFromPO > 0) {
-                $scope.boqDetail.quantity = quantityCanBeAssignedFromPO;
+        var purchaseLineList = $scope.gridApi.selection.getSelectedRows();
+        if (purchaseLineList.length < 1) {
+            baseDataService.displayMessage('info','No item', 'No item is selected.');
+            return;
+        }
+        var boqList = [];
+        for (var i=0; i < purchaseLineList.length; i++) {
+                var purchaseLine = purchaseLineList[i];
                 var product = {
-                    id : $scope.selectedOption.purchaseItem.prodId,
-                    prodSku : $scope.selectedOption.purchaseItem.catalogueNo
-                }
+                    id : purchaseLine.purchaseItem.prodId,
+                    prodSku : purchaseLine.purchaseItem.catalogueNo
+                };
                 var boqDetailObject = {
                     'id':-1,
                     'supplier':$scope.purchaseOrderHeader.supplier,
                     'product':product,
-                    'unitOfMeasure' : $scope.selectedOption.unitOfMeasure,
-                    'cost' : $scope.selectedOption.polUnitCost,
-                    'quantity' : quantityCanBeAssignedFromPO,
-                    'itemValue' : quantityCanBeAssignedFromPO*$scope.selectedOption.polUnitCost ,
-                    'qtyOnStock' : 0,
-                    'comment' : $scope.boqDetail.comment,
-                    'changeComment' : $scope.boqDetail.changeComment,
-                    'qtyBalance' :  quantityCanBeAssignedFromPO,
+                    'unitOfMeasure' : purchaseLine.unitOfMeasure,
+                    'cost' : purchaseLine.polUnitCost,
+                    'quantity' : purchaseLine.boqQuantity,
+                    'itemValue' : purchaseLine.boqQuantity*purchaseLine.polUnitCost ,
+                    'qtyOnStock' : purchaseLine.qtyOnStock,
+                    'comment' : purchaseLine.comment,
+                    'changeComment' : purchaseLine.changeComment,
+                    'qtyBalance' :  purchaseLine.qtyBalance,
                     'bqdCreationType' :  $scope.boqDetail.bqdCreationType,
                     'bqdStatus' :  $scope.boqDetail.bqdStatus,
-                    'qtyPurchased' : quantityCanBeAssignedFromPO,
+                    'qtyPurchased' : purchaseLine.polQtyOrdered,
                     'qtyReceived' : 0.00
                 }
                 //create PO_BOQ_Link object
@@ -193,26 +227,26 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
                     id: -1,
                     pohId : $scope.purchaseOrderHeader.id,
                     pohOrderNumber : $scope.purchaseOrderHeader.pohOrderNumber,
-                    polId : $scope.selectedOption.id,
+                    polId : purchaseLine.id,
                     boqId : -1,
                     boqName :'',
                     projectId:'',
                     projectCode:'',
                     boqDetailId:'',
-                    boqQtyTotal:quantityCanBeAssignedFromPO,
+                    boqQtyTotal:purchaseLine.boqQuantity,
                     poQtyReceived:0,
-                    boqQtyBalance:quantityCanBeAssignedFromPO,
+                    boqQtyBalance:purchaseLine.boqQuantity,
                     status: $scope.boqDetail.bqdStatus
-                }
+                };
+
                 var poBoqLinks = [];
                 poBoqLinks.push(poBoqLink);
                 boqDetailObject.linkedPurchaseOrders = poBoqLinks;
-                $scope.confirm(boqDetailObject);
-            } else {
-                baseDataService.displayMessage('info','Invalid Quantity', 'Quantity is invalid')
-            }
+                console.log('boqDetailObject.product = ' + boqDetailObject.product.id);
+                boqList.push(boqDetailObject);
         }
-    }
+        $scope.confirm(boqList);
+    };
 
     function calculateQtyAssigned(purchaseLine) {
         var qty = purchaseLine.polQtyOrdered;

@@ -262,21 +262,25 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             className: 'ngdialog-theme-plain',
             closeByDocument:false
             //resolve: {supplier: function(){return $scope.purchaseOrderHeader.supplier}}
-        }).then (function (selectedItem){
-                if (selectedItem != undefined) {
-                    if (!checkIfProductHasBeenSelected(selectedItem)) {
-                        if (selectedItem.linkedPurchaseOrders != undefined && selectedItem.linkedPurchaseOrders.length > 0) {
-                            for (i =0; i<selectedItem.linkedPurchaseOrders.length; i++) {
-                                selectedItem.linkedPurchaseOrders[i].boqId = $scope.billOfQuantity.id;
-                                selectedItem.linkedPurchaseOrders[i].boqName = $scope.billOfQuantity.boqName;
-                                selectedItem.linkedPurchaseOrders[i].projectId = $scope.billOfQuantity.project.id;
-                                selectedItem.linkedPurchaseOrders[i].projectId = $scope.billOfQuantity.project.id;
-                                selectedItem.linkedPurchaseOrders[i].projectCode = $scope.billOfQuantity.project.projectCode;
+        }).then (function (selectedItemList){
+                if (selectedItemList != undefined) {
+                    for (var j=0; j < selectedItemList.length; j++) {
+                        var selectedItem = selectedItemList[j];
+                        console.log('selectedItem.product.id =' + selectedItem.product.id);
+                        if (!checkIfProductHasBeenSelected(selectedItem)) {
+                            if (selectedItem.linkedPurchaseOrders != undefined && selectedItem.linkedPurchaseOrders.length > 0) {
+                                for (i =0; i<selectedItem.linkedPurchaseOrders.length; i++) {
+                                    selectedItem.linkedPurchaseOrders[i].boqId = $scope.billOfQuantity.id;
+                                    selectedItem.linkedPurchaseOrders[i].boqName = $scope.billOfQuantity.boqName;
+                                    selectedItem.linkedPurchaseOrders[i].projectId = $scope.billOfQuantity.project.id;
+                                    selectedItem.linkedPurchaseOrders[i].projectId = $scope.billOfQuantity.project.id;
+                                    selectedItem.linkedPurchaseOrders[i].projectCode = $scope.billOfQuantity.project.projectCode;
+                                }
                             }
+                            displayLinkedPurchaseOrders(selectedItem);
+                            $scope.gridOptions.data.push(selectedItem);
+                            $scope.billOfQuantity.boqValueGross = $scope.billOfQuantity.boqValueGross + selectedItem.itemValue;
                         }
-                        displayLinkedPurchaseOrders(selectedItem);
-                        $scope.gridOptions.data.push(selectedItem);
-                        $scope.billOfQuantity.boqValueGross = $scope.billOfQuantity.boqValueGross + selectedItem.itemValue;
                     }
                 }
             }, function(reason) {

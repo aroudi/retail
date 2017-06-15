@@ -6,14 +6,6 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-lg-12" >
-                            <div class="form-group">
-                                <label>Supplier</label>
-                                <input class="form-control" data-ng-model="purchaseOrderHeader.supplier.supplierName" ng-disabled="true">
-                            </div >
-                        </div >
-                    </div>
-                    <div class="row">
                         <div class="col-lg-12">
                             <div class="col-lg-3">
                                 <div class="form-group">
@@ -45,6 +37,14 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-lg-6" >
+                            <div class="form-group">
+                                <label>Supplier</label>
+                                <input class="form-control" data-ng-model="purchaseOrderHeader.supplier.supplierName" ng-disabled="true">
+                            </div >
+                        </div >
+                    </div>
+                    <!--div class="row">
                         <div class="panel  panel-info">
                             <div class="panel-heading">
                                 BOQ Detail:
@@ -87,11 +87,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div-->
                     <div class="row">
                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                         <button type="button" class="btn btn-primary" ng-click="cancel()">Cancel</button>
-                        <button type="button" class="btn btn-success" ng-click="submit()" ng-disabled="!enableSubmit">Submit</button>
+                        <button type="button" class="btn btn-success" ng-click="submit()">Submit</button>
                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                     </div>
                     <div class="row">
