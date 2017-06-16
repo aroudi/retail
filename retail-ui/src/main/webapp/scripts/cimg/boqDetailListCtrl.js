@@ -242,13 +242,18 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             className: 'ngdialog-theme-plain',
             closeByDocument:false
             //resolve: {supplier: function(){return $scope.purchaseOrderHeader.supplier}}
-        }).then (function (selectedItem){
-                if (selectedItem != undefined) {
-                    if (!checkIfProductHasBeenSelected(selectedItem)) {
-                        $scope.gridOptions.data.push(selectedItem);
-                        $scope.billOfQuantity.boqValueGross = $scope.billOfQuantity.boqValueGross + selectedItem.itemValue;
+        }).then (function (selectedItemList){
+            if (selectedItemList != undefined) {
+                for (var j = 0; j < selectedItemList.length; j++) {
+                    var selectedItem = selectedItemList[j];
+                    if (selectedItem != undefined) {
+                        if (!checkIfProductHasBeenSelected(selectedItem)) {
+                            $scope.gridOptions.data.push(selectedItem);
+                            $scope.billOfQuantity.boqValueGross = $scope.billOfQuantity.boqValueGross + selectedItem.itemValue;
+                        }
                     }
                 }
+            }
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }

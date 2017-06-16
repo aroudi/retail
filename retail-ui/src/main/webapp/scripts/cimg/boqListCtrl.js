@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI, CREATE_PO_FROM_BOQ_URI, BOQ_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, PROJECT_GET_ALL_URI, BOQ_STATUS_URI) {
+cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI, CREATE_PO_FROM_BOQ_URI, BOQ_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, PROJECT_GET_ALL_URI, BOQ_STATUS_URI, BOQ_EXPORT_PICKING_SLIP_PDF) {
     $scope.getPage = function(){
         $scope.searchForm.pageNo = paginationOptions.pageNumber*1 ;
         $scope.searchForm.pageSize = paginationOptions.pageSize;
@@ -46,7 +46,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
         enableColumnResizing: true,
         enableSorting:true,
         columnDefs: [
-            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewBoqDetail(row)"></i></a>', width:'5%' },
+            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewBoqDetail(row)"></i></a> &nbsp; <a href=""><i tooltip="Picking Slip" tooltip-placement="bottom" class="fa fa-file-pdf-o fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'project.projectCode', displayName:'Project No',enableCellEdit:false, width:'10%',
                 cellTooltip: function(row,col) {
@@ -59,7 +59,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
                 }
             },
             {field:'orderNo', displayName:'Client Order',enableCellEdit:false, width:'10%'},
-            {field:'project.projectName',displayName:'Project', enableCellEdit:false, width:'30%',
+            {field:'project.projectName',displayName:'Project', enableCellEdit:false, width:'20%',
                 cellTooltip: function(row,col) {
                     return row.entity.project.projectName
                 }
@@ -182,4 +182,13 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
             $scope.status = baseDataService.populateSelectList($scope.status,$scope.statusSet);
         });
     }
+    $scope.exportToPdf = function(row) {
+        if (row == undefined || row.entity == undefined) {
+            alert('row is undefined');
+            return;
+        }
+        var exportUrl = BOQ_EXPORT_PICKING_SLIP_PDF + row.entity.id;
+        baseDataService.pdfViewer(exportUrl);
+    }
+
 });

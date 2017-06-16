@@ -6,8 +6,6 @@ cimgApp.controller('boqDetailAddLineCtrl', function($scope, $timeout,ngDialog, u
     initPageData();
     function initPageData() {
         $scope.boqDetail = {};
-        $scope.boqDetail.quantity = 0.0;
-        $scope.boqDetail.qtyOnStock = 0.0;
         baseDataService.getBaseData(POL_CREATION_TYPE_MANUAL).then(function(response){
             $scope.boqDetail.bqdCreationType = response.data;
         });
@@ -20,7 +18,7 @@ cimgApp.controller('boqDetailAddLineCtrl', function($scope, $timeout,ngDialog, u
 
     $scope.gridOptions = {
         enableFiltering: true,
-        enableSelectAll:false,
+        enableSelectAll:true,
         enableRowSelection:true,
         selectionRowHeaderWidth:35,
         showGridFooter:true,
@@ -33,32 +31,71 @@ cimgApp.controller('boqDetailAddLineCtrl', function($scope, $timeout,ngDialog, u
                     return row.entity.catalogueNo
                 }
             },
-            {field:'partNo', enableCellEdit:false, width:'10%',
+            /*{field:'partNo', enableCellEdit:false, width:'10%',
                 cellTooltip: function(row,col) {
                     return row.entity.partNo
                 }
-            },
+            },*/
             {field:'unitOfMeasure.unomDesc', displayName:'Size',enableCellEdit:false, width:'10%'},
             {field:'price', displayName:'price',enableCellEdit:false, width:'10%'},
-            {field:'bulkPrice', displayName:'bulkPrice',enableCellEdit:false, width:'10%'},
-            {field:'bulkQty', displayName:'bulkQty',enableCellEdit:false, width:'10%'},
-            {field:'sprcMinOrdQty', displayName:'Min Order',enableCellEdit:false, width:'10%'}
+            {field:'quantity', displayName:'Qty',enableCellEdit:true, width:'10%',type: 'number',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            },
+            {field:'qtyOnStock', displayName:'In Stock Qty',enableCellEdit:true, width:'10%',type: 'number',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            },
+            {field:'comment', displayName:'In Stock Location', enableCellEdit:true, width:'11%',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            },
+            {field:'qtyBalance', displayName:'Balance',enableCellEdit:false, width:'7%',type: 'number',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            },
+            {field:'changeComment', displayName:'Comments', enableCellEdit:true, width:'19%',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return 'editModeColor'
+                }
+            }
         ]
     }
-    $scope.gridOptions.multiSelect = false;
+    $scope.gridOptions.multiSelect = true;
 
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
-        gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-            //baseDataService.setRow(row.entity);
-            $scope.selectedOption = row.entity;
+        gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef){
+            if (colDef.name == 'quantity') {
+                $scope.quantityBeforeEditting = rowEntity.quantity;
+            }
+            if (colDef.name == 'qtyOnStock') {
+                $scope.qtyOnStockBeforeEditting = rowEntity.qtyOnStock;
+            }
         });
     };
-
-
-
-
+    $scope.$on('uiGridEventEndCellEdit', function (event) {
+        var rowEntity = event.targetScope.row.entity;
+        if (rowEntity.qtyOnStock == undefined) {
+            rowEntity['qtyOnStock'] = 0;
+        }
+        if (rowEntity.quantity == undefined) {
+            rowEntity['quantity'] = 0;
+        }
+        var balance =rowEntity.quantity*1 - rowEntity.qtyOnStock*1;
+        if (balance < 0) {
+            baseDataService.displayMessage('Warning','Invalid Qty', 'Negative balance');
+            rowEntity['quantity'] = $scope.quantityBeforeEditting;
+            rowEntity['qtyOnStock'] = $scope.qtyOnStockBeforeEditting;
+            balance =rowEntity.quantity*1 - rowEntity.qtyOnStock*1;
+        }
+        rowEntity['qtyBalance'] = balance;
+    });
     //getAllProductPurchaseItemsPerSupplier();
     $scope.getProductsPerSupplier = function() {
         var supplier = $scope.supplier;
@@ -68,30 +105,40 @@ cimgApp.controller('boqDetailAddLineCtrl', function($scope, $timeout,ngDialog, u
         });
     }
     $scope.submit = function () {
-        if ($scope.selectedOption != undefined) {
+
+        var selectedItemList = $scope.gridApi.selection.getSelectedRows();
+        if (selectedItemList.length < 1) {
+            baseDataService.displayMessage('info','No item', 'No item is selected.');
+            return;
+        }
+        var boqList = [];
+        for (var i=0; i < selectedItemList.length; i++) {
+            var selectedItem = selectedItemList[i];
+
             var product = {
-                id : $scope.selectedOption.prodId,
-                prodSku : $scope.selectedOption.catalogueNo
+                id : selectedItem.prodId,
+                prodSku : selectedItem.catalogueNo
             }
             var boqDetailObject = {
                 'id':-1,
                 'supplier':$scope.supplier,
                 'product':product,
-                'unitOfMeasure' : $scope.selectedOption.unitOfMeasure,
-                'cost' : $scope.selectedOption.price,
-                'quantity' : $scope.boqDetail.quantity,
-                'itemValue' : $scope.boqDetail.quantity*$scope.selectedOption.price ,
-                'qtyOnStock' : $scope.boqDetail.qtyOnStock,
-                'comment' : $scope.boqDetail.comment,
-                'changeComment' : $scope.boqDetail.changeComment,
-                'qtyBalance' :  $scope.boqDetail.qtyBalance,
+                'unitOfMeasure' : selectedItem.unitOfMeasure,
+                'cost' : selectedItem.price,
+                'quantity' : selectedItem.quantity,
+                'itemValue' : selectedItem.quantity*selectedItem.price ,
+                'qtyOnStock' : selectedItem.qtyOnStock,
+                'comment' : selectedItem.comment,
+                'changeComment' : selectedItem.changeComment,
+                'qtyBalance' :  selectedItem.qtyBalance,
                 'bqdCreationType' :  $scope.boqDetail.bqdCreationType,
                 'bqdStatus' :  $scope.boqDetail.bqdStatus,
                 'qtyPurchased' : 0.00,
                 'qtyReceived' : 0.00
             }
-            $scope.confirm(boqDetailObject);
+            boqList.push(boqDetailObject);
         }
+        $scope.confirm(boqList);
     }
 
     $scope.cancel = function() {
