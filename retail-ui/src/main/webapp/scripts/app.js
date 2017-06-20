@@ -45,6 +45,14 @@ var config_data = {
     'WEBAPP' :'retail-web-services'
 }
 */
+//SIT-9090
+/*
+var config_data = {
+    'SERVER' : 'pos.jomon.com.au',
+    'PORT'   : '9090',
+    'WEBAPP' :'retail-web-services'
+}
+*/
 //DEV
 var config_data = {
     'SERVER' : 'localhost',

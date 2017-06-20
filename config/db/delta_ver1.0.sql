@@ -1976,3 +1976,4 @@ go
 alter table SUPP_PROD_PRICE
   add BULK_PRICE5 DECIMAL(31,6) --AFTER TAX
 go
+--up to this point applied on JOMON on 18/06/17

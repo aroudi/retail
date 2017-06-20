@@ -77,7 +77,7 @@ dependencies {
     //jasper reports
     compile group:'com.lowagie', name:'itext', version: '2.1.7'
     compile group:'org.olap4j', name:'olap4j', version: '1.2.0'
-    compile group:'net.sf.jasperreports', name:'jasperreports', version: '5.6.0'
+    compile group:'net.sf.jasperreports', name:'jasperreports', version: '6.4.0'
 
     //JAX-RS API
     compile group:'javax.ws.rs', name:'javax.ws.rs-api', version: '2.0'
