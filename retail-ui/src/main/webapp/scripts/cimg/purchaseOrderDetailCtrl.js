@@ -247,7 +247,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             'pohId':$scope.purchaseOrderHeader.id,
             'pohOrderNumber':$scope.purchaseOrderHeader.pohOrderNumber,
             'purchaseItem' : item,
-            'polUnitCost' : item.costBeforeTax,
+            'polUnitCost' : item.price,
             'unitOfMeasure' : item.unitOfMeasure,
             'polQtyOrdered' : 0.00,
             'polValueOrdered' : 0.00,
