@@ -345,6 +345,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/draftPageList.html',
             access: "user"
         })
+        .state('dashboard.productPriceChangeBulk',{
+            url:'/productPriceChangeBulk',
+            controller: 'productPriceChangeBulkCtrl',
+            templateUrl:'views/pages/productPriceChangeBulk.html',
+            access: "user"
+        })
 
     /**
      }]).run(function($rootScope, AccessChecker) {

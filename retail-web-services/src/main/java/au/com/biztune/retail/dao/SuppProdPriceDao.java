@@ -35,6 +35,13 @@ public interface SuppProdPriceDao {
     List<SuppProdPrice> getAllSuppProdPricesByOrguIdAndProdId(long orguId, long prodId);
 
     /**
+     * get all products (and their RRP price) of specific supplier.
+     * @param orguId organisation unit id.
+     * @param suppId supplier id.
+     * @return List of all products for specific supplier
+     */
+    List<SuppProdPrice> getAllProductPurchaseItemsWithRrpPerOrgUnitIdAndSuppId(long orguId, long suppId);
+    /**
      * get all supplier prices for specific product.
      * @param orgUnitId orgUnitId
      * @param suppId suppId

@@ -154,15 +154,29 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     /**
-     * return all Suppliers.
+     * return all Supplier's products.
      * @param supplierId supplier id.
-     * @return list of Supplier
+     * @return list of Supplier's products
      */
     public List<SuppProdPrice> getSupplierProducts(long supplierId) {
         try {
             return suppProdPriceDao.getAllSupplierProducts(sessionState.getOrgUnit().getId(), supplierId);
         } catch (Exception e) {
             logger.error("Error in getting supplier's product list: ", e);
+            return null;
+        }
+    }
+
+    /**
+     * return all Supplier's products with price.
+     * @param supplierId supplier id.
+     * @return list of Supplier's products
+     */
+    public List<SuppProdPrice> getSupplierProductsWithPrice(long supplierId) {
+        try {
+            return suppProdPriceDao.getAllProductPurchaseItemsWithRrpPerOrgUnitIdAndSuppId(sessionState.getOrgUnit().getId(), supplierId);
+        } catch (Exception e) {
+            logger.error("Error in getting supplier's product with price list: ", e);
             return null;
         }
     }

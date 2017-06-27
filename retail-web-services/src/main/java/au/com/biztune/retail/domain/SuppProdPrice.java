@@ -18,6 +18,10 @@ public class SuppProdPrice {
     private UnitOfMeasure unitOfMeasureContent;
     private double unomQty;
     private double price;
+    /**
+     * dummy field for retail price. it is fetching from price table (where price code = 'selling_price').
+     */
+    private double rrp;
     private double costBeforeTax;
     private double bulkPrice;
     private double bulkPriceBeforeTax;
@@ -293,5 +297,13 @@ public class SuppProdPrice {
 
     public void setBulkPrice5(double bulkPrice5) {
         this.bulkPrice5 = bulkPrice5;
+    }
+
+    public double getRrp() {
+        return rrp;
+    }
+
+    public void setRrp(double rrp) {
+        this.rrp = rrp;
     }
 }

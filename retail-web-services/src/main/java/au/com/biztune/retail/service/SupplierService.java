@@ -69,4 +69,11 @@ public interface SupplierService {
             , double solMinPoQty
             , String solAccCode
     );
+
+    /**
+     * return all Supplier's products with price.
+     * @param supplierId supplier id.
+     * @return list of Supplier's products
+     */
+    List<SuppProdPrice> getSupplierProductsWithPrice(long supplierId);
 }

@@ -1977,3 +1977,8 @@ alter table SUPP_PROD_PRICE
   add BULK_PRICE5 DECIMAL(31,6) --AFTER TAX
 go
 --up to this point applied on JOMON on 18/06/17
+
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Change Product Price', 'productPriceChangeBulk', 'Change Product Price');
+go
+INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'productPriceChangeBulk' ));
+go

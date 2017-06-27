@@ -88,4 +88,16 @@ public class SupplierRest {
     public List<SuppProdPrice> getSupplierProducts (@PathParam("id") long id) {
         return supplierService.getSupplierProducts(id);
     }
+    /**
+     * get all products supplier with Price by supplier.
+     * @param id id.
+     * @return list of supplier's product
+     */
+    @Secured
+    @GET
+    @Path("/productListWithPrice/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<SuppProdPrice> getSupplierProductsWithPrice (@PathParam("id") long id) {
+        return supplierService.getSupplierProductsWithPrice(id);
+    }
 }

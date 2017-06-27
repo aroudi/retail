@@ -34,7 +34,8 @@ var cimgApp = angular
     'ngStorage',
     'ngSanitize',
     'pdfjsViewer',
-    'chart.js'
+    'chart.js',
+    'ui.grid.exporter'
   ]);
 
 //SIT
@@ -78,6 +79,7 @@ var service_uri = {
     'SUPPLIER_GET_PO_LIST_URI' : 'purchaseOrder/getSupplierPurchaseOrders/',
     'SUPPLIER_GET_DN_LIST_URI' : 'deliveryNote/getSupplierDeliveryNotes/',
     'SUPPLIER_GET_PRODUCT_LIST_URI' : 'supplier/productList/',
+    'SUPPLIER_GET_PRODUCT_LIST_WITH_PRICE_URI' : 'supplier/productListWithPrice/',
     'UNOM_ALL_URI' : 'unitOfMeasure/all',
     'TAXRULE_ALL_URI' : 'taxRule/all',
     'TAXLEGVARIANCE_ALL_URI' : 'taxRule/taxLegVariance/allActive',
