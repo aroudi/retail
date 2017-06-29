@@ -158,6 +158,7 @@ public class ProductServiceImpl implements ProductService {
             final ProductForm productForm = new ProductForm();
             productForm.setProdId(product.getId());
             productForm.setProdSku(product.getProdSku());
+            productForm.setProdBarcode(product.getProdBarcode());
             productForm.setReference(product.getReference());
             productForm.setProdName(product.getProdName());
             productForm.setProdType(product.getProdType());
@@ -197,6 +198,7 @@ public class ProductServiceImpl implements ProductService {
         product.setOrguIdOwning(sessionState.getOrgUnit().getId());
 
         product.setProdSku(productForm.getProdSku());
+        product.setProdBarcode(productForm.getProdBarcode());
         product.setReference(productForm.getReference());
         product.setProdName(productForm.getProdName());
         product.setProdType(productForm.getProdType());
@@ -217,6 +219,7 @@ public class ProductServiceImpl implements ProductService {
         product.setProdModified(timestamp);
         product.setId(productForm.getProdId());
         product.setProdSku(productForm.getProdSku());
+        product.setProdBarcode(productForm.getProdBarcode());
         product.setReference(productForm.getReference());
         product.setProdName(productForm.getProdName());
         product.setProdType(productForm.getProdType());
@@ -443,7 +446,7 @@ public class ProductServiceImpl implements ProductService {
             final ConfigCategory configProdType = configCategoryService.addConfigCategory(IdBConstant.TYPE_PRODUCT_TYPE
                     , prodType, prodType, prodType, 0, "blue");
             //insert product
-            Product product = productDao.getProductPerSku(prodSku);
+            Product product = productDao.getProductPerReference(reference);
             if (product == null) {
                 product = new Product();
                 product.setOrguIdOwning(sessionState.getOrgUnit().getId());
@@ -492,6 +495,7 @@ public class ProductServiceImpl implements ProductService {
                 suppProdPrice.setSprcCreated(currentTime);
                 suppProdPrice.setSprcModified(currentTime);
                 suppProdPrice.setProdId(product.getId());
+                suppProdPrice.setSprcPrefferBuy(true);
                 suppProdPrice.setBulkPrice(bulkPrice);
                 //insert product tax rule
                 TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(taxName);
@@ -594,6 +598,42 @@ public class ProductServiceImpl implements ProductService {
             }
         } catch (Exception e) {
             logger.error("Exception in updating product change indicator.", e);
+        }
+    }
+
+    /**
+     * update supplier prpoduct prices in bulk.
+     * @param updatedPriceList : updated price list
+     * @return Common Response
+     */
+    public CommonResponse updateSupplierProductPricesInBulk(List<SuppProdPrice> updatedPriceList) {
+        final CommonResponse response = new CommonResponse();
+        try {
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+            if (updatedPriceList == null || updatedPriceList.size() < 1) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("price list is empty");
+                return response;
+            }
+            //get pricecode for sell-price
+            final PriceCode priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.SELL_PRICE_CODE);
+
+            for (SuppProdPrice suppProdPrice : updatedPriceList) {
+                //if price not changed then continue
+                if (suppProdPrice == null || !suppProdPrice.isChanged()) {
+                    continue;
+                }
+                //update product costs.
+                suppProdPriceDao.updateProductCostsPerSolIdAndProdId(suppProdPrice.getSolId(), suppProdPrice.getProdId()
+                        , suppProdPrice.getPrice(), suppProdPrice.getBulkPrice());
+                priceDao.updatePricePerProdIdAndPrccId(suppProdPrice.getProdId(), priceCode.getId(), suppProdPrice.getRrp());
+            }
+            return response;
+        } catch (Exception e) {
+            logger.error("Exception in updating Product price in bulk: ", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Exception in updating prices");
+            return response;
         }
     }
 }

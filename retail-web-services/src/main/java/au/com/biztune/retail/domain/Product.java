@@ -9,6 +9,7 @@ import java.util.List;
 public class Product {
     private long id;
     private String prodSku;
+    private String prodBarcode;
     private long orguIdOwning;
     private String prodName;
     private String prodDesc;
@@ -231,5 +232,13 @@ public class Product {
 
     public void setProdLocation(String prodLocation) {
         this.prodLocation = prodLocation;
+    }
+
+    public String getProdBarcode() {
+        return prodBarcode;
+    }
+
+    public void setProdBarcode(String prodBarcode) {
+        this.prodBarcode = prodBarcode;
     }
 }

@@ -206,4 +206,11 @@
         PROD_ID = #{value}
     </delete>
 
+    <update id="updatePricePerProdIdAndPrccId">
+        UPDATE PRICE SET
+          PRCE_PRICE = #{param3}
+        WHERE
+          PROD_ID = #{param1} and PRCC_ID = #{param2}
+    </update>
+
 </mapper>

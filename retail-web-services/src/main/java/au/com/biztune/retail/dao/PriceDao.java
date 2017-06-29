@@ -70,4 +70,12 @@ public interface PriceDao {
      * @param prodId prodId
      */
     void deleteProdPricePerProdId(long prodId);
+
+    /**
+     * update price.
+     * @param prodId productId
+     * @param priceCodeId Price Code Id
+     * @param newPrice new price
+     */
+    void updatePricePerProdIdAndPrccId(long prodId, long priceCodeId, double newPrice);
 }

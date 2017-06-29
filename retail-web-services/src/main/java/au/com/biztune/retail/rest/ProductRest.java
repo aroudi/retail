@@ -4,6 +4,7 @@ package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.ProductSale;
 import au.com.biztune.retail.domain.ProductSaleItem;
+import au.com.biztune.retail.domain.SuppProdPrice;
 import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.form.ProductSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
@@ -213,4 +214,35 @@ public class ProductRest {
         }
     }
 
+    /**
+     * update product price list in bulk.
+     * @param updatedPriceList list of updated price.
+     * @return Response.
+     */
+    @Secured
+    @Path("/updateProductPriceInBulk")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse updateProductPricesInBulk (List<SuppProdPrice> updatedPriceList) {
+        return productService.updateSupplierProductPricesInBulk(updatedPriceList);
+    }
+
+    /**
+     * upload product from csv.
+     * @param uploadedInputStream uploadedInputStream
+     * @return Response
+     */
+    @Secured
+    @POST
+    @Path("/updateProductPriceFromCsv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public CommonResponse updatePorductPriceFromCsv(@FormDataParam("file")InputStream uploadedInputStream) {
+        try {
+            return productImportService.updateProductPriceFromCsvInputStream(uploadedInputStream);
+        } catch (Exception e) {
+            logger.error("Exception in updating product price from csv.", e);
+            return null;
+        }
+    }
 }

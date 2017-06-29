@@ -49,6 +49,20 @@ public class StringUtil {
     }
 
     /**
+     * convert string to int.
+     * @param str str
+     * @return int
+     */
+    public static long strToLong(String str) {
+        try {
+            return Long.valueOf(str.trim());
+        } catch (Exception e) {
+            //COMMON_LOGGER.error("Can't convert string to int :", e);
+            return 0;
+        }
+    }
+
+    /**
      * convert int to str.
      * @param input input
      * @return int

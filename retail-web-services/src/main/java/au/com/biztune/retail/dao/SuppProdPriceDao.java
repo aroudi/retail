@@ -122,4 +122,13 @@ public interface SuppProdPriceDao {
      * @return ProductPurchaseItem
      */
     ProductPurchaseItem getProductPurchaseItemPerOrgUnitIdAndSuppIdAndCatalogId(long orguId, long suppId, String catalogueNo);
+
+    /**
+     * update product costs per solId and ProdId.
+     * @param solId Supplier-OrgU-Id
+     * @param prodId product id
+     * @param price product cost
+     * @param bulkPrice product bulk price
+     */
+    void updateProductCostsPerSolIdAndProdId(long solId, long prodId, double price, double bulkPrice);
 }

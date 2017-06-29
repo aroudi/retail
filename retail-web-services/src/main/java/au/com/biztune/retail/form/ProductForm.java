@@ -11,6 +11,7 @@ public class ProductForm {
     private long prodId;
     private long prouId;
     private String prodSku;
+    private String prodBarcode;
     private String reference;
     private String prodName;
     private ConfigCategory status;
@@ -179,6 +180,14 @@ public class ProductForm {
 
     public void setCostPrice(double costPrice) {
         this.costPrice = costPrice;
+    }
+
+    public String getProdBarcode() {
+        return prodBarcode;
+    }
+
+    public void setProdBarcode(String prodBarcode) {
+        this.prodBarcode = prodBarcode;
     }
 }
 

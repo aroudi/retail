@@ -199,8 +199,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 supplierDao.insertSuppOrguLink(suppOrguLink);
                 supplier.setSuppOrguLink(suppOrguLink);
             }
-            //insert product. search product per catalogueNo. if dose not exist, add it
-            Product product = productDao.getProductPerSku(importedProduct.getCatalogueNo());
+            //insert product. search product per reference. if dose not exist, add it
+            Product product = productDao.getProductPerReference(importedProduct.getReference());
             if (product == null) {
                 prodIsNew = true;
                 product = new Product();

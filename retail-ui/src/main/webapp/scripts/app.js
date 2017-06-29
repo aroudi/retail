@@ -173,7 +173,8 @@ var service_uri = {
     'ACCOUNTING_EXPORT_ALL_URI' : 'accounting/getAllAccountingExport',
     'ACCOUNTING_EXPORT_GET_CONTENT_URI' : 'accounting/getAccountingExport/',
     'PRICING_GRADE_UPDATE_BATCH_URI' : 'categories/updatePricingGrades',
-    'GET_DATA_CHANGE_INDICATOR_URI' : 'user/getDataChangeIndicator/'
+    'GET_DATA_CHANGE_INDICATOR_URI' : 'user/getDataChangeIndicator/',
+    'PRODUCT_PRICE_UPDATE_BULK' : 'product/updateProductPriceInBulk/'
 }
 
 var response_status = {

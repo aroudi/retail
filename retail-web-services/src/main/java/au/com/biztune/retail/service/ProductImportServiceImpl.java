@@ -1,5 +1,8 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.dao.PriceDao;
+import au.com.biztune.retail.dao.SuppProdPriceDao;
+import au.com.biztune.retail.domain.PriceCode;
 import au.com.biztune.retail.domain.Product;
 import au.com.biztune.retail.domain.Supplier;
 import au.com.biztune.retail.domain.UnitOfMeasure;
@@ -33,6 +36,12 @@ public class ProductImportServiceImpl {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private SuppProdPriceDao suppProdPriceDao;
+
+    @Autowired
+    private PriceDao priceDao;
+
     /**
      * import location from csv file.
      * @param inputStream inputStream
@@ -64,7 +73,7 @@ public class ProductImportServiceImpl {
                     continue;
                 }
                 importProductWhole(csvRow[1], csvRow[2], csvRow[3], csvRow[4], csvRow[5], csvRow[6], csvRow[7]
-                        , csvRow[11], csvRow[14], csvRow[16], StringUtil.strToDouble(csvRow[19]), StringUtil.strToDouble(csvRow[20]));
+                        , csvRow[11], csvRow[14], csvRow[16], StringUtil.strToDouble(csvRow[19]), StringUtil.strToDouble(csvRow[21]), StringUtil.strToDouble(csvRow[20]));
             }
             return commonResponse;
         } catch (Exception e) {
@@ -93,6 +102,7 @@ public class ProductImportServiceImpl {
      * @param unitOfMeasure unitOfMeasure
      * @param taxCode taxCode
      * @param cost cost
+     * @param price price
      * @param bulkPrice bulkPrice
      */
     public void importProductWhole(String brand
@@ -106,17 +116,70 @@ public class ProductImportServiceImpl {
             , String unitOfMeasure
             , String taxCode
             , double cost
+            , double price
             , double bulkPrice)
     {
         try {
             final UnitOfMeasure unitOfMeasure1 = unitOfMeasureService.addUnitOfMeasure(unitOfMeasure, unitOfMeasure);
             final Supplier supplier = supplierService.addSupplier(supplierCode, supplierName, 0, 0, 0, 0.00, 0, "", 0.00, "");
-            final Product product = productService.addProduct(partNo, description, description, reference
-                    , taxCode, brand, prodType, prodType, supplier, catalogueNo, unitOfMeasure1, cost, cost
+            final Product product = productService.addProduct(reference, reference, description, reference
+                    , taxCode, brand, prodType, prodType, supplier, catalogueNo, unitOfMeasure1, cost, price
             , bulkPrice);
         } catch (Exception e) {
             logger.error("Exception in importing product: " + partNo, e);
         }
 
     }
+    /**
+     * update product price from csv file.
+     * @param inputStream csv file containing updated price
+     * @throws Exception Exception
+     * @return CommonResponse
+     */
+    public CommonResponse updateProductPriceFromCsvInputStream(InputStream inputStream) throws Exception {
+        CSVReader csvReader = null;
+        final CommonResponse commonResponse = new CommonResponse();
+        commonResponse.setStatus(IdBConstant.RESULT_SUCCESS);
+        try {
+            ListIterator<String[]> iterator = null;
+            String[] csvRow = null;
+            csvReader = new CSVReader(new InputStreamReader(inputStream));
+            if (csvReader == null) {
+                logger.error("not able to open product price csv file");
+                commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
+                commonResponse.setMessage("not able to open csv file");
+                return commonResponse;
+            }
+            iterator = csvReader.readAll().listIterator();
+            //read header
+            if (iterator.hasNext()) {
+                iterator.next();
+            }
+            //get pricecode for sell-price
+            final PriceCode priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.SELL_PRICE_CODE);
+            while (iterator.hasNext()) {
+                csvRow = iterator.next();
+                if (csvRow == null) {
+                    continue;
+                }
+                //update product costs.
+                suppProdPriceDao.updateProductCostsPerSolIdAndProdId(StringUtil.strToLong(csvRow[1]), StringUtil.strToLong(csvRow[2])
+                        , StringUtil.strToDouble(csvRow[6]), StringUtil.strToDouble(csvRow[10]));
+                priceDao.updatePricePerProdIdAndPrccId(StringUtil.strToLong(csvRow[2]), priceCode.getId(), StringUtil.strToDouble(csvRow[8]));
+
+            }
+            return commonResponse;
+        } catch (Exception e) {
+            logger.error("error in importing products : ", e);
+            commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
+            commonResponse.setMessage("error in updating product price from csv. see the logs");
+        } finally {
+            if (csvReader != null) {
+                csvReader.close();
+            }
+            return commonResponse;
+        }
+
+    }
+
 }

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeout, uiGridConstants, baseDataService, SUCCESS, FAILURE, SUPPLIER_GET_PRODUCT_LIST_WITH_PRICE_URI, SUPPLIER_ALL_URI) {
+cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeout, uiGridConstants, baseDataService, SUCCESS, FAILURE, SUPPLIER_GET_PRODUCT_LIST_WITH_PRICE_URI, SUPPLIER_ALL_URI, PRODUCT_PRICE_UPDATE_BULK) {
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -92,7 +92,7 @@ cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeo
             //$scope.changeSupplier();
             getSupplierProducts();
         });
-    }
+    };
     function getSupplierProducts() {
         baseDataService.getBaseData(SUPPLIER_GET_PRODUCT_LIST_WITH_PRICE_URI+$scope.supplier.id).then(function(response){
             //var data = angular.copy(response.data);
@@ -106,16 +106,26 @@ cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeo
     $scope.onSupplierChange = function () {
         $scope.gridApi.grid.clearAllFilters();
         getSupplierProducts();
-    }
+    };
 
 
 
     $scope.submit = function () {
-    }
+        removeDummyFields($scope.gridOptions.data);
+        baseDataService.addRow($scope.gridOptions.data, PRODUCT_PRICE_UPDATE_BULK).then(function(response) {
+            addResponse = response.data;
+            if (addResponse.status == SUCCESS ) {
+                    baseDataService.displayMessage("info","update was successful", "Price list was updated successfully");
+            } else {
+                baseDataService.displayMessage("info","Warning", "there was a problem in updating price list. please contact the technical board");
+            }
+        });
+
+    };
 
     $scope.resetPrice = function() {
         resetNewPrices($scope.gridOptions.data);
-    }
+    };
 
     function resetNewPrices(priceList) {
         if (priceList === undefined || priceList.length < 1) {
@@ -141,7 +151,7 @@ cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeo
             delete priceList[i].newPrice;
             delete priceList[i].newRrp;
             delete priceList[i].newBulkPrice;
-            delete priceList[i].changed;
+            //delete priceList[i].changed;
             delete priceList[i].percentage;
         }
     }
@@ -172,6 +182,6 @@ cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeo
     };
     $scope.exportCSV = function() {
         var myElement = angular.element(document.querySelectorAll(".custome-csv-link-location"));
-        $scope.gridApi.exporter.csvExport('visible','visible', myElement);
+        $scope.gridApi.exporter.csvExport('all','all', myElement);
     }
 });

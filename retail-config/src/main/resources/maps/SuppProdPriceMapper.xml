@@ -536,6 +536,14 @@
             BULK_QTY5=#{bulkQty5}
         WHERE SPRC_ID = #{id}
     </update>
+
+    <update id="updateProductCostsPerSolIdAndProdId">
+        UPDATE SUPP_PROD_PRICE SET
+        PRICE =#{param3},
+        BULK_PRICE =#{param4}
+        WHERE SOL_ID = #{param1} and PROD_ID = #{param2}
+    </update>
+
     <delete id="deleteSuppProdPricePerId" >
         DELETE
         From SUPP_PROD_PRICE

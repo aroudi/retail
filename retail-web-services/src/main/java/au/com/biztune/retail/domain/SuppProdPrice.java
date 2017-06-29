@@ -50,6 +50,7 @@ public class SuppProdPrice {
     private double bulkPrice4;
     private double bulkQty5;
     private double bulkPrice5;
+    private boolean changed;
 
     public long getId() {
         return id;
@@ -305,5 +306,13 @@ public class SuppProdPrice {
 
     public void setRrp(double rrp) {
         this.rrp = rrp;
+    }
+
+    public boolean isChanged() {
+        return changed;
+    }
+
+    public void setChanged(boolean changed) {
+        this.changed = changed;
     }
 }

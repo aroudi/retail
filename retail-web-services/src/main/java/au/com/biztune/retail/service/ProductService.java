@@ -4,6 +4,7 @@ import au.com.biztune.retail.domain.Product;
 import au.com.biztune.retail.domain.ProductSaleItem;
 import au.com.biztune.retail.domain.Supplier;
 import au.com.biztune.retail.domain.UnitOfMeasure;
+import au.com.biztune.retail.domain.SuppProdPrice;
 import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.form.ProductSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
@@ -124,4 +125,10 @@ public interface ProductService {
      * @return product search form.
      */
     ProductSearchForm searchProductPaging(ProductSearchForm productSearchForm);
+    /**
+     * update supplier prpoduct prices in bulk.
+     * @param updatedPriceList : updated price list
+     * @return Common Response
+     */
+    CommonResponse updateSupplierProductPricesInBulk(List<SuppProdPrice> updatedPriceList);
 }

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI, TXN_EXPORT_PDF) {
 
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -704,24 +704,30 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         baseDataService.addRow(rowObject, TXN_ADD_URI).then(function(response) {
             addResponse = response.data;
             if (addResponse.status == SUCCESS ) {
-                if ($scope.isPageNew && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' ) {
-                    baseDataService.displayMessage("info","Quote Number", "Quote saved with number: " + addResponse.info);
+                if ($scope.isPageNew && ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' || $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE')) {
+                    //baseDataService.displayMessage("info","Quote Number", "Quote saved with number: " + addResponse.info);
+                    $scope.txnHeaderForm.id=addResponse.info;
+                    $scope.exportToPdf(TXN_EXPORT_PDF);
+                    $state.go('dashboard.listSaleTransaction');
                 }
                 if ($scope.isPageNew && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE' ) {
-                    baseDataService.displayMessage("info","Invoice Number", "Invoice saved with number: " + addResponse.info);
+                    //baseDataService.displayMessage("info","Invoice Number", "Invoice saved with number: " + addResponse.info);
+                    //$state.go('dashboard.listInvoice');
+                    $scope.txnHeaderForm.id=addResponse.info;
+                    $scope.exportToPdf($scope.exportInvoiceToPdfUrl);
                     $state.go('dashboard.listInvoice');
                 }
-                if ($scope.isPageNew && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE' ) {
-                    baseDataService.displayMessage("info","Txn Number", "Sale Order saved with number: " + addResponse.info);
-                }
                 if (!$scope.isPageNew && $scope.txnHeaderForm.convertedToTxnSale) {
-                    baseDataService.displayMessage("info","Txn Number", "Sale Order saved with number: " + addResponse.info);
+                    //baseDataService.displayMessage("info","Txn Number", "Sale Order saved with number: " + addResponse.info);
+                    $scope.txnHeaderForm.id=addResponse.info;
+                    $scope.exportToPdf(TXN_EXPORT_PDF);
+                    $state.go('dashboard.listSaleTransaction');
                 }
                 if (!$scope.isPageNew && $scope.txnHeaderForm.convertedToInvoice) {
                     baseDataService.displayMessage("info","Invoice Number", "Invoice saved with number: " + addResponse.info);
                     $state.go('dashboard.listInvoice');
                 }
-                $state.go('dashboard.listSaleTransaction');
+                //$state.go('dashboard.listSaleTransaction');
             } else {
                 alert('Not able to save Transaction. ' + addResponse.message);
             }
@@ -843,13 +849,13 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 return;
             }
         });
-    }
+    };
     $scope.createTransactionSaleDraft = function() {
         baseDataService.getBaseData(TXN_STATE_DRAFT).then(function(response){
             $scope.txnHeaderForm.txhdState = response.data;
             $scope.createTransactionSale();
         });
-    }
+    };
 
     $scope.convertToSaleTxn = function() {
         //when converting to txn_sale, we need to change the state to draft.
@@ -866,7 +872,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             });
         }
         $scope.txnDetailGridApi.core.refresh();
-    }
+    };
 
     $scope.convertToInvoice = function() {
         //when converting to invoice, we need to change the state to draft.
@@ -890,7 +896,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             });
         }
         $scope.txnDetailGridApi.core.refresh();
-    }
+    };
 
     $scope.isTxnLineVoidable = function (row) {
         /* we dont have void at this point. we can only deleted a new added tender but not void tender.
@@ -899,7 +905,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
         */
         return false;
-    }
+    };
     $scope.isTxnSaleAndFinal = function () {
         if ($scope.txnHeaderForm == undefined || $scope.txnHeaderForm.txhdState == undefined) {
             return false;
@@ -907,19 +913,19 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         if ($scope.txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_FINAL' && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
             return true;
         }
-    }
+    };
     $scope.isTxnSaleAndPending = function () {
         if ((!$scope.isPageNew) && $scope.txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT' && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
             return true;
         }
         return false;
-    }
+    };
     $scope.exportToPdf = function(url) {
 
         var exportUrl = url + $scope.txnHeaderForm.id;
         baseDataService.pdfViewer(exportUrl);
         //$state.go('dashboard.pdfViewer');
-    }
+    };
 
     $scope.addPayment = function () {
 
@@ -936,7 +942,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             }
         });
         return;
-    }
+    };
 
     /**
      *
@@ -984,7 +990,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.txnMediaList.data = saleOrderMediaList;
         }
         totalTransaction();
-    }
+    };
     $scope.invoiceTransactionSale = function () {
         if (!checkEmailIsValid()) {
             return;
@@ -1011,7 +1017,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             }
         });
         return;
-    }
+    };
 
     function checkIfItemSelected(){
         var invoiceModeBeforeSelection = $scope.isInvoiceMode;
@@ -1023,7 +1029,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         if (invoiceModeBeforeSelection != $scope.isInvoiceMode) {
             changeToInvoiceMode();
         }
-    }
+    };
 
     function checkIfItemsInvoiced(){
         var invoiceModeBeforeSelection = $scope.isInvoiceMode;
@@ -1050,14 +1056,14 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
     $scope.showSubmitButtom = function() {
         return (!$scope.isTxnSaleAndFinal()) && !($scope.isInvoiceMode || isInvoiceViewMode() );
-    }
+    };
 
     $scope.showAddPaymentButtom = function() {
         return (!$scope.isInvoiceMode)&&($scope.isTxnSaleAndPending()) && !(isInvoiceViewMode());
-    }
+    };
     $scope.showInvoiceButtom = function() {
         return ($scope.isInvoiceMode) && (!isInvoiceViewMode());
-    }
+    };
 
     function checkIfProductHasBeenSelected(product) {
 
@@ -1076,7 +1082,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
     $scope.maxPaymentAllowed = function() {
         return maxPaymentAllowed();
-    }
+    };
 
     function calculateBalance(txnDetail) {
         if (txnDetail.txdeQtyTotalRefund == undefined) {
@@ -1086,7 +1092,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             return 0;
         }
         return txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 - txnDetail.txdeQtyTotalRefund*1 + txnDetail.txdeQtyInvoiced*1);
-    }
+    };
 
     //check if we are in invoice viewing mode.
     function isInvoiceViewMode() {
@@ -1095,7 +1101,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
         }
         return ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') && (!$scope.isPageNew) && (!$scope.txnHeaderForm.convertedToInvoice)
-    }
+    };
     function selectAllRowsForInvoice() {
         $scope.isInvoiceMode = true;
         if ($scope.txnDetailList === undefined) {
@@ -1115,7 +1121,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         //totalTransaction();
         $scope.allItemsSelected=true;
         changeToInvoiceMode();
-    }
+    };
     function unSelectAllRows() {
         $scope.isInvoiceMode = false;
         if ($scope.txnDetailList === undefined) {
@@ -1130,14 +1136,14 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         //totalTransaction();
         $scope.allItemsSelected=false;
         changeToInvoiceMode();
-    }
+    };
     $scope.toggleAllRowSelection = function() {
         if ($scope.allItemsSelected) {
             unSelectAllRows();
         } else {
             selectAllRowsForInvoice();
         }
-    }
+    };
     function saveAsDraft()
     {
         if ($scope.isViewMode) {
@@ -1170,7 +1176,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     });
     $scope.cancel = function() {
         $scope.closeThisDialog('button');
-    }
+    };
 
     function checkEmailIsValid() {
         //check
@@ -1182,5 +1188,5 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.txnHeaderForm.txhdEmailTo = '';
         }
         return true;
-    }
+    };
 });
