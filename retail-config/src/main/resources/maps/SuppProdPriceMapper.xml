@@ -515,9 +515,6 @@
         <if test="partNo != null">
             PART_NO =#{partNo},
         </if>
-        <if test="costBeforeTax != null">
-            COST_BEFORE_TAX =#{costBeforeTax},
-        </if>
             BULK_PRICE =#{bulkPrice},
             BULK_PRICE2 =#{bulkPrice2},
             BULK_PRICE3 =#{bulkPrice3},

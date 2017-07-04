@@ -25,13 +25,13 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
 
     var paginationOptions = {
         pageNumber:1,
-        pageSize:25,
+        pageSize:1000,
         sort:null
     };
 
     $scope.gridOptions = {
-        paginationPageSizes : [25,50,75,100],
-        paginationPageSize:25,
+        paginationPageSizes : [1000,1500,2000,2500],
+        paginationPageSize:1000,
         useExternalPagination: true,
         useExternalSorting:true,
         enableFiltering: true,
