@@ -48,7 +48,10 @@ public class TxnDetail {
     private double txidSurcharge;
     private double txdeQuantityOrdered;
     private String txdeProdName;
-
+    //ordering status : OUTSTANDING, ON ORDER, PARTIAL RECEIVED, RECIEVED AND FINALISED
+    private ConfigCategory status;
+    private long supplierId;
+    private long productId;
 
 
 
@@ -449,5 +452,29 @@ public class TxnDetail {
 
     public void setTxdeProdName(String txdeProdName) {
         this.txdeProdName = txdeProdName;
+    }
+
+    public ConfigCategory getStatus() {
+        return status;
+    }
+
+    public void setStatus(ConfigCategory status) {
+        this.status = status;
+    }
+
+    public long getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(long supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    public long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(long productId) {
+        this.productId = productId;
     }
 }

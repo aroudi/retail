@@ -44,6 +44,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private PoBoqLinkDao poBoqLinkDao;
 
     @Autowired
+    private PoSoLinkDao poSoLinkDao;
+
+    @Autowired
     private BoqDetailDao boqDetailDao;
 
     @Autowired
@@ -282,6 +285,47 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     /**
+     * create Purchase Order From Boq.
+     * @param txnDetail sale order detail
+     * @param appUser appUser
+     * @return PurchaseOrderHeader
+     */
+    public PurchaseOrderHeader createPoFromSaleOrder(TxnDetail txnDetail, AppUser appUser) {
+        try {
+            if (txnDetail == null) {
+                return  null;
+            }
+            final Timestamp currentDate = new Timestamp(new Date().getTime());
+            final PurchaseOrderHeader purchaseOrderHeader = new PurchaseOrderHeader();
+            purchaseOrderHeader.setOrgUnit(sessionState.getOrgUnit());
+            final Supplier supplier = new Supplier();
+            supplier.setId(txnDetail.getSupplierId());
+            purchaseOrderHeader.setSupplier(supplier);
+            purchaseOrderHeader.setPohCreatedDate(currentDate);
+            purchaseOrderHeader.setPohLastModifiedDate(currentDate);
+            //purchaseOrderHeader.setPohValueNett(boqDetail.getBillOfQuantity().getBoqValueNett());
+            //purchaseOrderHeader.setPoh(boqDetail.getBillOfQuantity().getBoqValueNett());
+            final ConfigCategory pohType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_TYPE, IdBConstant.POH_TYPE_PROJECT);
+            final ConfigCategory pohCreationType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_CREATION_TYPE, IdBConstant.POH_CREATION_TYPE_AUTO_SO);
+            final ConfigCategory pohStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_IN_PROGRESS);
+            purchaseOrderHeader.setPohType(pohType);
+            purchaseOrderHeader.setPohCreationType(pohCreationType);
+            purchaseOrderHeader.setPohStatus(pohStatus);
+            purchaseOrderHeader.setPohLastModifiedBy(appUser.getId());
+            //save purchase order header
+            purchaseOrderDao.insertPurchaseOrderHeader(purchaseOrderHeader);
+            //assinge number to purchase order header.
+            final String pohNumber = generatePohNumber(purchaseOrderHeader.getId(), IdBConstant.POH_NUMBER_PREFIX_AUTO);
+            purchaseOrderHeader.setPohOrderNumber(pohNumber);
+            purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
+            return purchaseOrderHeader;
+        } catch (Exception e) {
+            logger.error("Exception in creating Purchase Order Header from Bill Of Quantity:", e);
+            return null;
+        }
+    }
+
+    /**
      * add lines to Purchase Order Header.
      * @param purchaseOrderHeader purchaseOrderHeader
      * @param boqDetail boqDetail
@@ -349,6 +393,75 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
     }
 
+    /**
+     * add lines to Purchase Order Header from txn detail.
+     * @param purchaseOrderHeader purchaseOrderHeader
+     * @param txnDetail txnDetail
+     * @return true if successfull, otherwise return false;
+     */
+    public boolean addLineToPoFromTxnDetail(PurchaseOrderHeader purchaseOrderHeader, TxnDetail txnDetail) {
+        try {
+            if (purchaseOrderHeader == null || txnDetail == null) {
+                return false;
+            }
+            //check if line is already exists. then we need to modify it
+            final PurchaseLine purchaseLine = new PurchaseLine();
+            purchaseLine.setPohId(purchaseOrderHeader.getId());
+            purchaseLine.setPohOrderNumber(purchaseOrderHeader.getPohOrderNumber());
+            //retreive Product Purchase Item from database
+            final ProductPurchaseItem productPurchaseItem = suppProdPriceDao.getProductPurchaseItemByOrguIdAndProdIdAndSuppId(purchaseOrderHeader.getOrgUnit().getId(),
+                    txnDetail.getProductId(), txnDetail.getSupplierId());
+            purchaseLine.setPurchaseItem(productPurchaseItem);
+            //todo: should it be the unit cost or the total cost????
+            purchaseLine.setPolUnitCost(productPurchaseItem.getPrice());
+            purchaseLine.setPolSpecialBuy(false);
+            purchaseLine.setUnitOfMeasure(productPurchaseItem.getUnitOfMeasure());
+            purchaseLine.setPolQtyOrdered(txnDetail.getTxdeQtyBalance());
+            purchaseLine.setPolQtyReserved(txnDetail.getTxdeQtyBalance());
+            purchaseLine.setPolValueOrdered(purchaseLine.getPolUnitCost() * purchaseLine.getPolQtyOrdered());
+            if (productPurchaseItem.getUnitOfMeasureContent() != null) {
+                purchaseLine.setUnomContents(productPurchaseItem.getUnitOfMeasureContent());
+            }
+            purchaseLine.setPolContents(productPurchaseItem.getUnomQty());
+            final ConfigCategory polCreationType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_CREATION_TYPE, IdBConstant.POH_CREATION_TYPE_AUTO_SO);
+            if (polCreationType != null) {
+                purchaseLine.setPolCreationType(polCreationType);
+            }
+            final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_IN_PROGRESS);
+            if (status != null) {
+                purchaseLine.setPolStatus(status);
+            }
+            //check if line already exists in purchase order header. if so update existing line; otherwise create new line
+            boolean lineFound = false;
+            if (purchaseOrderHeader.getLines() != null) {
+                for (PurchaseLine pl: purchaseOrderHeader.getLines()) {
+                    if (pl.getPurchaseItem().getProdId() == purchaseLine.getPurchaseItem().getProdId()) {
+                        pl.setPolQtyOrdered(pl.getPolQtyOrdered() + purchaseLine.getPolQtyOrdered());
+                        pl.setPolQtyReserved(pl.getPolQtyReserved() + purchaseLine.getPolQtyReserved());
+                        pl.setPolValueOrdered(pl.getPolValueOrdered() + purchaseLine.getPolValueOrdered());
+                        //pl.getPoBoqLinks().addAll(purchaseLine.getPoBoqLinks());
+                        purchaseOrderDao.updatePurchaseLine(pl);
+                        createPoSoLink(pl, txnDetail);
+                        lineFound = true;
+                        break;
+                    }
+                }
+            }
+            if (!lineFound) {
+                purchaseLine.setPolProdId(txnDetail.getProductId());
+                purchaseLine.setPolSuppId(txnDetail.getSupplierId());
+                purchaseOrderDao.insertPurchaseLine(purchaseLine);
+                createPoSoLink(purchaseLine, txnDetail);
+                purchaseOrderHeader.addLine(purchaseLine);
+            }
+            return true;
+        } catch (Exception e) {
+            logger.error("Exception in adding line to Purchase Order Header:", e);
+            return false;
+        }
+    }
+
+
     private void createPoBoqLink(PurchaseLine purchaseLine, BoqDetail boqDetail) {
         try {
             if (purchaseLine == null || boqDetail == null) {
@@ -373,6 +486,31 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         } catch (Exception e) {
             logger.error("Exception in creating purchase order to boq link:", e);
             return;
+        }
+    }
+
+    private void createPoSoLink(PurchaseLine purchaseLine, TxnDetail txnDetail) {
+        try {
+            if (purchaseLine == null || txnDetail == null) {
+                return;
+            }
+            final PoSoLink poSoLink = new PoSoLink();
+            poSoLink.setTxdeId(txnDetail.getId());
+            poSoLink.setTxhdId(txnDetail.getTxhdId());
+            poSoLink.setSoLineQtyBalance(txnDetail.getTxdeQtyBalance());
+            poSoLink.setSoLineQtyTotal(txnDetail.getTxdeQtyBalance());
+            poSoLink.setPohId(purchaseLine.getPohId());
+            poSoLink.setPohOrderNumber(purchaseLine.getPohOrderNumber());
+            poSoLink.setPolId(purchaseLine.getId());
+            poSoLink.setPoQtyReceived(0);
+            //getTxdeQtyBalance.setProjectId(boqDetail.getBillOfQuantity().getProject().getId());
+            //poBoqLink.setProjectCode(boqDetail.getBillOfQuantity().getProject().getProjectCode());
+            final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_PENDING);
+            poSoLink.setPoSoStatus(status);
+            poSoLinkDao.insert(poSoLink);
+            purchaseLine.addPoSoLink(poSoLink);
+        } catch (Exception e) {
+            logger.error("Exception in creating purchase order to so link:", e);
         }
     }
     /**

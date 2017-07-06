@@ -1,6 +1,6 @@
 // Maven Repo - Local File System
-  //project.ext["depsDir"] = 'file://V:/repository'
-  project.ext["depsDir"] = 'file://D:/mavenrepo/repository'
+  project.ext["depsDir"] = 'file://V:/repository'
+  //project.ext["depsDir"] = 'file://D:/mavenrepo/repository'
 
 subprojects {
     apply plugin: 'checkstyle'
@@ -9,7 +9,7 @@ subprojects {
 	apply plugin: 'jdepend'
 	
 
-	sourceCompatibility = JavaVersion.VERSION_1_7
+	sourceCompatibility = JavaVersion.VERSION_1_8
 	ext {
 	
 		// Verify that the tomCatHome directory exists

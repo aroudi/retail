@@ -103,4 +103,13 @@ public interface SupplierDao {
      * @return no of supplier to be exported.
      */
     int getNoOfSupplierToBeExported();
+
+    /**
+     * get default supplier for specific product based on orguId and prodId.
+     * TODO: add SPRC_PREFER_BUY in sql
+     * @param orguId Organisation Unit Id.
+     * @param prodId Product id
+     * @return Supplier
+     */
+    Supplier getDefaultSupplierOfProductPerOrguIdAndProdId(long orguId, long prodId);
 }

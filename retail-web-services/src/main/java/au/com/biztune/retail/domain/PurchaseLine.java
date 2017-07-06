@@ -46,6 +46,7 @@ public class PurchaseLine {
     private String supplierName;
     private Timestamp pohCreatedDate;
     private String pohPrefix;
+    private List<PoSoLink> poSoLinks;
 
     /**
      * add poBoqLink to list.
@@ -58,6 +59,16 @@ public class PurchaseLine {
         poBoqLinks.add(poBoqLink);
     }
 
+    /**
+     * add poSoLink to list.
+     * @param poSoLink poSoLink
+     */
+    public void addPoSoLink(PoSoLink poSoLink) {
+        if (poSoLinks == null) {
+            poSoLinks = new ArrayList<PoSoLink>();
+        }
+        poSoLinks.add(poSoLink);
+    }
 
     public long getId() {
         return id;
@@ -353,5 +364,13 @@ public class PurchaseLine {
 
     public void setPolValueGross(double polValueGross) {
         this.polValueGross = polValueGross;
+    }
+
+    public List<PoSoLink> getPoSoLinks() {
+        return poSoLinks;
+    }
+
+    public void setPoSoLinks(List<PoSoLink> poSoLinks) {
+        this.poSoLinks = poSoLinks;
     }
 }

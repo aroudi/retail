@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.PoSoLinkDao">
+    <!-- result maps -->
+    <resultMap id="PoSoLinkMap" type="PoSoLink" >
+        <id column="POSO_ID" property="id" />
+        <result column="POH_ID" property="pohId" />
+        <result column="POH_ORDER_NUMBER" property="pohOrderNumber" />
+        <result column="POL_ID" property="polId" />
+        <result column="TXHD_ID" property="txhdId" />
+        <result column="PROJECT_ID" property="projectId" />
+        <result column="PROJECT_CODE" property="projectCode" />
+        <result column="TXDE_ID" property="txdeId" />
+        <result column="SO_LINE_QTY_TOTAL" property="soLineQtyTotal" />
+        <result column="PO_QTY_RECEIVED" property="poQtyReceived" />
+        <result column="SO_LINE_QTY_BALANCE" property="soLineQtyBalance" />
+        <result column="COMMENT" property="comment" />
+        <association property="poSoStatus" column="POSO_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="projectName" column="PROJECT_ID" select="getProjectNameByProjectId" />
+    </resultMap>
+
+    <sql id="poSoLinkColumns">
+     ${alias}.POSO_ID,
+     ${alias}.POH_ID,
+     ${alias}.POH_ORDER_NUMBER,
+     ${alias}.POL_ID,
+     ${alias}.TXHD_ID,
+     ${alias}.BOQ_NAME,
+     ${alias}.PROJECT_ID,
+     ${alias}.PROJECT_CODE,
+     ${alias}.TXDE_ID,
+     ${alias}.SO_LINE_QTY_TOTAL,
+     ${alias}.PO_QTY_RECEIVED,
+     ${alias}.SO_LINE_QTY_BALANCE,
+     ${alias}.COMMENT,
+     ${alias}.POSO_STATUS
+    </sql>
+
+    <sql id="getPoSoLink">
+        SELECT
+        <include refid="poSoLinkColumns"><property name="alias" value="posol"/></include>
+        FROM
+        PO_SO_LINK posol
+    </sql>
+
+    <select id="getAllPoSoLinkPerPohId" resultMap="PoSoLinkMap" >
+        <include refid="getPoSoLink">
+        </include>
+        WHERE posol.POH_ID = #{value}
+    </select>
+
+    <select id="getAllPoSoProjectCodesPerPohId" resultMap="PoSoLinkMap" >
+        SELECT DISTINCT PROJECT_CODE FROM PO_SO_LINK
+        WHERE POH_ID = #{value}
+    </select>
+
+    <select id="getAllPoSoLinkPerPolId" resultMap="PoSoLinkMap" >
+        <include refid="getPoSoLink">
+        </include>
+        WHERE posol.POL_ID = #{value}
+    </select>
+
+    <select id="getAllPoSoLinkPerTxnId" resultMap="PoSoLinkMap" >
+        <include refid="getPoSoLink">
+        </include>
+        WHERE posol.TXHD_ID = #{value}
+    </select>
+
+    <select id="getPoSoLinkPerTxnDetailId" resultMap="PoSoLinkMap" >
+        <include refid="getPoSoLink">
+        </include>
+        WHERE posol.TXDE_ID = #{value}
+    </select>
+
+    <insert id="insert" parameterType="PoSoLink" useGeneratedKeys="true" keyProperty="id" keyColumn="POSO_ID">
+        INSERT INTO PO_SO_LINK(
+            POH_ID,
+            POH_ORDER_NUMBER,
+            POL_ID,
+            TXHD_ID,
+            PROJECT_ID,
+            PROJECT_CODE,
+            TXDE_ID,
+            SO_LINE_QTY_TOTAL,
+            PO_QTY_RECEIVED,
+            SO_LINE_QTY_BALANCE,
+            COMMENT,
+            POSO_STATUS
+        ) VALUES (
+        #{pohId}
+        <if test="pohOrderNumber != null">
+            ,#{pohOrderNumber}
+        </if>
+        <if test="pohOrderNumber == null">
+            ,null
+        </if>
+        ,#{polId}
+        ,#{txhdId}
+
+        <if test="projectId != null">
+            ,#{projectId}
+        </if>
+        <if test="projectId == null">
+            ,null
+        </if>
+
+        <if test="projectCode != null">
+            ,#{projectCode}
+        </if>
+        <if test="projectCode == null">
+            ,null
+        </if>
+       ,#{txdeId}
+        <if test="soLineQtyTotal != null">
+            ,#{soLineQtyTotal}
+        </if>
+        <if test="soLineQtyTotal == null">
+            ,null
+        </if>
+        <if test="poQtyReceived != null">
+            ,#{poQtyReceived}
+        </if>
+        <if test="poQtyReceived == null">
+            ,null
+        </if>
+
+        <if test="soLineQtyBalance != null">
+            ,#{soLineQtyBalance}
+        </if>
+        <if test="soLineQtyBalance == null">
+            ,null
+        </if>
+
+        <if test="comment != null">
+            ,#{comment}
+        </if>
+        <if test="comment == null">
+            ,null
+        </if>
+
+        <if test="poSoStatus != null">
+            ,#{poSoStatus.id}
+        </if>
+        <if test="poSoStatus == null">
+            ,null
+        </if>
+        )
+    </insert>
+    <update id="updateQtyReceived" parameterType="PoSoLink" >
+          UPDATE PO_SO_LINK
+          SET PO_QTY_RECEIVED = #{poQtyReceived}, SO_LINE_QTY_BALANCE=#{soLineQtyBalance}, POSO_STATUS=#{poSoStatus.id}, COMMENT = #{comment}
+          WHERE PBQL_ID = #{id}
+    </update>
+
+    <delete id="deletePoSoLinkPerTxnDetailId" >
+        DELETE
+        From PO_SO_LINK
+        WHERE
+        TXDE_ID = #{value}
+    </delete>
+    <select id="getProjectNameByProjectId" resultType="String" >
+        select PROJECT_NAME FROM PROJECT WHERE PROJECT_ID = #{value}
+    </select>
+
+</mapper>

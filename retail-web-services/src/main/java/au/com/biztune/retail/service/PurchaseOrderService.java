@@ -105,4 +105,20 @@ public interface PurchaseOrderService {
      * @return List of PurchaseOrderHeader
      */
     GeneralSearchForm searchPurchaseOrderHeadersPaging(GeneralSearchForm searchForm);
+    /**
+     * create Purchase Order From Boq.
+     * @param txnDetail sale order detail
+     * @param appUser appUser
+     * @return PurchaseOrderHeader
+     */
+    PurchaseOrderHeader createPoFromSaleOrder(TxnDetail txnDetail, AppUser appUser);
+
+    /**
+     * add lines to Purchase Order Header from txn detail.
+     * @param purchaseOrderHeader purchaseOrderHeader
+     * @param txnDetail txnDetail
+     * @return true if successfull, otherwise return false;
+     */
+    boolean addLineToPoFromTxnDetail(PurchaseOrderHeader purchaseOrderHeader, TxnDetail txnDetail);
+
 }

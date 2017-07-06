@@ -97,6 +97,35 @@
         <association property="txdeDetailType" column="TXDE_DETAIL_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
+    <resultMap id="txnDetailWithSupplierMap" type="TxnDetail" >
+        <id column="TXDE_ID" property="id" />
+        <result column="TXDE_PRICE_OVRIDEN" property="txdePriceOveriden" />
+        <result column="TXDE_VALUE_LINE" property="txdeValueLine" />
+        <result column="TXDE_PROFIT_MARGIN" property="txdeProfitMargin" />
+        <result column="TXDE_VALUE_PROFIT" property="txdeValueProfit" />
+        <result column="TXDE_VALUE_GROSS" property="txdeValueGross" />
+        <result column="TXDE_TAX" property="txdeTax" />
+        <result column="TXDE_VALUE_NET" property="txdeValueNet" />
+        <result column="TXDE_QUANTITY_SOLD" property="txdeQuantitySold" />
+        <result column="TXDE_QUANTITY_SOLD" property="originalQuantity" /> <!-- we need this to figure out the change in quantity on sale order -->
+        <result column="TXDE_QTY_BALANCE" property="txdeQtyBalance" />
+        <result column="TXDE_QTY_TOTAL_INVOICED" property="txdeQtyTotalInvoiced" />
+        <result column="TXDE_QTY_TOTAL_REFUND" property="txdeQtyTotalRefund" />
+        <result column="TXDE_PRICE_SOLD" property="txdePriceSold" />
+        <result column="TXDE_LINE_REFUND" property="txdeLineRefund" />
+        <result column="TXDE_ITEM_VOID" property="txdeItemVoid" />
+        <result column="TXDE_SERIAL_NUMBER" property="txdeSerialNumber" />
+        <result column="TXDE_WAS_SPLIT_PCK" property="txdeWasSplitPck" />
+        <result column="TXDE_DETAIL_LEVEL" property="txdeDetailLevel" />
+        <result column="TXDE_PARENT_DETAIL" property="txdeParentDetail" />
+        <result column="TXDE_DISC_PRICE" property="txdeDiscPrice" />
+        <result column="TXDE_PROD_NAME" property="txdeProdName" />
+        <result column="SUPP_ID" property="supplierId" />
+        <result column="TXDE_PROD_ID" property="productId" />
+        <!--association property="product" column="TXDE_PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductSaleItemPerProdId" /-->
+        <!--association property="unitOfMeasure" column="TXDE_UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" /-->
+    </resultMap>
+
     <resultMap id="txnMediaMap" type="TxnMedia" >
         <id column="TXMD_ID" property="id" />
         <result column="TXMD_AMOUNT_LOCAL" property="txmdAmountLocal" />
@@ -994,11 +1023,21 @@
         WHERE TXHD_ID = #{id}
     </update>
 
-    <update id="updateTxnDetailQtyBalance" parameterType="TxnHeader" >
+    <update id="updateTxnDetailQtyBalance" parameterType="TxnDetail" >
         UPDATE TXN_DETAIL
         SET TXDE_QTY_BALANCE = #{txdeQtyBalance},
         TXDE_QTY_TOTAL_INVOICED = #{txdeQtyTotalInvoiced}
         WHERE TXDE_ID = #{id}
+    </update>
+    <update id="updateTxnDetailStatus" parameterType="TxnDetail" >
+        UPDATE TXN_DETAIL
+        SET TXDE_STATUS = #{status.id},
+        WHERE TXDE_ID = #{id}
+    </update>
+    <update id="updateTxnHeaderStatus" parameterType="TxnHeader" >
+        UPDATE TXN_HEADER
+        SET TXHD_STATUS = #{status.id},
+        WHERE TXHD_ID = #{id}
     </update>
     <update id="updateTxnHeaderTotalValues" parameterType="TxnHeader" >
         UPDATE TXN_HEADER SET
@@ -1037,6 +1076,22 @@
     <update id="updateTxnPrintStatus" >
         UPDATE TXN_HEADER SET TXHD_PRINTED = #{param2} WHERE TXHD_ID = #{param1}
     </update>
+
+    <select id="getTxnDetailsOfMultipleTxnId" resultMap="txnDetailWithSupplierMap" >
+        SELECT
+        <include refid="txnDetailColumns"><property name="alias" value="txde"/></include>,
+        sol.SUPP_ID
+        FROM
+        TXN_DETAIL txde INNER JOIN SUPP_PROD_PRICE spp on(spp.PROD_ID = txde.TXDE_PROD_ID)
+          INNER JOIN SUPP_ORGU_LINK sol on (sol.SOL_ID = spp.SOL_ID)
+        WHERE
+        txde.TXHD_ID in
+        <foreach collection="list" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
+        order by txde.TXDE_PROD_ID
+    </select>
 
 
 </mapper>

@@ -47,6 +47,9 @@ public class TxnHeader {
     private String txhdPoNo;
     //only for invoices to see it had been fully refunded or not
     private boolean txivFullyRefunded;
+    //ordering status : OUTSTANDING, ON ORDER, PARTIAL RECEIVED, RECIEVED AND FINALISED
+    private ConfigCategory status;
+
     /**
      * add txn detail to txn header.
      * @param txnDetail txnDetail
@@ -363,5 +366,13 @@ public class TxnHeader {
 
     public void setTxivFullyRefunded(boolean txivFullyRefunded) {
         this.txivFullyRefunded = txivFullyRefunded;
+    }
+
+    public ConfigCategory getStatus() {
+        return status;
+    }
+
+    public void setStatus(ConfigCategory status) {
+        this.status = status;
     }
 }

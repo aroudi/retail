@@ -496,5 +496,12 @@
         UPDATE Supplier SET ACC_EXPORTED= 1
         WHERE SUPPLIER_ID = #{value}
     </update>
-
+    <select id="getDefaultSupplierOfProductPerOrguIdAndProdId" resultMap="supplierOnlyMap" >
+        SELECT
+        <include refid="supplierColumns"><property name="alias" value="supp"/></include>
+        FROM
+        SUPPLIER supp INNER JOIN SUPP_ORGU_LINK sol on (supp.SUPPLIER_ID = sol.SUPP_ID and sol.ORGU_ID = #{param1})
+        INNER JOIN SUPP_PROD_PRICE spp on(sol.SOL_ID = spp.SOL_ID)
+        WHERE spp.PROD_ID = #{param2}
+    </select>
 </mapper>
