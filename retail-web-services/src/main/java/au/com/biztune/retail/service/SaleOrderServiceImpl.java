@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * Created by arash on 6/07/2017.
  */
 @Component
-public class SaleOrderServiceImpl {
+public class SaleOrderServiceImpl implements SaleOrderService {
     @Autowired
     private SessionState sessionState;
     private final Logger logger = LoggerFactory.getLogger(ConfigCategoryServiceImpl.class);
@@ -44,30 +44,27 @@ public class SaleOrderServiceImpl {
 
     /**
      * create purcahse order from sale order.
-     * @param saleOrderList saleOrderList
+     * @param txhdIdList txhd id list.
      * @param securityContext securityContext
      * @return List of created purchase orders
      */
     @Transactional
-    public List<PurchaseOrderHeader> createPurchaseOrderFromSaleOrder(List<TxnHeader> saleOrderList, SecurityContext securityContext) {
+    public List<PurchaseOrderHeader> createPurchaseOrderFromSaleOrder(List txhdIdList, SecurityContext securityContext) {
         this.securityContext = securityContext;
-        AppUser appUser = null;
+        AppUser appUser;
         //set user
         final Principal principal = securityContext.getUserPrincipal();
         if (principal instanceof AppUser) {
             appUser = (AppUser) principal;
+        } else {
+            appUser = null;
         }
         final List<PurchaseOrderHeader> result = new ArrayList<PurchaseOrderHeader>();
-
-        // extract TxhdId from sale order list.
-        final Set<Long> txhdIdList = saleOrderList.stream().map(TxnHeader::getId).collect(Collectors.toSet());
 
         //fetch all Txn details for those txhdIds from db and filter only those with OUTSTANDING status.
         final List<TxnDetail> txnDetailList = txnDao.getTxnDetailsOfMultipleTxnId(txhdIdList)
                 .stream()
                 .filter(c -> c.getStatus().getCategoryCode().equals(IdBConstant.SO_STATUS_OUTSTANDING)).collect(Collectors.toList());
-
-        //
         //group all txn details per supplier id.
         final Map<Long, List<TxnDetail>> supplierTxnDetailMap = txnDetailList
                 .stream()
@@ -75,18 +72,16 @@ public class SaleOrderServiceImpl {
                         .groupingBy(TxnDetail::getSupplierId));
 
         //create purchase order for each supplier
-        for (Long supplierKey: supplierTxnDetailMap.keySet()) {
-            final List<TxnDetail> supplierSoItems = supplierTxnDetailMap.get(supplierKey);
+        supplierTxnDetailMap.forEach((supplierKey, supplierSoItems) -> {
+            /*
             if (supplierSoItems == null || supplierSoItems.size() < 1) {
                 continue;
             }
+            */
             //get the first item from the list and create the Purchase Order Header.
             final TxnDetail txnDetailItem = supplierSoItems.get(0);
             final PurchaseOrderHeader purchaseOrderHeader = purchaseOrderService.createPoFromSaleOrder(txnDetailItem, appUser);
-            for (TxnDetail item : supplierSoItems) {
-                if (item == null) {
-                    continue;
-                }
+            supplierSoItems.forEach(item -> {
                 //now we have item. let's create the header
                 if (purchaseOrderService.addLineToPoFromTxnDetail(purchaseOrderHeader, item)) {
                     //update billOfQuantity Item : purchased and balance values
@@ -100,20 +95,16 @@ public class SaleOrderServiceImpl {
                 } else {
                     logger.debug("not able to create purchase order line for sale order item : " + purchaseOrderHeader.getPohOrderNumber() + " item: " + item.getId());
                 }
-            }
+            });
             //update the total fields in purchase order header.
             purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
             result.add(purchaseOrderHeader);
-        }
+        });
         //now change the status of Sale Order merged
         final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_ON_ORDER);
-        for (TxnHeader txnHeader : saleOrderList) {
-            if (txnHeader == null) {
-                continue;
-            }
-            txnHeader.setStatus(status);
-            txnDao.updateTxnHeaderStatus(txnHeader);
-        }
+        txhdIdList.forEach(txhdId -> {
+            txnDao.updateTxnHeaderStatusPetTxhdId((Long)txhdId, status.getId());
+        });
         return result;
     }
 

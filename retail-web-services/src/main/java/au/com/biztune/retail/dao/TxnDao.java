@@ -6,7 +6,6 @@ import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.domain.TxnMedia;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by arash on 14/04/2016.
@@ -198,13 +197,20 @@ public interface TxnDao {
      * @param txhdIds set of txn_headers ids
      * @return List of txnDetail
      */
-    List<TxnDetail> getTxnDetailsOfMultipleTxnId(Set txhdIds);
+    List<TxnDetail> getTxnDetailsOfMultipleTxnId(List txhdIds);
 
     /**
      * update txn detail status.
      * @param txnDetail txnDetail.
      */
     void updateTxnDetailStatus(TxnDetail txnDetail);
+
+    /**
+     * update txn status per txhd id and status id.
+     * @param txhdId transaction  header id
+     * @param statusId status id
+     */
+    void updateTxnHeaderStatusPetTxhdId(long txhdId, long statusId);
     /**
      * update txn status.
      * @param txnHeader txnHeader.

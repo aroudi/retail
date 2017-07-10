@@ -1039,6 +1039,11 @@
         SET TXHD_STATUS = #{status.id},
         WHERE TXHD_ID = #{id}
     </update>
+    <update id="updateTxnHeaderStatusPetTxhdId" parameterType="TxnHeader" >
+        UPDATE TXN_HEADER
+        SET TXHD_STATUS = #{param2},
+        WHERE TXHD_ID = #{param1}
+    </update>
     <update id="updateTxnHeaderTotalValues" parameterType="TxnHeader" >
         UPDATE TXN_HEADER SET
             TXHD_VALUE_GROSS = #{txhdValueGross}
