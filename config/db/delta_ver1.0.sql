@@ -2059,3 +2059,7 @@ go
 alter table TXN_DETAIL
   add TXDE_STATUS DECIMAL(31,0)
 go
+
+
+--change the current status for all txn_sale to outstanding
+UPDATE TXN_HEADER SET TXHD_STATUS = (SELECT CATEGORY_ID FROM CONFIG_CATEGORY WHERE CATEGORY_CODE = 'SO_STATUS_OUTSTANDING')

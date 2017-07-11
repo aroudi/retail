@@ -174,13 +174,14 @@ var service_uri = {
     'ACCOUNTING_EXPORT_GET_CONTENT_URI' : 'accounting/getAccountingExport/',
     'PRICING_GRADE_UPDATE_BATCH_URI' : 'categories/updatePricingGrades',
     'GET_DATA_CHANGE_INDICATOR_URI' : 'user/getDataChangeIndicator/',
-    'PRODUCT_PRICE_UPDATE_BULK' : 'product/updateProductPriceInBulk/'
-}
+    'PRODUCT_PRICE_UPDATE_BULK' : 'product/updateProductPriceInBulk/',
+    'GENERATE_PO_FROM_SO_URI' : 'saleOrder/convertSoToPo'
+};
 
 var response_status = {
     'SUCCESS' : 1,
     'FAILURE' : -1
-}
+};
 
 var type_constant = {
     'SUPPLIER_TYPE_URI' : 'categories/SUPPLIER_TYPE',
@@ -215,7 +216,8 @@ var type_constant = {
     'CASH_SESSION_STATE_ENDED' : 'categories/SESSION_STATE/SESSION_STATE_ENDED',
     'PRICING_GRADE_DEFAULT' : 'categories/getCustomerGrade/Default',
     'TAXLEGVARIANCE_GST_URI' : 'taxRule/taxLegVariance/gstCode',
-    'PRICING_RULE_URI' : 'categories/PRICING_RULES'
+    'PRICING_RULE_URI' : 'categories/PRICING_RULES',
+    'TXN_STATUS_ONORDER' : 'categories/SO_STATUS/SO_STATUS_ON_ORDER'
 }
 
 angular.forEach(config_data, function(key, value) {

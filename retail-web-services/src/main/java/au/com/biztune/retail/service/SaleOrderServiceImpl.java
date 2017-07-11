@@ -15,7 +15,6 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -49,63 +48,69 @@ public class SaleOrderServiceImpl implements SaleOrderService {
      * @return List of created purchase orders
      */
     @Transactional
-    public List<PurchaseOrderHeader> createPurchaseOrderFromSaleOrder(List txhdIdList, SecurityContext securityContext) {
-        this.securityContext = securityContext;
-        AppUser appUser;
-        //set user
-        final Principal principal = securityContext.getUserPrincipal();
-        if (principal instanceof AppUser) {
-            appUser = (AppUser) principal;
-        } else {
-            appUser = null;
-        }
-        final List<PurchaseOrderHeader> result = new ArrayList<PurchaseOrderHeader>();
+    public List<PurchaseOrderHeader> createPurchaseOrderFromSaleOrder(List<Long> txhdIdList, SecurityContext securityContext) {
+        try {
 
-        //fetch all Txn details for those txhdIds from db and filter only those with OUTSTANDING status.
-        final List<TxnDetail> txnDetailList = txnDao.getTxnDetailsOfMultipleTxnId(txhdIdList)
-                .stream()
-                .filter(c -> c.getStatus().getCategoryCode().equals(IdBConstant.SO_STATUS_OUTSTANDING)).collect(Collectors.toList());
-        //group all txn details per supplier id.
-        final Map<Long, List<TxnDetail>> supplierTxnDetailMap = txnDetailList
-                .stream()
-                .collect(Collectors
-                        .groupingBy(TxnDetail::getSupplierId));
+            this.securityContext = securityContext;
+            AppUser appUser;
+            //set user
+            final Principal principal = securityContext.getUserPrincipal();
+            if (principal instanceof AppUser) {
+                appUser = (AppUser) principal;
+            } else {
+                appUser = null;
+            }
+            final List<PurchaseOrderHeader> result = new ArrayList<PurchaseOrderHeader>();
 
-        //create purchase order for each supplier
-        supplierTxnDetailMap.forEach((supplierKey, supplierSoItems) -> {
+            //fetch all Txn details for those txhdIds from db and filter only those with OUTSTANDING status.
+            final List<TxnDetail> txnDetailList = txnDao.getTxnDetailsOfMultipleTxnId(txhdIdList)
+                    .stream()
+                    .filter(c -> (c.getStatus() == null) || (c.getStatus().getCategoryCode().equals(IdBConstant.SO_STATUS_OUTSTANDING))).collect(Collectors.toList());
+            //group all txn details per supplier id.
+            final Map<Long, List<TxnDetail>> supplierTxnDetailMap = txnDetailList
+                    .stream()
+                    .collect(Collectors
+                            .groupingBy(TxnDetail::getSupplierId));
+
+            //create purchase order for each supplier
+            supplierTxnDetailMap.forEach((supplierKey, supplierSoItems) -> {
             /*
             if (supplierSoItems == null || supplierSoItems.size() < 1) {
                 continue;
             }
             */
-            //get the first item from the list and create the Purchase Order Header.
-            final TxnDetail txnDetailItem = supplierSoItems.get(0);
-            final PurchaseOrderHeader purchaseOrderHeader = purchaseOrderService.createPoFromSaleOrder(txnDetailItem, appUser);
-            supplierSoItems.forEach(item -> {
-                //now we have item. let's create the header
-                if (purchaseOrderService.addLineToPoFromTxnDetail(purchaseOrderHeader, item)) {
-                    //update billOfQuantity Item : purchased and balance values
-                    //item.set(item.getQtyBalance());
-                    //item.setQtyBalance(0.00);
-                    final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_ON_ORDER);
-                    if (status != null) {
-                        item.setStatus(status);
+                //get the first item from the list and create the Purchase Order Header.
+                final TxnDetail txnDetailItem = supplierSoItems.get(0);
+                final PurchaseOrderHeader purchaseOrderHeader = purchaseOrderService.createPoFromSaleOrder(txnDetailItem, appUser);
+                supplierSoItems.forEach(item -> {
+                    //now we have item. let's create the header
+                    if (purchaseOrderService.addLineToPoFromTxnDetail(purchaseOrderHeader, item)) {
+                        //update billOfQuantity Item : purchased and balance values
+                        //item.set(item.getQtyBalance());
+                        //item.setQtyBalance(0.00);
+                        final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_ON_ORDER);
+                        if (status != null) {
+                            item.setStatus(status);
+                        }
+                        txnDao.updateTxnDetailStatus(item);
+                    } else {
+                        logger.debug("not able to create purchase order line for sale order item : " + purchaseOrderHeader.getPohOrderNumber() + " item: " + item.getId());
                     }
-                    txnDao.updateTxnDetailStatus(item);
-                } else {
-                    logger.debug("not able to create purchase order line for sale order item : " + purchaseOrderHeader.getPohOrderNumber() + " item: " + item.getId());
-                }
+                });
+                //update the total fields in purchase order header.
+                purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
+                result.add(purchaseOrderHeader);
             });
-            //update the total fields in purchase order header.
-            purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
-            result.add(purchaseOrderHeader);
-        });
-        //now change the status of Sale Order merged
-        final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_ON_ORDER);
-        txhdIdList.forEach(txhdId -> {
-            txnDao.updateTxnHeaderStatusPetTxhdId((Long)txhdId, status.getId());
-        });
-        return result;
+            //now change the status of Sale Order merged
+            final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_ON_ORDER);
+            txhdIdList.forEach(txhdId -> {
+                txnDao.updateTxnHeaderStatusPetTxhdId(txhdId, status.getId());
+            });
+            return result;
+        } catch (Exception e) {
+            logger.error("Exception in converting sale order to purchase order:", e);
+            return null;
+        }
     }
 
     public SessionState getSessionState() {

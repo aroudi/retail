@@ -1,13 +1,13 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI, CUSTOMER_ALL_URI) {
+cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, TXN_STATUS_ONORDER) {
 
     $scope.saleOrderSearchForm = {};
     $scope.saleOrderSearchForm.clientId = -1;
     $scope.includeSaleOrder = true;
     $scope.includeQuote = true;
-
+    $scope.backOrderList = []; // add sale order to this for generating purchase order
     $scope.getPage = function(){
         $scope.saleOrderSearchForm.txnTypeList = [];
         if ($scope.includeSaleOrder) {
@@ -49,15 +49,16 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
             {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
             {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'20%'},
-            {field:'txhdTxnNr', displayName:'Number',enableCellEdit:false, width:'10%'},
-            {field:'txhdState', displayName:'State', enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+            {field:'txhdTxnNr', displayName:'Number',enableCellEdit:false, width:'7%'},
+            {field:'txhdTxnType.displayName' , displayName:'Type', enableCellEdit:false, width:'8%'},
+            {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'8%', cellFilter:'currency'},
+            {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'7%', cellFilter:'currency'},
+            {field:'status', displayName:'Status', enableCellEdit:false, width:'8%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }
             },
-            {field:'txhdTxnType.displayName' , displayName:'Type', enableCellEdit:false, width:'10%'},
-            {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
-            {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'}
+            {field:'createPurchaseOrder', displayName:'Back Order',enableCellEdit:true, type:'boolean', width:'7%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-model="row.entity.createPurchaseOrder" ng-change="grid.appScope.addSaleOrderToBackOrderList(row.entity)">'}
         ]
     }
     $scope.gridOptions.enableRowSelection = false;
@@ -83,6 +84,9 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
                 $scope.txnTypeQuote = response.data;
                 $scope.getPage();
             });
+        });
+        baseDataService.getBaseData(TXN_STATUS_ONORDER).then(function(response){
+            $scope.txnStatusOnOrder = response.data;
         });
         baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
             $scope.customerSet = response.data;
@@ -179,6 +183,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         //$scope.saleOrderSearchForm.txnTypeList = angular.copy(txnTypeList);
         baseDataService.addRow($scope.saleOrderSearchForm, TXN_SEARCH_URI).then(function(response){
             $scope.gridOptions.data = response.data;
+            populateBackOrderFlagFromBackOrderList();
         });
     }
 
@@ -205,4 +210,67 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         $scope.client.id = -1;
     }
 
+    $scope.addSaleOrderToBackOrderList = function(saleOrder) {
+        console.log('sale order added');
+        if ($scope.backOrderList === undefined) {
+            $scope.backOrderList = [];
+        }
+        var itemIndex = baseDataService.getArrIndexOf($scope.backOrderList, saleOrder);
+        if (saleOrder.createPurchaseOrder === true) {
+            //if item had not been added to the list
+            if (itemIndex < 0) {
+                $scope.backOrderList.push(saleOrder);
+            }
+
+        } else {
+            if (itemIndex >= 0) {
+                $scope.backOrderList.splice(itemIndex, 1);
+            }
+        }
+    };
+
+    function populateBackOrderFlagFromBackOrderList() {
+        if ($scope.backOrderList === undefined || $scope.backOrderList.length < 1) {
+            return;
+        }
+        for (var i = 0; i < $scope.backOrderList.length; i++) {
+            if (baseDataService.getArrIndexOf($scope.gridOptions.data, $scope.backOrderList[i]) > 0) {
+                $scope.gridOptions.data[i].createPurchaseOrder = true;
+            } else {
+                $scope.gridOptions.data[i].createPurchaseOrder = false;
+            }
+        }
+
+    };
+    $scope.generatePOFromSO = function() {
+        ngDialog.openConfirm({
+            template:'views/pages/soToPoReview.html',
+            controller:'soToPoReviewCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false,
+            resolve: {saleOrderList: function(){return $scope.backOrderList}}
+        }).then (function (purchaseOrderList){
+                ngDialog.openConfirm({
+                    template:'views/pages/soToPoResult.html',
+                    controller:'soToPoResultCtrl',
+                    className: 'ngdialog-theme-default',
+                    closeByDocument:false,
+                    resolve: {purchaseOrderList: function(){return purchaseOrderList}}
+                }).then (function (purchaseOrderList){
+                        for (var i = 0; i < $scope.backOrderList.length; i++) {
+                            if (baseDataService.getArrIndexOf($scope.gridOptions.data, $scope.backOrderList[i]) > 0) {
+                                $scope.gridOptions.data[i].status = $scope.txnStatusOnOrder;
+                                $scope.gridOptions.data[i].createPurchaseOrder = false;
+                            }
+                        }
+                        $scope.$scope.backOrderList = [];
+                    }, function(reason) {
+                        console.log('Modal promise rejected. Reason:', reason);
+                    }
+                );
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    }
 });

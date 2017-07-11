@@ -30,7 +30,7 @@
         <result column="TXHD_EMAIL_TO" property="txhdEmailTo" />
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="user" column="TXHD_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
-        <association property="txhdState" column="TXHD_STATE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="status" column="TXHD_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="txhdTxnType" column="TXHD_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
@@ -71,6 +71,7 @@
 
     <resultMap id="txnDetailMap" type="TxnDetail" >
         <id column="TXDE_ID" property="id" />
+        <result column="TXHD_ID" property="txhdId" />
         <result column="TXDE_PRICE_OVRIDEN" property="txdePriceOveriden" />
         <result column="TXDE_VALUE_LINE" property="txdeValueLine" />
         <result column="TXDE_PROFIT_MARGIN" property="txdeProfitMargin" />
@@ -99,6 +100,7 @@
 
     <resultMap id="txnDetailWithSupplierMap" type="TxnDetail" >
         <id column="TXDE_ID" property="id" />
+        <result column="TXHD_ID" property="txhdId" />
         <result column="TXDE_PRICE_OVRIDEN" property="txdePriceOveriden" />
         <result column="TXDE_VALUE_LINE" property="txdeValueLine" />
         <result column="TXDE_PROFIT_MARGIN" property="txdeProfitMargin" />
@@ -174,6 +176,7 @@
         ${alias}.TXHD_COLLECT_DATE,
         ${alias}.CUSTOMER_ID,
         ${alias}.TXHD_STATE,
+        ${alias}.TXHD_STATUS,
         ${alias}.TXHD_DLV_ADDRESS,
         ${alias}.TXHD_CONTACT_PERSON,
         ${alias}.TXHD_CONTACT_PHONE,
@@ -185,6 +188,7 @@
 
     <sql id="txnDetailColumns">
         ${alias}.TXDE_ID,
+        ${alias}.TXHD_ID,
         ${alias}.TXDE_PRICE_OVRIDEN,
         ${alias}.TXDE_PROD_ID,
         ${alias}.TXDE_UNOM_ID,
@@ -230,6 +234,7 @@
         STORE_ID,
         TXHD_TXN_NR,
         TXHD_STATE,
+        TXHD_STATUS,
         ORGU_ID_ORIGINAL,
         TXHD_ORIG_TXN_NR,
         TXHD_TRADING_DATE,
@@ -263,6 +268,12 @@
             ,#{txhdState.id}
         </if>
         <if test="txhdState == null">
+            ,null
+        </if>
+        <if test="status != null">
+            ,#{status.id}
+        </if>
+        <if test="status == null">
             ,null
         </if>
         <if test="orgUnitOriginal != null">
@@ -419,6 +430,9 @@
         ORGU_ID = #{orgUnit.id}
         <if test="txhdState != null">
             ,TXHD_STATE = #{txhdState.id}
+        </if>
+        <if test="status != null">
+            ,TXHD_STATUS = #{status.id}
         </if>
         <if test="txhdTxnType != null">
             ,TXHD_TXN_TYPE = #{txhdTxnType.id}
@@ -1031,17 +1045,17 @@
     </update>
     <update id="updateTxnDetailStatus" parameterType="TxnDetail" >
         UPDATE TXN_DETAIL
-        SET TXDE_STATUS = #{status.id},
+        SET TXDE_STATUS = #{status.id}
         WHERE TXDE_ID = #{id}
     </update>
     <update id="updateTxnHeaderStatus" parameterType="TxnHeader" >
         UPDATE TXN_HEADER
-        SET TXHD_STATUS = #{status.id},
+        SET TXHD_STATUS = #{status.id}
         WHERE TXHD_ID = #{id}
     </update>
     <update id="updateTxnHeaderStatusPetTxhdId" parameterType="TxnHeader" >
         UPDATE TXN_HEADER
-        SET TXHD_STATUS = #{param2},
+        SET TXHD_STATUS = #{param2}
         WHERE TXHD_ID = #{param1}
     </update>
     <update id="updateTxnHeaderTotalValues" parameterType="TxnHeader" >
