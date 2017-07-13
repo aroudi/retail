@@ -46,6 +46,10 @@ public class TxnDetail {
     // for invoice detail, parentId store txdeId of sale transaction.
     private long parentId;
     private double txidSurcharge;
+    //backorder quantity:
+    private double txdeQtyOrdered;
+    //received quantity from good received
+    private double txdeQtyReceived;
     private double txdeQuantityOrdered;
     private String txdeProdName;
     //ordering status : OUTSTANDING, ON ORDER, PARTIAL RECEIVED, RECIEVED AND FINALISED
@@ -438,12 +442,12 @@ public class TxnDetail {
         this.txidSurcharge = txidSurcharge;
     }
 
-    public double getTxdeQuantityOrdered() {
-        return txdeQuantityOrdered;
+    public double getTxdeQtyOrdered() {
+        return txdeQtyOrdered;
     }
 
-    public void setTxdeQuantityOrdered(double txdeQuantityOrdered) {
-        this.txdeQuantityOrdered = txdeQuantityOrdered;
+    public void setTxdeQtyOrdered(double txdeQtyOrdered) {
+        this.txdeQtyOrdered = txdeQtyOrdered;
     }
 
     public String getTxdeProdName() {
@@ -476,5 +480,21 @@ public class TxnDetail {
 
     public void setProductId(long productId) {
         this.productId = productId;
+    }
+
+    public double getTxdeQuantityOrdered() {
+        return txdeQuantityOrdered;
+    }
+
+    public void setTxdeQuantityOrdered(double txdeQuantityOrdered) {
+        this.txdeQuantityOrdered = txdeQuantityOrdered;
+    }
+
+    public double getTxdeQtyReceived() {
+        return txdeQtyReceived;
+    }
+
+    public void setTxdeQtyReceived(double txdeQtyReceived) {
+        this.txdeQtyReceived = txdeQtyReceived;
     }
 }

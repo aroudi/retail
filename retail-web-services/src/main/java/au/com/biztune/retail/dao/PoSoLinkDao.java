@@ -1,6 +1,5 @@
 package au.com.biztune.retail.dao;
 
-import au.com.biztune.retail.domain.PoBoqLink;
 import au.com.biztune.retail.domain.PoSoLink;
 
 import java.util.List;
@@ -15,25 +14,25 @@ public interface PoSoLinkDao {
      * @param pohId pohId
      * @return list of poSoLink
      */
-    List<PoBoqLink> getAllPoSoLinkPerPohId(long pohId);
+    List<PoSoLink> getAllPoSoLinkPerPohId(long pohId);
     /**
      * get all po_so_link per pol Id.
      * @param polId polId
      * @return list of poSoLink
      */
-    List<PoBoqLink> getAllPoSoLinkPerPolId(long polId);
+    List<PoSoLink> getAllPoSoLinkPerPolId(long polId);
     /**
      * get all po_so_link per txnId.
      * @param txnId txnId
      * @return list of poSoLink
      */
-    List<PoBoqLink> getAllPoSoLinkPerTxnId(long txnId);
+    List<PoSoLink> getAllPoSoLinkPerTxnId(long txnId);
     /**
      * get all po_so_link per txnDetailId.
      * @param txnDetailId txnDetailId
      * @return list of poSoLink
      */
-    List<PoBoqLink> getPoSoLinkPerTxnDetailId(long txnDetailId);
+    List<PoSoLink> getPoSoLinkPerTxnDetailId(long txnDetailId);
 
     /**
      * insert po_so_link.
@@ -43,9 +42,9 @@ public interface PoSoLinkDao {
 
     /**
      * update qty received.
-     * @param poBoqLink poBoqLink
+     * @param poSoLink poSoLink
      */
-    void updateQtyReceived(PoBoqLink poBoqLink);
+    void updateQtyReceived(PoSoLink poSoLink);
 
     /**
      * delete link per txn-detail.

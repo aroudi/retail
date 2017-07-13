@@ -203,17 +203,31 @@ public interface TxnDao {
      * update txn detail status.
      * @param txnDetail txnDetail.
      */
-    void updateTxnDetailStatus(TxnDetail txnDetail);
+    void updateTxnDetailBackOrderAndStatus(TxnDetail txnDetail);
 
+    /**
+     * update qty received and status.
+     * @param statusId statusId
+     * @param qtyReceived qtyReceived
+     * @param txdeId txdeId
+     */
+    void updateTxnDetailRcvdQtyAndStatus(long statusId, double qtyReceived, long txdeId);
     /**
      * update txn status per txhd id and status id.
      * @param txhdId transaction  header id
      * @param statusId status id
      */
-    void updateTxnHeaderStatusPetTxhdId(long txhdId, long statusId);
+    void updateTxnHeaderStatusPerTxhdId(long txhdId, long statusId);
     /**
      * update txn status.
      * @param txnHeader txnHeader.
      */
     void updateTxnHeaderStatus(TxnHeader txnHeader);
+
+    /**
+     * get all txnDetails(include status) per txhd id.
+     * @param txhdId txhdId
+     * @return list of txnDetail
+     */
+    List<TxnDetail> getTxnDetailStatusPerTxhdId(long txhdId);
 }

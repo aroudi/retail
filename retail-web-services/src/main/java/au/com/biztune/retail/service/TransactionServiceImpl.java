@@ -181,12 +181,22 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeValueNet(txnDetailForm.getTxdeValueNet());
                 txnDetail.setTxdeQuantitySold(txnDetailForm.getTxdeQuantitySold());
                 txnDetail.setTxdeQtyBalance(txnDetailForm.getTxdeQtyBalance());
+                txnDetail.setTxdeQtyOrdered(txnDetailForm.getTxdeQtyOrdered());
+                txnDetail.setTxdeQtyReceived(txnDetailForm.getTxdeQtyReceived());
                 txnDetail.setTxdeQtyTotalInvoiced(txnDetailForm.getTxdeQtyTotalInvoiced() + txnDetailForm.getTxdeQtyInvoiced());
                 txnDetail.setTxdePriceSold(txnDetailForm.getTxdePriceSold());
                 txnDetail.setTxdeLineRefund(txnDetailForm.isTxdeLineRefund());
                 txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
                 txnDetail.setTxdeProdName(txnDetailForm.getTxdeProdName());
                 txnDetail.setOriginalQuantity(txnDetailForm.getOriginalQuantity());
+                if (txnDetailForm.getTxdeQtyBalance() == 0) {
+                    final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_FINAL);
+                    txnDetail.setStatus(status);
+                }
+                if (txnDetailForm.getTxdeQtyBalance() > txnDetailForm.getTxdeQtyOrdered()) {
+                    final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_OUTSTANDING);
+                    txnDetail.setStatus(status);
+                }
                 if (txnDetailForm.getId() < 0) {
                     final ConfigCategory txntLineType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_LINE_TYPE, IdBConstant.TXN_LINE_TYPE_SALE);
                     if (txntLineType != null) {
@@ -259,6 +269,9 @@ public class TransactionServiceImpl implements TransactionService {
             }
             txnDao.updateTxnHeaderTotalValues(txnHeader);
             //cashSessionService.processSessionEvent(txnHeader, IdBConstant.SESSION_EVENT_TYPE_TXN);
+
+            //update sale order header status:
+            updateSaleOrderStatus(txnHeader);
             return txnHeader;
         } catch (Exception e) {
             logger.error("Exception in saving transaction: ", e);
@@ -445,6 +458,7 @@ public class TransactionServiceImpl implements TransactionService {
         txnHeaderForm.setTxhdContactPhone(txnHeader.getTxhdContactPhone());
         txnHeaderForm.setTxhdPoNo(txnHeader.getTxhdPoNo());
         txnHeaderForm.setTxhdEmailTo(txnHeader.getTxhdEmailTo());
+        txnHeaderForm.setStatus(txnHeader.getStatus());
         if (txnHeader.getTxnDetails() != null) {
             TxnDetailForm txnDetailForm;
             final List<TxnDetailForm> txnDetailFormList = new ArrayList<TxnDetailForm>();
@@ -482,6 +496,10 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetailForm.setCalculatedLineValue(txnDetailForm.getTxdeQuantitySold() * txnDetailForm.getTxdeValueGross());
                 txnDetailForm.setCalculatedLineTax(txnDetailForm.getTxdeTax() * txnDetailForm.getCalculatedLineValue());
                 txnDetailForm.setTxidSurcharge(txnDetail.getTxidSurcharge());
+                txnDetailForm.setStatus(txnDetail.getStatus());
+                txnDetailForm.setTxdeQtyOrdered(txnDetail.getTxdeQtyOrdered());
+                txnDetailForm.setTxdeQtyReceived(txnDetail.getTxdeQtyReceived());
+
                 txnDetailFormList.add(txnDetailForm);
             }
             txnHeaderForm.setTxnDetailFormList(txnDetailFormList);
@@ -1312,6 +1330,41 @@ public class TransactionServiceImpl implements TransactionService {
         } catch (Exception e) {
             logger.error("Exception in getting invoices of product:", e);
             return null;
+        }
+    }
+
+    /**
+     * update sale order status.
+     * @param txnHeader txnHeader
+     */
+    private void updateSaleOrderStatus(TxnHeader txnHeader) {
+        try {
+            ConfigCategory newStatus = null;
+            if (txnHeader == null || txnHeader.getTxnDetails() == null || txnHeader.getTxnDetails().size() < 1) {
+                return;
+            }
+            final long zeroBalanceLineCount = txnHeader.getTxnDetails()
+                    .stream()
+                    .filter(txnDetail -> txnDetail.getTxdeQtyBalance() == 0)
+                    .count();
+            //if all items had been invoiced then set status to finalized;
+            if (zeroBalanceLineCount == txnHeader.getTxnDetails().size()) {
+                newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_FINAL);
+                txnDao.updateTxnHeaderStatusPerTxhdId(txnHeader.getId(), newStatus.getId());
+                return;
+            }
+            final long outStandingBalanceLineCount = txnHeader.getTxnDetails()
+                    .stream()
+                    .filter(txnDetail -> txnDetail.getTxdeQtyBalance() > txnDetail.getTxdeQtyOrdered())
+                    .count();
+            if (outStandingBalanceLineCount > 0) {
+                newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_OUTSTANDING);
+                txnDao.updateTxnHeaderStatusPerTxhdId(txnHeader.getId(), newStatus.getId());
+            }
+
+
+        } catch (Exception e) {
+            logger.error("Exception in updating sale order status", e);
         }
     }
 

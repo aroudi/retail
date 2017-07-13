@@ -35,6 +35,7 @@ public class TxnHeaderForm {
     private boolean temporarySaved;
     private String txhdPoNo;
     private String txhdEmailTo;
+    private ConfigCategory status;
 
 
 
@@ -252,5 +253,13 @@ public class TxnHeaderForm {
 
     public void setTxhdEmailTo(String txhdEmailTo) {
         this.txhdEmailTo = txhdEmailTo;
+    }
+
+    public ConfigCategory getStatus() {
+        return status;
+    }
+
+    public void setStatus(ConfigCategory status) {
+        this.status = status;
     }
 }

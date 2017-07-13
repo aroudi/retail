@@ -18,6 +18,8 @@ import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by arash on 14/05/2016.
@@ -44,6 +46,13 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
     @Autowired
     private StockService stockService;
     private SecurityContext securityContext;
+
+    @Autowired
+    private PoSoLinkDao poSoLinkDao;
+
+    @Autowired
+    private TxnDao txnDao;
+
     /**
      * save DeliveryNote into database.
      * @param deliveryNoteHeader deliveryNoteHeader
@@ -217,6 +226,8 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                     //only update related linked boq received when all or some of the ordered item has been received.
                     //we assigne the goods to lined boqs per their orders. when it is partial, user can go to the Purchase Order Form and change the assignement.
                     updatePurchaseLineLinkedBoq(purchaseLine);
+                    //update linked sale orders
+                    updatePurchaseLineLinkedSaleOrder(purchaseLine);
                 }
                 //update stock qty.
                 updateStockQuantity(deliveryNoteHeader, deliveryNoteLine, purchaseLine);
@@ -244,6 +255,9 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 linkedPurchaseOrder.setPohLastDelvDate(deliveryNoteHeader.getDelnDeliveryDate());
                 purchaseOrderDao.updatePurchaseOrderHeader(linkedPurchaseOrder);
             }
+
+            //update linked po sale order.
+            updatePurchaseOrderLinkedSaleOrderStatus(deliveryNoteHeader.getPohId());
             return true;
 
         } catch (Exception e) {
@@ -291,6 +305,101 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
         }
     }
 
+    private boolean updatePurchaseLineLinkedSaleOrder(PurchaseLine purchaseLine) {
+        try {
+            if (purchaseLine == null) {
+                return false;
+            }
+            final List<PoSoLink> linkedSoList = poSoLinkDao.getAllPoSoLinkPerPolId(purchaseLine.getId());
+            final double qtyReceived = purchaseLine.getPolQtyReceived();
+            ConfigCategory status = null;
+            double qtyRemain = qtyReceived;
+            double qtyAssigned = 0.00;
+            for (PoSoLink poSoLink:linkedSoList) {
+                if (poSoLink == null || poSoLink.getSoLineQtyBalance() == 0) {
+                    continue;
+                }
+                if (qtyRemain >= poSoLink.getSoLineQtyBalance()) {
+                    poSoLink.setPoQtyReceived(poSoLink.getPoQtyReceived() + poSoLink.getSoLineQtyBalance());
+                    poSoLink.setSoLineQtyBalance(0);
+                    qtyRemain = qtyRemain - poSoLink.getSoLineQtyBalance();
+                    status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_RECEIVED);
+                    qtyAssigned = poSoLink.getSoLineQtyBalance();
+                } else {
+                    poSoLink.setPoQtyReceived(poSoLink.getPoQtyReceived() + qtyRemain);
+                    poSoLink.setSoLineQtyBalance(poSoLink.getSoLineQtyBalance() - qtyRemain);
+                    status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_PARTIAL_REC);
+                    qtyAssigned = qtyRemain;
+                    qtyRemain = 0;
+                }
+                poSoLink.setPoSoStatus(status);
+                //update po_so_link table
+                poSoLinkDao.updateQtyReceived(poSoLink);
+                //update sale order itself.
+                txnDao.updateTxnDetailRcvdQtyAndStatus(status.getId(), qtyAssigned, poSoLink.getTxdeId());
+                if (qtyRemain == 0) {
+                    break;
+                }
+            }
+            return true;
+
+        } catch (Exception e) {
+            logger.error("Error in updating purchase order line linked BOQ", e);
+            return false;
+        }
+    }
+
+    /**
+     * update order status of linked sales orders.
+     * @param pohId purchaes order header id.
+     */
+    private void updatePurchaseOrderLinkedSaleOrderStatus(long pohId) {
+        try {
+            final List<PoSoLink> linkedSoList = poSoLinkDao.getAllPoSoLinkPerPohId(pohId);
+            //update the sale order status.
+            //extract sale orders from list: group linked sales order per txhdId
+            final Map<Long, List<PoSoLink>> extractedtxhdIdList = linkedSoList
+                    .stream()
+                    .collect(Collectors
+                            .groupingBy(PoSoLink::getTxhdId));
+
+            //for each txhdId, extract the transactionHeader and change the status
+            extractedtxhdIdList.forEach((extractedtxhdId, linkedSaleOrderList) -> {
+                final List<TxnDetail> saleOrderLineList = txnDao.getTxnDetailStatusPerTxhdId(extractedtxhdId);
+                final long receivedCount = saleOrderLineList
+                        .stream()
+                        .map(TxnDetail::getStatus)
+                        .filter(orderStatus -> (orderStatus != null) && (orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_RECEIVED)))
+                        .count();
+
+                final long outsTandingCount = saleOrderLineList
+                        .stream()
+                        .map(TxnDetail::getStatus)
+                        .filter(orderStatus -> orderStatus == null || orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_OUTSTANDING))
+                        .count();
+                final long partialReceivedCount = saleOrderLineList
+                        .stream()
+                        .map(TxnDetail::getStatus)
+                        .filter(orderStatus -> (orderStatus != null) && (orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_PARTIAL_REC)))
+                        .count();
+
+                //if all items received
+                if (receivedCount == saleOrderLineList.size()) {
+                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_RECEIVED);
+                    txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
+                } else if (partialReceivedCount > 0) {
+                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_PARTIAL_REC);
+                    txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
+                } else if (outsTandingCount > 0) {
+                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_OUTSTANDING);
+                    txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
+                }
+            });
+
+        } catch (Exception e) {
+            logger.error("Exception in updating linked po sale order", e);
+        }
+    }
     /**
      * update stockQuantity.
      * @param deliveryNoteHeader deliveryNoteHeader

@@ -91,8 +91,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                         final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_ON_ORDER);
                         if (status != null) {
                             item.setStatus(status);
+                            item.setTxdeQtyOrdered(item.getTxdeQtyBalance() - item.getTxdeQtyOrdered());
                         }
-                        txnDao.updateTxnDetailStatus(item);
+                        txnDao.updateTxnDetailBackOrderAndStatus(item);
                     } else {
                         logger.debug("not able to create purchase order line for sale order item : " + purchaseOrderHeader.getPohOrderNumber() + " item: " + item.getId());
                     }
@@ -104,7 +105,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             //now change the status of Sale Order merged
             final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_ON_ORDER);
             txhdIdList.forEach(txhdId -> {
-                txnDao.updateTxnHeaderStatusPetTxhdId(txhdId, status.getId());
+                txnDao.updateTxnHeaderStatusPerTxhdId(txhdId, status.getId());
             });
             return result;
         } catch (Exception e) {

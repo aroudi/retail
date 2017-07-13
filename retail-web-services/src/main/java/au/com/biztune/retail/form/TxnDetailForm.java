@@ -43,6 +43,9 @@ public class TxnDetailForm {
     private long parentId;
     private double txidSurcharge;
     private String txdeProdName;
+    private double txdeQtyOrdered;
+    private double txdeQtyReceived;
+    private ConfigCategory status;
 
 
 
@@ -300,5 +303,29 @@ public class TxnDetailForm {
 
     public void setTxdeProdName(String txdeProdName) {
         this.txdeProdName = txdeProdName;
+    }
+
+    public double getTxdeQtyOrdered() {
+        return txdeQtyOrdered;
+    }
+
+    public void setTxdeQtyOrdered(double txdeQtyOrdered) {
+        this.txdeQtyOrdered = txdeQtyOrdered;
+    }
+
+    public double getTxdeQtyReceived() {
+        return txdeQtyReceived;
+    }
+
+    public void setTxdeQtyReceived(double txdeQtyReceived) {
+        this.txdeQtyReceived = txdeQtyReceived;
+    }
+
+    public ConfigCategory getStatus() {
+        return status;
+    }
+
+    public void setStatus(ConfigCategory status) {
+        this.status = status;
     }
 }

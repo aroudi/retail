@@ -81,6 +81,8 @@
         <result column="TXDE_VALUE_NET" property="txdeValueNet" />
         <result column="TXDE_QUANTITY_SOLD" property="txdeQuantitySold" />
         <result column="TXDE_QUANTITY_SOLD" property="originalQuantity" /> <!-- we need this to figure out the change in quantity on sale order -->
+        <result column="TXDE_QTY_ORDERED" property="txdeQtyOrdered" />
+        <result column="TXDE_QTY_RECEIVED" property="txdeQtyReceived" />
         <result column="TXDE_QTY_BALANCE" property="txdeQtyBalance" />
         <result column="TXDE_QTY_TOTAL_INVOICED" property="txdeQtyTotalInvoiced" />
         <result column="TXDE_QTY_TOTAL_REFUND" property="txdeQtyTotalRefund" />
@@ -96,6 +98,36 @@
         <association property="product" column="TXDE_PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductSaleItemPerProdId" />
         <association property="unitOfMeasure" column="TXDE_UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="txdeDetailType" column="TXDE_DETAIL_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="status" column="TXDE_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+    </resultMap>
+
+    <resultMap id="txnDetailLightWithStatusMap" type="TxnDetail" >
+        <id column="TXDE_ID" property="id" />
+        <result column="TXHD_ID" property="txhdId" />
+        <result column="TXDE_PRICE_OVRIDEN" property="txdePriceOveriden" />
+        <result column="TXDE_VALUE_LINE" property="txdeValueLine" />
+        <result column="TXDE_PROFIT_MARGIN" property="txdeProfitMargin" />
+        <result column="TXDE_VALUE_PROFIT" property="txdeValueProfit" />
+        <result column="TXDE_VALUE_GROSS" property="txdeValueGross" />
+        <result column="TXDE_TAX" property="txdeTax" />
+        <result column="TXDE_VALUE_NET" property="txdeValueNet" />
+        <result column="TXDE_QUANTITY_SOLD" property="txdeQuantitySold" />
+        <result column="TXDE_QUANTITY_SOLD" property="originalQuantity" /> <!-- we need this to figure out the change in quantity on sale order -->
+        <result column="TXDE_QTY_ORDERED" property="txdeQtyOrdered" />
+        <result column="TXDE_QTY_RECEIVED" property="txdeQtyReceived" />
+        <result column="TXDE_QTY_BALANCE" property="txdeQtyBalance" />
+        <result column="TXDE_QTY_TOTAL_INVOICED" property="txdeQtyTotalInvoiced" />
+        <result column="TXDE_QTY_TOTAL_REFUND" property="txdeQtyTotalRefund" />
+        <result column="TXDE_PRICE_SOLD" property="txdePriceSold" />
+        <result column="TXDE_LINE_REFUND" property="txdeLineRefund" />
+        <result column="TXDE_ITEM_VOID" property="txdeItemVoid" />
+        <result column="TXDE_SERIAL_NUMBER" property="txdeSerialNumber" />
+        <result column="TXDE_WAS_SPLIT_PCK" property="txdeWasSplitPck" />
+        <result column="TXDE_DETAIL_LEVEL" property="txdeDetailLevel" />
+        <result column="TXDE_PARENT_DETAIL" property="txdeParentDetail" />
+        <result column="TXDE_DISC_PRICE" property="txdeDiscPrice" />
+        <result column="TXDE_PROD_NAME" property="txdeProdName" />
+        <association property="status" column="TXDE_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
     <resultMap id="txnDetailWithSupplierMap" type="TxnDetail" >
@@ -110,6 +142,8 @@
         <result column="TXDE_VALUE_NET" property="txdeValueNet" />
         <result column="TXDE_QUANTITY_SOLD" property="txdeQuantitySold" />
         <result column="TXDE_QUANTITY_SOLD" property="originalQuantity" /> <!-- we need this to figure out the change in quantity on sale order -->
+        <result column="TXDE_QTY_ORDERED" property="txdeQtyOrdered" />
+        <result column="TXDE_QTY_RECEIVED" property="txdeQtyReceived" />
         <result column="TXDE_QTY_BALANCE" property="txdeQtyBalance" />
         <result column="TXDE_QTY_TOTAL_INVOICED" property="txdeQtyTotalInvoiced" />
         <result column="TXDE_QTY_TOTAL_REFUND" property="txdeQtyTotalRefund" />
@@ -199,6 +233,8 @@
         ${alias}.TXDE_TAX,
         ${alias}.TXDE_VALUE_NET,
         ${alias}.TXDE_QUANTITY_SOLD,
+        ${alias}.TXDE_QTY_ORDERED,
+        ${alias}.TXDE_QTY_RECEIVED,
         ${alias}.TXDE_QTY_BALANCE,
         ${alias}.TXDE_QTY_TOTAL_INVOICED,
         ${alias}.TXDE_QTY_TOTAL_REFUND,
@@ -213,7 +249,8 @@
         ${alias}.TXDE_DISC_PRICE,
         ${alias}.TXDE_RETURN_ORGU_ID,
         ${alias}.TXDE_RETURN_STORE_ID,
-        ${alias}.TXDE_PROD_NAME
+        ${alias}.TXDE_PROD_NAME,
+        ${alias}.TXDE_STATUS
     </sql>
 
     <sql id="txnMediaColumns">
@@ -533,7 +570,8 @@
         TXDE_DISC_PRICE,
         TXDE_RETURN_ORGU_ID,
         TXDE_RETURN_STORE_ID,
-        TXDE_PROD_NAME
+        TXDE_PROD_NAME,
+        TXDE_STATUS
         ) VALUES (
         #{orguId},
         #{storeId},
@@ -704,6 +742,12 @@
         <if test="txdeProdName == null">
             ,null
         </if>
+        <if test="status != null">
+            ,#{status.id}
+        </if>
+        <if test="status == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -781,6 +825,9 @@
         </if>
         <if test="txdeProdName != null">
             ,TXDE_PROD_NAME = #{txdeProdName}
+        </if>
+        <if test="status != null">
+            ,TXDE_STATUS = #{status.id}
         </if>
         WHERE TXDE_ID = #{id}
     </update>
@@ -880,6 +927,14 @@
         FROM
         TXN_DETAIL txde
         WHERE txde.TXDE_ID=#{value};
+    </select>
+
+    <select id="getTxnDetailStatusPerTxhdId" resultMap="txnDetailLightWithStatusMap" >
+        SELECT
+        <include refid="txnDetailColumns"><property name="alias" value="txde"/></include>
+        FROM
+        TXN_DETAIL txde
+        WHERE txde.TXHD_ID=#{value};
     </select>
 
     <select id="getTxnMediaPerTxhdId" resultMap="txnMediaMap" >
@@ -1043,17 +1098,24 @@
         TXDE_QTY_TOTAL_INVOICED = #{txdeQtyTotalInvoiced}
         WHERE TXDE_ID = #{id}
     </update>
-    <update id="updateTxnDetailStatus" parameterType="TxnDetail" >
+    <update id="updateTxnDetailBackOrderAndStatus" parameterType="TxnDetail" >
         UPDATE TXN_DETAIL
-        SET TXDE_STATUS = #{status.id}
+        SET TXDE_STATUS = #{status.id},
+            TXDE_QTY_ORDERED = #{txdeQtyOrdered}
         WHERE TXDE_ID = #{id}
+    </update>
+    <update id="updateTxnDetailRcvdQtyAndStatus" parameterType="TxnDetail" >
+        UPDATE TXN_DETAIL
+        SET TXDE_STATUS = #{param1},
+        TXDE_QTY_RECEIVED = #{param2}
+        WHERE TXDE_ID = #{param3}
     </update>
     <update id="updateTxnHeaderStatus" parameterType="TxnHeader" >
         UPDATE TXN_HEADER
         SET TXHD_STATUS = #{status.id}
         WHERE TXHD_ID = #{id}
     </update>
-    <update id="updateTxnHeaderStatusPetTxhdId" parameterType="TxnHeader" >
+    <update id="updateTxnHeaderStatusPerTxhdId" parameterType="TxnHeader" >
         UPDATE TXN_HEADER
         SET TXHD_STATUS = #{param2}
         WHERE TXHD_ID = #{param1}

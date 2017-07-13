@@ -211,9 +211,12 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
     }
 
     $scope.addSaleOrderToBackOrderList = function(saleOrder) {
-        console.log('sale order added');
         if ($scope.backOrderList === undefined) {
             $scope.backOrderList = [];
+        }
+        if (saleOrder.status.categoryCode != "SO_STATUS_OUTSTANDING") {
+            baseDataService.displayMessage("info","line is not selectable", "you can only select OUTSTANDING items");
+            return;
         }
         var itemIndex = baseDataService.getArrIndexOf($scope.backOrderList, saleOrder);
         if (saleOrder.createPurchaseOrder === true) {

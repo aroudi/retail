@@ -18,7 +18,6 @@
         <result column="SO_LINE_QTY_BALANCE" property="soLineQtyBalance" />
         <result column="COMMENT" property="comment" />
         <association property="poSoStatus" column="POSO_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
-        <association property="projectName" column="PROJECT_ID" select="getProjectNameByProjectId" />
     </resultMap>
 
     <sql id="poSoLinkColumns">
@@ -27,7 +26,6 @@
      ${alias}.POH_ORDER_NUMBER,
      ${alias}.POL_ID,
      ${alias}.TXHD_ID,
-     ${alias}.BOQ_NAME,
      ${alias}.PROJECT_ID,
      ${alias}.PROJECT_CODE,
      ${alias}.TXDE_ID,
@@ -150,8 +148,8 @@
     </insert>
     <update id="updateQtyReceived" parameterType="PoSoLink" >
           UPDATE PO_SO_LINK
-          SET PO_QTY_RECEIVED = #{poQtyReceived}, SO_LINE_QTY_BALANCE=#{soLineQtyBalance}, POSO_STATUS=#{poSoStatus.id}, COMMENT = #{comment}
-          WHERE PBQL_ID = #{id}
+          SET PO_QTY_RECEIVED = #{poQtyReceived}, SO_LINE_QTY_BALANCE=#{soLineQtyBalance}, POSO_STATUS=#{poSoStatus.id}
+          WHERE POSO_ID = #{id}
     </update>
 
     <delete id="deletePoSoLinkPerTxnDetailId" >
@@ -160,8 +158,5 @@
         WHERE
         TXDE_ID = #{value}
     </delete>
-    <select id="getProjectNameByProjectId" resultType="String" >
-        select PROJECT_NAME FROM PROJECT WHERE PROJECT_ID = #{value}
-    </select>
 
 </mapper>
