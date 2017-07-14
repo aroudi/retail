@@ -141,24 +141,34 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false, width: '5%'},
                 //{field: 'txdeValueLine', displayName: 'Cost', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 //{field: 'txdeValueProfit', displayName: 'Profit', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
-                {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency', width: '10%'},
-                {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', width: '7%',
+                {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency', width: '7%'},
+                {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', width: '6%',
                     cellTooltip: function(row,col) {
-                        return 'Qty Ordered:' + row.entity.txdeQuantitySold + '\n' +
-                               'Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
+                        return 'Total Qty:' + row.entity.txdeQuantitySold + '\n' +
+                               'Total Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
+                               'Qty Back Ordered:' +  row.entity.txdeQtyOrdered + '\n' +
                                'Qty Refund:' +  row.entity.txdeQtyTotalRefund
                     }
                 },
-                {field: 'txdeQtyInvoiced', displayName: 'Invoice', type: 'number', width: '7%'},
+                {field: 'txdeQtyInvoiced', displayName: 'Invoice', type: 'number', width: '6%'},
                 {field: 'originalQuantity', visible: false, type: 'number'},
-                {field: 'txdeQtyBalance', displayName: 'Balance', type: 'number', width: '7%',
+                {field: 'txdeQtyBalance', enableCellEdit: false, displayName: 'Balance', type: 'number', width: '6%',
                     cellTooltip: function(row,col) {
-                        return 'Qty Ordered:' + row.entity.txdeQuantitySold + '\n' +
-                            'Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
+                        return 'Total Qty:' + row.entity.txdeQuantitySold + '\n' +
+                            'Total Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
+                            'Qty Back Ordered:' +  row.entity.txdeQtyOrdered + '\n' +
                             'Qty Refund:' +  row.entity.txdeQtyTotalRefund
                     }
                 },
-                {field: 'calculatedLineValue', displayName: 'Amount', enableCellEdit: false, cellFilter: 'currency', width: '9%'},
+                {field: 'txdeQtyOrdered',enableCellEdit: false, displayName: 'Back Order', type: 'number', width: '7%',
+                    cellTooltip: function(row,col) {
+                        return 'Total Qty:' + row.entity.txdeQuantitySold + '\n' +
+                            'Total Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
+                            'Qty Back Ordered:' +  row.entity.txdeQtyOrdered + '\n' +
+                            'Qty Refund:' +  row.entity.txdeQtyTotalRefund
+                    }
+                },
+                {field: 'calculatedLineValue', displayName: 'Amount', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 {field: 'calculatedLineTax', displayName: 'Tax', cellFilter: 'currency', footerCellFilter: 'currency',enableCellEdit: false, width: '7%'},
                 {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'},
                 {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="grid.appScope.isTxnLineVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
@@ -704,27 +714,23 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         baseDataService.addRow(rowObject, TXN_ADD_URI).then(function(response) {
             addResponse = response.data;
             if (addResponse.status == SUCCESS ) {
-                if ($scope.isPageNew && ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' || $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE')) {
-                    //baseDataService.displayMessage("info","Quote Number", "Quote saved with number: " + addResponse.info);
-                    $scope.txnHeaderForm.id=addResponse.info;
-                    $scope.exportToPdf(TXN_EXPORT_PDF);
+                if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' || $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
+                    if ($scope.isPageNew || !$scope.isPageNew && $scope.txnHeaderForm.convertedToTxnSale) {
+                        $scope.txnHeaderForm.id=addResponse.info;
+                        $scope.exportToPdf(TXN_EXPORT_PDF);
+                    }
                     $state.go('dashboard.listSaleTransaction');
                 }
-                if ($scope.isPageNew && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE' ) {
-                    //baseDataService.displayMessage("info","Invoice Number", "Invoice saved with number: " + addResponse.info);
-                    //$state.go('dashboard.listInvoice');
-                    $scope.txnHeaderForm.id=addResponse.info;
-                    $scope.exportToPdf($scope.exportInvoiceToPdfUrl);
-                    $state.go('dashboard.listInvoice');
-                }
-                if (!$scope.isPageNew && $scope.txnHeaderForm.convertedToTxnSale) {
-                    //baseDataService.displayMessage("info","Txn Number", "Sale Order saved with number: " + addResponse.info);
-                    $scope.txnHeaderForm.id=addResponse.info;
-                    $scope.exportToPdf(TXN_EXPORT_PDF);
-                    $state.go('dashboard.listSaleTransaction');
-                }
-                if (!$scope.isPageNew && $scope.txnHeaderForm.convertedToInvoice) {
-                    baseDataService.displayMessage("info","Invoice Number", "Invoice saved with number: " + addResponse.info);
+
+                if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') {
+                    if ($scope.isPageNew ) {
+                        $scope.txnHeaderForm.id=addResponse.info;
+                        $scope.exportToPdf($scope.exportInvoiceToPdfUrl);
+                    }
+                    if (!$scope.isPageNew && $scope.txnHeaderForm.convertedToInvoice) {
+                        baseDataService.displayMessage("info","Invoice Number", "Invoice saved with number: " + addResponse.info);
+                        $state.go('dashboard.listInvoice');
+                    }
                     $state.go('dashboard.listInvoice');
                 }
                 //$state.go('dashboard.listSaleTransaction');

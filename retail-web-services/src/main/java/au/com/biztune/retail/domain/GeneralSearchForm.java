@@ -12,6 +12,7 @@ public class GeneralSearchForm {
     private String noTo;
     private List<Long> txnTypeList;
     private long clientId;
+    private long statusId;
     private long supplierId;
     private String searchRange;
     private String generatedBy;
@@ -133,5 +134,13 @@ public class GeneralSearchForm {
 
     public void setResult(List result) {
         this.result = result;
+    }
+
+    public long getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(long statusId) {
+        this.statusId = statusId;
     }
 }

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, TXN_STATUS_ONORDER) {
+cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, TXN_STATUS_ONORDER, SO_STATUS_URI) {
 
     $scope.saleOrderSearchForm = {};
     $scope.saleOrderSearchForm.clientId = -1;
@@ -23,6 +23,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         } else {
             $scope.saleOrderSearchForm.clientId = -1;
         }
+        $scope.saleOrderSearchForm.statusId = $scope.status.id;
         baseDataService.addRow($scope.saleOrderSearchForm, TXN_SEARCH_PAGING_URI).then(function(response) {
             var result = angular.copy(response.data);
             $scope.gridOptions.totalItems = result.totalRecords;
@@ -98,6 +99,18 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
                 $scope.customerSet.unshift(customer);
             }
             $scope.client = baseDataService.populateSelectList($scope.client,$scope.customerSet);
+        });
+        baseDataService.getBaseData(SO_STATUS_URI).then(function(response){
+            $scope.statusSet = response.data;
+            if ($scope.statusSet.length > 0) {
+                var allStatus = {
+                    "id" : -1,
+                    "displayName" : "All",
+                    "description" : "All"
+                }
+                $scope.statusSet.unshift(allStatus);
+            }
+            $scope.status = baseDataService.populateSelectList($scope.status,$scope.statusSet);
         });
     }
 
@@ -180,6 +193,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         if ($scope.includeQuote) {
             $scope.saleOrderSearchForm.txnTypeList.push($scope.txnTypeQuote.id);
         }
+        $scope.saleOrderSearchForm.statusId = $scope.status.id;
         //$scope.saleOrderSearchForm.txnTypeList = angular.copy(txnTypeList);
         baseDataService.addRow($scope.saleOrderSearchForm, TXN_SEARCH_URI).then(function(response){
             $scope.gridOptions.data = response.data;

@@ -134,6 +134,10 @@ public class SearchClauseBuilder {
                     searchClause = new SearchClause("CUSTOMER_ID", " = ", searchForm.getClientId());
                     clauseList.add(searchClause);
                 }
+                if (searchForm.getStatusId() > 0) {
+                    searchClause = new SearchClause("TXHD_STATUS", " = ", searchForm.getStatusId());
+                    clauseList.add(searchClause);
+                }
             }
             if ("DELIVERY_NOTE_HEADER".equals(searchTable) || "PURCHASE_ORDER_HEADER".equals(searchTable)) {
                 if (searchForm.getSupplierId() > 0) {

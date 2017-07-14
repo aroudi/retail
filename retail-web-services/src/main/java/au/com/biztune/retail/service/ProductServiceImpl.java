@@ -343,7 +343,7 @@ public class ProductServiceImpl implements ProductService {
             return productDao.getAllProductSaleItemsPerOrgUnitId(sessionState.getOrgUnit().getId());
 
         } catch (Exception e) {
-            logger.error("Error in retrieving sale item list");
+            logger.error("Error in retrieving sale item list", e);
             return null;
         }
     }

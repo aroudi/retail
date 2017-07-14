@@ -26,6 +26,7 @@ public class ProductSaleItem {
     private Price sellPrice;
     private Price costPrice;
     private ProdOrguLink prodOrguLink;
+    private String prodBarcode;
 
     public long getId() {
         return id;
@@ -185,5 +186,13 @@ public class ProductSaleItem {
 
     public void setCostPrice(Price costPrice) {
         this.costPrice = costPrice;
+    }
+
+    public String getProdBarcode() {
+        return prodBarcode;
+    }
+
+    public void setProdBarcode(String prodBarcode) {
+        this.prodBarcode = prodBarcode;
     }
 }

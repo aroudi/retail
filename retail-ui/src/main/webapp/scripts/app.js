@@ -217,7 +217,9 @@ var type_constant = {
     'PRICING_GRADE_DEFAULT' : 'categories/getCustomerGrade/Default',
     'TAXLEGVARIANCE_GST_URI' : 'taxRule/taxLegVariance/gstCode',
     'PRICING_RULE_URI' : 'categories/PRICING_RULES',
-    'TXN_STATUS_ONORDER' : 'categories/SO_STATUS/SO_STATUS_ON_ORDER'
+    'TXN_STATUS_ONORDER' : 'categories/SO_STATUS/SO_STATUS_ON_ORDER',
+    'SO_STATUS_URI' : 'categories/SO_STATUS'
+
 }
 
 angular.forEach(config_data, function(key, value) {
