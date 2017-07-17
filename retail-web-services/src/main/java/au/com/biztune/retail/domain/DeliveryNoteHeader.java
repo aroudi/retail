@@ -38,6 +38,7 @@ public class DeliveryNoteHeader {
     private double delnTax;
     private double delnSurcharge;
     private boolean costsIncludeTax;
+    private String delnPrjCode;
 
 
     public long getId() {
@@ -286,5 +287,13 @@ public class DeliveryNoteHeader {
 
     public void setCostsIncludeTax(boolean costsIncludeTax) {
         this.costsIncludeTax = costsIncludeTax;
+    }
+
+    public String getDelnPrjCode() {
+        return delnPrjCode;
+    }
+
+    public void setDelnPrjCode(String delnPrjCode) {
+        this.delnPrjCode = delnPrjCode;
     }
 }

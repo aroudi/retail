@@ -237,4 +237,22 @@ public class PurchaseOrderRest {
             return null;
         }
     }
+
+    /**
+     * return purchase order linked to sale order.
+     * @param txhdId sale order id.
+     * @return List of purchase order generated from sale order
+     */
+    @Secured
+    @Path("/header/ofSaleOrder/{txhdId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PurchaseOrderHeader> getAllPurchaseOrderOfSaleOrder(@PathParam("txhdId") long txhdId) {
+        try {
+            return purchaseOrderService.getAllPurchaseOrderOfSaleOrder(txhdId);
+        } catch (Exception e) {
+            logger.error ("Error in retrieving purchase order linked to sale order:", e);
+            return null;
+        }
+    }
 }

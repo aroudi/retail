@@ -334,12 +334,12 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                     $state.go('dashboard.purchaseOrderList');
                 } else {
                     exportToPdf();
+                    $state.go('dashboard.purchaseOrderList');
                 }
             } else {
                 alert('Not able to save purchase order. ' + addResponse.message);
             }
         });
-        return;
     }
 
     $scope.updateLinkedBoqs = function () {

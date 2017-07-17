@@ -27,6 +27,7 @@
         <result column="TXHD_DLV_ADDRESS" property="txhdDlvAddress" />
         <result column="TXHD_PRINTED" property="txhdPrinted" />
         <result column="TXHD_PO_NR" property="txhdPoNo" />
+        <result column="TXHD_PRJ_CODE" property="txhdPrjCode" />
         <result column="TXHD_EMAIL_TO" property="txhdEmailTo" />
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="user" column="TXHD_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
@@ -58,11 +59,13 @@
         <result column="TXHD_CONTACT_PHONE" property="txhdContactPhone" />
         <result column="TXHD_PRINTED" property="txhdPrinted" />
         <result column="TXHD_PO_NR" property="txhdPoNo" />
+        <result column="TXHD_PRJ_CODE" property="txhdPrjCode" />
         <result column="TXHD_EMAIL_TO" property="txhdEmailTo" />
         <association property="user" column="TXHD_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" />
         <association property="txhdState" column="TXHD_STATE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="txhdTxnType" column="TXHD_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="status" column="TXHD_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <collection property="txnDetails" javaType="ArrayList" column="TXHD_ID" ofType="TxnDetail" select="getTxnDetailPerTxhdId"/>
         <collection property="txnMedias" javaType="ArrayList" column="TXHD_ID" ofType="TxnMedia" select="getTxnMediaPerTxhdId"/>
@@ -216,6 +219,7 @@
         ${alias}.TXHD_CONTACT_PHONE,
         ${alias}.TXHD_PRINTED,
         ${alias}.TXHD_PO_NR,
+        ${alias}.TXHD_PRJ_CODE,
         ${alias}.TXHD_EMAIL_TO
 
     </sql>
@@ -295,7 +299,8 @@
         TXHD_CONTACT_PERSON,
         TXHD_CONTACT_PHONE,
         TXHD_PO_NR,
-        TXHD_EMAIL_TO
+        TXHD_EMAIL_TO,
+        TXHD_PRJ_CODE
 
         ) VALUES (
         #{orgUnit.id},
@@ -460,6 +465,12 @@
         <if test="txhdEmailTo == null">
             ,null
         </if>
+        <if test="txhdPrjCode != null">
+            ,#{txhdPrjCode}
+        </if>
+        <if test="txhdPrjCode == null">
+            ,null
+        </if>
         )
     </insert>
     <update id="updateTxnHeader" parameterType="TxnHeader" >
@@ -536,6 +547,9 @@
         </if>
         <if test="txhdPoNo != null">
             ,TXHD_PO_NR = #{txhdPoNo}
+        </if>
+        <if test="txhdPrjCode != null">
+            ,TXHD_PRJ_CODE = #{txhdPrjCode}
         </if>
         WHERE TXHD_ID = #{id}
     </update>

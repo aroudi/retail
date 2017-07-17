@@ -634,6 +634,19 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     /**
+     * get all purchase order headers linked to specific sale order.
+     * @param txhdId transaction header id.
+     * @return List of purchase order linked to sale order
+     */
+    public List<PurchaseOrderHeader> getAllPurchaseOrderOfSaleOrder(long txhdId) {
+        try {
+            return purchaseOrderDao.getAllPurchaseOrderOfSaleOrder(sessionState.getOrgUnit().getId(), txhdId);
+        } catch (Exception e){
+            logger.error("Exception in getting purchase order linked to sale order", e);
+            return null;
+        }
+    }
+    /**
      * get all purchase Order Header for specific supplier.
      * @param supplierId supplierId
      * @return List of PurchaseOrderHeader

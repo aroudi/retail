@@ -165,4 +165,12 @@ public interface PurchaseOrderDao {
      * @return query total rows.
      */
     long getPurchaseOrderQueryTotalRows(long orguId, List clauseList);
+
+    /**
+     * get all purchase order header generated for specific sale order.
+     * @param orguId orguId
+     * @param txhdId txhdId
+     * @return List of purchase order header linked to sale order
+     */
+    List<PurchaseOrderHeader> getAllPurchaseOrderOfSaleOrder(long orguId, long txhdId);
 }

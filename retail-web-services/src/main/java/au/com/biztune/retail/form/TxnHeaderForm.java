@@ -36,6 +36,7 @@ public class TxnHeaderForm {
     private String txhdPoNo;
     private String txhdEmailTo;
     private ConfigCategory status;
+    private String txhdPrjCode;
 
 
 
@@ -261,5 +262,13 @@ public class TxnHeaderForm {
 
     public void setStatus(ConfigCategory status) {
         this.status = status;
+    }
+
+    public String getTxhdPrjCode() {
+        return txhdPrjCode;
+    }
+
+    public void setTxhdPrjCode(String txhdPrjCode) {
+        this.txhdPrjCode = txhdPrjCode;
     }
 }

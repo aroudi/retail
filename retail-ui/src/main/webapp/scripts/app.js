@@ -175,7 +175,8 @@ var service_uri = {
     'PRICING_GRADE_UPDATE_BATCH_URI' : 'categories/updatePricingGrades',
     'GET_DATA_CHANGE_INDICATOR_URI' : 'user/getDataChangeIndicator/',
     'PRODUCT_PRICE_UPDATE_BULK' : 'product/updateProductPriceInBulk/',
-    'GENERATE_PO_FROM_SO_URI' : 'saleOrder/convertSoToPo'
+    'GENERATE_PO_FROM_SO_URI' : 'saleOrder/convertSoToPo',
+    'POH_OF_SO_URI' : 'purchaseOrder/header/ofSaleOrder/'
 };
 
 var response_status = {

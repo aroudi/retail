@@ -1076,6 +1076,16 @@
         </foreach>
     </select>
 
+    <select id="getAllPurchaseOrderOfSaleOrder" resultMap="purchaseOrderHeaderLiteMap" >
+        SELECT
+        <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>
+        FROM
+        PURCHASE_ORDER_HEADER poh
+          INNER JOIN CONFIG_CATEGORY cc on (poh.POH_STATUS = cc.CATEGORY_ID)
+          INNER JOIN PO_SO_LINK posol on (poh.POH_ID = posol.POH_ID)
+        WHERE poh.ORGU_ID=#{param1}  and  posol.TXHD_ID = #{param2}
+    </select>
+
     <select id="getPurchaseOrderHeaderPerOrderNo" resultMap="purchaseOrderHeaderLiteMap" >
         SELECT
         <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>

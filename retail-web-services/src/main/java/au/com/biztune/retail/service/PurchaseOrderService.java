@@ -121,4 +121,10 @@ public interface PurchaseOrderService {
      */
     boolean addLineToPoFromTxnDetail(PurchaseOrderHeader purchaseOrderHeader, TxnDetail txnDetail);
 
+    /**
+     * get all purchase order headers linked to specific sale order.
+     * @param txhdId transaction header id.
+     * @return List of purchase order linked to sale order
+     */
+    List<PurchaseOrderHeader> getAllPurchaseOrderOfSaleOrder(long txhdId);
 }

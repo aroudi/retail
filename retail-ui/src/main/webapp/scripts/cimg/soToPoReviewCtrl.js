@@ -7,15 +7,14 @@ cimgApp.controller('soToPoReviewCtrl', function($scope,saleOrderList, $state, $t
         enableFiltering: true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
-            {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'20%'},
+            {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10 %', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
+            {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'30%'},
             {field:'txhdTxnNr', displayName:'Number',enableCellEdit:false, width:'10%'},
-            {field:'txhdState', displayName:'State', enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+            {field:'status', displayName:'Status', enableCellEdit:false, width:'20%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
                 }
             },
-            {field:'txhdTxnType.displayName' , displayName:'Type', enableCellEdit:false, width:'10%'},
             {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
             {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'}
         ]

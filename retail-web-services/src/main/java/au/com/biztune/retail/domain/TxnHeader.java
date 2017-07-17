@@ -49,6 +49,7 @@ public class TxnHeader {
     private boolean txivFullyRefunded;
     //ordering status : OUTSTANDING, ON ORDER, PARTIAL RECEIVED, RECIEVED AND FINALISED
     private ConfigCategory status;
+    private String txhdPrjCode;
 
     /**
      * add txn detail to txn header.
@@ -374,5 +375,13 @@ public class TxnHeader {
 
     public void setStatus(ConfigCategory status) {
         this.status = status;
+    }
+
+    public String getTxhdPrjCode() {
+        return txhdPrjCode;
+    }
+
+    public void setTxhdPrjCode(String txhdPrjCode) {
+        this.txhdPrjCode = txhdPrjCode;
     }
 }

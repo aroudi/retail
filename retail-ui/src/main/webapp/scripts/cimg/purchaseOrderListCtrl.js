@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI, POH_EXPORT_PDF, POH_SEARCH_PAGING_URI, SUPPLIER_ALL_URI) {
+cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI, POH_EXPORT_PDF, POH_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, POH_STATUS_URI) {
 
     $scope.searchForm = {};
     $scope.searchForm.supplierId = -1;
@@ -13,6 +13,11 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             $scope.searchForm.supplierId = $scope.supplier.id;
         } else {
             $scope.searchForm.supplierId = -1;
+        }
+        if ($scope.status != undefined) {
+            $scope.searchForm.statusId = $scope.status.id;
+        } else {
+            $scope.searchForm.statusId = -1;
         }
 
         $scope.pohSrouceData = purchaseOrderService.getSourceOfData();
@@ -29,7 +34,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
                 }
             });
         }
-    }
+    };
 
     var paginationOptions = {
         pageNumber:1,
@@ -121,7 +126,6 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
     initPageData();
     function initPageData() {
         $scope.searchForm = {};
-        $scope.getPage();
         baseDataService.getBaseData(SUPPLIER_ALL_URI).then(function(response){
             $scope.supplierSet = response.data;
             if ($scope.supplierSet.length > 0) {
@@ -133,6 +137,20 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             }
             $scope.supplier = baseDataService.populateSelectList($scope.supplier,$scope.supplierSet);
         });
+        baseDataService.getBaseData(POH_STATUS_URI).then(function(response){
+            $scope.statusSet = response.data;
+            if ($scope.statusSet.length > 0) {
+                var allStatus = {
+                    "id" : -1,
+                    "displayName" : "All",
+                    "description" : "All"
+                }
+                $scope.statusSet.unshift(allStatus);
+            }
+            $scope.status = baseDataService.populateSelectList($scope.status,$scope.statusSet);
+        });
+
+        $scope.getPage();
     }
 
     $scope.viewPohDetail = function(row, viewMode) {

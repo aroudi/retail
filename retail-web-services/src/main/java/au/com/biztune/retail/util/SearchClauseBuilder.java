@@ -129,6 +129,22 @@ public class SearchClauseBuilder {
                 }
 
             }
+            if ((searchForm.getProjectCode() != null) && (!searchForm.getProjectCode().isEmpty())) {
+                if ("PURCHASE_ORDER_HEADER".equals(searchTable)) {
+                    searchClause = new SearchClause("POH_PRJ_CODE", " like ", "%" + searchForm.getProjectCode() + "%");
+                    clauseList.add(searchClause);
+                }
+                if ("INVOICE".equals(searchTable) || "TXN_HEADER".equals(searchTable)) {
+                    searchClause = new SearchClause("TXHD_PRJ_CODE", " like ", "%" + searchForm.getProjectCode() + "%");
+                    clauseList.add(searchClause);
+                }
+                if ("DELIVERY_NOTE_HEADER".equals(searchTable)) {
+                    searchClause = new SearchClause("DELN_PRJ_CODE", " like ", "%" + searchForm.getProjectCode() + "%");
+                    clauseList.add(searchClause);
+                }
+
+            }
+
             if ("INVOICE".equals(searchTable) || "TXN_HEADER".equals(searchTable)) {
                 if (searchForm.getClientId() > 0) {
                     searchClause = new SearchClause("CUSTOMER_ID", " = ", searchForm.getClientId());
@@ -146,8 +162,8 @@ public class SearchClauseBuilder {
                 }
             }
             if ("PURCHASE_ORDER_HEADER".equals(searchTable)) {
-                if ((searchForm.getProjectCode() != null) && (!searchForm.getProjectCode().isEmpty())) {
-                    searchClause = new SearchClause("POH_PRJ_CODE", " like ", "%" + searchForm.getProjectCode() + "%");
+                if (searchForm.getStatusId() > 0) {
+                    searchClause = new SearchClause("POH_STATUS", " = ", searchForm.getStatusId());
                     clauseList.add(searchClause);
                 }
             }

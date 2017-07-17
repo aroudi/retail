@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, TXN_STATUS_ONORDER, SO_STATUS_URI) {
+cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, TXN_STATUS_ONORDER, SO_STATUS_URI, POH_OF_SO_URI) {
 
     $scope.saleOrderSearchForm = {};
     $scope.saleOrderSearchForm.clientId = -1;
@@ -45,11 +45,12 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         useExternalSorting:true,
         enableFiltering: true,
         columnDefs: [
-            {name:'Action', enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row,false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.editTransaction(row,true)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)" ></i></a> </i></a>&nbsp;<a href=""><i tooltip="Delete" ng-show="row.entity.txhdTxnType.categoryCode ===\'TXN_TYPE_QUOTE\'" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeQuote(row)" ></i></a> ', width:'10%' },
+            {name:'Action', enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row,false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.editTransaction(row,true)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)" ></i></a> </i></a>&nbsp;<a href=""><i tooltip="Delete" ng-show="row.entity.txhdTxnType.categoryCode ===\'TXN_TYPE_QUOTE\'" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeQuote(row)" ></i></a>&nbsp;<a href=""><i tooltip="Linked Purchase Orders" tooltip-placement="bottom" class="fa fa-chain fa-2x" ng-click="grid.appScope.getAllPoOfSo(row.entity)" ></i></a> ', width:'10%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
-            {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'20%'},
+            {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'15%'},
+            {field:'txhdPrjCode', displayName:'Project', enableCellEdit:false, width:'10%'},
             {field:'txhdTxnNr', displayName:'Number',enableCellEdit:false, width:'7%'},
             {field:'txhdTxnType.displayName' , displayName:'Type', enableCellEdit:false, width:'8%'},
             {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'8%', cellFilter:'currency'},
@@ -230,6 +231,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         }
         if (saleOrder.status.categoryCode != "SO_STATUS_OUTSTANDING") {
             baseDataService.displayMessage("info","line is not selectable", "you can only select OUTSTANDING items");
+            saleOrder.createPurchaseOrder = false;
             return;
         }
         var itemIndex = baseDataService.getArrIndexOf($scope.backOrderList, saleOrder);
@@ -289,5 +291,22 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
                 console.log('Modal promise rejected. Reason:', reason);
             }
         );
-    }
+    };
+    $scope.getAllPoOfSo = function (saleOrder) {
+        if (saleOrder == undefined) {
+            return;
+        }
+        //check if this supplier has outstanding purchase order.
+        ngDialog.openConfirm({
+            template:'views/pages/purchaseOrderSearch.html',
+            controller:'purchaseOrderSearchCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false,
+            resolve: {searchUrl: function(){return POH_OF_SO_URI + saleOrder.id}}
+        }).then (function (selectedItem){
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    };
 });

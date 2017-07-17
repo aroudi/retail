@@ -25,6 +25,7 @@
         <result column="DELN_TAX" property="delnTax" />
         <result column="DELN_SURCHARGE" property="delnSurcharge" />
         <result column="COSTS_INCLUDE_TAX" property="costsIncludeTax" />
+        <result column="DELN_PRJ_CODE" property="delnPrjCode" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="user" column="DELN_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -54,6 +55,7 @@
         <result column="FREIGHT_TAX_CODE" property="freightTaxCode" />
         <result column="DELN_SURCHARGE" property="delnSurcharge" />
         <result column="COSTS_INCLUDE_TAX" property="costsIncludeTax" />
+        <result column="DELN_PRJ_CODE" property="delnPrjCode" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="user" column="DELN_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -82,6 +84,7 @@
         <result column="DELN_TAX" property="delnTax" />
         <result column="DELN_SURCHARGE" property="delnSurcharge" />
         <result column="COSTS_INCLUDE_TAX" property="costsIncludeTax" />
+        <result column="DELN_PRJ_CODE" property="delnPrjCode" />
         <association property="freightTxrl" column="FREIGHT_TXRL_ID" select="au.com.biztune.retail.dao.TaxRuleDao.getTaxRuleById" />
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="delnStatus" column="DELN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -141,6 +144,7 @@
         ${alias}.DELN_TOTAL,
         ${alias}.DELN_SURCHARGE,
         ${alias}.DELN_TAX,
+        ${alias}.DELN_PRJ_CODE,
         ${alias}.COSTS_INCLUDE_TAX
     </sql>
 
@@ -197,7 +201,8 @@
             DELN_TOTAL,
             DELN_TAX,
             DELN_SURCHARGE,
-            COSTS_INCLUDE_TAX
+            COSTS_INCLUDE_TAX,
+            DELN_PRJ_CODE
         ) VALUES (
         #{orguId}
         <if test="delnNoteNumber != null">
@@ -356,6 +361,12 @@
         <if test="costsIncludeTax == null">
             ,null
         </if>
+        <if test="delnPrjCode != null">
+            ,#{delnPrjCode}
+        </if>
+        <if test="delnPrjCode == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -439,6 +450,9 @@
         </if>
         <if test="costsIncludeTax != null">
             ,COSTS_INCLUDE_TAX = #{costsIncludeTax}
+        </if>
+        <if test="delnPrjCode != null">
+            ,DELN_PRJ_CODE = #{delnPrjCode}
         </if>
         WHERE DELN_ID = #{id}
     </update>

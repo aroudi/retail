@@ -147,6 +147,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         return 'Total Qty:' + row.entity.txdeQuantitySold + '\n' +
                                'Total Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
                                'Qty Back Ordered:' +  row.entity.txdeQtyOrdered + '\n' +
+                               'Qty Received:' +  row.entity.txdeQtyReceived + '\n' +
                                'Qty Refund:' +  row.entity.txdeQtyTotalRefund
                     }
                 },
@@ -157,6 +158,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         return 'Total Qty:' + row.entity.txdeQuantitySold + '\n' +
                             'Total Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
                             'Qty Back Ordered:' +  row.entity.txdeQtyOrdered + '\n' +
+                            'Qty Received:' +  row.entity.txdeQtyReceived + '\n' +
                             'Qty Refund:' +  row.entity.txdeQtyTotalRefund
                     }
                 },
@@ -165,6 +167,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         return 'Total Qty:' + row.entity.txdeQuantitySold + '\n' +
                             'Total Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
                             'Qty Back Ordered:' +  row.entity.txdeQtyOrdered + '\n' +
+                            'Qty Received:' +  row.entity.txdeQtyReceived + '\n' +
                             'Qty Refund:' +  row.entity.txdeQtyTotalRefund
                     }
                 },
@@ -913,10 +916,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         return false;
     };
     $scope.isTxnSaleAndFinal = function () {
-        if ($scope.txnHeaderForm == undefined || $scope.txnHeaderForm.txhdState == undefined) {
+        if ($scope.txnHeaderForm == undefined || $scope.txnHeaderForm.status == undefined) {
             return false;
         }
-        if ($scope.txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_FINAL' && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
+        if ($scope.txnHeaderForm.status.categoryCode == 'SO_STATUS_FINAL' && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
             return true;
         }
     };
