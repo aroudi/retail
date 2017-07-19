@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by arash on 4/04/2016.
@@ -247,6 +248,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 suppProdPrice.setSprcCreated(currentTime);
                 suppProdPrice.setSprcModified(currentTime);
                 suppProdPrice.setProdId(product.getId());
+                suppProdPrice.setSprcPrefferBuy(true);
                 //insert product tax rule
                 TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(importedProduct.getTaxName());
                 if (taxLegVariance == null) {
@@ -313,6 +315,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                     suppProdPrice.setSprcCreated(currentTime);
                     suppProdPrice.setSprcModified(currentTime);
                     suppProdPrice.setProdId(product.getId());
+                    suppProdPrice.setSprcPrefferBuy(true);
                     //insert product tax rule
                     TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(importedProduct.getTaxName());
                     if (taxLegVariance == null) {
@@ -713,12 +716,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
 
                 final List<PoBoqLink> linkedProjects = poBoqLinkDao.getAllPoProjectCodesPerPohId(purchaseOrderHeader.getId());
                 if (linkedProjects != null && linkedProjects.size() > 0) {
-                    String commaSeparatedProjectCodes = "";
-                    for (PoBoqLink projectCode : linkedProjects) {
-                        if (projectCode.getProjectCode() != null) {
-                            commaSeparatedProjectCodes = commaSeparatedProjectCodes + projectCode.getProjectCode() + ", ";
-                        }
-                    }
+                    final String commaSeparatedProjectCodes = linkedProjects.stream().map(PoBoqLink::getProjectCode).collect(Collectors.joining(","));
                     purchaseOrderDao.updatePohProjectCode(purchaseOrderHeader.getId(), commaSeparatedProjectCodes);
                 }
                 result.add(purchaseOrderHeader);

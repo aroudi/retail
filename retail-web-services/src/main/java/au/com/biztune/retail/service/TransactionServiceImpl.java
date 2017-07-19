@@ -791,6 +791,7 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdValueTax(txnHeaderForm.getTxhdValueTax());
             txnHeader.setCustomer(txnHeaderForm.getCustomer());
             txnHeader.setTxhdOrigTxnNr(txnHeaderForm.getTxhdTxnNr());
+            txnHeader.setTxhdPrjCode(txnHeaderForm.getTxhdPrjCode());
             if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)) {
                 txnHeader.setParentId(txnHeaderForm.getParentId());
             } else if (txnHeaderForm.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {

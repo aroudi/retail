@@ -58,4 +58,11 @@ public interface PoSoLinkDao {
      * @return Project Name
      */
     String getProjectNameByProjectId(long projectId);
+
+    /**
+     * get all project codes assigned to purchase order header creating from sale order.
+     * @param pohId pohId
+     * @return list of poSoLink
+     */
+    List<PoSoLink> getAllPoSoProjectCodesPerPohId(long pohId);
 }

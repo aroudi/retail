@@ -56,6 +56,8 @@ public class TxnDetail {
     private ConfigCategory status;
     private long supplierId;
     private long productId;
+    //dummy field for pupulating project code from txn_header. used in creating po
+    private String projectCode;
 
 
 
@@ -496,5 +498,13 @@ public class TxnDetail {
 
     public void setTxdeQtyReceived(double txdeQtyReceived) {
         this.txdeQtyReceived = txdeQtyReceived;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
     }
 }

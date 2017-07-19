@@ -1,6 +1,7 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
+import au.com.biztune.retail.domain.TxnHeader;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.core.SecurityContext;
@@ -19,4 +20,11 @@ public interface SaleOrderService {
      */
     @Transactional
     List<PurchaseOrderHeader> createPurchaseOrderFromSaleOrder(List<Long> txhdIdList, SecurityContext securityContext);
-}
+
+    /**
+     * get all invoices of sale order.
+     * @param txhdId sale order id
+     * @return list of invoices
+     */
+    List<TxnHeader> getAllInvoiceOfSaleOrder(long txhdId);
+    }

@@ -134,8 +134,12 @@ public class SearchClauseBuilder {
                     searchClause = new SearchClause("POH_PRJ_CODE", " like ", "%" + searchForm.getProjectCode() + "%");
                     clauseList.add(searchClause);
                 }
-                if ("INVOICE".equals(searchTable) || "TXN_HEADER".equals(searchTable)) {
+                if ("TXN_HEADER".equals(searchTable)) {
                     searchClause = new SearchClause("TXHD_PRJ_CODE", " like ", "%" + searchForm.getProjectCode() + "%");
+                    clauseList.add(searchClause);
+                }
+                if ("INVOICE".equals(searchTable)) {
+                    searchClause = new SearchClause("TXIV_PRJ_CODE", " like ", "%" + searchForm.getProjectCode() + "%");
                     clauseList.add(searchClause);
                 }
                 if ("DELIVERY_NOTE_HEADER".equals(searchTable)) {

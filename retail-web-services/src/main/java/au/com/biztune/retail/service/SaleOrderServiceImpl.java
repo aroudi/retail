@@ -41,6 +41,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     @Autowired
     private PurchaseOrderDao purchaseOrderDao;
 
+    @Autowired
+    private PoSoLinkDao poSoLinkDao;
+
+    @Autowired
+    private InvoiceDao invoiceDao;
     /**
      * create purcahse order from sale order.
      * @param txhdIdList txhd id list.
@@ -100,6 +105,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 });
                 //update the total fields in purchase order header.
                 purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
+
+                //fetch all project codes assigned to PO and insert as comma separated list to field PO_PRJ_CODE just for search.
+
+                final List<PoSoLink> linkedProjects = poSoLinkDao.getAllPoSoProjectCodesPerPohId(purchaseOrderHeader.getId());
+                if (linkedProjects != null && linkedProjects.size() > 0) {
+                    final String commaSeparatedProjectCodes = linkedProjects.stream().map(PoSoLink::getProjectCode).collect(Collectors.joining(","));
+                    purchaseOrderDao.updatePohProjectCode(purchaseOrderHeader.getId(), commaSeparatedProjectCodes);
+                }
                 result.add(purchaseOrderHeader);
             });
             //now change the status of Sale Order merged
@@ -110,6 +123,21 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             return result;
         } catch (Exception e) {
             logger.error("Exception in converting sale order to purchase order:", e);
+            return null;
+        }
+    }
+
+    /**
+     * get all invoices of sale order.
+     * @param txhdId sale order id
+     * @return list of invoices
+     */
+    public List<TxnHeader> getAllInvoiceOfSaleOrder(long txhdId) {
+        try {
+            return invoiceDao.getAllInvoiceOfSaleOrder(sessionState.getOrgUnit().getId(), txhdId);
+
+        } catch (Exception e) {
+            logger.error("exception in returning invoice list of sale order", e);
             return null;
         }
     }

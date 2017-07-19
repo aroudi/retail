@@ -277,6 +277,7 @@ public class ProductServiceImpl implements ProductService {
                     suppProdPrice.setSprcCreated(new Timestamp(new Date().getTime()));
                     suppProdPrice.setSprcModified(new Timestamp(new Date().getTime()));
                     suppProdPrice.setProdId(product.getId());
+                    suppProdPrice.setSprcPrefferBuy(true);
                     suppProdPriceDao.insert(suppProdPrice);
                     logger.info("supplier price inserted");
                 }

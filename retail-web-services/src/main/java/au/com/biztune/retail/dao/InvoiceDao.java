@@ -131,4 +131,12 @@ public interface InvoiceDao {
      * @return List of invoices for product.
      */
     List<ProductSale> getInvoicesOfProduct(long productId);
+
+    /**
+     * get all invoices of sale order.
+     * @param orguId orguId
+     * @param txhdId sale order id
+     * @return list of invoices
+     */
+    List<TxnHeader> getAllInvoiceOfSaleOrder(long orguId, long txhdId);
 }

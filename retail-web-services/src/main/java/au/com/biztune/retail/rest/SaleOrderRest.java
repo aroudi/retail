@@ -1,6 +1,7 @@
 package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.PurchaseOrderHeader;
+import au.com.biztune.retail.domain.TxnHeader;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.SaleOrderService;
 import org.slf4j.Logger;
@@ -8,10 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
 
@@ -45,4 +43,21 @@ public class SaleOrderRest {
         return saleOrderService.createPurchaseOrderFromSaleOrder(txhdIdList, securityContext);
     }
 
+    /**
+     * get all invoices of sale order.
+     * @param txhdId txhdId
+     * @return list of invoice
+     */
+    @Secured
+    @Path("/getInvoiceOfSo/{txhdId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TxnHeader> getAllInvoiceOfSaleOrder(@PathParam("txhdId") long txhdId) {
+        try {
+            return saleOrderService.getAllInvoiceOfSaleOrder(txhdId);
+        } catch (Exception e) {
+            logger.error ("Error in retrieving supplier List :", e);
+            return null;
+        }
+    }
 }

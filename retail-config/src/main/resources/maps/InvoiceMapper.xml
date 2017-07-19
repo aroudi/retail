@@ -25,6 +25,7 @@
         <result column="TXIV_PO_NR" property="txhdPoNo" />
         <result column="TXIV_EMAIL_TO" property="txhdEmailTo" />
         <result column="TXIV_FULLY_REFUNDED" property="txivFullyRefunded" />
+        <result column="TXIV_PRJ_CODE" property="txhdPrjCode" />
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="user" column="TXIV_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="invoiceTxnType" column="TXIV_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -54,6 +55,7 @@
         <result column="TXIV_PO_NR" property="txhdPoNo" />
         <result column="TXIV_EMAIL_TO" property="txhdEmailTo" />
         <result column="TXIV_FULLY_REFUNDED" property="txivFullyRefunded" />
+        <result column="TXIV_PRJ_CODE" property="txhdPrjCode" />
         <!--association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" /-->
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="invoiceTxnType" column="TXIV_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -143,7 +145,8 @@
         ${alias}.TXIV_PRINTED,
         ${alias}.TXIV_PO_NR,
         ${alias}.TXIV_EMAIL_TO,
-        ${alias}.TXIV_FULLY_REFUNDED
+        ${alias}.TXIV_FULLY_REFUNDED,
+        ${alias}.TXIV_PRJ_CODE
     </sql>
 
     <sql id="invoiceDetailColumns">
@@ -189,7 +192,8 @@
         TXIV_CONTACT_PERSON,
         TXIV_CONTACT_PHONE,
         TXIV_PO_NR,
-        TXIV_EMAIL_TO
+        TXIV_EMAIL_TO,
+        TXIV_PRJ_CODE
         ) VALUES (
         #{parentId},
         #{orgUnit.id},
@@ -314,6 +318,12 @@
             ,#{txhdEmailTo}
         </if>
         <if test="txhdEmailTo == null">
+            ,null
+        </if>
+        <if test="txhdPrjCode != null">
+            ,#{txhdPrjCode}
+        </if>
+        <if test="txhdPrjCode == null">
             ,null
         </if>
         )
@@ -549,6 +559,12 @@
                             INNER JOIN INVOICE txiv on (txiv.TXIV_ID = txivd.TXIV_ID)
                             LEFT OUTER JOIN Customer cust on (txiv.CUSTOMER_ID = cust.CUSTOMER_ID)
         WHERE txd.TXDE_PROD_ID = #{value}
+    </select>
+    <select id="getAllInvoiceOfSaleOrder" resultMap="invoiceLightMap" >
+        SELECT
+        <include refid="invoiceColumns"><property name="alias" value="invoice"/></include>
+        FROM
+        INVOICE invoice WHERE invoice.ORGU_ID=#{param1} and invoice.TXHD_ID=#{param2}
     </select>
 
 </mapper>

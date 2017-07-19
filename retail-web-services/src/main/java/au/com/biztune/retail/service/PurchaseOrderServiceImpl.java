@@ -500,6 +500,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             poSoLink.setSoLineQtyBalance(txnDetail.getTxdeQtyBalance() - txnDetail.getTxdeQtyOrdered());
             poSoLink.setSoLineQtyTotal(txnDetail.getTxdeQtyBalance() - txnDetail.getTxdeQtyOrdered());
             poSoLink.setPohId(purchaseLine.getPohId());
+            if (txnDetail.getProjectCode() != null) {
+                poSoLink.setProjectCode(txnDetail.getProjectCode());
+            }
             poSoLink.setPohOrderNumber(purchaseLine.getPohOrderNumber());
             poSoLink.setPolId(purchaseLine.getId());
             poSoLink.setPoQtyReceived(0);
@@ -641,7 +644,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public List<PurchaseOrderHeader> getAllPurchaseOrderOfSaleOrder(long txhdId) {
         try {
             return purchaseOrderDao.getAllPurchaseOrderOfSaleOrder(sessionState.getOrgUnit().getId(), txhdId);
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Exception in getting purchase order linked to sale order", e);
             return null;
         }

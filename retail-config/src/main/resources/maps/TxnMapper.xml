@@ -161,6 +161,7 @@
         <result column="TXDE_PROD_NAME" property="txdeProdName" />
         <result column="SUPP_ID" property="supplierId" />
         <result column="TXDE_PROD_ID" property="productId" />
+        <result column="TXHD_PRJ_CODE" property="projectCode" />
         <!--association property="product" column="TXDE_PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductSaleItemPerProdId" /-->
         <!--association property="unitOfMeasure" column="TXDE_UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" /-->
     </resultMap>
@@ -1175,10 +1176,11 @@
     <select id="getTxnDetailsOfMultipleTxnId" resultMap="txnDetailWithSupplierMap" >
         SELECT
         <include refid="txnDetailColumns"><property name="alias" value="txde"/></include>,
-        sol.SUPP_ID
+        sol.SUPP_ID, txhd.TXHD_PRJ_CODE
         FROM
-        TXN_DETAIL txde INNER JOIN SUPP_PROD_PRICE spp on(spp.PROD_ID = txde.TXDE_PROD_ID)
+        TXN_DETAIL txde INNER JOIN SUPP_PROD_PRICE spp on(spp.PROD_ID = txde.TXDE_PROD_ID and spp.sprc_prefer_buy = 1)
           INNER JOIN SUPP_ORGU_LINK sol on (sol.SOL_ID = spp.SOL_ID)
+          INNER JOIN TXN_HEADER  txhd on (txde.txhd_id = txhd.txhd_id)
         WHERE
         txde.TXHD_ID in
         <foreach collection="list" item="item" index="index"

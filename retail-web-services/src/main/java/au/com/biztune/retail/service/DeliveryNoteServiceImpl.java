@@ -320,11 +320,11 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                     continue;
                 }
                 if (qtyRemain >= poSoLink.getSoLineQtyBalance()) {
-                    poSoLink.setPoQtyReceived(poSoLink.getPoQtyReceived() + poSoLink.getSoLineQtyBalance());
-                    poSoLink.setSoLineQtyBalance(0);
-                    qtyRemain = qtyRemain - poSoLink.getSoLineQtyBalance();
-                    status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_RECEIVED);
                     qtyAssigned = poSoLink.getSoLineQtyBalance();
+                    qtyRemain = qtyRemain - qtyAssigned;
+                    poSoLink.setPoQtyReceived(poSoLink.getPoQtyReceived() + qtyAssigned);
+                    poSoLink.setSoLineQtyBalance(0);
+                    status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_RECEIVED);
                 } else {
                     poSoLink.setPoQtyReceived(poSoLink.getPoQtyReceived() + qtyRemain);
                     poSoLink.setSoLineQtyBalance(poSoLink.getSoLineQtyBalance() - qtyRemain);
