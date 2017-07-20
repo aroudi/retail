@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -168,6 +167,10 @@ public class SearchClauseBuilder {
             if ("PURCHASE_ORDER_HEADER".equals(searchTable)) {
                 if (searchForm.getStatusId() > 0) {
                     searchClause = new SearchClause("POH_STATUS", " = ", searchForm.getStatusId());
+                    clauseList.add(searchClause);
+                }
+                if (searchForm.getCreationTypeId() > 0) {
+                    searchClause = new SearchClause("POH_CREATION_TYPE", " = ", searchForm.getCreationTypeId());
                     clauseList.add(searchClause);
                 }
             }

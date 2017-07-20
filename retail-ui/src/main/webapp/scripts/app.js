@@ -176,7 +176,8 @@ var service_uri = {
     'GET_DATA_CHANGE_INDICATOR_URI' : 'user/getDataChangeIndicator/',
     'PRODUCT_PRICE_UPDATE_BULK' : 'product/updateProductPriceInBulk/',
     'GENERATE_PO_FROM_SO_URI' : 'saleOrder/convertSoToPo',
-    'POH_OF_SO_URI' : 'purchaseOrder/header/ofSaleOrder/'
+    'POH_OF_SO_URI' : 'purchaseOrder/header/ofSaleOrder/',
+    'INVOICE_OF_SO_URI' : 'saleOrder/getInvoiceOfSo/'
 };
 
 var response_status = {
@@ -191,6 +192,7 @@ var type_constant = {
     'SUPPLIER_STATUS_URI' : 'categories/SUPPLIER_STATUS',
     'PRODUCT_STATUS_URI' : 'categories/PRODUCT_STATUS',
     'PRODUCT_TYPE_URI' : 'categories/PRODUCT_TYPE',
+    'POH_CREATION_TYPE_URI' : 'categories/POH_CREATION_TYPE',
     'POL_CREATION_TYPE_MANUAL' : 'categories/POH_CREATION_TYPE/POH_CREATION_TYPE_MANUAL',
     'POL_CREATION_TYPE_AUTO' : 'categories/POH_CREATION_TYPE/POH_CREATION_TYPE_AUTO',
     'POH_STATUS_IN_PROGRESS' : 'categories/POH_STATUS/POH_STATUS_IN_PROGRESS',

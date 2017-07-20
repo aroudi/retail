@@ -13,7 +13,8 @@ public class GeneralSearchForm {
     private List<Long> txnTypeList;
     private long clientId;
     private long statusId;
-    private long supplierId;
+    //use for purchase order
+    private long creationTypeId;
     private String searchRange;
     private String generatedBy;
     private String projectCode;
@@ -21,6 +22,7 @@ public class GeneralSearchForm {
     private long pageSize;
     private long totalRecords;
     private List result;
+    private long supplierId;
 
 
 
@@ -142,5 +144,13 @@ public class GeneralSearchForm {
 
     public void setStatusId(long statusId) {
         this.statusId = statusId;
+    }
+
+    public long getCreationTypeId() {
+        return creationTypeId;
+    }
+
+    public void setCreationTypeId(long creationTypeId) {
+        this.creationTypeId = creationTypeId;
     }
 }

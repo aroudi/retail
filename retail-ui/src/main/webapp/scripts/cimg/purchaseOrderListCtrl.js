@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI, POH_EXPORT_PDF, POH_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, POH_STATUS_URI) {
+cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI, POH_EXPORT_PDF, POH_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, POH_STATUS_URI, POH_CREATION_TYPE_URI) {
 
     $scope.searchForm = {};
     $scope.searchForm.supplierId = -1;
@@ -18,6 +18,12 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             $scope.searchForm.statusId = $scope.status.id;
         } else {
             $scope.searchForm.statusId = -1;
+        }
+
+        if ($scope.creationType != undefined) {
+            $scope.searchForm.creationTypeId = $scope.creationType.id;
+        } else {
+            $scope.searchForm.creationTypeId = -1;
         }
 
         $scope.pohSrouceData = purchaseOrderService.getSourceOfData();
@@ -80,22 +86,27 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
         columnDefs: [
             {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewPohDetail(row, false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.viewPohDetail(row, true)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'8%' },
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'8%',
+            {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'6%',
                 cellTemplate:'<a href="" ng-click="grid.appScope.viewPohDetail(row)">{{row.entity.pohOrderNumber}}</a>'
             },
             {field:'pohRevision', displayName:'Rev.',enableCellEdit:false, width:'5%'},
-            {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'29%',
+            {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'25%',
                 cellTooltip: function(row,col) {
                     return row.entity.supplier.supplierName
                 }
             },
-            {field:'pohCreatedDate', displayName:'Created',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
+            {field:'pohCreatedDate', displayName:'Created',enableCellEdit:false, width:'8%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
             {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'pohValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'pohValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'pohStatus', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+            {field:'pohCreationType', displayName:'Generated',enableCellEdit:false, width:'9%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                    return grid.getCellValue(row, col).color
+                }
+            },
+            {field:'pohStatus', displayName:'status',enableCellEdit:false, width:'9%', cellFilter:'configCategoryFilter',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return grid.getCellValue(row, col).color
                 }
             }
         ]
@@ -148,6 +159,19 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
                 $scope.statusSet.unshift(allStatus);
             }
             $scope.status = baseDataService.populateSelectList($scope.status,$scope.statusSet);
+        });
+
+        baseDataService.getBaseData(POH_CREATION_TYPE_URI).then(function(response){
+            $scope.creationTypeSet = response.data;
+            if ($scope.creationTypeSet.length > 0) {
+                var allType = {
+                    "id" : -1,
+                    "displayName" : "All",
+                    "description" : "All"
+                }
+                $scope.creationTypeSet.unshift(allType);
+            }
+            $scope.creationType = baseDataService.populateSelectList($scope.creationType,$scope.creationTypeSet);
         });
 
         $scope.getPage();

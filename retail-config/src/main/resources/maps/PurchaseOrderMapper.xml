@@ -43,6 +43,7 @@
         <association property="supplier" column="SUPPLIER_ID" select="au.com.biztune.retail.dao.SupplierDao.getSupplierBySuppId" />
         <association property="user" column="POH_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="pohStatus" column="POH_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="pohCreationType" column="POH_CREATION_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <collection property="linkedDelNotes" javaType="ArrayList" column="POH_ID" ofType="PoDelNoteLink" select="au.com.biztune.retail.dao.PoDelNoteLinkDao.getAllPoDelNoteLinkPerPohId"/>
     </resultMap>
 
@@ -118,6 +119,7 @@
         <association property="polStatus" column="POL_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="taxLegVariance" column="TXLV_ID" select="au.com.biztune.retail.dao.TaxRuleDao.getTaxLegVarianceById" />
         <collection property="poBoqLinks" javaType="ArrayList" column="POL_ID" ofType="PoBoqLink" select="au.com.biztune.retail.dao.PoBoqLinkDao.getAllPoBoqLinkPerPolId"/>
+        <collection property="poSoLinks" javaType="ArrayList" column="POL_ID" ofType="PoSoLink" select="au.com.biztune.retail.dao.PoSoLinkDao.getAllPoSoLinkPerPolId"/>
     </resultMap>
 
     <resultMap id="purchaseOrderOfProductMap" type="PurchaseLine" >
@@ -1077,7 +1079,7 @@
     </select>
 
     <select id="getAllPurchaseOrderOfSaleOrder" resultMap="purchaseOrderHeaderLiteMap" >
-        SELECT
+        SELECT DISTINCT
         <include refid="purchaseOrderHeaderColumns"><property name="alias" value="poh"/></include>
         FROM
         PURCHASE_ORDER_HEADER poh

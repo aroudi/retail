@@ -84,7 +84,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
                 {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'20%'},
                 {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
                 {field:'txhdTxnNr', displayName:'Number',enableCellEdit:false, width:'15%'},
-                {field:'txhdState', displayName:'State', enableCellEdit:false, width:'15%', cellFilter:'configCategoryFilter',
+                {field:'status', displayName:'Status', enableCellEdit:false, width:'15%', cellFilter:'configCategoryFilter',
                     cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                         return grid.getCellValue(row, col).color
                     }

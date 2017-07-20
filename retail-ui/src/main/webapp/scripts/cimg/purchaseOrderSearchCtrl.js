@@ -2,7 +2,7 @@
  * Created by arash on 14/08/2015.
  */
 cimgApp.controller('purchaseOrderSearchCtrl', function($scope, $state, $timeout, uiGridConstants, baseDataService, searchUrl, SUCCESS, FAILURE, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, POH_GET_URI) {
-
+    $scope.title = "Purchase Order List";
     $scope.gridOptions = {
         enableFiltering: true,
         enableSelectAll:false,

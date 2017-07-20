@@ -22,7 +22,16 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         rowTemplate : rowtpl,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'26%'},
+            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'26%',
+                cellTooltip: function(row,col) {
+                    return 'Price:  ' + row.entity.polUnitCost + '\n' + '--------------------------------' + '\n' +
+                     'Bulk Quantity:  ' +  row.entity.purchaseItem.bulkQty + ' --> Price:  ' + row.entity.purchaseItem.bulkPrice +'\n' + '\n' +
+                     'Bulk Quantity:  ' +  row.entity.purchaseItem.bulkQty2 + ' --> Price:  ' + row.entity.purchaseItem.bulkPrice2 +'\n' + '\n' +
+                     'Bulk Quantity:  ' +  row.entity.purchaseItem.bulkQty3 + ' --> Price:  ' + row.entity.purchaseItem.bulkPrice3 +'\n' + '\n' +
+                     'Bulk Quantity:  ' +  row.entity.purchaseItem.bulkQty4 + ' --> Price:  ' + row.entity.purchaseItem.bulkPrice4 +'\n' + '\n' +
+                     'Bulk Quantity:  ' +  row.entity.purchaseItem.bulkQty5 + ' --> Price:  ' + row.entity.purchaseItem.bulkPrice5 +'\n'
+                }
+            },
             {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false, width:'5%'},
             {field:'taxLegVariance.txlvDesc',editType:'dropdown', displayName:'Tax',enableCellEdit:true,width:'8%',
                 editableCellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance" ng-change="grid.appScope.updatePurchaseLineValues(row.entity)" ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
@@ -185,7 +194,12 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             $scope.purchaseOrderHeader.pohCreatedDateStr = new Date($scope.purchaseOrderHeader.pohCreatedDateStr);
 
             for (i=0; i<$scope.gridOptions.data.length; i++) {
-                displayLinkedBoqs($scope.gridOptions.data[i])
+                if ($scope.gridOptions.data[i].poBoqLinks != undefined && $scope.gridOptions.data[i].poBoqLinks.length > 0 ) {
+                    displayLinkedBoqs($scope.gridOptions.data[i])
+                }
+                if ($scope.gridOptions.data[i].poSoLinks != undefined && $scope.gridOptions.data[i].poSoLinks.length > 0 ) {
+                    displayLinkedSaleOrders($scope.gridOptions.data[i])
+                }
             }
             baseDataService.setRow({});
             baseDataService.setIsPageNew(true);
@@ -491,6 +505,42 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             data:line.poBoqLinks
         }
     }
+
+    function displayLinkedSaleOrders(line) {
+        line.subGridOptions = {
+            enableRowSelection :false,
+            enableColumnResizing: true,
+            enableRowEdit : true,
+            columnDefs :[
+                {name:"id", field:"id", visible:false},
+                {name:"pohId", field:"pohId", visible:false},
+                {name:"polId", field:"polId", visible:false},
+                {name:"projectId", field:"projectId", visible:false},
+                {name:"txdeId", field:"txdeId", visible:false},
+                {name:"txhdId", field:"txhdId", displayName:"Sale Order#", visible:true, width:'10%'},
+                {name:"projectCode", field:"projectCode", displayName:"Project Code", width:'25%',
+                    cellTooltip: function(row,col) {
+                        return row.entity.projectCode
+                    }
+                },
+                {name: "soLineQtyTotal", field: "soLineQtyTotal", displayName:"Sale Order Qty", width: '15%'},
+                {name: "poQtyReceived", enableCellEdit:true, field: "poQtyReceived", displayName:"Qty Received", width: '10%',
+                    cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                        return 'editModeColor'
+                    }
+                },
+                {name: "soLineQtyBalance", field: "soLineQtyBalance", displayName:"Sale Order Balance", width: '15%'},
+                {field:'poSoStatus', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
+                    cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                        return grid.getCellValue(row, col).color
+                    }
+                }
+                //{name:'Action', width:'5%',cellTemplate:'<button type="button" ng-show="row.grid.appScope.row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\'" class="btn btn-success" ng-click="grid.appScope.updateBoqQtyRcvd(row)" >Update</button>'}
+            ],
+            data:line.poSoLinks
+        }
+    }
+
     $scope.updateBoqQtyRcvd = function (row) {
         var purchaseLine = row.entity;
 
@@ -619,22 +669,22 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         }
     }
     function calculateBulkPrice(purchaseItem, qty, defaultPrice) {
-        if (qty >= purchaseItem.bulkQty5) {
+        if (purchaseItem.bulkQty5 > 0 && qty >= purchaseItem.bulkQty5) {
             return purchaseItem.bulkPrice5;
         }
-        if (qty >= purchaseItem.bulkQty4) {
+        if (purchaseItem.bulkQty4 > 0 && qty >= purchaseItem.bulkQty4) {
             return purchaseItem.bulkPrice4;
 
         }
-        if (qty >= purchaseItem.bulkQty3) {
+        if (purchaseItem.bulkQty3 > 0 && qty >= purchaseItem.bulkQty3) {
             return purchaseItem.bulkPrice3;
 
         }
-        if (qty >= purchaseItem.bulkQty2) {
+        if (purchaseItem.bulkQty2 > 0 && qty >= purchaseItem.bulkQty2) {
             return purchaseItem.bulkPrice2;
 
         }
-        if (qty >= purchaseItem.bulkQty) {
+        if (purchaseItem.bulkQty > 0 && qty >= purchaseItem.bulkQty) {
             return purchaseItem.bulkPrice;
 
         }
