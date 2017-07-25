@@ -13,6 +13,7 @@ public class ProductPurchaseItem {
     private UnitOfMeasure unitOfMeasureContent;
     private double unomQty;
     private double price;
+    private double rrp;
     private double costBeforeTax;
     private double bulkPrice;
     private double bulkPrice2;
@@ -265,5 +266,13 @@ public class ProductPurchaseItem {
 
     public void setBulkQty5(double bulkQty5) {
         this.bulkQty5 = bulkQty5;
+    }
+
+    public double getRrp() {
+        return rrp;
+    }
+
+    public void setRrp(double rrp) {
+        this.rrp = rrp;
     }
 }

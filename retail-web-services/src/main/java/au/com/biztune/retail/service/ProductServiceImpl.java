@@ -335,13 +335,20 @@ public class ProductServiceImpl implements ProductService {
             return null;
         }
     }
+
     /**
-     * get all products as Sale Items.
-     * @return List of ProductSaleItem
+     * search products per sku or name or reference.
+     * @param searchStr search string
+     * @return List of product sale item.
      */
-    public List<ProductSaleItem> getAllProductsAsSaleItem() {
+    public List<ProductSaleItem> getAllProductsAsSaleItem(String searchStr) {
         try {
-            return productDao.getAllProductSaleItemsPerOrgUnitId(sessionState.getOrgUnit().getId());
+            String searchCr = searchStr;
+            if ("@ALL@".equals(searchStr)) {
+                searchCr = "";
+            }
+            searchCr = "%" + searchStr + "%";
+            return productDao.getAllProductSaleItemsPerOrgUnitId(searchCr);
 
         } catch (Exception e) {
             logger.error("Error in retrieving sale item list", e);

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI, TXN_EXPORT_PDF) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI, TXN_EXPORT_PDF, PRODUCT_SALE_ITEM_SEARCH_URI) {
 
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -120,7 +120,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     function initTxnDetail() {
         var rowtpl='<div ng-class="{\'blue\':row.entity.txdeItemVoid==false, \'red\':row.entity.txdeItemVoid==true }"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
         $scope.txnDetailList = {
-            enableFiltering: true,
+            enableFiltering: false,
             showGridFooter: true,
             showColumnFooter: true,
             enableRowSelection:true,
@@ -128,21 +128,21 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             rowTemplate : rowtpl,
             columnDefs: [
                 {field: 'id', visible: false, enableCellEdit: false},
-                {field: 'product.prodSku', displayName: 'SKU', enableCellEdit: false, width: '10%',
+                {field: 'product.prodSku', displayName: 'SKU', enableCellEdit: false, enableFiltering:false,width: '10%',
                     cellTooltip: function(row,col) {
                         return row.entity.product.prodSku
                     }
                 },
-                {field: 'txdeProdName', displayName: 'Name', enableCellEdit: true, width: '20%',
+                {field: 'txdeProdName', displayName: 'Name', enableCellEdit: true, enableFiltering:false,width: '20%',
                     cellTooltip: function(row,col) {
                         return row.entity.txdeProdName
                     }
                 },
-                {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false, width: '5%'},
+                {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false,enableFiltering:false, width: '5%'},
                 //{field: 'txdeValueLine', displayName: 'Cost', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 //{field: 'txdeValueProfit', displayName: 'Profit', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
-                {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency', width: '7%'},
-                {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', width: '6%',
+                {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency',enableFiltering:false, width: '7%'},
+                {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', enableFiltering:false,width: '6%',
                     cellTooltip: function(row,col) {
                         return 'Total Qty:' + row.entity.txdeQuantitySold + '\n' +
                                'Total Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
@@ -151,9 +151,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                                'Qty Refund:' +  row.entity.txdeQtyTotalRefund
                     }
                 },
-                {field: 'txdeQtyInvoiced', displayName: 'Invoice', type: 'number', width: '6%'},
-                {field: 'originalQuantity', visible: false, type: 'number'},
-                {field: 'txdeQtyBalance', enableCellEdit: false, displayName: 'Balance', type: 'number', width: '6%',
+                {field: 'txdeQtyInvoiced', displayName: 'Invoice', type: 'number',enableFiltering:false, width: '6%'},
+                {field: 'originalQuantity', visible: false, type: 'number',enableFiltering:false},
+                {field: 'txdeQtyBalance', enableCellEdit: false, displayName: 'Balance',enableFiltering:false, type: 'number', width: '6%',
                     cellTooltip: function(row,col) {
                         return 'Total Qty:' + row.entity.txdeQuantitySold + '\n' +
                             'Total Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
@@ -162,7 +162,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                             'Qty Refund:' +  row.entity.txdeQtyTotalRefund
                     }
                 },
-                {field: 'txdeQtyOrdered',enableCellEdit: false, displayName: 'Back Order', type: 'number', width: '7%',
+                {field: 'txdeQtyOrdered',enableCellEdit: false, displayName: 'Back Order', enableFiltering:false,type: 'number', width: '7%',
                     cellTooltip: function(row,col) {
                         return 'Total Qty:' + row.entity.txdeQuantitySold + '\n' +
                             'Total Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
@@ -171,9 +171,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                             'Qty Refund:' +  row.entity.txdeQtyTotalRefund
                     }
                 },
-                {field: 'calculatedLineValue', displayName: 'Amount', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
-                {field: 'calculatedLineTax', displayName: 'Tax', cellFilter: 'currency', footerCellFilter: 'currency',enableCellEdit: false, width: '7%'},
-                {field: 'txdePriceSold', displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'},
+                {field: 'calculatedLineValue', enableFiltering:false,displayName: 'Amount', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
+                {field: 'calculatedLineTax', enableFiltering:false,displayName: 'Tax', cellFilter: 'currency', footerCellFilter: 'currency',enableCellEdit: false, width: '7%'},
+                {field: 'txdePriceSold', enableFiltering:false, displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'},
                 {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="grid.appScope.isTxnLineVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
 
             ]
@@ -407,20 +407,28 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     }
 
     $scope.searchProduct = function () {
+        var searchStr = $scope.searchBySku;
+        if (searchStr === undefined || searchStr === null || searchStr === "") {
+            searchStr = "@ALL@";
+        }
+        $scope.searchBySku = "";
         ngDialog.openConfirm({
             template:'views/pages/productSaleItemSearch.html',
             controller:'productSaleItemSearchCtrl',
             className: 'ngdialog-theme-default',
-            closeByDocument:false
+            closeByDocument:false,
+            resolve: {searchUrl: function(){return PRODUCT_SALE_ITEM_SEARCH_URI + searchStr}}
         }).then (function (selectedItems){
                 //alert('returned value = ' + value);
                 if (selectedItems != undefined) {
                     for (var i = 0; i < selectedItems.length; i++) {
                         var selectedProduct = selectedItems[i];
                         //check if product is already selected.
+                        /*
                         if (checkIfProductHasBeenSelected(selectedProduct)) {
                             continue;
                         }
+                        */
                         //get product detail from server
                         var searchUri = PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI + selectedProduct.id;
                         baseDataService.getBaseData(searchUri).then(function(response){
@@ -460,29 +468,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         if (keyEvent.which != 13) {
             return
         }
-        var searchUri = PRODUCT_SALE_ITEM_GET_BY_SKU_URI + $scope.searchBySku;
-        baseDataService.getBaseData(searchUri).then(function(response){
-            var product = response.data;
-            if (response.data === null || response.data === undefined || response.data.prodSku == undefined) {
-                baseDataService.displayMessage('info','Warning!','product not found!!!');
-                return;
-            }
-            //check if product is already selected.
-            if (checkIfProductHasBeenSelected(product)) {
-                return;
-            }
-            var txnDetail = createTxnDetail();
-            txnDetail.product = product;
-            txnDetail.unitOfMeasure = txnDetail.product.sellPrice.unitOfMeasure;
-            txnDetail.txdeProdName = txnDetail.product.prodName;
-            txnDetail.txdeQtyTotalInvoiced =  0;
-            txnDetail.txdeQuantitySold =  1;
-            txnDetail.txdeQtyInvoiced =  0;
-            txnDetail.txdeQtyBalance =  txnDetail.txdeQuantitySold;
-            evaluatRowItem(txnDetail, true);
-            $scope.txnDetailList.data.push(txnDetail);
-            totalTransaction();
-        });
+        $scope.searchProduct();
     }
     
     function createTxnDetail () {

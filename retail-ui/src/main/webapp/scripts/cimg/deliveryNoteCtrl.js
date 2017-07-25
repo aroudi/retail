@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI, taxCodeSet, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, TAXLEGVARIANCE_GST_URI) {
+cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI, taxCodeSet, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, TAXLEGVARIANCE_GST_URI, GET_PURCHASE_ITEMS_PER_SUPPLIER_URI) {
     $scope.taxLegVarianceSet = taxCodeSet.data;
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -9,7 +9,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
     }
 
     $scope.gridOptions = {
-        enableFiltering: true,
+        enableFiltering: false,
         showGridFooter: true,
         showColumnFooter: true,
         enableColumnResizing: true,
@@ -17,15 +17,15 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         enableSorting:true,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'22%'},
+            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false,enableFiltering:false, width:'22%'},
             //{field:'dlnlProductSize.unomDesc', displayName:'Product Size', enableCellEdit:false, width:'8%'},
-            {field:'dlnlCaseSize.unomDesc', displayName:'Size', enableCellEdit:false, width:'5%'},
-            {field:'dlnlUnitCost', displayName:'Cost',enableCellEdit:true, width:'5%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum,
+            {field:'dlnlCaseSize.unomDesc', displayName:'Size', enableCellEdit:false, enableFiltering:false,width:'5%'},
+            {field:'dlnlUnitCost', displayName:'Cost',enableCellEdit:true, width:'5%', enableFiltering:false,cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
-            {field:'taxLegVariance.txlvDesc',editType:'dropdown', displayName:'Tax',enableCellEdit:true,width:'8%',
+            {field:'taxLegVariance.txlvDesc',editType:'dropdown', displayName:'Tax',enableCellEdit:true,width:'8%',enableFiltering:false,
                 editableCellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance" ng-change="grid.appScope.updateLineTotalCost(row.entity)" ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
@@ -33,17 +33,17 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
                 //cellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance"  ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
             },
             //polQtyOrdered
-            {field:'polQty', displayName:'Purchased',enableCellEdit:false, width:'6%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'polQty', displayName:'Purchased',enableCellEdit:false, width:'6%',type: 'number',enableFiltering:false, aggregationType: uiGridConstants.aggregationTypes.sum},
             //{field:'rcvdCaseSize.unomDesc', displayName:'Recd Case Size', enableCellEdit:false, width:'8%'},
-            {field:'rcvdQty', displayName:'Rec Qty',enableCellEdit:true, width:'5%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum,
+            {field:'rcvdQty', displayName:'Rec Qty',enableCellEdit:true, width:'5%',type: 'number',enableFiltering:false, aggregationType: uiGridConstants.aggregationTypes.sum,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
-            {field:'backOrder()', displayName:'Back Order',enableCellEdit:false, width:'8%',type: 'number', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'delnValueTax', displayName:'Tax value',enableCellEdit:false, width:'7%', cellFilter: 'currency'},
-            {field:'totalCost', displayName:'Total Cost',enableCellEdit:false, width:'8%', cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'dlnlDiscrepancy', displayName:'Discrepancy',enableCellEdit:false, type:'boolean', width:'6%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-model="row.entity.dlnlDiscrepancy">',
+            {field:'backOrder()', displayName:'Back Order',enableCellEdit:false, width:'8%',type: 'number',enableFiltering:false, aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'delnValueTax', displayName:'Tax value',enableCellEdit:false, width:'7%',enableFiltering:false, cellFilter: 'currency'},
+            {field:'totalCost', displayName:'Total Cost',enableCellEdit:false, width:'8%', cellFilter: 'currency', footerCellFilter: 'currency', enableFiltering:false,aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'dlnlDiscrepancy', displayName:'Discrepancy',enableCellEdit:false, type:'boolean', width:'6%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-model="row.entity.dlnlDiscrepancy">',enableFiltering:false,
                 cellClass:
                     function(grid, row, col, rowRenderIndex, colRenderIndex) {
                         if (grid.getCellValue(row, col) === true) {
@@ -53,7 +53,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
                         }
                     }
             },
-            {field:'dlnlComment', displayName:'Location',enableCellEdit:true, width:'15%',
+            {field:'dlnlComment', displayName:'Location',enableCellEdit:true, width:'15%', enableFiltering:false,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
@@ -430,6 +430,12 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
     }
 
     $scope.searchProduct = function () {
+        var searchStr = $scope.searchByCatalog;
+        if ($scope.searchByCatalog === undefined || $scope.searchByCatalog === null || $scope.searchByCatalog === "") {
+            searchStr = "@ALL@";
+        }
+        $scope.searchByCatalog = "";
+
         if ($scope.deliveryNoteHeader.supplier === undefined || $scope.deliveryNoteHeader.supplier.id === -1) {
             baseDataService.displayMessage('info','Warning!','Please select supplier');
             return;
@@ -439,14 +445,11 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             controller:'productPurchaseItemSearchCtrl',
             className: 'ngdialog-theme-default',
             closeByDocument:false,
-            resolve: {supplier: function(){return $scope.deliveryNoteHeader.supplier}}
+            resolve: {searchUrl: function(){return GET_PURCHASE_ITEMS_PER_SUPPLIER_URI + $scope.deliveryNoteHeader.supplier.id + '/' + searchStr}}
         }).then (function (selectedItems){
                 if (selectedItems != undefined) {
                     for (var i = 0; i < selectedItems.length; i++) {
                         var selectedProduct = selectedItems[i];
-                        if (checkIfProductHasBeenSelected(selectedProduct)) {
-                            continue;
-                        }
                         var line = createDeliveryNoteLineFromProduct(selectedProduct);
                         $scope.gridOptions.data.push(line);
                     }
@@ -473,18 +476,6 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             baseDataService.displayMessage('info','Warning!','Please select supplier');
             return;
         }
-        var searchUri = GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI + $scope.deliveryNoteHeader.supplier.id + '/' + $scope.searchByCatalog;
-        baseDataService.getBaseData(searchUri).then(function(response){
-            var selectedProduct = response.data;
-            if (selectedProduct === null || selectedProduct === undefined || selectedProduct.catalogueNo == undefined) {
-                baseDataService.displayMessage('info','Warning!','product not found!!!');
-                return;
-            }
-            if (checkIfProductHasBeenSelected(selectedProduct)) {
-                return;
-            }
-            var line = createDeliveryNoteLineFromProduct(selectedProduct);
-            $scope.gridOptions.data.push(line);
-        });
+        $scope.searchProduct();
     }
 });

@@ -69,14 +69,15 @@ public class PurchaseOrderRest {
     /**
      * get Product Purchase Items per supplier id.
      * @param suppId suppId.
+     * @param searchStr searchStr.
      * @return List of ProductPurchaseItem
      */
     @Secured
     @GET
-    @Path("/detail/getPurchaseItems/{suppId}")
+    @Path("/detail/getPurchaseItems/{suppId}/{searchStr}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ProductPurchaseItem> getProductPurchaseItemsPerSuppId (@PathParam("suppId") long suppId) {
-        return purchaseOrderService.getAllSupplierProductPurchaseItems(suppId);
+    public List<ProductPurchaseItem> getProductPurchaseItemsPerSuppId (@PathParam("suppId") long suppId, @PathParam("searchStr") String searchStr) {
+        return purchaseOrderService.getAllSupplierProductPurchaseItems(suppId, searchStr);
     }
 
 

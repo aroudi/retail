@@ -12,10 +12,8 @@ import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -108,23 +106,25 @@ public class EMailProcessor implements Processor {
             final String host = Environment.get("SMTP_HOST");
             final String port = Environment.get("SMTP_PORT");
             userName = Environment.get("SMTP_MAIL_FROM");
-            final String password = Environment.get("SMTP_PASSWORD");
+            //final String password = Environment.get("SMTP_PASSWORD");
 
             final Properties properties = new Properties();
             properties.put("mail.smtp.host", host);
             properties.put("mail.smtp.port", port);
-            properties.put("mail.smtp.auth", "true");
-            properties.put("mail.smtp.starttls.enable", "true");
-            properties.put("mail.user", userName);
-            properties.put("mail.password", password);
+            //properties.put("mail.smtp.auth", "true");
+            //properties.put("mail.smtp.starttls.enable", "true");
+            //properties.put("mail.user", userName);
+            //properties.put("mail.password", password);
 
             // creates a new session with an authenticator
-            final Authenticator auth = new Authenticator() {
-                public PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(userName, password);
-                }
+            /*
+            //final Authenticator auth = new Authenticator() {
+            //    public PasswordAuthentication getPasswordAuthentication() {
+            //        return new PasswordAuthentication(userName, password);
+            //    }
             };
-            session = Session.getInstance(properties, auth);
+            */
+            session = Session.getDefaultInstance(properties, null);
             logger.info("EMail Sender initialised.");
         } catch (Exception e) {
             logger.error("Exception in initializing EMail", e);

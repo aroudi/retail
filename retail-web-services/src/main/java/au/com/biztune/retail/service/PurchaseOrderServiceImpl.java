@@ -562,11 +562,17 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     /**
      * get product purchase items for specific supplier.
      * @param suppId suppId
+     * @param searchStr searchStr
      * @return List of PruductPurchaseItem
      */
-    public List<ProductPurchaseItem> getAllSupplierProductPurchaseItems(long suppId) {
+    public List<ProductPurchaseItem> getAllSupplierProductPurchaseItems(long suppId, String searchStr) {
         try {
-            return suppProdPriceDao.getAllProductPurchaseItemsPerOrgUnitIdAndSuppId(sessionState.getOrgUnit().getId(), suppId);
+            String searchCr = searchStr;
+            if ("@ALL@".equals(searchStr)) {
+                searchCr = "";
+            }
+            searchCr = "%" + searchStr + "%";
+            return suppProdPriceDao.getAllProductPurchaseItemsPerOrgUnitIdAndSuppId(sessionState.getOrgUnit().getId(), suppId, searchCr);
         } catch (Exception e) {
             logger.error("Exception in getting product purchase items per supplier:", e);
             return null;

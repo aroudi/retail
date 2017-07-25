@@ -43,10 +43,11 @@ public interface ProductService {
     Product getProductPerSku(String skuCode);
 
     /**
-     * get all products as Sale Items.
-     * @return List of ProductSaleItem
+     * search products per sku or name or reference.
+     * @param searchStr search string
+     * @return List of product sale item.
      */
-    List<ProductSaleItem> getAllProductsAsSaleItem();
+    List<ProductSaleItem> getAllProductsAsSaleItem(String searchStr);
     /**
      * get product object per sku.
      * @param skuCode skuCode

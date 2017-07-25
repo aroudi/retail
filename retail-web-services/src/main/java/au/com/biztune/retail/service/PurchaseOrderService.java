@@ -46,11 +46,13 @@ public interface PurchaseOrderService {
      */
     PurchaseOrderHeader getPurchaseOrderHeaderWhole(long pohId);
     /**
+     /**
      * get product purchase items for specific supplier.
      * @param suppId suppId
+     * @param searchStr searchStr
      * @return List of PruductPurchaseItem
      */
-    List<ProductPurchaseItem> getAllSupplierProductPurchaseItems(long suppId);
+    List<ProductPurchaseItem> getAllSupplierProductPurchaseItems(long suppId, String searchStr);
     /**
      * get all purchase Order Header.
      * @param supplierId supplierId

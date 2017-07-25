@@ -35,7 +35,8 @@ var cimgApp = angular
     'ngSanitize',
     'pdfjsViewer',
     'chart.js',
-    'ui.grid.exporter'
+    'ui.grid.exporter',
+    'ui.select'
   ]);
 
 //SIT
@@ -103,7 +104,7 @@ var service_uri = {
     'MEDIA_TYPE_GET_BYNAME_URI' : 'paymentMedia/getMediaTypeByName/',
     'PAYMENT_MEDIA_OF_TYPE_URI' : 'paymentMedia/getOfMediatype/',
     'PAYMENT_MEDIA_ALL_URI' : 'paymentMedia/getAll',
-    'PRODUCT_SALE_ITEM_ALL_URI' : 'product/allProductSaleItem',
+    'PRODUCT_SALE_ITEM_SEARCH_URI' : 'product/allProductSaleItem/',
     'PRODUCT_SALE_ITEM_GET_BY_SKU_URI' : 'product/saleItem/getBySku/',
     'PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI' :'product/saleItem/getByProdId/',
     'TXN_ALL_URI' : 'transaction/all',
@@ -253,7 +254,7 @@ cimgApp.service('configService', function (SERVER,PORT,WEBAPP) {
 
 });
 
-cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDialog, configService, $sessionStorage,UserService, GET_DATA_CHANGE_INDICATOR_URI, PRODUCT_SALE_ITEM_ALL_URI) {
+cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDialog, configService, $sessionStorage,UserService, GET_DATA_CHANGE_INDICATOR_URI) {
 
     var row;
     var rowId;
@@ -414,7 +415,9 @@ cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDia
         pdfViewer : function(exportUrl) {
             this.getStreamData(exportUrl).then(function(response){
                 var blob = new Blob([response.data], {'type': 'application/pdf'});
-                window.open(window.URL.createObjectURL(blob));
+                printJS({printable: window.URL.createObjectURL(blob), type: 'pdf', header: 'My cool image header'});
+                //window.open(window.URL.createObjectURL(blob));
+
             });
 
             /*
@@ -448,7 +451,8 @@ cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDia
             */
             this.getStreamDataByPost(inputForm, exportUrl).then(function(response){
                 var blob = new Blob([response.data], {'type': 'application/pdf'});
-                window.open(window.URL.createObjectURL(blob));
+                printJS({printable: window.URL.createObjectURL(blob), type: 'pdf', header: 'My cool image header'});
+                //window.open(window.URL.createObjectURL(blob));
             });
 
             //$state.go('dashboard.pdfViewer');
@@ -505,46 +509,7 @@ cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDia
     },
     getPdfContent: function () {
         return pdfFile;
-    },
-    getCacheProductList: function() {
-        var deferred = $q.defer();
-        //check if data does not exist in the cache then retreive data from the server and put in the cache;
-        if ( $sessionStorage.productList == undefined ||  $sessionStorage.productList == null) {
-            console.log('cache is empty. fetch from server and put in cache');
-            this.getBaseData(PRODUCT_SALE_ITEM_ALL_URI).then(function(response){
-                var data = response.data;
-                delete $sessionStorage.productList;
-                $sessionStorage.productList = data;
-                deferred.resolve($sessionStorage.productList);
-                //return deferred.promise;
-            });
-        } else {
-            //check if there is any update on the server. if so return the updated data and store in cache.
-            var dataChangeIndicatorUri = GET_DATA_CHANGE_INDICATOR_URI + UserService.getUser().id;
-            console.log('check for updates');
-            this.getBaseData(dataChangeIndicatorUri).then(function(response){
-                var dataChangeIndicator = response.data;
-                if (dataChangeIndicator.productDataUpdated) {
-                    console.log('updates available');
-                    this.getBaseData(PRODUCT_SALE_ITEM_ALL_URI).then(function(response){
-                        var data = response.data;
-                        delete $sessionStorage.productList;
-                        $sessionStorage.productList = data;
-                        console.log('getting updates and put in cache');
-                        deferred.resolve(data);
-                        //return deferred.promise;
-                        //return $sessionStorage.productList;
-                    });
-                } else {
-                    console.log('update not available. read from cache');
-                    //return $sessionStorage.productList;
-                    deferred.resolve($sessionStorage.productList);
-                }
-            });
-        }
-        return deferred.promise;
     }
-
 
 }
 

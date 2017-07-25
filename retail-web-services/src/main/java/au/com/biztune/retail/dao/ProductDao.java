@@ -95,10 +95,10 @@ public interface ProductDao {
 
     /**
      * get all product Sale Items per orgunitid. this is used for Transaction Sale.
-     * @param orguId orguId
+     * @param searchStr searchStr
      * @return List of Product
      */
-    List<ProductSaleItem> getAllProductSaleItemsPerOrgUnitId(long orguId);
+    List<ProductSaleItem> getAllProductSaleItemsPerOrgUnitId(String searchStr);
 
     /**
      * get Product Sale Item per reference.

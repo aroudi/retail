@@ -45,9 +45,10 @@ public interface SuppProdPriceDao {
      * get all supplier prices for specific product.
      * @param orgUnitId orgUnitId
      * @param suppId suppId
+     * @param searchStr searchStr
      * @return List of SuppProdPrice
      */
-    List<ProductPurchaseItem> getAllProductPurchaseItemsPerOrgUnitIdAndSuppId(long orgUnitId, long suppId);
+    List<ProductPurchaseItem> getAllProductPurchaseItemsPerOrgUnitIdAndSuppId(long orgUnitId, long suppId, String searchStr);
 
 
 

@@ -113,15 +113,16 @@ public class ProductRest {
     }
 
     /**
-     * Get All Product Item Sales.
-     * @return List ProductSaleItem
+     * search products sale items.
+     * @param searchStr searchStr
+     * @return List of product sale items.
      */
     @Secured
     @GET
-    @Path("/allProductSaleItem")
+    @Path("/allProductSaleItem/{searchStr}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List getAllProductSaleItems() {
-        return productService.getAllProductsAsSaleItem();
+    public List getAllProductSaleItems(@PathParam("searchStr") String searchStr) {
+        return productService.getAllProductsAsSaleItem(searchStr);
     }
 
     /**

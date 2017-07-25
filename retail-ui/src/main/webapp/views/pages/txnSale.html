@@ -102,11 +102,9 @@
                                 <div class="col-lg-12">
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
-                                                Products
-                                                <button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchProduct()" ng-show="!isViewMode">Add Product</button>
-                                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                                Search By Sku:
-                                                <input size="50" data-ng-model="searchBySku" ng-disabled="isTxnSaleAndFinal()" ng-keypress="searchProductBySku($event)" ng-show="!isViewMode" >
+                                                <!--button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchProduct()" ng-show="!isViewMode">Add Product</button-->
+                                                Add Product:
+                                                <input size="70" data-ng-model="searchBySku" ng-disabled="isTxnSaleAndFinal()" ng-keypress="searchProductBySku($event)" ng-show="!isViewMode" >
                                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                                 <button type="button" class="btn btn-primary" ng-disabled="!isTxnSaleAndPending()" ng-click="toggleAllRowSelection()" ng-show="(!isViewMode)&&(!allItemsSelected)">Invoice All Items</button>
                                                 <button type="button" class="btn btn-primary" ng-disabled="!isTxnSaleAndPending()" ng-click="toggleAllRowSelection()" ng-show="(!isViewMode)&&(allItemsSelected)">Unselect Items</button>
