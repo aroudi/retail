@@ -6,8 +6,8 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
     $scope.getPage = function(){
         $scope.productSearchForm.pageNo = paginationOptions.pageNumber*1 ;
         $scope.productSearchForm.pageSize = paginationOptions.pageSize;
-        if ($scope.supplier != undefined) {
-            $scope.productSearchForm.supplierId = $scope.supplier.id;
+        if ($scope.model.supplier != undefined) {
+            $scope.productSearchForm.supplierId = $scope.model.supplier.id;
         } else {
             $scope.productSearchForm.supplierId = -1;
         }
@@ -159,6 +159,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
     initPageData();
     function initPageData() {
         $scope.productSearchForm = {};
+        $scope.model = {};
         baseDataService.getBaseData(PRODUCT_TYPE_URI).then(function(response){
             $scope.productTypeSet = response.data;
             if ($scope.productTypeSet.length > 0) {
@@ -180,7 +181,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
                 }
                 $scope.supplierSet.unshift(supplier);
             }
-            $scope.supplier = baseDataService.populateSelectList($scope.supplier,$scope.supplierSet);
+            //$scope.model.supplier = baseDataService.populateSelectList($scope.model.supplier,$scope.supplierSet);
         });
         var pageNo = paginationOptions.pageNumber*1 ;
         var pagingUrl = PRODUCT_ALL_PAGING_URI + '/' + pageNo + '/' + paginationOptions.pageSize;

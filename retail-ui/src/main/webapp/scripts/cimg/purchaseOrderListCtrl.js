@@ -3,14 +3,16 @@
  */
 cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI, POH_EXPORT_PDF, POH_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, POH_STATUS_URI, POH_CREATION_TYPE_URI) {
 
+    $scope.model= {};
+    //$scope.model.supplier= {};
     $scope.searchForm = {};
     $scope.searchForm.supplierId = -1;
 
     $scope.getPage = function(){
         $scope.searchForm.pageNo = paginationOptions.pageNumber*1 ;
         $scope.searchForm.pageSize = paginationOptions.pageSize;
-        if ($scope.supplier != undefined) {
-            $scope.searchForm.supplierId = $scope.supplier.id;
+        if ($scope.model.supplier != undefined) {
+            $scope.searchForm.supplierId = $scope.model.supplier.id;
         } else {
             $scope.searchForm.supplierId = -1;
         }
@@ -146,7 +148,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
                 }
                 $scope.supplierSet.unshift(supplier);
             }
-            $scope.supplier = baseDataService.populateSelectList($scope.supplier,$scope.supplierSet);
+            //$scope.model.supplier = baseDataService.populateSelectList($scope.model.supplier,$scope.supplierSet);
         });
         baseDataService.getBaseData(POH_STATUS_URI).then(function(response){
             $scope.statusSet = response.data;
@@ -158,7 +160,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
                 }
                 $scope.statusSet.unshift(allStatus);
             }
-            $scope.status = baseDataService.populateSelectList($scope.status,$scope.statusSet);
+            //$scope.status = baseDataService.populateSelectList($scope.status,$scope.statusSet);
         });
 
         baseDataService.getBaseData(POH_CREATION_TYPE_URI).then(function(response){

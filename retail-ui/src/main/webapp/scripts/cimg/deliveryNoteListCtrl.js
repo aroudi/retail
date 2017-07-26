@@ -2,14 +2,17 @@
  * Created by arash on 14/08/2015.
  */
 cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_GET_ALL_URI, DEL_NOTE_GET_URI, POH_GET_URI, DEL_NOTE_SEARCH_URI, DEL_NOTE_SEARCH_PAGING_URI, SUPPLIER_ALL_URI) {
+
+    $scope.model= {};
+    //$scope.model.supplier= {};
     $scope.searchForm = {};
     $scope.searchForm.supplierId = -1;
 
     $scope.getPage = function(){
         $scope.searchForm.pageNo = paginationOptions.pageNumber*1 ;
         $scope.searchForm.pageSize = paginationOptions.pageSize;
-        if ($scope.supplier != undefined) {
-            $scope.searchForm.supplierId = $scope.supplier.id;
+        if ($scope.model.supplier != undefined) {
+            $scope.searchForm.supplierId = $scope.model.supplier.id;
         } else {
             $scope.searchForm.supplierId = -1;
         }
@@ -160,8 +163,8 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
             closeByDocument:false
         }).then (function (value){
                 //alert('returned value = ' + value);
-                $scope.supplier = value;
-                $scope.searchForm.supplierId = $scope.supplier.id;
+                $scope.model.supplier = value;
+                $scope.searchForm.supplierId = $scope.model.supplier.id;
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }

@@ -138,6 +138,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         });
         baseDataService.getBaseData(SUPPLIER_ALL_URI).then(function(response){
             $scope.supplierSet = response.data;
+            /*
             if ($scope.supplierSet.length > 0) {
                 var supplier = {
                     "id" : -1,
@@ -145,7 +146,8 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
                 }
                 $scope.supplierSet.unshift(supplier);
             }
-            $scope.deliveryNoteHeader.supplier = baseDataService.populateSelectList($scope.deliveryNoteHeader.supplier,$scope.supplierSet);
+            */
+            //$scope.deliveryNoteHeader.supplier = baseDataService.populateSelectList($scope.deliveryNoteHeader.supplier,$scope.supplierSet);
             //$scope.changeSupplier();
         });
         baseDataService.getBaseData(TAXLEGVARIANCE_GST_URI).then(function(response){

@@ -22,9 +22,25 @@
                                                         <div class="col-lg-2">
                                                             <div class="form-group">
                                                                 <label>Customer:<!--a href=""><i tooltip="Find" ng-show="!isTxnSaleAndFinal()" tooltip-placement="bottom" class="fa fa-search fa-x" ng-click="searchCustomer()"></i></a--></label>
-                                                                <select class="form-control" data-ng-model="customer" ng-disabled="isTxnSaleAndFinal()"
+                                                                <!--select class="form-control" data-ng-model="customer" ng-disabled="isTxnSaleAndFinal()"
                                                                         ng-options="type.companyName for type in customerSet" ng-change="onCustomerChange()">
-                                                                </select>
+                                                                </select-->
+                                                                <ui-select ng-model="model.customer"
+                                                                           ng-change="onCustomerChange()"
+                                                                           ng-disabled="isTxnSaleAndFinal()"
+                                                                           reset-search-input="true"
+                                                                           title="Choose a Customer">
+                                                                    <ui-select-match placeholder="Select a customer in the list or search by Name, phone">
+                                                                        <span ng-bind="$select.selected.companyName"></span>
+                                                                    </ui-select-match>
+                                                                    <!--ui-select-choices repeat="item in (supplierSet | filter: $select.search) track by item.id"-->
+                                                                    <ui-select-choices repeat="item in customerSet | propsFilter: {companyName: $select.search, phone: $select.search}">
+                                                                        <div ng-bind-html="item.companyName | highlight: $select.search"></div>
+                                                                        <small>
+                                                                            phone: <span ng-bind-html="''+(item.phone===null?'' : item.phone) | highlight: $select.search"></span>
+                                                                        </small>
+                                                                    </ui-select-choices>
+                                                                </ui-select>
 
                                                                 <!--input class="form-control" data-ng-model="customer.companyName" ng-disabled="true" -->
                                                             </div >

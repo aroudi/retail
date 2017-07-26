@@ -14,9 +14,25 @@
                                 <!--label>Supplier<a href=""><i tooltip="Find" ng-show="pageIsNew" tooltip-placement="bottom" class="fa fa-search fa-x" ng-click="searchSupplier()"></i></a></label>
                                 <input class="form-control" data-ng-model="deliveryNoteHeader.supplier.supplierName" ng-disabled="true"-->
                                 <label>Supplier</label>
-                                <select class="form-control" data-ng-model="deliveryNoteHeader.supplier" ng-disabled="!pageIsNew" ng-change="changeSupplier()"
+                                <!--select class="form-control" data-ng-model="deliveryNoteHeader.supplier" ng-disabled="!pageIsNew" ng-change="changeSupplier()"
                                         ng-options="supp.supplierName for supp in supplierSet" >
-                                </select>
+                                </select-->
+                                <ui-select ng-model="deliveryNoteHeader.supplier"
+                                           ng-change="changeSupplier()"
+                                           ng-disabled="!pageIsNew"
+                                           reset-search-input="true"
+                                           title="Choose a Supplier">
+                                    <ui-select-match placeholder="Select a supplier in the list or search by Name, ABN">
+                                        <span ng-bind="$select.selected.supplierName"></span>
+                                    </ui-select-match>
+                                    <!--ui-select-choices repeat="item in (supplierSet | filter: $select.search) track by item.id"-->
+                                        <ui-select-choices repeat="item in supplierSet | propsFilter: {supplierName: $select.search, supplierCode: $select.search}">
+                                        <div ng-bind-html="item.supplierName | highlight: $select.search"></div>
+                                        <small>
+                                            ABN: <span ng-bind-html="''+item.supplierCode | highlight: $select.search"></span>
+                                        </small>
+                                    </ui-select-choices>
+                                </ui-select>
                             </div >
                         </div>
                         <div class="col-lg-2">

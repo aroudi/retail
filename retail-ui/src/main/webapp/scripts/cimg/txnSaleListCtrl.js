@@ -4,6 +4,8 @@
 cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, TXN_STATUS_ONORDER, SO_STATUS_URI, POH_OF_SO_URI, INVOICE_OF_SO_URI) {
 
     $scope.saleOrderSearchForm = {};
+    $scope.model = {};
+    //$scope.model.client={};
     $scope.saleOrderSearchForm.clientId = -1;
     $scope.includeSaleOrder = true;
     $scope.includeQuote = true;
@@ -18,8 +20,8 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         }
         $scope.saleOrderSearchForm.pageNo = paginationOptions.pageNumber*1 ;
         $scope.saleOrderSearchForm.pageSize = paginationOptions.pageSize;
-        if ($scope.client != undefined) {
-            $scope.saleOrderSearchForm.clientId = $scope.client.id;
+        if ($scope.model.client != undefined) {
+            $scope.saleOrderSearchForm.clientId = $scope.model.client.id;
         } else {
             $scope.saleOrderSearchForm.clientId = -1;
         }
@@ -99,7 +101,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
                 }
                 $scope.customerSet.unshift(customer);
             }
-            $scope.client = baseDataService.populateSelectList($scope.client,$scope.customerSet);
+            //$scope.client = baseDataService.populateSelectList($scope.client,$scope.customerSet);
         });
         baseDataService.getBaseData(SO_STATUS_URI).then(function(response){
             $scope.statusSet = response.data;
@@ -174,8 +176,8 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
             className: 'ngdialog-theme-default',
             closeByDocument:false
         }).then (function (value){
-                $scope.client = value;
-                $scope.saleOrderSearchForm.clientId = $scope.client.id;
+                $scope.model.client = value;
+                $scope.saleOrderSearchForm.clientId = $scope.model.client.id;
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }
@@ -183,7 +185,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
     };
 
     $scope.onCustomerChange = function () {
-        $scope.saleOrderSearchForm.clientId = $scope.client.id;
+        $scope.saleOrderSearchForm.clientId = $scope.model.client.id;
     }
 
     $scope.search = function() {
@@ -221,8 +223,9 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         });
     }
     $scope.clearCustomer = function() {
-        $scope.client ={};
-        $scope.client.id = -1;
+        $scope.model={};
+        $scope.model.client ={};
+        $scope.model.client.id = -1;
     }
 
     $scope.addSaleOrderToBackOrderList = function(saleOrder) {

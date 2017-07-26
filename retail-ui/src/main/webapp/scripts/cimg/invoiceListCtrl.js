@@ -17,6 +17,8 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
     var txnNumberTemplate = '<div>{{grid.appScope.showRefNo(row.entity)}}</div>';
 
     $scope.searchForm = {};
+    $scope.model={};
+    //$scope.model.client ={};
     $scope.searchForm.clientId = -1;
     $scope.includeInvoice = true;
     $scope.includeRefund = true;
@@ -32,8 +34,8 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
         }
         $scope.searchForm.pageNo = paginationOptions.pageNumber*1 ;
         $scope.searchForm.pageSize = paginationOptions.pageSize;
-        if ($scope.client != undefined) {
-            $scope.searchForm.clientId = $scope.client.id;
+        if ($scope.model.client != undefined) {
+            $scope.searchForm.clientId = $scope.model.client.id;
         } else {
             $scope.searchForm.clientId = -1;
         }
@@ -121,7 +123,7 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
                 }
                 $scope.customerSet.unshift(customer);
             }
-            $scope.client = baseDataService.populateSelectList($scope.client,$scope.customerSet);
+            //$scope.model.client = baseDataService.populateSelectList($scope.model.client,$scope.customerSet);
         });
     }
 
@@ -195,8 +197,8 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
             className: 'ngdialog-theme-default',
             closeByDocument:false
         }).then (function (value){
-                $scope.client = value;
-                $scope.searchForm.clientId = $scope.client.id;
+                $scope.model.client = value;
+                $scope.searchForm.clientId = $scope.model.client.id;
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }
@@ -204,8 +206,8 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
     };
 
     $scope.onCustomerChange = function () {
-        //$scope.client = value;
-        $scope.searchForm.clientId = $scope.client.id;
+        //$scope.model.client = value;
+        $scope.searchForm.clientId = $scope.model.client.id;
     }
 
     $scope.search = function() {
@@ -230,8 +232,9 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
     }
 
     $scope.clearCustomer = function() {
-        $scope.client ={};
-        $scope.client.id = -1;
+        $scope.model={};
+        $scope.model.client ={};
+        $scope.model.client.id = -1;
     }
 
 

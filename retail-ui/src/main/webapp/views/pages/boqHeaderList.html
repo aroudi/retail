@@ -16,9 +16,24 @@
                         <div class="col-lg-3">
                             <div class="form-group">
                                 <label>Client</label>
-                                <select class="form-control" data-ng-model="client"
+                                <!--select class="form-control" data-ng-model="client"
                                         ng-options="type.companyName for type in clientSet" >
-                                </select>
+                                </select-->
+                                <ui-select ng-model="model.client"
+                                           ng-change="onCustomerChange()"
+                                           reset-search-input="true"
+                                           title="Choose a Customer">
+                                    <ui-select-match placeholder="Select a customer in the list or search by Name, Phone">
+                                        <span ng-bind="$select.selected.companyName"></span>
+                                    </ui-select-match>
+                                    <!--ui-select-choices repeat="item in (supplierSet | filter: $select.search) track by item.id"-->
+                                    <ui-select-choices repeat="item in clientSet | propsFilter: {companyName: $select.search, phone: $select.search}">
+                                        <div ng-bind-html="item.companyName | highlight: $select.search"></div>
+                                        <small>
+                                            phone: <span ng-bind-html="''+(item.phone===null?'' : item.phone) | highlight: $select.search"></span>
+                                        </small>
+                                    </ui-select-choices>
+                                </ui-select>
                             </div >
                         </div >
                         <div class="col-lg-3">

@@ -149,6 +149,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         });
         baseDataService.getBaseData(SUPPLIER_ALL_URI).then(function(response){
             $scope.supplierSet = response.data;
+            /*
             if ($scope.supplierSet.length > 0) {
                 var supplier = {
                     "id" : -1,
@@ -157,6 +158,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
                 $scope.supplierSet.unshift(supplier);
             }
             $scope.purchaseOrderHeader.supplier = baseDataService.populateSelectList($scope.purchaseOrderHeader.supplier,$scope.supplierSet);
+            */
             //$scope.changeSupplier();
         });
         baseDataService.getBaseData(POH_STATUS_URI).then(function(response){

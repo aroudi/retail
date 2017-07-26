@@ -34,10 +34,12 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         baseDataService.getBaseData(TXN_MEDIA_DEPOSIT).then(function(response){
             $scope.txnMediaTypeDeposit = response.data;
         });
+        $scope.model={};
         if ( baseDataService.getIsPageNew()) {
             //get txn_type from state params.
             $scope.txnType = $stateParams.txnType;
             $scope.txnHeaderForm = {};
+            $scope.model.customer={};
             $scope.txnHeaderForm.txhdValueCredit = 0.00;
             $scope.txnHeaderForm.id = -1;
             $scope.txnHeaderForm.convertedToInvoice = false;
@@ -45,7 +47,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.txnHeaderForm.temporarySaved = false;
         } else {
             $scope.txnHeaderForm = angular.copy(baseDataService.getRow());
-            $scope.customer = $scope.txnHeaderForm.customer;
+            $scope.model.customer = $scope.txnHeaderForm.customer;
             baseDataService.setRow({});
             baseDataService.setIsPageNew(true);
             $scope.paymentAmount = maxPaymentAllowed()*1;
@@ -98,11 +100,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             if ($scope.customerSet.length > 0) {
                 var customer = {
                     "id" : -1,
-                    "companyName" : "Select"
+                    "companyName" : "Not Selected"
                 }
                 $scope.customerSet.unshift(customer);
             }
-            $scope.customer = baseDataService.populateSelectList($scope.customer,$scope.customerSet);
+            //$scope.customer = baseDataService.populateSelectList($scope.customer,$scope.customerSet);
             //$scope.onCustomerChange();
         });
     }
@@ -373,11 +375,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             className: 'ngdialog-theme-default',
             closeByDocument:false
         }).then (function (value){
-                $scope.customer = value;
+                $scope.model.customer = value;
                 //var mediaType;
-                $scope.txnHeaderForm.txhdDlvAddress = $scope.customer.address2;
+                $scope.txnHeaderForm.txhdDlvAddress = $scope.model.customer.address2;
                 /*
-                if ($scope.customer.customerType.categoryCode == 'CUSTOMER_TYPE_ACCOUNT') {
+                if ($scope.model.customer.customerType.categoryCode == 'CUSTOMER_TYPE_ACCOUNT') {
                     mediaType = $scope.mediaTypeAccount;
                 } else {
                     mediaType = $scope.mediaTypeCash;
@@ -393,10 +395,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
     $scope.onCustomerChange = function () {
         //var mediaType;
-        $scope.txnHeaderForm.txhdDlvAddress = $scope.customer.address2;
-        $scope.txnHeaderForm.txhdEmailTo = $scope.customer.email;
+        console.log("customer change called. address = " + $scope.model.customer.address2);
+        $scope.txnHeaderForm.txhdDlvAddress = $scope.model.customer.address2;
+        $scope.txnHeaderForm.txhdEmailTo = $scope.model.customer.email;
         /*
-        if ($scope.customer.customerType.categoryCode == 'CUSTOMER_TYPE_ACCOUNT') {
+        if ($scope.model.customer.customerType.categoryCode == 'CUSTOMER_TYPE_ACCOUNT') {
             mediaType = $scope.mediaTypeAccount;
         } else {
             mediaType = $scope.mediaTypeCash;
@@ -539,14 +542,14 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         var priceRule='';
         var rate;
         //get default price rule if customer is null
-        if ($scope.customer == undefined || $scope.customer==null || $scope.customer.grade == undefined) {
+        if ($scope.model.customer == undefined || $scope.model.customer==null || $scope.model.customer.grade == undefined) {
             if ($scope.customerGradeDefault != undefined && $scope.customerGradeDefault != null && $scope.customerGradeDefault.rate != undefined) {
                 priceRule = $scope.customerGradeDefault.description;
                 rate = $scope.customerGradeDefault.rate;
             }
         } else {
-            priceRule = $scope.customer.grade.description;
-            rate = $scope.customer.grade.rate;
+            priceRule = $scope.model.customer.grade.description;
+            rate = $scope.model.customer.grade.rate;
         }
         switch (priceRule) {
             case 'Cost + %' :
@@ -568,14 +571,14 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         var priceRule='';
         var rate;
         //get default price rule if customer is null
-        if ($scope.customer == undefined || $scope.customer==null || $scope.customer.grade == undefined) {
+        if ($scope.model.customer == undefined || $scope.model.customer==null || $scope.model.customer.grade == undefined) {
             if ($scope.customerGradeDefault != undefined && $scope.customerGradeDefault != null && $scope.customerGradeDefault.rate != undefined) {
                 priceRule = $scope.customerGradeDefault.description;
                 rate = $scope.customerGradeDefault.rate;
             }
         } else {
-            priceRule = $scope.customer.grade.description;
-            rate = $scope.customer.grade.rate;
+            priceRule = $scope.model.customer.grade.description;
+            rate = $scope.model.customer.grade.rate;
         }
         switch (priceRule) {
             case 'Cost + %' :
@@ -601,18 +604,18 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 baseDataService.displayMessage('info','Warning!!','Account Payment is only available for Invoice');
                 return;
             }
-            if ($scope.customer.customerType.categoryCode != 'CUSTOMER_TYPE_ACCOUNT') {
+            if ($scope.model.customer.customerType.categoryCode != 'CUSTOMER_TYPE_ACCOUNT') {
                 baseDataService.displayMessage('info','Warning!!','Account Payment is only applicable for Account customers');
                 return;
             }
             //check if customer is not on hold
-            if ($scope.customer.customerStatus.categoryCode === 'CUSTOMER_STATUS_ON_HOLD') {
+            if ($scope.model.customer.customerStatus.categoryCode === 'CUSTOMER_STATUS_ON_HOLD') {
                 baseDataService.displayMessage('info','Warning!!','customer is on hold. you can not pay from credit');
                 return;
             }
             //check if we have enough credit
             var newCredit = $scope.txnHeaderForm.txhdValueCredit*1  + $scope.paymentAmount*1;
-            if (newCredit > $scope.customer.remainCredit) {
+            if (newCredit > $scope.model.customer.remainCredit) {
                 baseDataService.displayMessage('info','Warning!!','amount exceeds remain credit.');
             }
         }
@@ -693,7 +696,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
         $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
-        $scope.txnHeaderForm.customer = $scope.customer;
+        $scope.txnHeaderForm.customer = $scope.model.customer;
 
         //check if we need to send email.
         if (!checkEmailIsValid()) {
@@ -926,7 +929,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
         $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
-        $scope.txnHeaderForm.customer = $scope.customer;
+        $scope.txnHeaderForm.customer = $scope.model.customer;
         var rowObject = $scope.txnHeaderForm;
         baseDataService.addRow(rowObject, TXN_ADD_PAYMENT_URI).then(function(response) {
             var addResponse = response.data;
@@ -998,7 +1001,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
 
-        $scope.txnHeaderForm.customer = $scope.customer;
+        $scope.txnHeaderForm.customer = $scope.model.customer;
         var rowObject = $scope.txnHeaderForm;
         baseDataService.addRow(rowObject, TXN_INVOICE_URI).then(function(response) {
             addResponse = response.data;
@@ -1146,7 +1149,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
         $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
-        $scope.txnHeaderForm.customer = $scope.customer;
+        $scope.txnHeaderForm.customer = $scope.model.customer;
         $scope.txnHeaderForm.temporarySaved = true;
 
 

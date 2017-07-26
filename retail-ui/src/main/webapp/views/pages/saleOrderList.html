@@ -12,9 +12,24 @@
                                 <label>Client<!--a href=""><!--i tooltip="Find" tooltip-placement="bottom" class="fa fa-search fa-x" ng-click="searchCustomer()"></i></a-->
                                     <!--a href=""><i tooltip="Clear" tooltip-placement="bottom" class="fa fa-close fa-x" ng-click="clearCustomer()"></i></a-->
                                 </label>
-                                <select class="form-control" data-ng-model="client"
+                                <!--select class="form-control" data-ng-model="client"
                                         ng-options="type.companyName for type in customerSet" ng-change="onCustomerChange()">
-                                </select>
+                                </select-->
+                                <ui-select ng-model="model.client"
+                                           ng-change="onCustomerChange()"
+                                           reset-search-input="true"
+                                           title="Choose a Customer">
+                                    <ui-select-match placeholder="Select a customer in the list or search by Name, Phone">
+                                        <span ng-bind="$select.selected.companyName"></span>
+                                    </ui-select-match>
+                                    <!--ui-select-choices repeat="item in (supplierSet | filter: $select.search) track by item.id"-->
+                                    <ui-select-choices repeat="item in customerSet | propsFilter: {companyName: $select.search, phone: $select.search}">
+                                        <div ng-bind-html="item.companyName | highlight: $select.search"></div>
+                                        <small>
+                                            phone: <span ng-bind-html="''+(item.phone===null?'' : item.phone) | highlight: $select.search"></span>
+                                        </small>
+                                    </ui-select-choices>
+                                </ui-select>
                                 <!--input class="form-control" data-ng-model="client.companyName" ng-disabled="true"-->
                             </div >
                         </div>

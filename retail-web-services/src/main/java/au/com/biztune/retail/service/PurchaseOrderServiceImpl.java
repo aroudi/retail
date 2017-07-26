@@ -571,7 +571,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             if ("@ALL@".equals(searchStr)) {
                 searchCr = "";
             }
-            searchCr = "%" + searchStr + "%";
+            searchCr = "%" + searchCr + "%";
             return suppProdPriceDao.getAllProductPurchaseItemsPerOrgUnitIdAndSuppId(sessionState.getOrgUnit().getId(), suppId, searchCr);
         } catch (Exception e) {
             logger.error("Exception in getting product purchase items per supplier:", e);
