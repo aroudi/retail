@@ -395,7 +395,6 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
     $scope.onCustomerChange = function () {
         //var mediaType;
-        console.log("customer change called. address = " + $scope.model.customer.address2);
         $scope.txnHeaderForm.txhdDlvAddress = $scope.model.customer.address2;
         $scope.txnHeaderForm.txhdEmailTo = $scope.model.customer.email;
         /*

@@ -4,36 +4,28 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, CUSTOMER_GET_ACCOUNT_DEBT_URI, TXN_ADD_ACC_PAYMENT, PAYMENT_MEDIA_ALL_URI) {
+cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stateParams, baseDataService,ngDialog, uiGridConstants, SUCCESS, FAILURE, MEDIA_TYPE_ALL_URI, PAYMENT_MEDIA_OF_TYPE_URI, CUSTOMER_GET_ACCOUNT_DEBT_URI, TXN_ADD_ACC_PAYMENT, PAYMENT_MEDIA_ALL_URI, CUSTOMER_ALL_URI) {
 
     initPageData();
     initDebtList();
     initTxnMediaList();
 
-    /*
-    $scope.onMediaTypeChange = function () {
-        var paymentMediaOfTypeUri = PAYMENT_MEDIA_OF_TYPE_URI + $scope.mediaType.id;
-        baseDataService.getBaseData(paymentMediaOfTypeUri).then(function(response){
-            $scope.paymentMediaSet = response.data;
-            $scope.paymentMedia = baseDataService.populateSelectList($scope.paymentMedia,$scope.paymentMediaSet);
-
-        });
-    }
-    */
-
-
     function initPageData() {
         $scope.debtorPaymentForm = {};
+        $scope.model={};
         $scope.debtorPaymentForm.total = 0.00;
         $scope.debtorPaymentForm.amountDue = 0.00
 
         baseDataService.getBaseData(PAYMENT_MEDIA_ALL_URI).then(function(response){
-            //$scope.mediaTypeSet = response.data;
-            //$scope.mediaType = baseDataService.populateSelectList($scope.mediaType,$scope.mediaTypeSet);
-            //$scope.onMediaTypeChange();
             $scope.paymentMediaSet = response.data;
             $scope.paymentMedia = baseDataService.populateSelectList($scope.paymentMedia,$scope.paymentMediaSet);
         });
+        baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
+            $scope.customerSet = response.data;
+            $scope.customer = baseDataService.populateSelectList($scope.customer,$scope.customerSet);
+            $scope.onCustomerChange();
+        });
+
     }
     function initDebtList() {
         $scope.debtList = {
@@ -114,7 +106,7 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
         };
 
     }
-
+    /*
     $scope.searchCustomer = function () {
         ngDialog.openConfirm({
             template:'views/pages/customerSearch.html',
@@ -133,6 +125,14 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
                 console.log('Modal promise rejected. Reason:', reason);
             }
         );
+    };
+    */
+    $scope.onCustomerChange = function () {
+        //load the customer debt from database
+        var getCustomerDebtUrl = CUSTOMER_GET_ACCOUNT_DEBT_URI + $scope.model.customer.id;
+        baseDataService.getBaseData(getCustomerDebtUrl).then(function(response){
+            $scope.debtList.data = response.data;
+        });
     };
 
     $scope.addTxnMedia= function() {
@@ -213,7 +213,7 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
 
         $scope.debtorPaymentForm.debtList = $scope.debtList.data;
         $scope.debtorPaymentForm.txnMediaList = $scope.txnMediaList.data;
-        $scope.debtorPaymentForm.customer = $scope.customer;
+        $scope.debtorPaymentForm.customer = $scope.model.customer;
         var rowObject = $scope.debtorPaymentForm;
         baseDataService.addRow(rowObject, TXN_ADD_ACC_PAYMENT).then(function(response) {
             addResponse = response.data;
