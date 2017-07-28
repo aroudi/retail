@@ -100,6 +100,7 @@ var service_uri = {
     'PROJECT_GET_ALL_URI' : 'billOfQuantity/getAllProjects',
     'UPDATE_BOQ_STOCK_URI'  : 'billOfQuantity/updateStockQty',
     'BOQ_EXPORT_PICKING_SLIP_PDF' : 'billOfQuantity/pickingSlip/exportPdf/',
+    'BOQ_DELETE_LIST_URI' : 'billOfQuantity/deleteBoqList',
     'MEDIA_TYPE_ALL_URI' : 'paymentMedia/getAllMediaTypes',
     'MEDIA_TYPE_GET_BYNAME_URI' : 'paymentMedia/getMediaTypeByName/',
     'PAYMENT_MEDIA_OF_TYPE_URI' : 'paymentMedia/getOfMediatype/',

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI, CREATE_PO_FROM_BOQ_URI, BOQ_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, PROJECT_GET_ALL_URI, BOQ_STATUS_URI, BOQ_EXPORT_PICKING_SLIP_PDF) {
+cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI, CREATE_PO_FROM_BOQ_URI, BOQ_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, PROJECT_GET_ALL_URI, BOQ_STATUS_URI, BOQ_EXPORT_PICKING_SLIP_PDF, BOQ_DELETE_LIST_URI) {
     $scope.getPage = function(){
         $scope.searchForm.pageNo = paginationOptions.pageNumber*1 ;
         $scope.searchForm.pageSize = paginationOptions.pageSize;
@@ -190,6 +190,31 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
         }
         var exportUrl = BOQ_EXPORT_PICKING_SLIP_PDF + row.entity.id;
         baseDataService.pdfViewer(exportUrl);
+    }
+
+    $scope.deleteBoqList= function() {
+        var selectedBoqList = [];
+        if ($scope.gridApi.selection.getSelectedRows() === undefined || $scope.gridApi.selection.getSelectedRows().length < 1){
+            baseDataService.displayMessage('info', 'not selected', 'please select item/s to delete');
+            return;
+        }
+        baseDataService.displayMessage('yesNo','Confirmation required!!','Do you want to delete selected rows?').then(function(result){
+            if (result) {
+                for (var i = 0; i < $scope.gridApi.selection.getSelectedRows().length; i++) {
+                    selectedBoqList.push($scope.gridApi.selection.getSelectedRows()[i].id)
+                }
+                baseDataService.addRow(selectedBoqList, BOQ_DELETE_LIST_URI).then(function(response) {
+                    var response = response.data;
+                    if (response.status != SUCCESS ) {
+                        baseDataService.displayMessage('info', 'warning', 'Not able to delete. message:' + response.message);
+                    } else {
+                        $scope.getPage();
+                    }
+                });
+            } else {
+                return;
+            }
+        });
     }
 
 });

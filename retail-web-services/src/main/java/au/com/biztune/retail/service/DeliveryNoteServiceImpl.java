@@ -53,6 +53,12 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
     @Autowired
     private TxnDao txnDao;
 
+    @Autowired
+    private BoqDetailDao boqDetailDao;
+    @Autowired
+    private BillOfQuantityDao billOfQuantityDao;
+
+
     /**
      * save DeliveryNote into database.
      * @param deliveryNoteHeader deliveryNoteHeader
@@ -258,6 +264,8 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
 
             //update linked po sale order.
             updatePurchaseOrderLinkedSaleOrderStatus(deliveryNoteHeader.getPohId());
+            //update linked boq status.
+            updatePurchaseOrderLinkedBoqStatus(deliveryNoteHeader.getPohId());
             return true;
 
         } catch (Exception e) {
@@ -293,6 +301,8 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 poBoqLink.setStatus(status);
                 poBoqLink.setComment(purchaseLine.getPolFreeText());
                 poBoqLinkDao.updateQtyReceived(poBoqLink);
+                //update qty on linked boqdetail.
+                boqDetailDao.updateQtyAndStatus(poBoqLink.getPoQtyReceived(), poBoqLink.getBoqQtyBalance(), poBoqLink.getStatus().getId(), poBoqLink.getBoqId());
                 if (qtyRemain == 0) {
                     break;
                 }
@@ -400,6 +410,52 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             logger.error("Exception in updating linked po sale order", e);
         }
     }
+
+
+    /**
+     * update status of linked BOQ.
+     * @param pohId purchaes order header id.
+     */
+    private void updatePurchaseOrderLinkedBoqStatus(long pohId) {
+        try {
+            final List<PoBoqLink> linkedBoqList = poBoqLinkDao.getAllPoBoqLinkPerPohId(pohId);
+            //update the boq status.
+            //extract boqs from list: group linked boq per boqId
+            final Map<Long, List<PoBoqLink>> extractedBoqIdList = linkedBoqList
+                    .stream()
+                    .collect(Collectors
+                            .groupingBy(PoBoqLink::getBoqId));
+
+            //for each boqId, extract the boq record and change the status
+            extractedBoqIdList.forEach((extractedBoqId, linkedBoqs) -> {
+                final List<BoqDetail> boqDetailList = boqDetailDao.getBoqDetailLightByBoqId(extractedBoqId);
+                final long receivedCount = boqDetailList
+                        .stream()
+                        .map(BoqDetail::getBqdStatus)
+                        .filter(status -> (status != null) && (status.getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_GOOD_RECEIVED)))
+                        .count();
+
+                final long partialReceivedCount = boqDetailList
+                        .stream()
+                        .map(BoqDetail::getBqdStatus)
+                        .filter(status -> (status != null) && (status.getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_PARTIAL_RECEIVED)))
+                        .count();
+
+                //if all items received
+                if (receivedCount == boqDetailList.size()) {
+                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_RECEIVED);
+                    billOfQuantityDao.updateBoqStatusPerId(extractedBoqId, newStatus.getId());
+                } else if (partialReceivedCount > 0 || receivedCount > 0) {
+                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_PARTIAL_REC);
+                    billOfQuantityDao.updateBoqStatusPerId(extractedBoqId, newStatus.getId());
+                }
+            });
+
+        } catch (Exception e) {
+            logger.error("Exception in updating linked po sale order", e);
+        }
+    }
+
     /**
      * update stockQuantity.
      * @param deliveryNoteHeader deliveryNoteHeader

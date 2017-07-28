@@ -27,6 +27,23 @@
         <collection property="linkedPurchaseOrders" javaType="ArrayList" column="BOQ_DETAIL_ID" ofType="PoBoqLink" select="au.com.biztune.retail.dao.PoBoqLinkDao.getPoBoqLinkPerBoqDetailId"/>
     </resultMap>
 
+    <resultMap id="BoqDetailLightMap" type="BoqDetail" >
+        <id column="BOQ_DETAIL_ID" property="id" />
+        <result column="PROD_IS_NEW" property="prodIsNew" />
+        <result column="QUANTITY" property="quantity" />
+        <result column="QTY_ON_STOCK" property="qtyOnStock" />
+        <result column="QTY_PURCHASED" property="qtyPurchased" />
+        <result column="QTY_RECEIVED" property="qtyReceived" />
+        <result column="QTY_BALANCE" property="qtyBalance" />
+        <result column="COST" property="cost" />
+        <result column="ITEM_VALUE" property="itemValue" />
+        <result column="MARGIN" property="margin" />
+        <result column="SELL_PRICE" property="sellPrice" />
+        <result column="COMMENT" property="comment" />
+        <result column="CHANGE_COMMENT" property="changeComment" />
+        <association property="bqdStatus" column="BQD_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+    </resultMap>
+
     <resultMap id="BoqDetailCompleteMap" type="BoqDetail" >
         <id column="BOQ_DETAIL_ID" property="id" />
         <result column="PROD_IS_NEW" property="prodIsNew" />
@@ -79,6 +96,13 @@
     </sql>
 
     <select id="getBoqDetailByBoqId" resultMap="BoqDetailMap" >
+        <include refid="getBoqDetail">
+        </include>
+        WHERE
+        boqd.BOQ_ID = #{value}
+    </select>
+
+    <select id="getBoqDetailLightByBoqId" resultMap="BoqDetailLightMap" >
         <include refid="getBoqDetail">
         </include>
         WHERE
@@ -313,6 +337,14 @@
         QTY_BALANCE = #{qtyBalance},
         BQD_STATUS = #{bqdStatus.id}
         WHERE BOQ_DETAIL_ID = #{id}
+    </update>
+
+    <update id="updateQtyAndStatus" >
+        UPDATE BOQ_DETAIL SET
+        QTY_RECEIVED = #{param1},
+        QTY_BALANCE = #{param2},
+        BQD_STATUS = #{param3}
+        WHERE BOQ_DETAIL_ID = #{param4}
     </update>
 
     <delete id="deleteBoqDetailPerBoqId" >

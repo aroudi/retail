@@ -18,7 +18,6 @@ import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -143,6 +142,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
      * @param purchaseOrderHeader purchaseOrderHeader
      * @return Response
      */
+    /*
     public CommonResponse updateLinkedBqos(PurchaseOrderHeader purchaseOrderHeader) {
         final CommonResponse response = new CommonResponse();
         final HashMap<Long, String> poLinkedBoqs = new HashMap<Long, String>();
@@ -244,7 +244,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             return response;
         }
     }
-
+    */
     /**
      * create Purchase Order From Boq.
      * @param boqDetail boqDetail

@@ -115,6 +115,7 @@ public class PurchaseOrderRest {
      * @param purchaseOrderHeader purchaseOrderHeader
      * @return CommonResponse
      */
+    /*
     @Secured
     @Path("/updateLinkedBoqs")
     @POST
@@ -123,13 +124,12 @@ public class PurchaseOrderRest {
     public CommonResponse updateLinkedBqos (PurchaseOrderHeader purchaseOrderHeader) {
         return purchaseOrderService.updateLinkedBqos(purchaseOrderHeader);
     }
-
+    */
     /**
      * Returns list of Purchase Order Header confirmed.
      * @param suppId suppId.
      * @return list of confirmed purchase order header
      */
-
     @Secured
     @Path("/header/search/orguIdSupIdStatusId/{suppId}")
     @GET

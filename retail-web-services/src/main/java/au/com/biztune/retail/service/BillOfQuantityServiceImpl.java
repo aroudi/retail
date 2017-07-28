@@ -839,4 +839,24 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             return  null;
         }
     }
+
+    /**
+     * delete boq list.
+     * @param boqIdList boqIdList
+     * @return response.
+     */
+    public CommonResponse deleteBoqPerIdList(List<Long> boqIdList) {
+        final CommonResponse response = new CommonResponse();
+        try {
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+            billOfQuantityDao.deleteBoqDetailPerBoqId(boqIdList);
+            billOfQuantityDao.deleteBoqPerId(boqIdList);
+            return response;
+        } catch (Exception e) {
+            logger.error("Error in getting project list", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Error in deleting BOQ" + e.getMessage());
+            return  response;
+        }
+    }
 }

@@ -78,4 +78,23 @@ public interface BillOfQuantityDao {
      * @return query total records.
      */
     long getBillOfQuantityQueryTotalRows(long orguId, List<SearchClause> searchClauses);
+
+    /**
+     * update boq status per id.
+     * @param statusId statusId
+     * @param boqId boqId
+     */
+    void updateBoqStatusPerId(long statusId, long boqId);
+
+    /**
+     * delete boq detail per id.
+     * @param boqIdList boqIdList
+     */
+    void deleteBoqPerId(List<Long> boqIdList);
+
+    /**
+     * delete boqdetail per boq id.
+     * @param boqIdList boqIdList
+     */
+    void deleteBoqDetailPerBoqId(List<Long> boqIdList);
 }

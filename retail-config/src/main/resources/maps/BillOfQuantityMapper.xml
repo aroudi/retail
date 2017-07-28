@@ -283,4 +283,30 @@
         UPDATE BILL_OF_QUANTITY set BOQ_STATUS = #{boqStatus.id}
         WHERE BOQ_ID = #{id}
     </update>
+    <update id="updateBoqStatusPerId">
+        UPDATE BILL_OF_QUANTITY set BOQ_STATUS = #{param1}
+        WHERE BOQ_ID = #{param2}
+    </update>
+    <delete id="deleteBoqPerId" >
+        DELETE
+        From BILL_OF_QUANTITY
+        WHERE
+        BOQ_ID IN
+        <foreach collection="list" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+    <delete id="deleteBoqDetailPerBoqId" >
+        DELETE
+        From BOQ_DETAIL
+        WHERE
+        BOQ_ID IN
+        <foreach collection="list" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+
 </mapper>

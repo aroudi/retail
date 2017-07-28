@@ -47,6 +47,12 @@ public interface BoqDetailDao {
     List<BoqDetail> getBoqDetailByBoqId(long id);
 
     /**
+     * get boq detail light records with boq id.
+     * @param boqId boqId
+     * @return list of boq detail.
+     */
+    List<BoqDetail> getBoqDetailLightByBoqId(long boqId);
+    /**
      * get all BOQ Details for multiple boq ids.
      * @param boqIds list of BOQ id.
      * @return List of BoqDetail
@@ -71,4 +77,13 @@ public interface BoqDetailDao {
      * @param boqLineId boqLineId
      */
     void deleteBoqDetailPerId(long boqLineId);
+
+    /**
+     * update boq detail qty and stauts.
+     * @param qtyReceived qtyReceived
+     * @param qtyBalance qtyBalance
+     * @param statusId statusId
+     * @param boqDetailId boqDetailId
+     */
+    void updateQtyAndStatus(double qtyReceived, double qtyBalance, long statusId, long boqDetailId);
 }

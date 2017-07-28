@@ -79,4 +79,11 @@ public interface BillOfQuantityService {
      * @return project list.
      */
     List<Project> getAllProjects();
+
+    /**
+     * delete boq list.
+     * @param boqIdList boqIdList
+     * @return response.
+     */
+    CommonResponse deleteBoqPerIdList(List<Long> boqIdList);
     }

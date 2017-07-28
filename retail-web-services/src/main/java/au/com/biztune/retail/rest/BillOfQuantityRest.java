@@ -160,4 +160,18 @@ public class BillOfQuantityRest {
     public List<Project> getAllProject () {
         return billOfQuantityService.getAllProjects();
     }
+
+    /**
+     * crate a Sale Transaction.
+     * @param boqIdList boqIdList
+     * @return List of generated purchase orders.
+     */
+    @Secured
+    @Path("/deleteBoqList")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse deleteBoqListPerId (List<Long> boqIdList) {
+        return billOfQuantityService.deleteBoqPerIdList(boqIdList);
+    }
 }
