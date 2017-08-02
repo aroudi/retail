@@ -361,4 +361,12 @@
         BOQ_DETAIL_ID = #{value}
     </delete>
 
+    <update id="updateQtyPurchasedReceivedAndQty" >
+        UPDATE BOQ_DETAIL SET
+        QTY_PURCHASED = #{param1},
+        QTY_RECEIVED = #{param2},
+        QTY_BALANCE = #{param3},
+        BQD_STATUS = #{param4}
+        WHERE BOQ_DETAIL_ID = #{param5}
+    </update>
 </mapper>

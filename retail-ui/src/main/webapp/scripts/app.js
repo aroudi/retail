@@ -134,6 +134,7 @@ var service_uri = {
     'POH_UPDATE_LINKED_BOQS_URI' : 'purchaseOrder/updateLinkedBoqs',
     'POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI' : 'purchaseOrder/header/search/orguIdSupIdStatusId/',
     'POH_GET_ALL_POH_NOT_FULLY_RECEIVED_URI':'purchaseOrder/header/getAllNotFullyReceived',
+    'POH_DELETE_URI' : 'purchaseOrder/header/delete/',
     'DEL_NOTE_SAVE_URI' : 'deliveryNote/add',
     'DEL_NOTE_SEARCH_URI' : 'deliveryNote/header/search',
     'DEL_NOTE_SEARCH_PAGING_URI' : 'deliveryNote/header/searchPaging',

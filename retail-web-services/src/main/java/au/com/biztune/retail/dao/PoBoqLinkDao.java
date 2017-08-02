@@ -67,4 +67,10 @@ public interface PoBoqLinkDao {
      * @return List of PoBoqLink contains project codes.
      */
     List<PoBoqLink> getAllPoProjectCodesPerPohId(long pohId);
+
+    /**
+     * delete all po_boq link per poh id.
+     * @param pohId pohId
+     */
+    void deletePoBoqLinkPerPohId(long pohId);
 }

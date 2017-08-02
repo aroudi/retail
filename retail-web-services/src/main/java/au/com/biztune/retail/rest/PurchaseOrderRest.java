@@ -256,4 +256,21 @@ public class PurchaseOrderRest {
             return null;
         }
     }
+    /**
+     * delete purchase order.
+     * @param txhdId sale order id.
+     * @return Response.
+     */
+    @Secured
+    @Path("/header/delete/{txhdId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse deletePurchaseOrder(@PathParam("txhdId") long txhdId) {
+        try {
+            return purchaseOrderService.deletePurchaseOrderPerPhoId(txhdId);
+        } catch (Exception e) {
+            logger.error ("Error in deleting purchase order:", e);
+            return null;
+        }
+    }
 }

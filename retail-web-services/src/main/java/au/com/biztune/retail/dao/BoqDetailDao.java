@@ -11,18 +11,21 @@ public interface BoqDetailDao {
 
     /**
      * insert BOQDetail.
+     *
      * @param boqDetail boqDetail
      */
     void insert(BoqDetail boqDetail);
 
     /**
      * update BOQDetail.
+     *
      * @param boqDetail boqDetail
      */
     void updatePerId(BoqDetail boqDetail);
 
     /**
      * update boqDetail Stock info.
+     *
      * @param boqDetail boqDetail
      */
     void updateStockQty(BoqDetail boqDetail);
@@ -30,17 +33,21 @@ public interface BoqDetailDao {
 
     /**
      * update boqDetail info.
+     *
      * @param boqDetail boqDetail
      */
     void updateBoqLine(BoqDetail boqDetail);
+
     /**
      * delete BOQDetail per boqId.
+     *
      * @param boqId boqId
      */
     void deleteBoqDetailPerBoqId(long boqId);
 
     /**
      * get list of BoqDetail by BoqId.
+     *
      * @param id id
      * @return List of BoqDetail
      */
@@ -48,12 +55,15 @@ public interface BoqDetailDao {
 
     /**
      * get boq detail light records with boq id.
+     *
      * @param boqId boqId
      * @return list of boq detail.
      */
     List<BoqDetail> getBoqDetailLightByBoqId(long boqId);
+
     /**
      * get all BOQ Details for multiple boq ids.
+     *
      * @param boqIds list of BOQ id.
      * @return List of BoqDetail
      */
@@ -61,6 +71,7 @@ public interface BoqDetailDao {
 
     /**
      * get BOQDetail by id.
+     *
      * @param id id
      * @return BOQDetail
      */
@@ -68,22 +79,36 @@ public interface BoqDetailDao {
 
     /**
      * update received, balance and status.
+     *
      * @param boqDetail boqDetail
      */
     void updateQtyReceived(BoqDetail boqDetail);
 
     /**
      * delete BoqDetail per lineid.
+     *
      * @param boqLineId boqLineId
      */
     void deleteBoqDetailPerId(long boqLineId);
 
     /**
      * update boq detail qty and stauts.
+     *
      * @param qtyReceived qtyReceived
-     * @param qtyBalance qtyBalance
-     * @param statusId statusId
+     * @param qtyBalance  qtyBalance
+     * @param statusId    statusId
      * @param boqDetailId boqDetailId
      */
     void updateQtyAndStatus(double qtyReceived, double qtyBalance, long statusId, long boqDetailId);
+
+    /**
+     * update boq detail qty and stauts.
+     *
+     * @param qtyPurchased qtyPurchased
+     * @param qtyReceived qtyReceived
+     * @param qtyBalance  qtyBalance
+     * @param statusId    statusId
+     * @param boqDetailId boqDetailId
+     */
+    void updateQtyPurchasedReceivedAndQty(double qtyPurchased, double qtyReceived, double qtyBalance, long statusId, long boqDetailId);
 }

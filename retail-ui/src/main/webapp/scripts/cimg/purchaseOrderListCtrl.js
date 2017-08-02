@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI, POH_EXPORT_PDF, POH_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, POH_STATUS_URI, POH_CREATION_TYPE_URI) {
+cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI, POH_EXPORT_PDF, POH_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, POH_STATUS_URI, POH_CREATION_TYPE_URI, POH_DELETE_URI) {
 
     $scope.model= {};
     //$scope.model.supplier= {};
@@ -86,7 +86,7 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             subGridVariable: 'subGridScopeVariable'
         } ,
         columnDefs: [
-            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewPohDetail(row, false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.viewPohDetail(row, true)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'8%' },
+            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewPohDetail(row, false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.viewPohDetail(row, true)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>&nbsp;<a href=""><i tooltip="Delete" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-show="row.entity.pohStatus.categoryCode === \'POH_STATUS_IN_PROGRESS\'" ng-click="grid.appScope.deletePurchaseOrder(row)"></i></a>', width:'8%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'pohOrderNumber', displayName:'Order No',enableCellEdit:false, width:'6%',
                 cellTemplate:'<a href="" ng-click="grid.appScope.viewPohDetail(row)">{{row.entity.pohOrderNumber}}</a>'
@@ -250,5 +250,23 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
     $scope.exportToPdf = function(row) {
         var exportUrl = POH_EXPORT_PDF + row.entity.id;
         baseDataService.pdfViewer(exportUrl);
+    };
+
+    $scope.deletePurchaseOrder = function(row) {
+        var deletetUrl = POH_DELETE_URI + row.entity.id;
+        baseDataService.displayMessage('yesNo','Confirmation required!!','Do you want to delete purchase order?').then(function(result){
+            if (result) {
+                baseDataService.getBaseData(deletetUrl).then(function(response){
+                    var response = response.data;
+                    if (response.status === FAILURE) {
+                        baseDataService.displayMessage('info', 'Error', 'not able to delete: ' + response.message);
+                    }else {
+                        $scope.gridApi.core.setRowInvisible(row);
+                    }
+                });
+            } else {
+                return;
+            }
+        });
     }
 });

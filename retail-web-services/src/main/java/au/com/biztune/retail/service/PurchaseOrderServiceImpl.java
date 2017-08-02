@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
@@ -19,6 +20,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by arash on 14/05/2016.
@@ -53,6 +56,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     private SecurityContext securityContext;
 
+    @Autowired
+    private TxnDao txnDao;
     /**
      * save Purchase Order Header into database.
      * @param purchaseOrderHeader purchaseOrderHeader
@@ -721,6 +726,181 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         } catch (Exception e) {
             logger.error("Exception in getting purchase order header list per product:", e);
             return null;
+        }
+    }
+
+    /**
+     * delete purchase order per poh id.
+     * @param pohId pohId
+     * @return CommonResponse.
+     */
+    @Transactional
+    public CommonResponse deletePurchaseOrderPerPhoId(long pohId) {
+        final CommonResponse response = new CommonResponse();
+        try {
+            //-------------------------------------begin of changing status of linked boq-----------------------------------------------------
+            //check the status of pohId. we only delete the purchase order with status 'IN PROGRESS'
+            final PurchaseOrderHeader purchaseOrderHeader = purchaseOrderDao.getPurchaseOrderWholePerPohId(pohId);
+            if (purchaseOrderHeader == null || !purchaseOrderHeader.getPohStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_IN_PROGRESS)) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("Not allowed");
+                return response;
+            }
+            //get all po_boq_links for this purchase order and update their status.
+            final List<PoBoqLink> linkedBoqList = poBoqLinkDao.getAllPoBoqLinkPerPohId(pohId);
+            final ConfigCategory pendingStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_PENDING);
+
+            if (linkedBoqList != null) {
+                linkedBoqList.forEach(poBoqLink -> {
+                    //update the status and qtys on linked boq detail.
+                    boqDetailDao.updateQtyPurchasedReceivedAndQty(0.00,
+                            0.00, poBoqLink.getBoqQtyTotal(), pendingStatus.getId(), poBoqLink.getBoqDetailId());
+                });
+            }
+            //update the BOQ satus.
+            updatePurchaseOrderLinkedBoqStatus(pohId);
+            //delete poBoqLink lines.
+            poBoqLinkDao.deletePoBoqLinkPerPohId(pohId);
+
+            //-------------------------------------begin of changing status of linked sale orders-----------------------------------------------------
+
+            //get all po_so_links for this purchase order and update their status.
+            final ConfigCategory outStandingStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_OUTSTANDING);
+            final List<PoSoLink> linkedSoList = poSoLinkDao.getAllPoSoLinkPerPohId(pohId);
+            if (linkedSoList != null) {
+                linkedSoList.forEach(poSoLink -> {
+                    //update the status and qtys on linked boq detail.
+                    final TxnDetail txnDetail = txnDao.getTxnDetailPerId(poSoLink.getTxdeId());
+                    txnDetail.setStatus(outStandingStatus);
+                    txnDetail.setTxdeQtyOrdered(txnDetail.getTxdeQtyOrdered() - poSoLink.getSoLineQtyTotal());
+                    txnDao.updateTxnDetailBackOrderAndStatus(txnDetail);
+                });
+            }
+            //update Sale Order status
+            updatePurchaseOrderLinkedSaleOrderStatus(pohId);
+            poSoLinkDao.deletePoSoLinkPerPohId(pohId);
+            //-------------------------------------delete purchase order itself-----------------------------------------------------
+            //delete purchase order lines.
+            purchaseOrderDao.deletePurchaseLinePerPohId(pohId);
+            //delete purchase order header itself.
+            purchaseOrderDao.deletePurchaseOrderPerId(pohId);
+
+
+            return response;
+
+        } catch (Exception e) {
+            logger.error("Exception in deleting purchase order", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage(e.getMessage());
+            return response;
+        }
+    }
+
+    /**
+     * update status of linked BOQ.
+     * @param pohId purchaes order header id.
+     */
+    public void updatePurchaseOrderLinkedBoqStatus(long pohId) {
+        try {
+            final List<PoBoqLink> linkedBoqList = poBoqLinkDao.getAllPoBoqLinkPerPohId(pohId);
+            //update the boq status.
+            //extract boqs from list: group linked boq per boqId
+            final Map<Long, List<PoBoqLink>> extractedBoqIdList = linkedBoqList
+                    .stream()
+                    .collect(Collectors
+                            .groupingBy(PoBoqLink::getBoqId));
+
+            //for each boqId, extract the boq record and change the status
+            extractedBoqIdList.forEach((extractedBoqId, linkedBoqs) -> {
+                final List<BoqDetail> boqDetailList = boqDetailDao.getBoqDetailLightByBoqId(extractedBoqId);
+                final long receivedCount = boqDetailList
+                        .stream()
+                        .map(BoqDetail::getBqdStatus)
+                        .filter(status -> (status != null) && (status.getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_GOOD_RECEIVED)))
+                        .count();
+
+                final long partialReceivedCount = boqDetailList
+                        .stream()
+                        .map(BoqDetail::getBqdStatus)
+                        .filter(status -> (status != null) && (status.getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_PARTIAL_RECEIVED)))
+                        .count();
+
+                final long pendingCount = boqDetailList
+                        .stream()
+                        .map(BoqDetail::getBqdStatus)
+                        .filter(status -> (status != null) && (status.getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_PENDING)))
+                        .count();
+                if (pendingCount > 0) {
+                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_NEW);
+                    billOfQuantityDao.updateBoqStatusPerId(newStatus.getId(), extractedBoqId);
+                    return;
+                }
+                //if all items received
+                if (receivedCount == boqDetailList.size()) {
+                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_RECEIVED);
+                    billOfQuantityDao.updateBoqStatusPerId(newStatus.getId(), extractedBoqId);
+                } else if (partialReceivedCount > 0 || receivedCount > 0) {
+                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_PARTIAL_REC);
+                    billOfQuantityDao.updateBoqStatusPerId(newStatus.getId(), extractedBoqId);
+                }
+            });
+
+        } catch (Exception e) {
+            logger.error("Exception in updating linked po sale order", e);
+        }
+    }
+
+    /**
+     * update order status of linked sales orders.
+     * @param pohId purchaes order header id.
+     */
+    public void updatePurchaseOrderLinkedSaleOrderStatus(long pohId) {
+        try {
+            final List<PoSoLink> linkedSoList = poSoLinkDao.getAllPoSoLinkPerPohId(pohId);
+            //update the sale order status.
+            //extract sale orders from list: group linked sales order per txhdId
+            final Map<Long, List<PoSoLink>> extractedtxhdIdList = linkedSoList
+                    .stream()
+                    .collect(Collectors
+                            .groupingBy(PoSoLink::getTxhdId));
+
+            //for each txhdId, extract the transactionHeader and change the status
+            extractedtxhdIdList.forEach((extractedtxhdId, linkedSaleOrderList) -> {
+                final List<TxnDetail> saleOrderLineList = txnDao.getTxnDetailStatusPerTxhdId(extractedtxhdId);
+                final long receivedCount = saleOrderLineList
+                        .stream()
+                        .map(TxnDetail::getStatus)
+                        .filter(orderStatus -> (orderStatus != null) && (orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_RECEIVED)))
+                        .count();
+
+                final long outsTandingCount = saleOrderLineList
+                        .stream()
+                        .map(TxnDetail::getStatus)
+                        .filter(orderStatus -> orderStatus == null || orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_OUTSTANDING))
+                        .count();
+                final long partialReceivedCount = saleOrderLineList
+                        .stream()
+                        .map(TxnDetail::getStatus)
+                        .filter(orderStatus -> (orderStatus != null) && (orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_PARTIAL_REC)))
+                        .count();
+
+                if (outsTandingCount > 0) {
+                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_OUTSTANDING);
+                    txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
+                    return;
+                }
+                //if all items received
+                if (receivedCount == saleOrderLineList.size()) {
+                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_RECEIVED);
+                    txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
+                } else if (partialReceivedCount > 0) {
+                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_PARTIAL_REC);
+                    txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
+                }
+            });
+
+        } catch (Exception e) {
+            logger.error("Exception in updating linked po sale order", e);
         }
     }
 }

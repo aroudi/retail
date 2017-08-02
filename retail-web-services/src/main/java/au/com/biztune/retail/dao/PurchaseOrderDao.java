@@ -173,4 +173,16 @@ public interface PurchaseOrderDao {
      * @return List of purchase order header linked to sale order
      */
     List<PurchaseOrderHeader> getAllPurchaseOrderOfSaleOrder(long orguId, long txhdId);
+
+    /**
+     * delete purchase order per id.
+     * @param pohId pohId
+     */
+    void deletePurchaseOrderPerId(long pohId);
+
+    /**
+     * delete purchase line per pohId.
+     * @param pohId pohId
+     */
+    void deletePurchaseLinePerPohId(long pohId);
 }

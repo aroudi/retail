@@ -65,4 +65,10 @@ public interface PoSoLinkDao {
      * @return list of poSoLink
      */
     List<PoSoLink> getAllPoSoProjectCodesPerPohId(long pohId);
+
+    /**
+     * delete po_so_link per purchase order header id.
+     * @param pohId pohId
+     */
+    void deletePoSoLinkPerPohId(long pohId);
 }

@@ -159,4 +159,11 @@
         TXDE_ID = #{value}
     </delete>
 
+    <delete id="deletePoSoLinkPerPohId" >
+        DELETE
+        From PO_SO_LINK
+        WHERE
+        POH_ID = #{value}
+    </delete>
+
 </mapper>

@@ -122,4 +122,23 @@ public interface PurchaseOrderService {
      * @return List of purchase order linked to sale order
      */
     List<PurchaseOrderHeader> getAllPurchaseOrderOfSaleOrder(long txhdId);
+
+    /**
+     * update status of linked BOQ.
+     * @param pohId purchaes order header id.
+     */
+    void updatePurchaseOrderLinkedBoqStatus(long pohId);
+
+    /**
+     * delete purchase order per poh id.
+     * @param pohId pohId
+     * @return CommonResponse.
+     */
+    CommonResponse deletePurchaseOrderPerPhoId(long pohId);
+
+    /**
+     * update order status of linked sales orders.
+     * @param pohId purchaes order header id.
+     */
+    void updatePurchaseOrderLinkedSaleOrderStatus(long pohId);
 }

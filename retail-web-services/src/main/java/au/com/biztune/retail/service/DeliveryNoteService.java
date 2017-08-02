@@ -50,4 +50,5 @@ public interface DeliveryNoteService {
      * @return List of Delivery Note
      */
     GeneralSearchForm searchDeliveryNotePaging(GeneralSearchForm searchForm);
+
     }

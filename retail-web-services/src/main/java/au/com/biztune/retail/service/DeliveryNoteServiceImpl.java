@@ -18,8 +18,6 @@ import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by arash on 14/05/2016.
@@ -58,6 +56,8 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
     @Autowired
     private BillOfQuantityDao billOfQuantityDao;
 
+    @Autowired
+    private PurchaseOrderService purchaseOrderService;
 
     /**
      * save DeliveryNote into database.
@@ -263,9 +263,9 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             }
 
             //update linked po sale order.
-            updatePurchaseOrderLinkedSaleOrderStatus(deliveryNoteHeader.getPohId());
+            purchaseOrderService.updatePurchaseOrderLinkedSaleOrderStatus(deliveryNoteHeader.getPohId());
             //update linked boq status.
-            updatePurchaseOrderLinkedBoqStatus(deliveryNoteHeader.getPohId());
+            purchaseOrderService.updatePurchaseOrderLinkedBoqStatus(deliveryNoteHeader.getPohId());
             return true;
 
         } catch (Exception e) {
@@ -359,105 +359,7 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
         }
     }
 
-    /**
-     * update order status of linked sales orders.
-     * @param pohId purchaes order header id.
-     */
-    private void updatePurchaseOrderLinkedSaleOrderStatus(long pohId) {
-        try {
-            final List<PoSoLink> linkedSoList = poSoLinkDao.getAllPoSoLinkPerPohId(pohId);
-            //update the sale order status.
-            //extract sale orders from list: group linked sales order per txhdId
-            final Map<Long, List<PoSoLink>> extractedtxhdIdList = linkedSoList
-                    .stream()
-                    .collect(Collectors
-                            .groupingBy(PoSoLink::getTxhdId));
-
-            //for each txhdId, extract the transactionHeader and change the status
-            extractedtxhdIdList.forEach((extractedtxhdId, linkedSaleOrderList) -> {
-                final List<TxnDetail> saleOrderLineList = txnDao.getTxnDetailStatusPerTxhdId(extractedtxhdId);
-                final long receivedCount = saleOrderLineList
-                        .stream()
-                        .map(TxnDetail::getStatus)
-                        .filter(orderStatus -> (orderStatus != null) && (orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_RECEIVED)))
-                        .count();
-
-                final long outsTandingCount = saleOrderLineList
-                        .stream()
-                        .map(TxnDetail::getStatus)
-                        .filter(orderStatus -> orderStatus == null || orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_OUTSTANDING))
-                        .count();
-                final long partialReceivedCount = saleOrderLineList
-                        .stream()
-                        .map(TxnDetail::getStatus)
-                        .filter(orderStatus -> (orderStatus != null) && (orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_PARTIAL_REC)))
-                        .count();
-
-                //if all items received
-                if (receivedCount == saleOrderLineList.size()) {
-                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_RECEIVED);
-                    txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
-                } else if (partialReceivedCount > 0) {
-                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_PARTIAL_REC);
-                    txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
-                } else if (outsTandingCount > 0) {
-                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_OUTSTANDING);
-                    txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
-                }
-            });
-
-        } catch (Exception e) {
-            logger.error("Exception in updating linked po sale order", e);
-        }
-    }
-
-
-    /**
-     * update status of linked BOQ.
-     * @param pohId purchaes order header id.
-     */
-    private void updatePurchaseOrderLinkedBoqStatus(long pohId) {
-        try {
-            final List<PoBoqLink> linkedBoqList = poBoqLinkDao.getAllPoBoqLinkPerPohId(pohId);
-            //update the boq status.
-            //extract boqs from list: group linked boq per boqId
-            final Map<Long, List<PoBoqLink>> extractedBoqIdList = linkedBoqList
-                    .stream()
-                    .collect(Collectors
-                            .groupingBy(PoBoqLink::getBoqId));
-
-            //for each boqId, extract the boq record and change the status
-            extractedBoqIdList.forEach((extractedBoqId, linkedBoqs) -> {
-                final List<BoqDetail> boqDetailList = boqDetailDao.getBoqDetailLightByBoqId(extractedBoqId);
-                final long receivedCount = boqDetailList
-                        .stream()
-                        .map(BoqDetail::getBqdStatus)
-                        .filter(status -> (status != null) && (status.getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_GOOD_RECEIVED)))
-                        .count();
-
-                final long partialReceivedCount = boqDetailList
-                        .stream()
-                        .map(BoqDetail::getBqdStatus)
-                        .filter(status -> (status != null) && (status.getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_PARTIAL_RECEIVED)))
-                        .count();
-
-                //if all items received
-                if (receivedCount == boqDetailList.size()) {
-                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_RECEIVED);
-                    billOfQuantityDao.updateBoqStatusPerId(extractedBoqId, newStatus.getId());
-                } else if (partialReceivedCount > 0 || receivedCount > 0) {
-                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_PARTIAL_REC);
-                    billOfQuantityDao.updateBoqStatusPerId(extractedBoqId, newStatus.getId());
-                }
-            });
-
-        } catch (Exception e) {
-            logger.error("Exception in updating linked po sale order", e);
-        }
-    }
-
-    /**
-     * update stockQuantity.
+    /**     * update stockQuantity.
      * @param deliveryNoteHeader deliveryNoteHeader
      * @param deliveryNoteLine deliveryNoteLine
      * @param linkedPurchaseLine linkedPurchaseLine

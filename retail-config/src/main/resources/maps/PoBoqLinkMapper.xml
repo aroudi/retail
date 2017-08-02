@@ -22,6 +22,23 @@
         <association property="projectName" column="PROJECT_ID" select="getProjectNameByProjectId" />
     </resultMap>
 
+    <resultMap id="PoBoqLinkLightMap" type="PoBoqLink" >
+        <id column="PBQL_ID" property="id" />
+        <result column="POH_ID" property="pohId" />
+        <result column="POH_ORDER_NUMBER" property="pohOrderNumber" />
+        <result column="POL_ID" property="polId" />
+        <result column="BOQ_ID" property="boqId" />
+        <result column="BOQ_NAME" property="boqName" />
+        <result column="PROJECT_ID" property="projectId" />
+        <result column="PROJECT_CODE" property="projectCode" />
+        <result column="BOQ_DETAIL_ID" property="boqDetailId" />
+        <result column="BOQ_QTY_TOTAL" property="boqQtyTotal" />
+        <result column="PO_QTY_RECEIVED" property="poQtyReceived" />
+        <result column="BOQ_QTY_BALANCE" property="boqQtyBalance" />
+        <result column="COMMENT" property="comment" />
+        <association property="status" column="BPQL_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+    </resultMap>
+
     <sql id="poBoqLinkColumns">
      ${alias}.PBQL_ID,
      ${alias}.POH_ID,
@@ -46,7 +63,7 @@
         PO_BOQ_LINK pboql
     </sql>
 
-    <select id="getAllPoBoqLinkPerPohId" resultMap="PoBoqLinkMap" >
+    <select id="getAllPoBoqLinkPerPohId" resultMap="PoBoqLinkLightMap" >
         <include refid="getPoBoqLink">
         </include>
         WHERE pboql.POH_ID = #{value}
@@ -169,6 +186,14 @@
         WHERE
         BOQ_DETAIL_ID = #{value}
     </delete>
+
+    <delete id="deletePoBoqLinkPerPohId" >
+        DELETE
+        From PO_BOQ_LINK
+        WHERE
+        POH_ID = #{value}
+    </delete>
+
     <select id="getProjectNameByProjectId" resultType="String" >
         select PROJECT_NAME FROM PROJECT WHERE PROJECT_ID = #{value}
     </select>

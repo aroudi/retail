@@ -347,7 +347,7 @@ public class ProductServiceImpl implements ProductService {
             if ("@ALL@".equals(searchStr)) {
                 searchCr = "";
             }
-            searchCr = "%" + searchStr + "%";
+            searchCr = "%" + searchCr + "%";
             return productDao.getAllProductSaleItemsPerOrgUnitId(searchCr);
 
         } catch (Exception e) {
