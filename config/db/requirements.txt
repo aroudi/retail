@@ -1,0 +1,6 @@
+02/08/17:
+
+1- can we cancel or delete Sale Order? if so what about sale orders that have been partially/fully paid?
+2- should we be able to delete delivery note
+3- bug: when sale order is finalised and user add payment, it try to submit the form
+4- bug: after creating Po from SO, it does not refresh the txn status

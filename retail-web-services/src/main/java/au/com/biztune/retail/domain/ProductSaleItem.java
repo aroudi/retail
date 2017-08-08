@@ -25,6 +25,7 @@ public class ProductSaleItem {
     private String prodWarrantyText;
     private Price sellPrice;
     private Price costPrice;
+    private double stockQty;
     private ProdOrguLink prodOrguLink;
     private String prodBarcode;
 
@@ -194,5 +195,13 @@ public class ProductSaleItem {
 
     public void setProdBarcode(String prodBarcode) {
         this.prodBarcode = prodBarcode;
+    }
+
+    public double getStockQty() {
+        return stockQty;
+    }
+
+    public void setStockQty(double stockQty) {
+        this.stockQty = stockQty;
     }
 }

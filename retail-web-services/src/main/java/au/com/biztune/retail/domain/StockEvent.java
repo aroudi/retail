@@ -30,6 +30,9 @@ public class StockEvent {
     private long stckCat;
     private String txnTypeConst;
     private String reasonConst;
+    private String txnTypeReservedFor;
+    private long txnNrReservedFor;
+    private long txnItemReservedFor;
 
     public long getId() {
         return id;
@@ -221,5 +224,29 @@ public class StockEvent {
 
     public void setReasonConst(String reasonConst) {
         this.reasonConst = reasonConst;
+    }
+
+    public String getTxnTypeReservedFor() {
+        return txnTypeReservedFor;
+    }
+
+    public void setTxnTypeReservedFor(String txnTypeReservedFor) {
+        this.txnTypeReservedFor = txnTypeReservedFor;
+    }
+
+    public long getTxnNrReservedFor() {
+        return txnNrReservedFor;
+    }
+
+    public void setTxnNrReservedFor(long txnNrReservedFor) {
+        this.txnNrReservedFor = txnNrReservedFor;
+    }
+
+    public long getTxnItemReservedFor() {
+        return txnItemReservedFor;
+    }
+
+    public void setTxnItemReservedFor(long txnItemReservedFor) {
+        this.txnItemReservedFor = txnItemReservedFor;
     }
 }

@@ -46,8 +46,10 @@ public class TxnDetail {
     // for invoice detail, parentId store txdeId of sale transaction.
     private long parentId;
     private double txidSurcharge;
-    //backorder quantity:
+    //QUANTITY ORDERED:
     private double txdeQtyOrdered;
+    //back order quantity: yet to be ordered
+    private double txdeQtyBackOrder;
     //received quantity from good received
     private double txdeQtyReceived;
     private double txdeQuantityOrdered;
@@ -506,5 +508,13 @@ public class TxnDetail {
 
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
+    }
+
+    public double getTxdeQtyBackOrder() {
+        return txdeQtyBackOrder;
+    }
+
+    public void setTxdeQtyBackOrder(double txdeQtyBackOrder) {
+        this.txdeQtyBackOrder = txdeQtyBackOrder;
     }
 }

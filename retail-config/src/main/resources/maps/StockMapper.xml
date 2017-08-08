@@ -35,6 +35,9 @@
         <result column="STCK_EVNT_DATE" property="stckEvntDate" />
         <result column="TXN_DATE" property="txnDate" />
         <result column="TXN_TYPE" property="txnType" />
+        <result column="TXN_TYPE_RESERVED_FOR" property="txnTypeReservedFor" />
+        <result column="TXN_NR_RESERVED_FOR" property="txnNrReservedFor" />
+        <result column="TXN_ITEM_RESERVED_FOR" property="txnItemReservedFor" />
         <result column="TXN_HEADER" property="txnHeader" />
         <result column="TXN_LINE" property="txnLine" />
         <result column="TXN_NUMBER" property="txnNumber" />
@@ -88,6 +91,9 @@
         ${alias}.TXN_DATE,
         ${alias}.TXN_TYPE,
         ${alias}.TXN_HEADER,
+        ${alias}.TXN_TYPE_RESERVED_FOR,
+        ${alias}.TXN_NR_RESERVED_FOR,
+        ${alias}.TXN_ITEM_RESERVED_FOR,
         ${alias}.TXN_LINE,
         ${alias}.TXN_NUMBER,
         ${alias}.STCK_LOCN_ID,
@@ -225,6 +231,9 @@
             STCK_EVNT_DATE,
             TXN_DATE,
             TXN_TYPE,
+            TXN_TYPE_RESERVED_FOR,
+            TXN_NR_RESERVED_FOR,
+            TXN_ITEM_RESERVED_FOR,
             TXN_HEADER,
             TXN_LINE,
             TXN_NUMBER,
@@ -290,6 +299,27 @@
             ,#{txnType}
         </if>
         <if test="txnType == null">
+            ,null
+        </if>
+
+        <if test="txnTypeReservedFor != null">
+            ,#{txnTypeReservedFor}
+        </if>
+        <if test="txnTypeReservedFor == null">
+            ,null
+        </if>
+
+        <if test="txnNrReservedFor != null">
+            ,#{txnNrReservedFor}
+        </if>
+        <if test="txnNrReservedFor == null">
+            ,null
+        </if>
+
+        <if test="txnItemReservedFor != null">
+            ,#{txnItemReservedFor}
+        </if>
+        <if test="txnItemReservedFor == null">
             ,null
         </if>
 

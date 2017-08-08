@@ -421,8 +421,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             purchaseLine.setPolUnitCost(productPurchaseItem.getPrice());
             purchaseLine.setPolSpecialBuy(false);
             purchaseLine.setUnitOfMeasure(productPurchaseItem.getUnitOfMeasure());
-            purchaseLine.setPolQtyOrdered(txnDetail.getTxdeQtyBalance() - txnDetail.getTxdeQtyOrdered());
-            purchaseLine.setPolQtyReserved(txnDetail.getTxdeQtyBalance() - txnDetail.getTxdeQtyOrdered());
+            purchaseLine.setPolQtyOrdered(txnDetail.getTxdeQtyBackOrder() - txnDetail.getTxdeQtyOrdered());
+            purchaseLine.setPolQtyReserved(txnDetail.getTxdeQtyBackOrder() - txnDetail.getTxdeQtyOrdered());
             purchaseLine.setPolValueOrdered(purchaseLine.getPolUnitCost() * purchaseLine.getPolQtyOrdered());
             if (productPurchaseItem.getUnitOfMeasureContent() != null) {
                 purchaseLine.setUnomContents(productPurchaseItem.getUnitOfMeasureContent());
@@ -502,8 +502,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             final PoSoLink poSoLink = new PoSoLink();
             poSoLink.setTxdeId(txnDetail.getId());
             poSoLink.setTxhdId(txnDetail.getTxhdId());
-            poSoLink.setSoLineQtyBalance(txnDetail.getTxdeQtyBalance() - txnDetail.getTxdeQtyOrdered());
-            poSoLink.setSoLineQtyTotal(txnDetail.getTxdeQtyBalance() - txnDetail.getTxdeQtyOrdered());
+            poSoLink.setSoLineQtyBalance(txnDetail.getTxdeQtyBackOrder() - txnDetail.getTxdeQtyOrdered());
+            poSoLink.setSoLineQtyTotal(txnDetail.getTxdeQtyBackOrder() - txnDetail.getTxdeQtyOrdered());
             poSoLink.setPohId(purchaseLine.getPohId());
             if (txnDetail.getProjectCode() != null) {
                 poSoLink.setProjectCode(txnDetail.getProjectCode());

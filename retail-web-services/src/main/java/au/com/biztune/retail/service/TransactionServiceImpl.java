@@ -182,7 +182,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeValueNet(txnDetailForm.getTxdeValueNet());
                 txnDetail.setTxdeQuantitySold(txnDetailForm.getTxdeQuantitySold());
                 txnDetail.setTxdeQtyBalance(txnDetailForm.getTxdeQtyBalance());
-                txnDetail.setTxdeQtyOrdered(txnDetailForm.getTxdeQtyOrdered());
+                txnDetail.setTxdeQtyBackOrder(txnDetailForm.getTxdeQtyBackOrder());
                 txnDetail.setTxdeQtyReceived(txnDetailForm.getTxdeQtyReceived());
                 txnDetail.setTxdeQtyTotalInvoiced(txnDetailForm.getTxdeQtyTotalInvoiced() + txnDetailForm.getTxdeQtyInvoiced());
                 txnDetail.setTxdePriceSold(txnDetailForm.getTxdePriceSold());
@@ -193,8 +193,7 @@ public class TransactionServiceImpl implements TransactionService {
                 if (txnDetailForm.getTxdeQtyBalance() == 0) {
                     final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_FINAL);
                     txnDetail.setStatus(status);
-                }
-                if (txnDetailForm.getTxdeQtyBalance() > txnDetailForm.getTxdeQtyOrdered()) {
+                } else if (txnDetailForm.getTxdeQtyBackOrder() > txnDetailForm.getTxdeQtyOrdered()) {
                     final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_OUTSTANDING);
                     txnDetail.setStatus(status);
                 }
@@ -499,6 +498,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetailForm.setCalculatedLineTax(txnDetailForm.getTxdeTax() * txnDetailForm.getCalculatedLineValue());
                 txnDetailForm.setTxidSurcharge(txnDetail.getTxidSurcharge());
                 txnDetailForm.setStatus(txnDetail.getStatus());
+                txnDetailForm.setTxdeQtyBackOrder(txnDetail.getTxdeQtyBackOrder());
                 txnDetailForm.setTxdeQtyOrdered(txnDetail.getTxdeQtyOrdered());
                 txnDetailForm.setTxdeQtyReceived(txnDetail.getTxdeQtyReceived());
 
@@ -1359,7 +1359,7 @@ public class TransactionServiceImpl implements TransactionService {
             }
             final long outStandingBalanceLineCount = txnHeader.getTxnDetails()
                     .stream()
-                    .filter(txnDetail -> txnDetail.getTxdeQtyBalance() > txnDetail.getTxdeQtyOrdered())
+                    .filter(txnDetail -> txnDetail.getStatus().getCategoryCode().equals(IdBConstant.SO_STATUS_OUTSTANDING))
                     .count();
             if (outStandingBalanceLineCount > 0) {
                 newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_OUTSTANDING);

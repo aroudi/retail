@@ -85,6 +85,7 @@
         <result column="TXDE_QUANTITY_SOLD" property="txdeQuantitySold" />
         <result column="TXDE_QUANTITY_SOLD" property="originalQuantity" /> <!-- we need this to figure out the change in quantity on sale order -->
         <result column="TXDE_QTY_ORDERED" property="txdeQtyOrdered" />
+        <result column="TXDE_QTY_BACK_ORDER" property="txdeQtyBackOrder" />
         <result column="TXDE_QTY_RECEIVED" property="txdeQtyReceived" />
         <result column="TXDE_QTY_BALANCE" property="txdeQtyBalance" />
         <result column="TXDE_QTY_TOTAL_INVOICED" property="txdeQtyTotalInvoiced" />
@@ -117,6 +118,7 @@
         <result column="TXDE_QUANTITY_SOLD" property="txdeQuantitySold" />
         <result column="TXDE_QUANTITY_SOLD" property="originalQuantity" /> <!-- we need this to figure out the change in quantity on sale order -->
         <result column="TXDE_QTY_ORDERED" property="txdeQtyOrdered" />
+        <result column="TXDE_QTY_BACK_ORDER" property="txdeQtyBackOrder" />
         <result column="TXDE_QTY_RECEIVED" property="txdeQtyReceived" />
         <result column="TXDE_QTY_BALANCE" property="txdeQtyBalance" />
         <result column="TXDE_QTY_TOTAL_INVOICED" property="txdeQtyTotalInvoiced" />
@@ -146,6 +148,7 @@
         <result column="TXDE_QUANTITY_SOLD" property="txdeQuantitySold" />
         <result column="TXDE_QUANTITY_SOLD" property="originalQuantity" /> <!-- we need this to figure out the change in quantity on sale order -->
         <result column="TXDE_QTY_ORDERED" property="txdeQtyOrdered" />
+        <result column="TXDE_QTY_BACK_ORDER" property="txdeQtyBackOrder" />
         <result column="TXDE_QTY_RECEIVED" property="txdeQtyReceived" />
         <result column="TXDE_QTY_BALANCE" property="txdeQtyBalance" />
         <result column="TXDE_QTY_TOTAL_INVOICED" property="txdeQtyTotalInvoiced" />
@@ -239,6 +242,7 @@
         ${alias}.TXDE_VALUE_NET,
         ${alias}.TXDE_QUANTITY_SOLD,
         ${alias}.TXDE_QTY_ORDERED,
+        ${alias}.TXDE_QTY_BACK_ORDER,
         ${alias}.TXDE_QTY_RECEIVED,
         ${alias}.TXDE_QTY_BALANCE,
         ${alias}.TXDE_QTY_TOTAL_INVOICED,
@@ -571,6 +575,7 @@
         TXDE_TAX,
         TXDE_VALUE_NET,
         TXDE_QUANTITY_SOLD,
+        TXDE_QTY_BACK_ORDER,
         TXDE_QTY_BALANCE,
         TXDE_QTY_TOTAL_INVOICED,
         TXDE_QTY_TOTAL_REFUND,
@@ -652,6 +657,13 @@
             ,#{txdeQuantitySold}
         </if>
         <if test="txdeQuantitySold == null">
+            ,null
+        </if>
+
+        <if test="txdeQtyBackOrder != null">
+            ,#{txdeQtyBackOrder}
+        </if>
+        <if test="txdeQtyBackOrder == null">
             ,null
         </if>
 
@@ -799,6 +811,9 @@
         <if test="txdeQuantitySold != null">
             ,TXDE_QUANTITY_SOLD = #{txdeQuantitySold}
         </if>
+        <if test="txdeQtyBackOrder != null">
+            ,TXDE_QTY_BACK_ORDER = #{txdeQtyBackOrder}
+        </if>
         <if test="txdeQtyBalance != null">
             ,TXDE_QTY_BALANCE = #{txdeQtyBalance}
         </if>
@@ -937,6 +952,14 @@
     </select>
 
     <select id="getTxnDetailPerId" resultMap="txnDetailMap" >
+        SELECT
+        <include refid="txnDetailColumns"><property name="alias" value="txde"/></include>
+        FROM
+        TXN_DETAIL txde
+        WHERE txde.TXDE_ID=#{value};
+    </select>
+
+    <select id="getTxnDetailLightPerId" resultMap="txnDetailWithSupplierMap" >
         SELECT
         <include refid="txnDetailColumns"><property name="alias" value="txde"/></include>
         FROM

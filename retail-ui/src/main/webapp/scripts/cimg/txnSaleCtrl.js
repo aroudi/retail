@@ -132,23 +132,31 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 {field: 'id', visible: false, enableCellEdit: false},
                 {field: 'product.prodSku', displayName: 'SKU', enableCellEdit: false, enableFiltering:false,width: '10%',
                     cellTooltip: function(row,col) {
-                        return row.entity.product.prodSku
+                        return row.entity.product.prodSku + '\n' +
+                            'Qty In Stock:' + row.entity.product.stockQty + '\n';
                     }
                 },
                 {field: 'txdeProdName', displayName: 'Name', enableCellEdit: true, enableFiltering:false,width: '20%',
                     cellTooltip: function(row,col) {
-                        return row.entity.txdeProdName
+                        return row.entity.txdeProdName + '\n' +
+                            'Qty In Stock:' + row.entity.product.stockQty + '\n';
                     }
                 },
-                {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false,enableFiltering:false, width: '5%'},
+                {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false,enableFiltering:false, width: '5%',
+                    cellTooltip: function(row,col) {
+                        return 'Qty In Stock:' + row.entity.product.stockQty;
+                    }
+                },
                 //{field: 'txdeValueLine', displayName: 'Cost', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 //{field: 'txdeValueProfit', displayName: 'Profit', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency',enableFiltering:false, width: '7%'},
                 {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', enableFiltering:false,width: '6%',
                     cellTooltip: function(row,col) {
-                        return 'Total Qty:' + row.entity.txdeQuantitySold + '\n' +
+                        return 'Qty In Stock:' + row.entity.product.stockQty + '\n' +
+                               'Total Qty Sold:' +  row.entity.txdeQuantitySold + '\n' +
                                'Total Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
-                               'Qty Back Ordered:' +  row.entity.txdeQtyOrdered + '\n' +
+                               'Total back order qty:' +  row.entity.txdeQtyBackOrder + '\n' +
+                               'Qty on Order:' +  row.entity.txdeQtyOrdered + '\n' +
                                'Qty Received:' +  row.entity.txdeQtyReceived + '\n' +
                                'Qty Refund:' +  row.entity.txdeQtyTotalRefund
                     }
@@ -157,18 +165,22 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 {field: 'originalQuantity', visible: false, type: 'number',enableFiltering:false},
                 {field: 'txdeQtyBalance', enableCellEdit: false, displayName: 'Balance',enableFiltering:false, type: 'number', width: '6%',
                     cellTooltip: function(row,col) {
-                        return 'Total Qty:' + row.entity.txdeQuantitySold + '\n' +
+                        return 'Qty In Stock:' + row.entity.product.stockQty + '\n' +
+                            'Total Qty Sold:' +  row.entity.txdeQuantitySold + '\n' +
                             'Total Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
-                            'Qty Back Ordered:' +  row.entity.txdeQtyOrdered + '\n' +
+                            'Total back order qty:' +  row.entity.txdeQtyBackOrder + '\n' +
+                            'Qty on Order:' +  row.entity.txdeQtyOrdered + '\n' +
                             'Qty Received:' +  row.entity.txdeQtyReceived + '\n' +
                             'Qty Refund:' +  row.entity.txdeQtyTotalRefund
                     }
                 },
-                {field: 'txdeQtyOrdered',enableCellEdit: false, displayName: 'Back Order', enableFiltering:false,type: 'number', width: '7%',
+                {field: 'txdeQtyBackOrder',enableCellEdit: true, displayName: 'Back Order', enableFiltering:false,type: 'number', width: '7%',
                     cellTooltip: function(row,col) {
-                        return 'Total Qty:' + row.entity.txdeQuantitySold + '\n' +
+                        return 'Qty In Stock:' + row.entity.product.stockQty + '\n' +
+                            'Total Qty Sold:' +  row.entity.txdeQuantitySold + '\n' +
                             'Total Qty Invoiced:' +  row.entity.txdeQtyTotalInvoiced + '\n' +
-                            'Qty Back Ordered:' +  row.entity.txdeQtyOrdered + '\n' +
+                            'Total back order qty:' +  row.entity.txdeQtyBackOrder + '\n' +
+                            'Qty on Order:' +  row.entity.txdeQtyOrdered + '\n' +
                             'Qty Received:' +  row.entity.txdeQtyReceived + '\n' +
                             'Qty Refund:' +  row.entity.txdeQtyTotalRefund
                     }
@@ -211,14 +223,17 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 totalTransaction();
             });
             gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef){
-                if (colDef.name == 'txdeQuantitySold') {
+                if (colDef.name === 'txdeQuantitySold') {
                     $scope.txdeQuantitySoldBeforeEditting = rowEntity.txdeQuantitySold;
                 }
-                if (colDef.name == 'txdeQtyInvoiced') {
+                if (colDef.name === 'txdeQtyInvoiced') {
                     $scope.txdeQtyInvoicedBeforeEditting = rowEntity.txdeQtyInvoiced;
                 }
-                if (colDef.name == 'txdeValueGross') {
+                if (colDef.name === 'txdeValueGross') {
                     $scope.txdeValueGrossBeforeEditting = rowEntity.txdeValueGross;
+                }
+                if (colDef.name === 'txdeQtyBackOrder') {
+                    $scope.txdeQtyBackOrderBeforeEditting = rowEntity.txdeQtyBackOrder;
                 }
             })
             //hide Invoice and Balance column for Quote and Invoice.
@@ -273,6 +288,19 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     return;
                 }
                 txnDetail['txdeQtyBalance'] = calculateBalance(txnDetail);//txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
+            }
+
+            if ( event.targetScope.col.field === 'txdeQuantitySold') {
+                txnDetail['txdeQtyBackOrder'] = calculateItemBackOrder(txnDetail);
+            }
+
+            if ( event.targetScope.col.field === 'txdeQtyBackOrder') {
+                if (txnDetail.txdeQtyBackOrder > txnDetail.txdeQuantitySold) {
+                    baseDataService.displayMessage('info','Warnning', 'back order qty is bigger than sale quantity');
+                    txnDetail['txdeQtyBackOrder'] = $scope.txdeQtyBackOrderBeforeEditting;
+                    return;
+
+                }
             }
 
             //cellData = txnDetail[event.targetScope.col.field];
@@ -445,8 +473,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                             txnDetail.txdeQtyTotalInvoiced =  0;
                             txnDetail.txdeProdName = txnDetail.product.prodName;
                             txnDetail.txdeQuantitySold =  1;
-                            txnDetail.originalQuantity =  1;
-                            if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') {
+                            txnDetail.originalQuantity =  0;
+                            if ($scope.txnHeaderForm.txhdTxnType.categoryCode === 'TXN_TYPE_SALE') {
+                                txnDetail.txdeQtyBackOrder = calculateItemBackOrder(txnDetail);
+                            }
+                            if ($scope.txnHeaderForm.txhdTxnType.categoryCode === 'TXN_TYPE_INVOICE') {
                                 txnDetail.txdeQtyInvoiced =  1;
                                 txnDetail.txdeQtyBalance =  0;
                                 txnDetail.invoiced = true;
@@ -1186,4 +1217,14 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
         return true;
     };
+    function calculateItemBackOrder(txnDetail) {
+        if ($scope.txnHeaderForm.txhdTxnType.categoryCode != 'TXN_TYPE_SALE') {
+            return 0;
+        }
+        if (txnDetail.product.stockQty!=undefined &&  txnDetail.product.stockQty> 0) {
+          return txnDetail.txdeQuantitySold - txnDetail.product.stockQty;
+        } else {
+            return txnDetail.txdeQuantitySold;
+        }
+    }
 });

@@ -775,6 +775,9 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             final StockEvent stockEvent = new StockEvent();
             stockEvent.setTxnTypeConst(txnType);
             stockEvent.setStckQty(quantity);
+            stockEvent.setTxnTypeReservedFor(IdBConstant.TXN_TYPE_BOQ);
+            stockEvent.setTxnNrReservedFor(boqHeader.getId());
+            stockEvent.setTxnItemReservedFor(boqDetailNew.getId());
             stockEvent.setUnomId(boqDetailNew.getUnitOfMeasure().getId());
             stockEvent.setSupplierId(boqDetailNew.getSupplier().getId());
             stockEvent.setCostPrice(boqDetailNew.getCost());

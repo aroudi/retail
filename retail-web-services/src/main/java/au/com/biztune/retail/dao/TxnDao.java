@@ -230,4 +230,11 @@ public interface TxnDao {
      * @return list of txnDetail
      */
     List<TxnDetail> getTxnDetailStatusPerTxhdId(long txhdId);
+
+    /**
+     * get txn detail light object per id.
+     * @param txdeId txdeId
+     * @return txndetail
+     */
+    TxnDetail getTxnDetailLightPerId(long txdeId);
 }

@@ -62,7 +62,17 @@ public class StockServiceImpl implements StockService {
                     //for invoice we need to check if item original quantity has changed or not. if changed, we need to create 2 stock event. one for reseving goods and another for selling goods.
                     if (txnDetail.getOriginalQuantity() != txnDetail.getTxdeQuantitySold()) {
                         final StockEvent stockEvent2 = new StockEvent();
-                        stockEvent2.setStckQty(txnDetail.getTxdeQuantitySold() - txnDetail.getOriginalQuantity());
+                        //we only need to reserve those available on stock. (available on stock = qtySold - qtyBackOrdered)
+                        double quantity;
+                        if ((txnDetail.getTxdeQuantitySold() - txnDetail.getTxdeQtyBackOrder()) >= txnDetail.getProduct().getStockQty()) {
+                            quantity = txnDetail.getProduct().getStockQty();
+                        } else {
+                            quantity = txnDetail.getTxdeQuantitySold() - txnDetail.getTxdeQtyBackOrder();
+                        }
+                        if (quantity < 0) {
+                            quantity = 0;
+                        }
+                        stockEvent2.setStckQty(quantity);
                         //if item is voided then return the item to saleable stock.
                         if (txnDetail.isTxdeItemVoid()) {
                             stockEvent2.setStckQty(-txnDetail.getOriginalQuantity());
@@ -79,13 +89,28 @@ public class StockServiceImpl implements StockService {
                         stockEvent2.setUserId(txnHeader.getUser().getId());
                         stockEvent2.setTxnNumber(txnHeader.getTxhdTxnNr());
                         stockEvent2.setOrguId(sessionState.getOrgUnit().getId());
+                        stockEvent.setTxnTypeReservedFor(IdBConstant.TXN_TYPE_SALE);
+                        stockEvent.setTxnNrReservedFor(txnHeader.getId());
+                        stockEvent.setTxnItemReservedFor(txnDetail.getId());
                         stockEvent2.setTxnTypeConst(IdBConstant.TXN_TYPE_SALE);
                         processStockEvent(stockEvent2);
                     }
                     stockEvent.setStckQty(txnDetail.getTxdeQtyInvoiced());
 
                 } else if (txnType.equals(IdBConstant.TXN_TYPE_SALE)) {
-                    stockEvent.setStckQty(txnDetail.getTxdeQuantitySold() - txnDetail.getOriginalQuantity());
+                    double quantity;
+                    if ((txnDetail.getTxdeQuantitySold() - txnDetail.getTxdeQtyBackOrder()) >= txnDetail.getProduct().getStockQty()) {
+                        quantity = txnDetail.getProduct().getStockQty();
+                    } else {
+                        quantity = txnDetail.getTxdeQuantitySold() - txnDetail.getTxdeQtyBackOrder();
+                    }
+                    if (quantity < 0) {
+                        quantity = 0;
+                    }
+                    stockEvent.setStckQty(quantity);
+                    stockEvent.setTxnTypeReservedFor(IdBConstant.TXN_TYPE_SALE);
+                    stockEvent.setTxnNrReservedFor(txnHeader.getId());
+                    stockEvent.setTxnItemReservedFor(txnDetail.getId());
                     //if item is voided then return the item to saleable stock.
                     if (txnDetail.isTxdeItemVoid()) {
                         stockEvent.setStckQty(-txnDetail.getOriginalQuantity());
@@ -122,6 +147,10 @@ public class StockServiceImpl implements StockService {
 
             if (stockEvent == null) {
                 logger.debug("StockEvent object is null");
+                return;
+            }
+            if (stockEvent.getStckQty() == 0.00) {
+                logger.debug("StockQty is 0");
                 return;
             }
             //set stock location

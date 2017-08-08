@@ -127,6 +127,7 @@
         <result column="PROD_URL_THUMB" property="prodUrlThumb" />
         <result column="PROD_CLASS" property="prodClass" />
         <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
+        <association property="stockQty" column="{prodId=PROD_ID, orguId=ORGU_ID_OWNING}" select="au.com.biztune.retail.dao.StockDao.getProductSaleablePristineStockQty" />
         <association resultMap="prodOrguLinkDetailMap" property="prodOrguLink" />
         <association property="sellPrice" column="PROD_ID" select="au.com.biztune.retail.dao.PriceDao.getProductSellPricePerProdId" />
         <association property="costPrice" column="PROD_ID" select="au.com.biztune.retail.dao.PriceDao.getProductCostPricePerProdId" />

@@ -96,7 +96,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                         final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_ON_ORDER);
                         if (status != null) {
                             item.setStatus(status);
-                            item.setTxdeQtyOrdered(item.getTxdeQtyBalance() - item.getTxdeQtyOrdered());
+                            //
+                            item.setTxdeQtyOrdered(item.getTxdeQtyBackOrder());
                         }
                         txnDao.updateTxnDetailBackOrderAndStatus(item);
                     } else {

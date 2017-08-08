@@ -44,6 +44,7 @@ public class TxnDetailForm {
     private double txidSurcharge;
     private String txdeProdName;
     private double txdeQtyOrdered;
+    private double txdeQtyBackOrder;
     private double txdeQtyReceived;
     private ConfigCategory status;
 
@@ -327,5 +328,13 @@ public class TxnDetailForm {
 
     public void setStatus(ConfigCategory status) {
         this.status = status;
+    }
+
+    public double getTxdeQtyBackOrder() {
+        return txdeQtyBackOrder;
+    }
+
+    public void setTxdeQtyBackOrder(double txdeQtyBackOrder) {
+        this.txdeQtyBackOrder = txdeQtyBackOrder;
     }
 }

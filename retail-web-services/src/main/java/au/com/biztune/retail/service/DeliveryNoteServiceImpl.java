@@ -231,9 +231,9 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 if (polStatus.getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED) || polStatus.getCategoryCode().equals(IdBConstant.POH_STATUS_PARTIAL_REC)) {
                     //only update related linked boq received when all or some of the ordered item has been received.
                     //we assigne the goods to lined boqs per their orders. when it is partial, user can go to the Purchase Order Form and change the assignement.
-                    updatePurchaseLineLinkedBoq(purchaseLine);
+                    updatePurchaseLineLinkedBoq(deliveryNoteHeader, deliveryNoteLine, purchaseLine);
                     //update linked sale orders
-                    updatePurchaseLineLinkedSaleOrder(purchaseLine);
+                    updatePurchaseLineLinkedSaleOrder(deliveryNoteHeader, deliveryNoteLine, purchaseLine);
                 }
                 //update stock qty.
                 updateStockQuantity(deliveryNoteHeader, deliveryNoteLine, purchaseLine);
@@ -274,7 +274,7 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
         }
     }
 
-    private boolean updatePurchaseLineLinkedBoq(PurchaseLine purchaseLine) {
+    private boolean updatePurchaseLineLinkedBoq(DeliveryNoteHeader deliveryNoteHeader, DeliveryNoteLine deliveryNoteLine, PurchaseLine purchaseLine) {
         try {
             if (purchaseLine == null) {
                 return false;
@@ -303,6 +303,8 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 poBoqLinkDao.updateQtyReceived(poBoqLink);
                 //update qty on linked boqdetail.
                 boqDetailDao.updateQtyAndStatus(poBoqLink.getPoQtyReceived(), poBoqLink.getBoqQtyBalance(), poBoqLink.getStatus().getId(), poBoqLink.getBoqId());
+                //push stock event
+                updateStockQuantityForLinkedBoq(deliveryNoteHeader, deliveryNoteLine, poBoqLink);
                 if (qtyRemain == 0) {
                     break;
                 }
@@ -315,7 +317,7 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
         }
     }
 
-    private boolean updatePurchaseLineLinkedSaleOrder(PurchaseLine purchaseLine) {
+    private boolean updatePurchaseLineLinkedSaleOrder(DeliveryNoteHeader deliveryNoteHeader, DeliveryNoteLine deliveryNoteLine, PurchaseLine purchaseLine) {
         try {
             if (purchaseLine == null) {
                 return false;
@@ -346,7 +348,18 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 //update po_so_link table
                 poSoLinkDao.updateQtyReceived(poSoLink);
                 //update sale order itself.
-                txnDao.updateTxnDetailRcvdQtyAndStatus(status.getId(), qtyAssigned, poSoLink.getTxdeId());
+                final TxnDetail txnDetail = txnDao.getTxnDetailLightPerId(poSoLink.getTxdeId());
+                if (txnDetail != null) {
+                    //check status on txn detail
+                    if ((txnDetail.getTxdeQtyReceived() + qtyAssigned) < txnDetail.getTxdeQtyOrdered()) {
+                        status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_PARTIAL_REC);
+                    } else {
+                        status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_RECEIVED);
+                    }
+                    txnDao.updateTxnDetailRcvdQtyAndStatus(status.getId(), qtyAssigned + txnDetail.getTxdeQtyReceived(), poSoLink.getTxdeId());
+                }
+                //create stock event for linked sale order
+                updateStockQuantityForLinkedSaleOrder(deliveryNoteHeader, deliveryNoteLine, poSoLink);
                 if (qtyRemain == 0) {
                     break;
                 }
@@ -382,8 +395,8 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             //First of all, goods need to transfer to the saleable stocks.
             txnType = IdBConstant.TXN_TYPE_GOODS_IN;
             quantity = deliveryNoteLine.getRcvdQty();
-            Timestamp currentTime = new Timestamp(new Date().getTime());
-            StockEvent stockEvent = new StockEvent();
+            final Timestamp currentTime = new Timestamp(new Date().getTime());
+            final StockEvent stockEvent = new StockEvent();
             stockEvent.setTxnTypeConst(txnType);
             stockEvent.setStckQty(quantity);
             stockEvent.setUnomId(deliveryNoteLine.getRcvdCaseSize().getId());
@@ -400,18 +413,36 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             stockEvent.setOrguId(sessionState.getOrgUnit().getId());
             logger.info("stock event type =" + stockEvent.getTxnTypeConst() + "qty =" + stockEvent.getStckQty() + " pushed to the queue");
             stockService.pushStockEvent(stockEvent);
+        } catch (Exception e) {
+            logger.error("Exception in creating stock event:", e);
+        }
+    }
+
+
+    private void updateStockQuantityForLinkedBoq(DeliveryNoteHeader deliveryNoteHeader, DeliveryNoteLine deliveryNoteLine, PoBoqLink poBoqLink) {
+        try {
+
+            //get current user from security context.
+            final Principal principal = securityContext.getUserPrincipal();
+            AppUser appUser = null;
+            if (principal instanceof AppUser) {
+                appUser = (AppUser) principal;
+            }
+
+            if (deliveryNoteHeader == null || poBoqLink == null || deliveryNoteLine == null) {
+                return;
+            }
+            String txnType = null;
 
             //now move from saleable stock to reserve stock for items has been reserved by BOQs.
             txnType = IdBConstant.TXN_TYPE_GOODS_RESERVE;
-            if (deliveryNoteLine.getRcvdQty() <= linkedPurchaseLine.getPolQtyReserved()) {
-                quantity = deliveryNoteLine.getRcvdQty();
-            } else if (deliveryNoteLine.getRcvdQty() > linkedPurchaseLine.getPolQtyReserved()) {
-                quantity = linkedPurchaseLine.getPolQtyReserved();
-            }
-            currentTime = new Timestamp(new Date().getTime());
-            stockEvent = new StockEvent();
+            final Timestamp currentTime = new Timestamp(new Date().getTime());
+            final StockEvent stockEvent = new StockEvent();
+            stockEvent.setTxnTypeReservedFor(IdBConstant.TXN_TYPE_BOQ);
+            stockEvent.setTxnNrReservedFor(poBoqLink.getBoqId());
+            stockEvent.setTxnItemReservedFor(poBoqLink.getBoqDetailId());
             stockEvent.setTxnTypeConst(txnType);
-            stockEvent.setStckQty(quantity);
+            stockEvent.setStckQty(poBoqLink.getPoQtyReceived());
             stockEvent.setUnomId(deliveryNoteLine.getRcvdCaseSize().getId());
             //stockEvent.setSupplierId(deliveryNoteLine.getPurchaseItem());
             stockEvent.setCostPrice(deliveryNoteLine.getDlnlUnitCost());
@@ -427,9 +458,50 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             logger.info("stock event type =" + stockEvent.getTxnTypeConst() + "qty =" + stockEvent.getStckQty() + " pushed to the queue");
             stockService.pushStockEvent(stockEvent);
             logger.info("after pushed to the queue");
-            //update reserved qty on purchase order
-            linkedPurchaseLine.setPolQtyReserved(linkedPurchaseLine.getPolQtyReserved() - quantity);
-            purchaseOrderDao.updatePurchaseLineReserveQty(linkedPurchaseLine);
+        } catch (Exception e) {
+            logger.error("Exception in creating stock event:", e);
+        }
+    }
+
+    private void updateStockQuantityForLinkedSaleOrder(DeliveryNoteHeader deliveryNoteHeader, DeliveryNoteLine deliveryNoteLine, PoSoLink poSoLink) {
+        try {
+
+            //get current user from security context.
+            final Principal principal = securityContext.getUserPrincipal();
+            AppUser appUser = null;
+            if (principal instanceof AppUser) {
+                appUser = (AppUser) principal;
+            }
+
+            if (deliveryNoteHeader == null || poSoLink == null || deliveryNoteLine == null) {
+                return;
+            }
+            String txnType = null;
+
+            //now move from saleable stock to reserve stock for items has been reserved by BOQs.
+            txnType = IdBConstant.TXN_TYPE_GOODS_RESERVE;
+            final Timestamp currentTime = new Timestamp(new Date().getTime());
+            final StockEvent stockEvent = new StockEvent();
+            stockEvent.setTxnTypeReservedFor(IdBConstant.TXN_TYPE_SALE);
+            stockEvent.setTxnNrReservedFor(poSoLink.getTxhdId());
+            stockEvent.setTxnItemReservedFor(poSoLink.getTxdeId());
+            stockEvent.setTxnTypeConst(txnType);
+            stockEvent.setStckQty(poSoLink.getPoQtyReceived());
+            stockEvent.setUnomId(deliveryNoteLine.getRcvdCaseSize().getId());
+            //stockEvent.setSupplierId(deliveryNoteLine.getPurchaseItem());
+            stockEvent.setCostPrice(deliveryNoteLine.getDlnlUnitCost());
+            stockEvent.setProdId(deliveryNoteLine.getPurchaseItem().getProdId());
+            stockEvent.setSellPrice(deliveryNoteLine.getPurchaseItem().getPrice());
+            stockEvent.setStckEvntDate(currentTime);
+            stockEvent.setTxnDate(deliveryNoteHeader.getDelnCreatedDate());
+            stockEvent.setTxnHeader(deliveryNoteHeader.getId());
+            stockEvent.setTxnLine(deliveryNoteLine.getId());
+            stockEvent.setUserId(appUser.getId());
+            stockEvent.setTxnNumber(deliveryNoteHeader.getDelnGrn());
+            stockEvent.setOrguId(sessionState.getOrgUnit().getId());
+            logger.info("stock event type =" + stockEvent.getTxnTypeConst() + "qty =" + stockEvent.getStckQty() + " pushed to the queue");
+            stockService.pushStockEvent(stockEvent);
+            logger.info("after pushed to the queue");
         } catch (Exception e) {
             logger.error("Exception in creating stock event:", e);
         }

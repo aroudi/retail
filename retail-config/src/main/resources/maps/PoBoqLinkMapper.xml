@@ -71,7 +71,7 @@
 
     <select id="getAllPoProjectCodesPerPohId" resultMap="PoBoqLinkMap" >
         SELECT DISTINCT PROJECT_CODE FROM PO_BOQ_LINK
-        WHERE POH_ID = #{value}
+        WHERE PROJECT_CODE IS NOT NULL AND POH_ID = #{value}
     </select>
 
     <select id="getAllPoBoqLinkPerPolId" resultMap="PoBoqLinkMap" >
