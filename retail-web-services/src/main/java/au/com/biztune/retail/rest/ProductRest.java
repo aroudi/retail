@@ -4,6 +4,7 @@ package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.ProductSale;
 import au.com.biztune.retail.domain.ProductSaleItem;
+import au.com.biztune.retail.domain.StockReserve;
 import au.com.biztune.retail.domain.SuppProdPrice;
 import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.form.ProductSearchForm;
@@ -243,6 +244,24 @@ public class ProductRest {
             return productImportService.updateProductPriceFromCsvInputStream(uploadedInputStream);
         } catch (Exception e) {
             logger.error("Exception in updating product price from csv.", e);
+            return null;
+        }
+    }
+
+    /**
+     * get product reservation info.
+     * @param prodId prodId
+     * @return product reservation info
+     */
+    @Secured
+    @Path("/getProductReservationInfo/{prodId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<StockReserve> getProductReservationInfo(@PathParam("prodId") long prodId) {
+        try {
+            return productService.getProductReservationInfo(prodId);
+        } catch (Exception e) {
+            logger.error ("Error in retrieving product reservation info :", e);
             return null;
         }
     }

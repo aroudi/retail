@@ -70,6 +70,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private StockDao stockDao;
     /**
      * add product and its related objects.
      * @param productForm productForm
@@ -642,6 +645,19 @@ public class ProductServiceImpl implements ProductService {
             response.setStatus(IdBConstant.RESULT_FAILURE);
             response.setMessage("Exception in updating prices");
             return response;
+        }
+    }
+    /**
+     * get product reservation list.
+     * @param prodOId prodOId
+     * @return list of product reservation list.
+     */
+    public List<StockReserve> getProductReservationInfo(long prodOId) {
+        try {
+            return stockDao.getStockReservePerOrguIdAndProdId(sessionState.getOrgUnit().getId(), prodOId);
+        } catch (Exception e) {
+            logger.error("Exceptoion in retreiving product reservation list");
+            return  null;
         }
     }
 }

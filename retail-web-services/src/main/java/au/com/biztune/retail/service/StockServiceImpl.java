@@ -77,7 +77,7 @@ public class StockServiceImpl implements StockService {
                         if (txnDetail.isTxdeItemVoid()) {
                             stockEvent2.setStckQty(-txnDetail.getOriginalQuantity());
                         }
-                        stockEvent2.setUnomId(txnDetail.getUnitOfMeasure().getId());
+                        //stockEvent2.setUnomId(txnDetail.getUnitOfMeasure().getId());
                         //stockEvent.setSupplierId();
                         stockEvent2.setCostPrice(txnDetail.getTxdeValueLine());
                         stockEvent2.setProdId(txnDetail.getProduct().getId());
@@ -90,8 +90,10 @@ public class StockServiceImpl implements StockService {
                         stockEvent2.setTxnNumber(txnHeader.getTxhdTxnNr());
                         stockEvent2.setOrguId(sessionState.getOrgUnit().getId());
                         stockEvent.setTxnTypeReservedFor(IdBConstant.TXN_TYPE_SALE);
-                        stockEvent.setTxnNrReservedFor(txnHeader.getId());
-                        stockEvent.setTxnItemReservedFor(txnDetail.getId());
+                        //we need to refer to txn sale this invoice created from.
+                        stockEvent.setTxnNrReservedFor(txnHeader.getTxhdOrigTxnNr());
+                        stockEvent.setTxnIdReservedFor(txnHeader.getParentId());
+                        //stockEvent.setTxnItemReservedFor(txnDetail.getId());
                         stockEvent2.setTxnTypeConst(IdBConstant.TXN_TYPE_SALE);
                         processStockEvent(stockEvent2);
                     }
@@ -109,7 +111,8 @@ public class StockServiceImpl implements StockService {
                     }
                     stockEvent.setStckQty(quantity);
                     stockEvent.setTxnTypeReservedFor(IdBConstant.TXN_TYPE_SALE);
-                    stockEvent.setTxnNrReservedFor(txnHeader.getId());
+                    stockEvent.setTxnNrReservedFor(txnHeader.getTxhdTxnNr());
+                    stockEvent.setTxnIdReservedFor(txnHeader.getId());
                     stockEvent.setTxnItemReservedFor(txnDetail.getId());
                     //if item is voided then return the item to saleable stock.
                     if (txnDetail.isTxdeItemVoid()) {
@@ -118,7 +121,7 @@ public class StockServiceImpl implements StockService {
                 } else if (txnType.equals(IdBConstant.TXN_TYPE_REFUND)) {
                     stockEvent.setStckQty(txnDetail.getTxdeQtyRefund());
                 }
-                stockEvent.setUnomId(txnDetail.getUnitOfMeasure().getId());
+                //stockEvent.setUnomId(txnDetail.getUnitOfMeasure().getId());
                 //stockEvent.setSupplierId();
                 stockEvent.setCostPrice(txnDetail.getTxdeValueLine());
                 stockEvent.setProdId(txnDetail.getProduct().getId());
@@ -299,10 +302,34 @@ public class StockServiceImpl implements StockService {
             //insert stock event
             stockEvent.setStckId(stock.getId());
             stockDao.insertStockEvent(stockEvent);
+            //insert stock reserve
+            //first search for existing entry in reserve
+            if (stockEvent.getTxnTypeReservedFor() != null
+                    && (stockEvent.getTxnTypeReservedFor().equals(IdBConstant.TXN_TYPE_SALE)
+                            || stockEvent.getTxnTypeReservedFor().equals(IdBConstant.TXN_TYPE_BOQ)))
+            {
+                StockReserve stockReserve = stockDao.getStockReservePerOrguIdAndProdIdAndTxnTypeAndTxnId(stockEvent.getOrguId()
+                        , stockEvent.getProdId(), stockEvent.getTxnTypeReservedFor(), stockEvent.getTxnIdReservedFor());
+                if (stockReserve == null) {
+                    stockReserve = new StockReserve();
+                    stockReserve.setOrguId(stockEvent.getOrguId());
+                    stockReserve.setPrgpId(stockEvent.getPrgpId());
+                    stockReserve.setProdId(stockEvent.getProdId());
+                    stockReserve.setStckId(stockEvent.getStckId());
+                    stockReserve.setStoreId(stockEvent.getStoreId());
+                    stockReserve.setSupplierId(stockEvent.getSupplierId());
+                    stockReserve.setTxnType(stockEvent.getTxnTypeReservedFor());
+                    stockReserve.setTxnHeaderId(stockEvent.getTxnIdReservedFor());
+                    stockReserve.setTxnLineId(stockEvent.getTxnItemReservedFor());
+                    stockReserve.setTxnNumber(stockEvent.getTxnNrReservedFor());
+                    stockReserve.setQtyReserved(stockEvent.getStckQty());
+                    stockDao.insertStockReserve(stockReserve);
+                } else {
+                    stockDao.updateStockReservePerId(stockReserve.getId(), stockReserve.getQtyReserved() + stockEvent.getStckQty());
+                }
+            }
         } catch (Exception e) {
             logger.error("Exception in updating stock qty:", e);
         }
     }
-
-
 }

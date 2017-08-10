@@ -215,7 +215,7 @@
         where q_result.NUMBER BETWEEN #{param2} AND #{param3}
     </select>
 
-    <select id="searchProductsPaging" resultMap="productListLiteMap" >
+    <select id="searchProductsPaging" resultMap="productListMap" >
         SELECT * FROM
         (SELECT
         <include refid="productColumns"><property name="alias" value="prod"/></include>,

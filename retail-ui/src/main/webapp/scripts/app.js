@@ -92,6 +92,7 @@ var service_uri = {
     'PRODUCT_GET_PO_LIST_URI' : 'purchaseOrder/getProductPurchaseOrders/',
     'PRODUCT_SEARCH_PAGING_URI' : 'product/searchProductPaging',
     'PRODUCT_CLASS_ALL_URI' : 'product/allProductClass',
+    'PRODUCT_RESERVATION_INFO_URI' : 'product/getProductReservationInfo/',
     'UPLOAD_BOQ_URI'  : 'billOfQuantity/upload',
     'BOQDETAIL_GET_PER_BOQID_URI' : 'billOfQuantity/detail/getPerBoqId/',
     'BOQ_GET_ALL_URI' : 'billOfQuantity/header/getAll',
@@ -128,6 +129,7 @@ var service_uri = {
     'POH_EXPORT_PDF' : 'purchaseOrder/exportPdf/',
     'GET_PURCHASE_ITEMS_PER_SUPPLIER_URI' : 'purchaseOrder/detail/getPurchaseItems/',
     'GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI' : 'purchaseOrder/detail/getPurchaseItem/',
+    'GET_PURCHASE_ITEM_PER_ID_URI' : 'purchaseOrder/detail/getPurchaseItemPerId/',
     'POH_SAVE_URI' : 'purchaseOrder/add',
     'POH_SEARCH_URI' : 'purchaseOrder/header/search',
     'POH_SEARCH_PAGING_URI' : 'purchaseOrder/header/searchPaging',
@@ -974,6 +976,15 @@ cimgApp.filter('accImportFilter', function() {
             return 'Exported'
         } else {
             return 'Will be exported'
+        }
+    };
+});
+cimgApp.filter('productReservTxntypeFilter', function() {
+    return function (txnType) {
+        if (txnType == 'TXN_TYPE_SALE') {
+            return 'Sale Order'
+        } else {
+            return 'Bill Of Quantity'
         }
     };
 });

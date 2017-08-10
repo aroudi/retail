@@ -148,4 +148,12 @@ public interface PurchaseOrderService {
      * @return List of PurchaseOrderHeader
      */
     List<PurchaseOrderHeader> getAllOutstandingAndConfirmedPurchaseOrderHeaderPerOrguIdAndSupplierId(long supplierId);
+
+
+    /**
+     * get product purchase item for specific supplier and catalog no.
+     * @param sprcId sprcId
+     * @return List of PruductPurchaseItem
+     */
+    ProductPurchaseItem getProductPurchaseItemPerId(long sprcId);
 }

@@ -439,7 +439,8 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             final Timestamp currentTime = new Timestamp(new Date().getTime());
             final StockEvent stockEvent = new StockEvent();
             stockEvent.setTxnTypeReservedFor(IdBConstant.TXN_TYPE_BOQ);
-            stockEvent.setTxnNrReservedFor(poBoqLink.getBoqId());
+            stockEvent.setTxnIdReservedFor(poBoqLink.getBoqId());
+            stockEvent.setTxnNrReservedFor(poBoqLink.getBoqName());
             stockEvent.setTxnItemReservedFor(poBoqLink.getBoqDetailId());
             stockEvent.setTxnTypeConst(txnType);
             stockEvent.setStckQty(poBoqLink.getPoQtyReceived());
@@ -483,7 +484,9 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             final Timestamp currentTime = new Timestamp(new Date().getTime());
             final StockEvent stockEvent = new StockEvent();
             stockEvent.setTxnTypeReservedFor(IdBConstant.TXN_TYPE_SALE);
-            stockEvent.setTxnNrReservedFor(poSoLink.getTxhdId());
+            stockEvent.setTxnIdReservedFor(poSoLink.getTxhdId());
+            //TODO: we need to store txn number
+            stockEvent.setTxnNrReservedFor(String.valueOf(poSoLink.getTxhdId()));
             stockEvent.setTxnItemReservedFor(poSoLink.getTxdeId());
             stockEvent.setTxnTypeConst(txnType);
             stockEvent.setStckQty(poSoLink.getPoQtyReceived());

@@ -96,6 +96,19 @@ public class PurchaseOrderRest {
     }
 
     /**
+     * get Product Purchase Item per supplier id and catalog no.
+     * @param sprcId sprcId.
+     * @return ProductPurchaseItem
+     */
+    @Secured
+    @GET
+    @Path("/detail/getPurchaseItemPerId/{sprcId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ProductPurchaseItem getProductPurchaseItemPerId (@PathParam("sprcId") long sprcId) {
+        return purchaseOrderService.getProductPurchaseItemPerId(sprcId);
+    }
+
+    /**
      * add/edit a Purchase order.
      * @param purchaseOrderHeader purchaseOrderHeader
      * @return CommonResponse

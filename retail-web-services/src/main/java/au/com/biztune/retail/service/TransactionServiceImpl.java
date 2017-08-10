@@ -1359,7 +1359,7 @@ public class TransactionServiceImpl implements TransactionService {
             }
             final long outStandingBalanceLineCount = txnHeader.getTxnDetails()
                     .stream()
-                    .filter(txnDetail -> txnDetail.getStatus().getCategoryCode().equals(IdBConstant.SO_STATUS_OUTSTANDING))
+                    .filter(txnDetail -> txnDetail.getStatus() == null || txnDetail.getStatus().getCategoryCode().equals(IdBConstant.SO_STATUS_OUTSTANDING))
                     .count();
             if (outStandingBalanceLineCount > 0) {
                 newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_OUTSTANDING);

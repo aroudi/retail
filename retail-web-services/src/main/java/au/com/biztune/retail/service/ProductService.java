@@ -1,10 +1,6 @@
 package au.com.biztune.retail.service;
 
-import au.com.biztune.retail.domain.Product;
-import au.com.biztune.retail.domain.ProductSaleItem;
-import au.com.biztune.retail.domain.Supplier;
-import au.com.biztune.retail.domain.UnitOfMeasure;
-import au.com.biztune.retail.domain.SuppProdPrice;
+import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.form.ProductSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
@@ -132,4 +128,11 @@ public interface ProductService {
      * @return Common Response
      */
     CommonResponse updateSupplierProductPricesInBulk(List<SuppProdPrice> updatedPriceList);
+
+    /**
+     * get product reservation list.
+     * @param prodOId prodOId
+     * @return list of product reservation list.
+     */
+    List<StockReserve> getProductReservationInfo(long prodOId);
 }

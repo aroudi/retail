@@ -3,6 +3,9 @@ package au.com.biztune.retail.dao;
 import au.com.biztune.retail.domain.Stock;
 import au.com.biztune.retail.domain.StockEvent;
 import au.com.biztune.retail.domain.StockLocation;
+import au.com.biztune.retail.domain.StockReserve;
+
+import java.util.List;
 
 /**
  * Created by arash on 25/07/2016.
@@ -50,4 +53,35 @@ public interface StockDao {
      * @return stock qty.
      */
     double getProductSaleablePristineStockQty(long prodId, long orguId);
+
+    /**
+     * insert stock reserve.
+     * @param stockReserve stockReserve
+     */
+    void insertStockReserve(StockReserve stockReserve);
+
+    /**
+     * get stock reserve per orguId and ProdId and TxnType and TxnId.
+     * @param orguId orguId
+     * @param prodId prodId
+     * @param txnType txnType
+     * @param txnHeaderId txnHeaderId
+     * @return StockReserve
+     */
+    StockReserve getStockReservePerOrguIdAndProdIdAndTxnTypeAndTxnId(long orguId, long prodId, String txnType, long txnHeaderId);
+
+    /**
+     * get stock reserve per orguId and ProdId and TxnType and TxnId.
+     * @param orguId orguId
+     * @param prodId prodId
+     * @return List of StockReserve
+     */
+    List<StockReserve> getStockReservePerOrguIdAndProdId(long orguId, long prodId);
+
+    /**
+     * update stock reserve per id.
+     * @param qty qty
+     * @param id id
+     */
+    void updateStockReservePerId(long id, double qty);
 }

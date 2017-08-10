@@ -615,6 +615,20 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     /**
+     * get product purchase item for specific supplier and catalog no.
+     * @param sprcId sprcId
+     * @return List of PruductPurchaseItem
+     */
+    public ProductPurchaseItem getProductPurchaseItemPerId(long sprcId) {
+        try {
+            return suppProdPriceDao.getProductPurchaseItemPerSprcId(sprcId);
+        } catch (Exception e) {
+            logger.error("Exception in getting product purchase item per supplier and catalog no:", e);
+            return null;
+        }
+    }
+
+    /**
      * get all purchase Order Header.
      * @param supplierId supplierId
      * @return List of PurchaseOrderHeader

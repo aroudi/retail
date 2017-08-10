@@ -37,6 +37,7 @@
         <result column="TXN_TYPE" property="txnType" />
         <result column="TXN_TYPE_RESERVED_FOR" property="txnTypeReservedFor" />
         <result column="TXN_NR_RESERVED_FOR" property="txnNrReservedFor" />
+        <result column="TXN_ID_RESERVED_FOR" property="txnIdReservedFor" />
         <result column="TXN_ITEM_RESERVED_FOR" property="txnItemReservedFor" />
         <result column="TXN_HEADER" property="txnHeader" />
         <result column="TXN_LINE" property="txnLine" />
@@ -47,6 +48,21 @@
         <result column="COST_PRICE" property="costPrice" />
         <result column="STCK_COND" property="stckCond" />
         <result column="STCK_CAT" property="stckCat" />
+    </resultMap>
+
+    <resultMap id="stockReserveMap" type="StockReserve" >
+        <id column="STCK_RSV_ID" property="id" />
+        <result column="STCK_ID" property="stckId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="SUPPLIER_ID" property="supplierId" />
+        <result column="PROD_ID" property="prodId" />
+        <result column="PRGP_ID" property="prgpId" />
+        <result column="TXN_TYPE" property="txnType" />
+        <result column="TXN_HEADER_ID" property="txnHeaderId" />
+        <result column="TXN_LINE_ID" property="txnLineId" />
+        <result column="TXN_NUMBER" property="txnNumber" />
+        <result column="QTY_RESERVED" property="qtyReserved" />
     </resultMap>
 
     <resultMap id="stockLocationMap" type="StockLocation" >
@@ -93,6 +109,7 @@
         ${alias}.TXN_HEADER,
         ${alias}.TXN_TYPE_RESERVED_FOR,
         ${alias}.TXN_NR_RESERVED_FOR,
+        ${alias}.TXN_ID_RESERVED_FOR,
         ${alias}.TXN_ITEM_RESERVED_FOR,
         ${alias}.TXN_LINE,
         ${alias}.TXN_NUMBER,
@@ -102,6 +119,21 @@
         ${alias}.COST_PRICE,
         ${alias}.STCK_COND,
         ${alias}.STCK_CAT
+    </sql>
+
+    <sql id="stockReserveColumns">
+        ${alias}.STCK_RSV_ID,
+        ${alias}.STCK_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.SUPPLIER_ID,
+        ${alias}.PROD_ID,
+        ${alias}.PRGP_ID,
+        ${alias}.TXN_TYPE,
+        ${alias}.TXN_HEADER_ID,
+        ${alias}.TXN_LINE_ID,
+        ${alias}.TXN_NUMBER,
+        ${alias}.QTY_RESERVED
     </sql>
 
     <sql id="stockLocationColumns">
@@ -233,6 +265,7 @@
             TXN_TYPE,
             TXN_TYPE_RESERVED_FOR,
             TXN_NR_RESERVED_FOR,
+            TXN_ID_RESERVED_FOR,
             TXN_ITEM_RESERVED_FOR,
             TXN_HEADER,
             TXN_LINE,
@@ -315,7 +348,12 @@
         <if test="txnNrReservedFor == null">
             ,null
         </if>
-
+        <if test="txnIdReservedFor != null">
+            ,#{txnIdReservedFor}
+        </if>
+        <if test="txnIdReservedFor == null">
+            ,null
+        </if>
         <if test="txnItemReservedFor != null">
             ,#{txnItemReservedFor}
         </if>
@@ -386,6 +424,104 @@
         </if>
         )
     </insert>
+
+    <insert id="insertStockReserve" parameterType="StockReserve" useGeneratedKeys="true" keyProperty="id" keyColumn="STCK_RSV_ID">
+        INSERT INTO STOCK_RESERVE(
+        STCK_ID,
+        ORGU_ID,
+        PROD_ID,
+        STORE_ID,
+        SUPPLIER_ID,
+        PRGP_ID,
+        TXN_TYPE,
+        TXN_HEADER_ID,
+        TXN_LINE_ID,
+        TXN_NUMBER,
+        QTY_RESERVED
+        ) VALUES (
+        #{stckId},
+        #{orguId},
+        #{prodId}
+        <if test="storeId != null">
+            ,#{storeId}
+        </if>
+        <if test="storeId == null">
+            ,null
+        </if>
+        <if test="supplierId != null">
+            ,#{supplierId}
+        </if>
+        <if test="supplierId == null">
+            ,null
+        </if>
+        <if test="prgpId != null">
+            ,#{prgpId}
+        </if>
+        <if test="prgpId == null">
+            ,null
+        </if>
+        <if test="txnType != null">
+            ,#{txnType}
+        </if>
+        <if test="txnType == null">
+            ,null
+        </if>
+        <if test="txnHeaderId != null">
+            ,#{txnHeaderId}
+        </if>
+        <if test="txnHeaderId == null">
+            ,null
+        </if>
+
+        <if test="txnLineId != null">
+            ,#{txnLineId}
+        </if>
+        <if test="txnLineId == null">
+            ,null
+        </if>
+
+        <if test="txnNumber != null">
+            ,#{txnNumber}
+        </if>
+        <if test="txnNumber == null">
+            ,null
+        </if>
+        <if test="qtyReserved != null">
+            ,#{qtyReserved}
+        </if>
+        <if test="qtyReserved == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <select id="getStockReservePerOrguIdAndProdIdAndTxnTypeAndTxnId" resultMap="stockReserveMap" >
+        SELECT
+        <include refid="stockReserveColumns"><property name="alias" value="stkrsv"/></include>
+        FROM
+        STOCK_RESERVE stkrsv
+        WHERE
+          stkrsv.ORGU_ID = #{param1}
+          AND stkrsv.PROD_ID = #{param2}
+          AND stkrsv.TXN_TYPE = #{param3}
+          AND stkrsv.TXN_HEADER_ID = #{param4}
+    </select>
+    <select id="getStockReservePerOrguIdAndProdId" resultMap="stockReserveMap" >
+        SELECT
+        <include refid="stockReserveColumns"><property name="alias" value="stkrsv"/></include>
+        FROM
+        STOCK_RESERVE stkrsv
+        WHERE
+        stkrsv.ORGU_ID = #{param1}
+        AND stkrsv.PROD_ID = #{param2}
+    </select>
+    <update id="updateStockReservePerId">
+        UPDATE STOCK_RESERVE SET
+        QTY_RESERVED = #{param2}
+        WHERE
+        STCK_RSV_ID = #{param1}
+    </update>
+
     <select id="checkStockForProduct" resultMap="stockMap" >
         SELECT
         <include refid="stockColumns"><property name="alias" value="stock"/></include>

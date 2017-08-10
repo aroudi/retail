@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog,baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI, TAXLEGVARIANCE_ALL_URI) {
+cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog,baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI, TAXLEGVARIANCE_ALL_URI, PRODUCT_RESERVATION_INFO_URI) {
 
     $scope.getPage = function(){
         $scope.productSearchForm.pageNo = paginationOptions.pageNumber*1 ;
@@ -63,7 +63,9 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
                 }
             },
             {field:'stockQty', displayName:'Available Qty',enableCellEdit:false, width:'10%'},
-            {field:'reservedQty', displayName:'Reserved Qty',enableCellEdit:false, width:'10%'},
+            {field:'reservedQty', displayName:'Reserved Qty',enableCellEdit:false, width:'10%',
+                cellTemplate:'<a href="" ng-click="grid.appScope.displayReservationInfo(row.entity)">{{row.entity.reservedQty}}</a>'
+            },
             //{field:'sellPrice.prcePrice', displayName:'Cost',enableCellEdit:false, cellFilter: 'currency', width:'10%'},
             {field:'prodOrguLink.status.displayName', displayName:'Status',enableCellEdit:false, width:'10%',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
@@ -192,5 +194,22 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
             $scope.gridOptions.data = result.result;
         });
     }
+    $scope.displayReservationInfo = function (product) {
+        if (product == undefined) {
+            return;
+        }
+        //check if this supplier has outstanding purchase order.
+        ngDialog.openConfirm({
+            template:'views/pages/generalPopUpList.html',
+            controller:'productReservationInfoCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false,
+            resolve: {searchUrl: function(){return PRODUCT_RESERVATION_INFO_URI + product.id}}
+        }).then (function (selectedItem){
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    };
 
 });

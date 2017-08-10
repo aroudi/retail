@@ -11,4 +11,8 @@
 9- for each product display how many reserved for what
 10- create PO for products their QTY below certain amount
 11- log url
-12-
+12- size in creating delivery note not set ( it is null)
+13- bug: back order qty is calculated incorrectly on sale order when qty in stock is more than qty ordered
+14- bug: can not set status on so when fully paid - SOLVED
+15- ------------------------> bug: in StockServiceImple.java qty not set correctly
+
