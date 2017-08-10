@@ -67,6 +67,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public CommonResponse savePurchaseOrder(PurchaseOrderHeader purchaseOrderHeader, SecurityContext securityContext) {
         this.securityContext = securityContext;
         final CommonResponse response = new CommonResponse();
+        //if we merged another po to this then we need to delete it at the end.
+        long mergedPohId = -1;
         try {
             response.setStatus(IdBConstant.RESULT_SUCCESS);
             if (purchaseOrderHeader == null) {
@@ -128,8 +130,21 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                     purchaseLine.setPolSuppId(purchaseOrderHeader.getSupplier().getId());
                     purchaseOrderDao.insertPurchaseLine(purchaseLine);
                 } else {
+                    //if line has been merged from another purchase order then update the order number and pohId on it
+                    if (purchaseLine.isMerged()) {
+                        mergedPohId = purchaseLine.getPohId();
+                        purchaseLine.setPohOrderNumber(pohNumber);
+                        purchaseLine.setPohId(purchaseOrderHeader.getId());
+                        //change poh and number on linked object.
+                        poSoLinkDao.changePohIdAndNumberPerPolId(purchaseOrderHeader.getId(), pohNumber, purchaseLine.getId());
+                        poBoqLinkDao.changePohIdAndNumberPerPolId(purchaseOrderHeader.getId(), pohNumber, purchaseLine.getId());
+                    }
                     purchaseOrderDao.updatePurchaseLine(purchaseLine);
                 }
+            }
+            if (mergedPohId > 0) {
+                //delete the merged purhcase order header
+                deletePurchaseOrderPerPhoId(mergedPohId);
             }
             //include the purchase order number in the response
             response.setInfo(purchaseOrderHeader.getPohOrderNumber());
@@ -612,6 +627,24 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 statusIds.add(status.getId());
             }
             status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_PARTIAL_REC);
+            if (status != null) {
+                statusIds.add(status.getId());
+            }
+            return purchaseOrderDao.getAllPurchaseOrderHeaderPerOrguIdAndSupplierIdAndStatusIds(sessionState.getOrgUnit().getId(), supplierId, statusIds);
+        } catch (Exception e) {
+            logger.error("Exception in getting purchase order header list:", e);
+            return null;
+        }
+    }
+    /**
+     * get all IN-PROGRESS purchase Order Header.
+     * @param supplierId supplierId
+     * @return List of PurchaseOrderHeader
+     */
+    public List<PurchaseOrderHeader> getAllOutstandingAndConfirmedPurchaseOrderHeaderPerOrguIdAndSupplierId(long supplierId) {
+        try {
+            final List<Long> statusIds = new ArrayList<Long>();
+            final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_POH_STATUS, IdBConstant.POH_STATUS_IN_PROGRESS);
             if (status != null) {
                 statusIds.add(status.getId());
             }

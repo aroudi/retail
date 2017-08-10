@@ -4,3 +4,11 @@
 2- should we be able to delete delivery note
 3- bug: when sale order is finalised and user add payment, it try to submit the form
 4- bug: after creating Po from SO, it does not refresh the txn status
+5- need to import stock qty when importing product
+6- merge purchase orders(done) - shouldn't allow PO merged to itself
+7- back order on Sale Order and Invoice print
+8- when delete a PO line, we need to delete the related objects as well or at least warn the user about deletion
+9- for each product display how many reserved for what
+10- create PO for products their QTY below certain amount
+11- log url
+12-

@@ -141,4 +141,11 @@ public interface PurchaseOrderService {
      * @param pohId purchaes order header id.
      */
     void updatePurchaseOrderLinkedSaleOrderStatus(long pohId);
+
+    /**
+     * get all IN-PROGRESS and CONFIRMED purchase Order Header.
+     * @param supplierId supplierId
+     * @return List of PurchaseOrderHeader
+     */
+    List<PurchaseOrderHeader> getAllOutstandingAndConfirmedPurchaseOrderHeaderPerOrguIdAndSupplierId(long supplierId);
 }

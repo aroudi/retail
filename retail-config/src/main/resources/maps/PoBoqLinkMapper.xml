@@ -198,4 +198,11 @@
         select PROJECT_NAME FROM PROJECT WHERE PROJECT_ID = #{value}
     </select>
 
+    <update id="changePohIdAndNumberPerPolId" >
+        UPDATE PO_BOQ_LINK SET
+        POH_ID = #{param1}
+        , POH_ORDER_NUMBER = #{param2}
+        WHERE POL_ID = #{param3}
+    </update>
+
 </mapper>

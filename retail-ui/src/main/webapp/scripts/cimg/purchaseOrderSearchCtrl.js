@@ -42,8 +42,11 @@ cimgApp.controller('purchaseOrderSearchCtrl', function($scope, $state, $timeout,
     getAllConfirmedPurchaseOrders();
     function getAllConfirmedPurchaseOrders() {
         baseDataService.getBaseData(searchUrl).then(function(response){
-            var data = angular.copy(response.data);
-            $scope.gridOptions.data = data;
+            if (response.data === undefined || response.data === null || response.data.length < 1) {
+                $scope.confirm(undefined);
+            } else {
+                $scope.gridOptions.data = response.data;
+            }
         });
     }
 

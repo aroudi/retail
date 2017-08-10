@@ -166,4 +166,11 @@
         POH_ID = #{value}
     </delete>
 
+    <update id="changePohIdAndNumberPerPolId" >
+        UPDATE PO_SO_LINK SET
+          POH_ID = #{param1}
+          , POH_ORDER_NUMBER = #{param2}
+        WHERE POL_ID = #{param3}
+    </update>
+
 </mapper>

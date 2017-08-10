@@ -73,4 +73,12 @@ public interface PoBoqLinkDao {
      * @param pohId pohId
      */
     void deletePoBoqLinkPerPohId(long pohId);
+
+    /**
+     * change PohId, PohNumber for merged PolId.
+     * @param pohId pohId
+     * @param pohNumber pohNumber
+     * @param polId polId
+     */
+    void changePohIdAndNumberPerPolId(long pohId, String pohNumber, long polId);
 }

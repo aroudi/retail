@@ -165,29 +165,25 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             return;
         }
         //check if this supplier has outstanding purchase order.
-        baseDataService.getBaseData(POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI + $scope.deliveryNoteHeader.supplier.id).then(function(response){
-            if (response.data != undefined && response.data.length > 0) {
-                ngDialog.openConfirm({
-                    template:'views/pages/purchaseOrderSearch.html',
-                    controller:'purchaseOrderSearchCtrl',
-                    className: 'ngdialog-theme-default',
-                    closeByDocument:false,
-                    resolve: {searchUrl: function(){return POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI + $scope.deliveryNoteHeader.supplier.id}}
-                }).then (function (selectedItem){
-                        if (selectedItem != undefined) {
-                            var purchaseOrderHeader = selectedItem;
-                            populateDateFromPurchaseOrder(purchaseOrderHeader);
-                        }
-                    }, function(reason) {
-                        console.log('Modal promise rejected. Reason:', reason);
-                    }
-                );
-            } else {
-                baseDataService.displayMessage('info','Warning!','No submitted purchase order found for this supplier');
-                $scope.gridOptions.data=[];
-                return;
+        ngDialog.openConfirm({
+            template:'views/pages/purchaseOrderSearch.html',
+            controller:'purchaseOrderSearchCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false,
+            resolve: {searchUrl: function(){return POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI + $scope.deliveryNoteHeader.supplier.id}}
+        }).then (function (selectedItem){
+                if (selectedItem != undefined) {
+                    var purchaseOrderHeader = selectedItem;
+                    populateDateFromPurchaseOrder(purchaseOrderHeader);
+                } else {
+                    baseDataService.displayMessage('info','Warning!','No submitted purchase order found for this supplier');
+                    $scope.gridOptions.data=[];
+                    return;
+                }
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
             }
-        });
+        );
     };
     function populateDateFromPurchaseOrder (purchaseOrder) {
 

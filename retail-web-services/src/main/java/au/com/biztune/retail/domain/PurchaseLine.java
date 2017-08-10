@@ -39,6 +39,7 @@ public class PurchaseLine {
     private UnitOfMeasure unomContents;
     private List<PoBoqLink> poBoqLinks;
     private boolean deleted;
+    private boolean merged;
     private double polQtyReserved;
     private long polProdId;
     private long polSuppId;
@@ -372,5 +373,13 @@ public class PurchaseLine {
 
     public void setPoSoLinks(List<PoSoLink> poSoLinks) {
         this.poSoLinks = poSoLinks;
+    }
+
+    public boolean isMerged() {
+        return merged;
+    }
+
+    public void setMerged(boolean merged) {
+        this.merged = merged;
     }
 }

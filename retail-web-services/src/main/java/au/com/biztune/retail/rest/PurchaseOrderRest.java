@@ -144,6 +144,24 @@ public class PurchaseOrderRest {
     }
 
     /**
+     * Returns list of Purchase Order Header confirmed.
+     * @param suppId suppId.
+     * @return list of confirmed purchase order header
+     */
+    @Secured
+    @Path("/header/getAllOutstandingAndConfirmed/{suppId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PurchaseOrderHeader> getAllOutstandingAndConfirmedPurchaseOrderPerSupplierId(@PathParam("suppId") long suppId) {
+        try {
+            return purchaseOrderService.getAllOutstandingAndConfirmedPurchaseOrderHeaderPerOrguIdAndSupplierId(suppId);
+        } catch (Exception e) {
+            logger.error ("Error in retrieving purchase order header List :", e);
+            return null;
+        }
+    }
+
+    /**
      * export purchase order as PDF.
      * @param pohId pohId
      * @return Stream output.

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, SUPPLIER_ALL_URI, taxCodeSet, TAXLEGVARIANCE_GST_URI, GET_PURCHASE_ITEMS_PER_SUPPLIER_URI) {
+cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, POL_CREATION_TYPE_MANUAL, POH_SAVE_URI, POH_STATUS_URI, POH_UPDATE_LINKED_BOQS_URI, POH_STATUS_IN_PROGRESS, POH_EXPORT_PDF, POH_STATUS_CONFIRMED, POH_STATUS_CANCELLED, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, SUPPLIER_ALL_URI, taxCodeSet, TAXLEGVARIANCE_GST_URI, GET_PURCHASE_ITEMS_PER_SUPPLIER_URI, POH_GET_ALL_OUTSTANDING_AND_CONFIRMED_PER_SUPPLIER_URI) {
     $scope.taxLegVarianceSet = taxCodeSet.data;
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -197,10 +197,10 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
 
             for (i=0; i<$scope.gridOptions.data.length; i++) {
                 if ($scope.gridOptions.data[i].poBoqLinks != undefined && $scope.gridOptions.data[i].poBoqLinks.length > 0 ) {
-                    displayLinkedBoqs($scope.gridOptions.data[i])
+                    displayLinkedBoqs($scope.gridOptions.data[i]);
                 }
                 if ($scope.gridOptions.data[i].poSoLinks != undefined && $scope.gridOptions.data[i].poSoLinks.length > 0 ) {
-                    displayLinkedSaleOrders($scope.gridOptions.data[i])
+                    displayLinkedSaleOrders($scope.gridOptions.data[i]);
                 }
             }
             baseDataService.setRow({});
@@ -687,4 +687,45 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
         }
         return defaultPrice;
     }
+
+    $scope.mergePurchaseOrder = function () {
+        if ($scope.purchaseOrderHeader.supplier === undefined || $scope.purchaseOrderHeader.supplier.id === -1) {
+            baseDataService.displayMessage('info','Warning!','Please select supplier');
+            return;
+        }
+        //check if this supplier has outstanding purchase order.
+        ngDialog.openConfirm({
+            template:'views/pages/purchaseOrderSearch.html',
+            controller:'purchaseOrderSearchCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false,
+            resolve: {searchUrl: function(){return POH_GET_ALL_OUTSTANDING_AND_CONFIRMED_PER_SUPPLIER_URI + $scope.purchaseOrderHeader.supplier.id}}
+        }).then (function (selectedItem){
+                if (selectedItem != undefined) {
+                    var purchaseOrderHeader = selectedItem;
+                    populateDataFromPurchaseOrder(purchaseOrderHeader);
+                } else {
+                    baseDataService.displayMessage('info','Warning!','No purchase order found for this supplier');
+                    return;
+                }
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    };
+
+    function populateDataFromPurchaseOrder(purchaseOrder) {
+        for (var i = 0; i < purchaseOrder.lines.length; i++) {
+            purchaseOrder.lines[i].merged = true;
+            if (purchaseOrder.lines[i].poBoqLinks != undefined && purchaseOrder.lines[i].poBoqLinks.length > 0 ) {
+                displayLinkedBoqs(purchaseOrder.lines[i]);
+            }
+            if (purchaseOrder.lines[i].poSoLinks != undefined && purchaseOrder.lines[i].poSoLinks.length > 0 ) {
+                displayLinkedSaleOrders(purchaseOrder.lines[i]);
+            }
+            $scope.gridOptions.data.push(purchaseOrder.lines[i]);
+        }
+        totalTransaction();
+    }
+
 });
