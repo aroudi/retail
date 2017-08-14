@@ -1222,7 +1222,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             return 0;
         }
         if (txnDetail.product.stockQty!=undefined &&  txnDetail.product.stockQty> 0) {
-          return txnDetail.txdeQuantitySold - txnDetail.product.stockQty;
+            if (txnDetail.txdeQuantitySold <= txnDetail.product.stockQty) {
+                return 0;
+            } else {
+                return txnDetail.txdeQuantitySold - txnDetail.product.stockQty;
+            }
         } else {
             return txnDetail.txdeQuantitySold;
         }

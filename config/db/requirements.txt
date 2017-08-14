@@ -15,4 +15,10 @@
 13- bug: back order qty is calculated incorrectly on sale order when qty in stock is more than qty ordered
 14- bug: can not set status on so when fully paid - SOLVED
 15- ------------------------> bug: in StockServiceImple.java qty not set correctly
+16- did a sale order and fully paid. when trying to invoice, invoice all items option is disabled - also the payment for invoice shows negative amount
+17- did an invoice transaction  due =5038.65   calculated amount =5083.7      ----> caused a problem in payment
+18- check for BOQ if we reserve the 'In Stock' qty or not
+19- in delivery note list, user should not able to select records
+
+
 

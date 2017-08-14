@@ -120,6 +120,8 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 } else {
                     deliveryNoteDao.updateDeliveryNoteLine(deliveryNoteLine);
                 }
+                //update stock qty.
+                updateStockQuantity(deliveryNoteHeader, deliveryNoteLine);
             }
             updateLinkedPurchaseOrder(deliveryNoteHeader);
             response.setInfo(deliveryNoteHeader.getDelnGrn());
@@ -182,6 +184,10 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 logger.debug("DeliveryNote is note in complete state. so we don't update the purchase order");
                 return true;
             }
+            if (deliveryNoteHeader.getPohId() < 0) {
+                logger.debug("there is no purchase order assigned to delivery note.");
+                return true;
+            }
                 //create a link to purchase order header
             final PoDelNoteLink poDelNoteLink = new PoDelNoteLink();
             poDelNoteLink.setDelnId(deliveryNoteHeader.getId());
@@ -235,8 +241,6 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                     //update linked sale orders
                     updatePurchaseLineLinkedSaleOrder(deliveryNoteHeader, deliveryNoteLine, purchaseLine);
                 }
-                //update stock qty.
-                updateStockQuantity(deliveryNoteHeader, deliveryNoteLine, purchaseLine);
             }
             //change the status of purchase order
             //retreive purchase order whole object from db.
@@ -375,9 +379,8 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
     /**     * update stockQuantity.
      * @param deliveryNoteHeader deliveryNoteHeader
      * @param deliveryNoteLine deliveryNoteLine
-     * @param linkedPurchaseLine linkedPurchaseLine
      */
-    private void updateStockQuantity(DeliveryNoteHeader deliveryNoteHeader, DeliveryNoteLine deliveryNoteLine, PurchaseLine linkedPurchaseLine) {
+    private void updateStockQuantity(DeliveryNoteHeader deliveryNoteHeader, DeliveryNoteLine deliveryNoteLine) {
         try {
             //get current user from security context.
             final Principal principal = securityContext.getUserPrincipal();
@@ -386,7 +389,7 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 appUser = (AppUser) principal;
             }
 
-            if (deliveryNoteHeader == null || linkedPurchaseLine == null || deliveryNoteLine == null) {
+            if (deliveryNoteHeader == null || deliveryNoteLine == null || !deliveryNoteHeader.getDelnStatus().getCategoryCode().equals(IdBConstant.DLV_NOTE_STATUS_COMPLETE)) {
                 return;
             }
             String txnType = null;

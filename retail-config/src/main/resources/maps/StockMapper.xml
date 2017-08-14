@@ -514,6 +514,7 @@
         WHERE
         stkrsv.ORGU_ID = #{param1}
         AND stkrsv.PROD_ID = #{param2}
+        AND stkrsv.QTY_RESERVED > 0
     </select>
     <update id="updateStockReservePerId">
         UPDATE STOCK_RESERVE SET

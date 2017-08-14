@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI, taxCodeSet, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, TAXLEGVARIANCE_GST_URI, GET_PURCHASE_ITEMS_PER_SUPPLIER_URI) {
+cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI, taxCodeSet, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, TAXLEGVARIANCE_GST_URI, GET_PURCHASE_ITEMS_PER_SUPPLIER_URI, GET_PURCHASE_ITEM_PER_ID_URI) {
     $scope.taxLegVarianceSet = taxCodeSet.data;
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -448,8 +448,10 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
                 if (selectedItems != undefined) {
                     for (var i = 0; i < selectedItems.length; i++) {
                         var selectedProduct = selectedItems[i];
-                        var line = createDeliveryNoteLineFromProduct(selectedProduct);
-                        $scope.gridOptions.data.push(line);
+                        baseDataService.getBaseData(GET_PURCHASE_ITEM_PER_ID_URI + selectedProduct.id).then(function(response){
+                            var line = createDeliveryNoteLineFromProduct(response.data);
+                            $scope.gridOptions.data.push(line);
+                        });
                     }
                 }
             }, function(reason) {
