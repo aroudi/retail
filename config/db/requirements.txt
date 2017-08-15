@@ -1,24 +1,27 @@
 02/08/17:
 
-1- can we cancel or delete Sale Order? if so what about sale orders that have been partially/fully paid?
-2- should we be able to delete delivery note
-3- bug: when sale order is finalised and user add payment, it try to submit the form
+1- Question: can we cancel or delete Sale Order? if so what about sale orders that have been partially/fully paid?
+2- Question: should we be able to delete delivery note
+7- back order on Sale Order and Invoice print
+8- when delete a PO line, we need to delete the related objects as well or at least warn the user about deletion
+10- create PO for products their QTY below certain amount
+11- log url
+18- check for BOQ if we reserve the 'In Stock' qty or not
+19- in delivery note list, user should not able to select records
+
+
+-- resolved:
+3- bug(resolved): when sale order is finalised and user add payment, it try to submit the form -- resolved
 4- bug: after creating Po from SO, it does not refresh the txn status
 5- need to import stock qty when importing product
 6- merge purchase orders(done) - shouldn't allow PO merged to itself
-7- back order on Sale Order and Invoice print
-8- when delete a PO line, we need to delete the related objects as well or at least warn the user about deletion
-9- for each product display how many reserved for what
-10- create PO for products their QTY below certain amount
-11- log url
-12- size in creating delivery note not set ( it is null)
-13- bug: back order qty is calculated incorrectly on sale order when qty in stock is more than qty ordered
-14- bug: can not set status on so when fully paid - SOLVED
+9- done - for each product display how many reserved for what
+12- resolved - size in creating delivery note not set ( it is null)
+13- resolved - bug: back order qty is calculated incorrectly on sale order when qty in stock is more than qty ordered
+14- resolved - bug: can not set status on so when fully paid - SOLVED
 15- ------------------------> bug: in StockServiceImple.java qty not set correctly
-16- did a sale order and fully paid. when trying to invoice, invoice all items option is disabled - also the payment for invoice shows negative amount
-17- did an invoice transaction  due =5038.65   calculated amount =5083.7      ----> caused a problem in payment
-18- check for BOQ if we reserve the 'In Stock' qty or not
-19- in delivery note list, user should not able to select records
+16- resolved - did a sale order and fully paid. when trying to invoice, invoice all items option is disabled - also the payment for invoice shows negative amount
+17- resolved - did an invoice transaction  due =5038.65   calculated amount =5083.7      ----> caused a problem in payment
 
 
 

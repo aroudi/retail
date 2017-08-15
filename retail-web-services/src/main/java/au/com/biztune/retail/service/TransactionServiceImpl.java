@@ -248,7 +248,7 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdValueNett(txhdValueNett);
             txnHeader.setTxhdValueTax(txhdValueTax);
             txnHeader.setTxhdValueDue(txhdValueNett - txhdValuePaid);
-            if (Math.abs(txhdValueNett - txhdValuePaid) <= IdBConstant.ROUNDING_VALUE_BASE) {
+            if (Math.abs(txhdValueNett - txhdValuePaid) < IdBConstant.ROUNDING_VALUE_BASE) {
                 txnHeader.setTxhdValueDue(0.00);
                 txnHeader.setTxhdValRounding(txhdValueNett - txhdValuePaid);
             }

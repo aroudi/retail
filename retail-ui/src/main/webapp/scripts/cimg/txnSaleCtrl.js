@@ -243,7 +243,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 }
                 if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
                     columns.forEach(function(column){
-                        if (column.field === 'txdeQtyInvoiced' || column.field ==='txdeQtyBalance') {
+                        if (column.field === 'txdeQtyInvoiced' || column.field ==='txdeQtyBalance' || column.field === 'txdeQtyBackOrder') {
                             column.visible = true;
                         }
 
@@ -257,7 +257,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     return columns;
                 }
                 columns.forEach(function(column){
-                    if (column.field === 'txdeQtyInvoiced' || column.field ==='txdeQtyBalance') {
+                    if (column.field === 'txdeQtyInvoiced' || column.field ==='txdeQtyBalance' || column.field === 'txdeQtyBackOrder') {
                         column.visible = false;
                     }
 
@@ -364,14 +364,14 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             rowTemplate : tenderTpl,
             columnDefs: [
                 {field:'id', visible:false, enableCellEdit:false},
-                {field:'txmdType.displayName',displayName:'Type', visible:true, enableCellEdit:false, width: '10%'},
+                //{field:'txmdType.displayName',displayName:'Type', visible:true, enableCellEdit:false, width: '10%'},
                 {field:'paymentMedia.paymName',displayName:'Payment Media', visible:true, enableCellEdit:false, width: '45%',
                     cellTooltip: function(row,col) {
                         return row.entity.paymentMedia.paymName
                     }
                 },
                 {field:'txmdAmountLocal', displayName:'Amount', visible:true, cellFilter:'currency', footerCellFilter:'currency', /*aggregationType: uiGridConstants.aggregationTypes.sum, */ enableCellEdit:false, width: '35%'},
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTxnLineVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>', width: '10%'}
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTxnLineVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>', width: '15%'}
 
             ]
         }
@@ -795,7 +795,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         $scope.txnHeaderForm.txhdValueTax = valueTax;
         $scope.txnHeaderForm.txhdValueDue = valueNett - $scope.calculateAmountPaid();
         //check if amount due is less than 5 cents, then add it to rounding
-        if (Math.abs($scope.txnHeaderForm.txhdValueDue) <= 0.05 ) {
+        if (Math.abs($scope.txnHeaderForm.txhdValueDue) < 0.06 ) {
             $scope.txnHeaderForm.txhdValRounding = $scope.txnHeaderForm.txhdValueDue;
             $scope.txnHeaderForm.txhdValueDue = 0.00;
         }
@@ -890,6 +890,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         if ($scope.txnHeaderForm.convertedToTxnSale) {
             baseDataService.getBaseData(TXN_TYPE_SALE).then(function(response){
                 $scope.txnHeaderForm.txhdTxnType = response.data;
+                refreshBackOrderColumn();
             });
             baseDataService.getBaseData(TXN_STATE_DRAFT).then(function(response){
                 $scope.txnHeaderForm.txhdState = response.data;
@@ -943,7 +944,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
     };
     $scope.isTxnSaleAndPending = function () {
-        if ((!$scope.isPageNew) && $scope.txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT' && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
+        if ((!$scope.isPageNew) && $scope.txnHeaderForm.status.categoryCode != 'SO_STATUS_FINAL' && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
             return true;
         }
         return false;
@@ -1087,7 +1088,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     };
 
     $scope.showAddPaymentButtom = function() {
-        return (!$scope.isInvoiceMode)&&($scope.isTxnSaleAndPending()) && !(isInvoiceViewMode());
+        return ($scope.showSubmitButtom() || $scope.showInvoiceButtom()) && !$scope.isViewMode && ($scope.txnHeaderForm.txhdValueDue != 0)
     };
     $scope.showInvoiceButtom = function() {
         return ($scope.isInvoiceMode) && (!isInvoiceViewMode());
@@ -1231,4 +1232,23 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             return txnDetail.txdeQuantitySold;
         }
     }
+    function refreshBackOrderColumn() {
+        if ($scope.txnDetailList.data!=undefined) {
+            for (var i = 0; i < $scope.txnDetailList.data.length; i++) {
+                $scope.txnDetailList.data[i].txdeQtyBackOrder = calculateItemBackOrder($scope.txnDetailList.data[i]);
+            }
+        }
+    }
+
+    $scope.addPaymentEvent = function(keyEvent) {
+        if (keyEvent.which != 13) {
+            return;
+        }
+        //check if payment should be applied or not.
+        if (!$scope.showAddPaymentButtom()) {
+            return;
+        }
+        $scope.addTxnMedia();
+    }
+
 });

@@ -489,7 +489,7 @@ public interface IdBConstant {
     /**
      * Minimum value for rounding
      */
-    double ROUNDING_VALUE_BASE = 0.05;
+    double ROUNDING_VALUE_BASE = 0.06;
 
     /**
      *
