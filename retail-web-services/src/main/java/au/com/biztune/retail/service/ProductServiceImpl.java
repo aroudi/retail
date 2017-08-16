@@ -121,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
             return productDao.getAllProductsPerOrgUnitId(sessionState.getOrgUnit().getId());
 
         } catch (Exception e) {
-            logger.error("Error in retrieving product list");
+            logger.error("Error in retrieving product list", e);
             return null;
         }
     }
@@ -141,7 +141,7 @@ public class ProductServiceImpl implements ProductService {
             productSearchForm.setTotalRecords(productDao.searchProductsTotalRecords(sessionState.getOrgUnit().getId(), null));
             return productSearchForm;
         } catch (Exception e) {
-            logger.error("Error in retrieving product list");
+            logger.error("Error in retrieving product list", e);
             return null;
         }
     }

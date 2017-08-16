@@ -444,10 +444,14 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             className: 'ngdialog-theme-default',
             closeByDocument:false,
             resolve: {searchUrl: function(){return GET_PURCHASE_ITEMS_PER_SUPPLIER_URI + $scope.deliveryNoteHeader.supplier.id + '/' + searchStr}}
-        }).then (function (selectedItems){
-                if (selectedItems != undefined) {
-                    for (var i = 0; i < selectedItems.length; i++) {
-                        var selectedProduct = selectedItems[i];
+        }).then (function (result){
+                if (result === 'NO_RESULT' || result === undefined) {
+                    baseDataService.displayMessage('info','Not Found!','Product not found!!!');
+                    return;
+                }
+                if (result != undefined) {
+                    for (var i = 0; i < result.length; i++) {
+                        var selectedProduct = result[i];
                         baseDataService.getBaseData(GET_PURCHASE_ITEM_PER_ID_URI + selectedProduct.id).then(function(response){
                             var line = createDeliveryNoteLineFromProduct(response.data);
                             $scope.gridOptions.data.push(line);

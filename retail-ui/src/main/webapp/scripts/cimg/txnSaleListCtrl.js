@@ -62,7 +62,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
                     return grid.getCellValue(row, col).color
                 }
             },
-            {field:'createPurchaseOrder', displayName:'Back Order',enableCellEdit:true, type:'boolean', width:'7%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-model="row.entity.createPurchaseOrder" ng-change="grid.appScope.addSaleOrderToBackOrderList(row.entity)">'}
+            {field:'createPurchaseOrder', displayName:'Select',enableCellEdit:true, type:'boolean', width:'7%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-model="row.entity.createPurchaseOrder" ng-change="grid.appScope.addSaleOrderToBackOrderList(row.entity)">'}
         ]
     }
     $scope.gridOptions.enableRowSelection = false;

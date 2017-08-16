@@ -21,17 +21,17 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
             $scope.gridOptions.totalItems = result.totalRecords;
             $scope.gridOptions.data = result.result;
         });
-    }
+    };
 
     var paginationOptions = {
         pageNumber:1,
-        pageSize:1000,
+        pageSize:200,
         sort:null
     };
 
     $scope.gridOptions = {
-        paginationPageSizes : [1000,1500,2000,2500],
-        paginationPageSize:1000,
+        paginationPageSizes : [200,250,300,350],
+        paginationPageSize:200,
         useExternalPagination: true,
         useExternalSorting:true,
         enableFiltering: true,
@@ -77,7 +77,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
                 }
             }
         ]
-    }
+    };
     $scope.gridOptions.enableRowSelection = false;
     $scope.gridOptions.multiSelect = false;
     $scope.gridOptions.noUnselect= true;
@@ -125,7 +125,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
             //redirect to the supplier page.
             $state.go('dashboard.createProduct');
         });
-    }
+    };
 
     $scope.viewProduct = function(row) {
         if (row == undefined || row.entity == undefined) {
@@ -189,7 +189,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
         var pagingUrl = PRODUCT_ALL_PAGING_URI + '/' + pageNo + '/' + paginationOptions.pageSize;
         //console.log('callback with pageNo =' + pageNo + ' paginationOptions.pageSize ='+ paginationOptions.pageSize);
         baseDataService.getBaseData(pagingUrl).then(function(response){
-            var result = angular.copy(response.data);
+            var result = response.data;
             $scope.gridOptions.totalItems = result.totalRecords;
             $scope.gridOptions.data = result.result;
         });

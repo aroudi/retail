@@ -448,11 +448,15 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             className: 'ngdialog-theme-default',
             closeByDocument:false,
             resolve: {searchUrl: function(){return PRODUCT_SALE_ITEM_SEARCH_URI + searchStr}}
-        }).then (function (selectedItems){
+        }).then (function (result){
                 //alert('returned value = ' + value);
-                if (selectedItems != undefined) {
-                    for (var i = 0; i < selectedItems.length; i++) {
-                        var selectedProduct = selectedItems[i];
+                if (result === 'NO_RESULT' || result === undefined) {
+                    baseDataService.displayMessage('info','Not Found!','Product not found!!!');
+                    return;
+                }
+                if (result != undefined) {
+                    for (var i = 0; i < result.length; i++) {
+                        var selectedProduct = result[i];
                         //check if product is already selected.
                         /*
                         if (checkIfProductHasBeenSelected(selectedProduct)) {

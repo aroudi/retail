@@ -39,22 +39,34 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="col-lg-4">
+                        <div class="col-lg-2">
                             <div class="form-group">
                                 <label>SKU</label>
                                 <input type="text" class="form-control" data-ng-model="productSearchForm.prodSku" type="text" />
                             </div >
                         </div >
-                        <div class="col-lg-4">
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label>Product Name</label>
+                                <input type="text" class="form-control" data-ng-model="productSearchForm.prodName" type="text" />
+                            </div >
+                        </div >
+                        <div class="col-lg-2">
                             <div class="form-group">
                                 <label>Reference</label>
                                 <input type="text" class="form-control" data-ng-model="productSearchForm.reference" type="text" />
                             </div >
                         </div >
-                        <div class="col-lg-4">
+                        <div class="col-lg-2">
                             <div class="form-group">
-                                <label>Product Name</label>
-                                <input type="text" class="form-control" data-ng-model="productSearchForm.prodName" type="text" />
+                                <label>In Stock Qty From</label>
+                                <input type="number" class="form-control" data-ng-model="productSearchForm.inStockQtyFrom" />
+                            </div >
+                        </div >
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label>In Stock Qty To</label>
+                                <input type="number" class="form-control" data-ng-model="productSearchForm.inStockQtyTo" />
                             </div >
                         </div >
                     </div>

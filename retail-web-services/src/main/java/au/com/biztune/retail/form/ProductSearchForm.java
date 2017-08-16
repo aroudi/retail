@@ -10,6 +10,9 @@ public class ProductSearchForm extends GeneralSearchForm {
     private String prodName;
     private String reference;
     private long prodTypeId;
+    private long inStockQtyFrom;
+    private long inStockQtyTo;
+
 
     public String getProdSku() {
         return prodSku;
@@ -43,4 +46,19 @@ public class ProductSearchForm extends GeneralSearchForm {
         this.prodTypeId = prodTypeId;
     }
 
+    public long getInStockQtyFrom() {
+        return inStockQtyFrom;
+    }
+
+    public void setInStockQtyFrom(long inStockQtyFrom) {
+        this.inStockQtyFrom = inStockQtyFrom;
+    }
+
+    public long getInStockQtyTo() {
+        return inStockQtyTo;
+    }
+
+    public void setInStockQtyTo(long inStockQtyTo) {
+        this.inStockQtyTo = inStockQtyTo;
+    }
 }

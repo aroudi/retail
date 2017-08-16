@@ -59,6 +59,12 @@ cimgApp.controller('productSaleItemSearchCtrl', function($scope,searchUrl, $stat
         */
         baseDataService.getBaseData(searchUrl).then(function(response){
             $scope.gridOptions.data = response.data;
+            if ($scope.gridOptions.data === undefined || $scope.gridOptions.data === null || $scope.gridOptions.data.length < 1) {
+                $scope.confirm('NO_RESULT');
+            }
+            if ($scope.gridOptions.data.length === 1) {
+                $scope.confirm($scope.gridOptions.data);
+            }
         });
     }
 

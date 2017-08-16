@@ -52,8 +52,13 @@ cimgApp.controller('productPurchaseItemSearchCtrl', function($scope, $state, $ti
     getAllProductPurchaseItems();
     function getAllProductPurchaseItems() {
         baseDataService.getBaseData(searchUrl).then(function(response){
-            var data = angular.copy(response.data);
-            $scope.gridOptions.data = data;
+            $scope.gridOptions.data = response.data;
+            if ($scope.gridOptions.data === undefined || $scope.gridOptions.data === null || $scope.gridOptions.data.length < 1) {
+                $scope.confirm('NO_RESULT');
+            }
+            if ($scope.gridOptions.data.length === 1) {
+                $scope.confirm($scope.gridOptions.data);
+            }
             $scope.setFocusOnCatalogNo();
         });
     }

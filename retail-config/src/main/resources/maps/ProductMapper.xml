@@ -72,6 +72,32 @@
         <association resultMap="prodOrguLinkListMap" property="prodOrguLink" />
     </resultMap>
 
+    <resultMap id="productSearchMap" type="Product" >
+        <id column="PROD_ID" property="id" />
+        <result column="PROD_SKU" property="prodSku" />
+        <result column="PROD_BARCODE" property="prodBarcode" />
+        <result column="REFERENCE" property="reference" />
+        <result column="ORGU_ID_OWNING" property="orguIdOwning" />
+        <result column="PROD_NAME" property="prodName" />
+        <result column="PROD_DESC" property="prodDesc" />
+        <result column="PROD_OWN_BRAND" property="prodOwnBrand" />
+        <result column="PROD_URL" property="prodUrl" />
+        <result column="PROD_CREATED" property="prodCreated" />
+        <result column="PROD_MODIFIED" property="prodModified" />
+        <result column="PROD_RECEIPT_DESC" property="prodReceiptDesc" />
+        <result column="PROD_WARRANTY_TERM" property="prodWarrantyTerm" />
+        <result column="PROD_BRAND" property="prodBrand" />
+        <result column="PROD_IMAGE_DESC" property="prodImageDesc" />
+        <result column="PROD_URL_THUMB" property="prodUrlThumb" />
+        <result column="PROD_CLASS" property="prodClass" />
+        <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
+        <result column="PROD_LOCATION" property="prodLocation" />
+        <result column="STCK_QTY" property="stockQty" />
+        <association property="sellPrice" column="PROD_ID" select="au.com.biztune.retail.dao.PriceDao.getProductSellPricePerProdId" />
+        <association property="reservedQty" column="{prodId=PROD_ID, orguId=ORGU_ID_OWNING}" select="au.com.biztune.retail.dao.StockDao.getProductReservedPristineStockQty" />
+        <association resultMap="prodOrguLinkListMap" property="prodOrguLink" />
+    </resultMap>
+
     <resultMap id="productListLiteMap" type="Product" >
         <id column="PROD_ID" property="id" />
         <result column="PROD_SKU" property="prodSku" />
@@ -215,18 +241,22 @@
         where q_result.NUMBER BETWEEN #{param2} AND #{param3}
     </select>
 
-    <select id="searchProductsPaging" resultMap="productListMap" >
+    <select id="searchProductsPaging" resultMap="productSearchMap" >
         SELECT * FROM
         (SELECT
         <include refid="productColumns"><property name="alias" value="prod"/></include>,
         <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>,
         <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="cat"/></include>,
+        stock.STCK_QTY,
         ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS NUMBER
         FROM PRODUCT prod
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
         INNER JOIN CONFIG_CATEGORY cat on (cat. CATEGORY_ID= prou.CAT_ID_STATUS)
         LEFT OUTER JOIN SUPP_PROD_PRICE spp on (prod.PROD_ID = spp.PROD_ID)
         LEFT OUTER JOIN SUPP_ORGU_LINK sol on (sol.SOL_ID = spp.SOL_ID)
+        LEFT OUTER JOIN STOCK stock on (prod.prod_id = stock.prod_id)
+        LEFT OUTER JOIN CONFIG_CATEGORY cat2 on (cat2.CATEGORY_ID = stock.STCK_CAT AND cat2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE')
+        LEFT OUTER JOIN CONFIG_CATEGORY cat3 on (cat3.CATEGORY_ID = stock.STCK_COND and cat3.CATEGORY_CODE = 'STOCK_CONDITION_PRISTINE')
         WHERE prou.orgu_id = #{param1}
             <if test="param4 != null">
                 AND
@@ -251,6 +281,9 @@
         INNER JOIN CONFIG_CATEGORY cat on (cat. CATEGORY_ID= prou.CAT_ID_STATUS)
         LEFT OUTER JOIN SUPP_PROD_PRICE spp on (prod.PROD_ID = spp.PROD_ID)
         LEFT OUTER JOIN SUPP_ORGU_LINK sol on (sol.SOL_ID = spp.SOL_ID)
+        LEFT OUTER JOIN STOCK stock on (prod.prod_id = stock.prod_id)
+        LEFT OUTER JOIN CONFIG_CATEGORY cat2 on (cat2.CATEGORY_ID = stock.STCK_CAT AND cat2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE')
+        LEFT OUTER JOIN CONFIG_CATEGORY cat3 on (cat3.CATEGORY_ID = stock.STCK_COND and cat3.CATEGORY_CODE = 'STOCK_CONDITION_PRISTINE')
         WHERE prou.orgu_id = #{param1}
         <if test="param2 != null">
             AND

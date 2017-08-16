@@ -207,6 +207,14 @@ public class SearchClauseBuilder {
                 searchClause = new SearchClause("prod.CAT_ID_TYPE", " = ", searchForm.getProdTypeId());
                 clauseList.add(searchClause);
             }
+            if (searchForm.getInStockQtyFrom() > 0) {
+                searchClause = new SearchClause("stock.STCK_QTY", " >= ", searchForm.getInStockQtyFrom());
+                clauseList.add(searchClause);
+            }
+            if (searchForm.getInStockQtyTo() > 0) {
+                searchClause = new SearchClause("stock.STCK_QTY", " <= ", searchForm.getInStockQtyTo());
+                clauseList.add(searchClause);
+            }
         }
         if (clauseList.size() < 1) {
             return null;
