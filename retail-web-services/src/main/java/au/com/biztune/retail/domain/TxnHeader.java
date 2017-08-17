@@ -26,6 +26,8 @@ public class TxnHeader {
     private double txhdValRounding;
     private double txhdValueTaxable;
     private double txhdValueTax;
+    //dummy field use in reports
+    private double txhdAmountPaid;
     private String txhdReceiptId;
     private Customer customer;
     private int txhdVoidTxnNr;
@@ -383,5 +385,13 @@ public class TxnHeader {
 
     public void setTxhdPrjCode(String txhdPrjCode) {
         this.txhdPrjCode = txhdPrjCode;
+    }
+
+    public double getTxhdAmountPaid() {
+        return txhdAmountPaid;
+    }
+
+    public void setTxhdAmountPaid(double txhdAmountPaid) {
+        this.txhdAmountPaid = txhdAmountPaid;
     }
 }

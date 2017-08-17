@@ -303,6 +303,37 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 }
             }
 
+            // check invoiced qty. if bigger than qty available display a warnning.
+            if ( event.targetScope.col.field === 'txdeQtyInvoiced') {
+
+                //if we have received items then check against it
+                if (txnDetail.status!=undefined && (txnDetail.status.categoryCode === 'SO_STATUS_RECEIVED' || txnDetail.status.categoryCode === 'SO_STATUS_PARTIAL_REC')) {
+                    //if good received and user try to invoice more than qty received, display a warnning
+                    if (txnDetail.txdeQtyReceived > 0 && txnDetail.txdeQtyInvoiced > txnDetail.txdeQtyReceived) {
+                        baseDataService.displayMessage('yesNo','Warnning','Qty entered is more than available qty('+ txnDetail.txdeQtyReceived +') Do you want to continue?').then(function(result){
+                            if (result) {
+                                //continue.....
+                            } else {
+                                txnDetail['txdeQtyInvoiced'] = $scope.txdeQtyInvoicedBeforeEditting;
+                                return;
+                            }
+                        });
+                    }
+                } else {
+                    //we need to check against availabl qty in stock
+                    if (txnDetail.txdeQtyInvoiced > txnDetail.product.stockQty) {
+                        baseDataService.displayMessage('yesNo','Warnning','Qty entered is more than available qty('+ txnDetail.product.stockQty +'). Do you want to continue?').then(function(result){
+                            if (result) {
+                                //continue.....
+                            } else {
+                                txnDetail['txdeQtyInvoiced'] = $scope.txdeQtyInvoicedBeforeEditting;
+                                return;
+                            }
+                        });
+                    }
+                }
+            }
+
             //cellData = txnDetail[event.targetScope.col.field];
             //if it has not been invoiced before and total invoiced is undefined:
             if (txnDetail['txdeQtyTotalInvoiced'] == undefined) {
@@ -1092,7 +1123,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     };
 
     $scope.showAddPaymentButtom = function() {
-        return ($scope.showSubmitButtom() || $scope.showInvoiceButtom()) && !$scope.isViewMode && ($scope.txnHeaderForm.txhdValueDue != 0)
+        return ($scope.showSubmitButtom() || $scope.showInvoiceButtom()) && !$scope.isViewMode && ($scope.txnHeaderForm.txhdValueDue > 0)
     };
     $scope.showInvoiceButtom = function() {
         return ($scope.isInvoiceMode) && (!isInvoiceViewMode());

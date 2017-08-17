@@ -24,6 +24,7 @@
 	<field name="txdeQuantityOrdered" class="java.lang.Double"/>
 	<field name="txdeValueLine" class="java.lang.Double"/>
 	<field name="txdeProdName" class="java.lang.String"/>
+	<field name="txdeQtyBackOrder" class="java.lang.Double"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -53,7 +54,7 @@
 				<text><![CDATA[Unit Price]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="295" y="4" width="39" height="14" uuid="5829bccb-db88-45fe-af29-b3f4d9fe9968"/>
+				<reportElement x="288" y="4" width="39" height="14" uuid="5829bccb-db88-45fe-af29-b3f4d9fe9968"/>
 				<textElement>
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
@@ -88,7 +89,7 @@
 				<text><![CDATA[Unit]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="294" y="16" width="39" height="16" uuid="8ccb4bd0-4980-4558-af9d-ce06aa838abf"/>
+				<reportElement x="287" y="16" width="39" height="16" uuid="8ccb4bd0-4980-4558-af9d-ce06aa838abf"/>
 				<textElement>
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
@@ -155,7 +156,7 @@
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("$ #,##0.00").format($F{txdePriceSold})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="299" y="5" width="26" height="13" uuid="0d27deda-aaa7-49a1-a3e1-0ff46fab9851"/>
+				<reportElement x="292" y="6" width="34" height="13" uuid="0d27deda-aaa7-49a1-a3e1-0ff46fab9851"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
@@ -169,7 +170,7 @@
 				<textFieldExpression><![CDATA[$F{product}.getProdSku()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="258" y="6" width="39" height="13" uuid="aac94a9d-1142-4ff1-9ccd-7c291216cfe7"/>
+				<reportElement x="258" y="6" width="27" height="13" uuid="aac94a9d-1142-4ff1-9ccd-7c291216cfe7"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
@@ -193,14 +194,14 @@
 				<textFieldExpression><![CDATA[$F{txdeQuantitySold}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="333" y="6" width="26" height="13" uuid="e922aa90-23d1-4eb2-a961-ec7a21e0cd1e"/>
+				<reportElement x="333" y="6" width="25" height="13" uuid="e922aa90-23d1-4eb2-a961-ec7a21e0cd1e"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{txdeQtyBalance}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00" isBlankWhenNull="true">
-				<reportElement x="453" y="5" width="43" height="13" uuid="5842a102-643a-4d3d-972e-767e8b0b337b"/>
+				<reportElement x="453" y="6" width="43" height="13" uuid="5842a102-643a-4d3d-972e-767e8b0b337b"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>

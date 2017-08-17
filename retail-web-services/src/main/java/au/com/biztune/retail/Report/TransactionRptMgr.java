@@ -75,6 +75,7 @@ public class TransactionRptMgr {
                 logger.error("Not able to fetch invoice id " + txhdId);
                 return null;
             }
+            calculateTxhdAmountPaid(txnHeader);
             final List<TxnHeader> txnHeaders = new ArrayList<TxnHeader>();
             txnHeaders.add(txnHeader);
             txnDao.updateTxnPrintStatus(txhdId, true);
@@ -94,6 +95,7 @@ public class TransactionRptMgr {
         try {
             final List<TxnHeader> txnHeaders = new ArrayList<TxnHeader>();
             final TxnHeader txnHeader = invoiceDao.getInvoiceHeaderPerInvoiceId(inoiceId);
+            calculateTxhdAmountPaid(txnHeader);
             txnHeader.setTxhdTxnType(txnHeader.getInvoiceTxnType());
             //set txn_state to invoice
             final ConfigCategory txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_FINAL);
@@ -126,6 +128,7 @@ public class TransactionRptMgr {
         try {
             final List<TxnHeader> txnHeaders = new ArrayList<TxnHeader>();
             final TxnHeader txnHeader = invoiceDao.getInvoiceHeaderPerInvoiceId(inoiceId);
+            calculateTxhdAmountPaid(txnHeader);
             txnHeader.setTxhdTxnType(txnHeader.getInvoiceTxnType());
             //set txn_state to invoice
             final ConfigCategory txnState = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATE, IdBConstant.TXN_STATE_FINAL);
@@ -371,5 +374,14 @@ public class TransactionRptMgr {
 
     public void setSaleOrderLineFileName(String saleOrderLineFileName) {
         this.saleOrderLineFileName = saleOrderLineFileName;
+    }
+
+    private void calculateTxhdAmountPaid(TxnHeader txnHeader) {
+        if (txnHeader == null || txnHeader.getTxnMedias() == null) {
+            return;
+        }
+        final double totalAmountPaid =
+        txnHeader.getTxnMedias().stream().map(txnMedia -> txnMedia.getTxmdAmountLocal()).reduce(0.00, Double::sum);
+        txnHeader.setTxhdAmountPaid(totalAmountPaid);
     }
 }

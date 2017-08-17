@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
 	<property name="ireport.zoom" value="1.4641000000000017"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="143"/>
 	<subDataset name="Table Dataset 1" uuid="34d645cf-a029-4a91-b796-5f67f4c09de0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
@@ -37,6 +37,7 @@
 	<field name="appUser" class="au.com.biztune.retail.domain.AppUser">
 		<fieldDescription><![CDATA[user]]></fieldDescription>
 	</field>
+	<field name="txhdAmountPaid" class="java.lang.Double"/>
 	<variable name="Today" class="java.lang.String">
 		<variableExpression><![CDATA[(new SimpleDateFormat("yyyy/MM/dd")).format(new Date())]]></variableExpression>
 	</variable>
@@ -336,7 +337,7 @@
 			<textField isBlankWhenNull="true">
 				<reportElement x="457" y="102" width="97" height="20" uuid="858e75d3-c935-45a0-9f30-b6a3db1c6405"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[($F{customerAccountDebt} == null) ? new java.text.DecimalFormat("$ #,##0.00").format($F{txhdValueNett} - $F{txhdValueDue}) :new java.text.DecimalFormat("$ #,##0.00").format($F{txhdValueNett} - $F{customerAccountDebt}.getBalance())]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{customerAccountDebt} == null) ? new java.text.DecimalFormat("$ #,##0.00").format($F{txhdAmountPaid}) :new java.text.DecimalFormat("$ #,##0.00").format($F{txhdValueNett} - $F{customerAccountDebt}.getBalance())]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="7" y="152" width="155" height="20" uuid="81f3a429-edda-4822-b3e7-427cea82603e"/>
@@ -360,7 +361,7 @@
 				<text><![CDATA[JOMON ARCHITECTURAL HARDWARE PTY LTD WILL RETAIN TITLE TO THE GOODS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="322" y="17" width="27" height="16" uuid="ef903175-b070-479a-a7ba-8c4782e0c79b"/>
+				<reportElement x="327" y="16" width="27" height="16" uuid="ef903175-b070-479a-a7ba-8c4782e0c79b"/>
 				<text><![CDATA[until]]></text>
 			</staticText>
 			<staticText>
