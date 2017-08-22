@@ -122,8 +122,8 @@
                                                 Add Product:
                                                 <input size="70" data-ng-model="searchBySku" ng-disabled="isTxnSaleAndFinal()" ng-keypress="searchProductBySku($event)" ng-show="!isViewMode" >
                                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                                <button type="button" class="btn btn-primary" ng-disabled="!isTxnSaleAndPending()" ng-click="toggleAllRowSelection()" ng-show="(!isViewMode)&&(!allItemsSelected)">Invoice All Items</button>
-                                                <button type="button" class="btn btn-primary" ng-disabled="!isTxnSaleAndPending()" ng-click="toggleAllRowSelection()" ng-show="(!isViewMode)&&(allItemsSelected)">Unselect Items</button>
+                                                <button type="button" class="btn btn-primary"  ng-click="toggleAllRowSelection()" ng-show="(isTxnSaleAndPending())&&(!isViewMode)&&(!allItemsSelected)">Invoice All Items</button>
+                                                <button type="button" class="btn btn-primary"  ng-click="toggleAllRowSelection()" ng-show="(isTxnSaleAndPending())&&(!isViewMode)&&(allItemsSelected)">Unselect Items</button>
 
                                         </div>
                                         <div class="panel-body" ng-disabled="isTxnSaleAndFinal()">

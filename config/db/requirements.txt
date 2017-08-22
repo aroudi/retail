@@ -10,8 +10,6 @@
 19- in delivery note list, user should not able to select records
 20- on invoice print, 'PAID TODAY' showes all payments while it should show current invoice payment.
 21- on creating a new sale order, the 'Invoice All Itmes' are disabled
-22- enter keyword not working on refund page
-23- on generating po from so, user should be able to remove sale order from confirmation page
 -- resolved:
 3- bug(resolved): when sale order is finalised and user add payment, it try to submit the form -- resolved
 4- bug: after creating Po from SO, it does not refresh the txn status
@@ -25,6 +23,8 @@
 16- resolved - did a sale order and fully paid. when trying to invoice, invoice all items option is disabled - also the payment for invoice shows negative amount
 17- resolved - did an invoice transaction  due =5038.65   calculated amount =5083.7      ----> caused a problem in payment
 20- RESOLVED - did a sale order and fully paid. once wanted to invoice it, the payment shows negative and user can add it(user shouldnt add negative )
+22- enter keyword not working on refund page
+23- on generating po from so, user should be able to remove sale order from confirmation page
 
 
 

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI, TXN_EXPORT_PDF, PRODUCT_SALE_ITEM_SEARCH_URI) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI, TXN_EXPORT_PDF, PRODUCT_SALE_ITEM_SEARCH_URI, TXN_STATUS_OUTSTANDING) {
 
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -39,6 +39,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             //get txn_type from state params.
             $scope.txnType = $stateParams.txnType;
             $scope.txnHeaderForm = {};
+            baseDataService.getBaseData(TXN_STATUS_OUTSTANDING).then(function(response){
+                $scope.txnHeaderForm.status = response.data;
+            });
             $scope.model.customer={};
             $scope.txnHeaderForm.txhdValueCredit = 0.00;
             $scope.txnHeaderForm.id = -1;
@@ -979,10 +982,16 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
     };
     $scope.isTxnSaleAndPending = function () {
-        if ((!$scope.isPageNew) && $scope.txnHeaderForm.status.categoryCode != 'SO_STATUS_FINAL' && $scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
-            return true;
+        if ($scope.txnHeaderForm.txhdTxnType.categoryCode != 'TXN_TYPE_SALE') {
+            return false;
         }
-        return false;
+        if ($scope.txnHeaderForm.status.categoryCode === 'SO_STATUS_FINAL') {
+            return false;
+        }
+        if (($scope.txnDetailList.data === undefined) || ($scope.txnDetailList.data.length < 1)) {
+            return false;
+        }
+        return true;
     };
     $scope.exportToPdf = function(url) {
 

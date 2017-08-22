@@ -227,6 +227,7 @@ var type_constant = {
     'TAXLEGVARIANCE_GST_URI' : 'taxRule/taxLegVariance/gstCode',
     'PRICING_RULE_URI' : 'categories/PRICING_RULES',
     'TXN_STATUS_ONORDER' : 'categories/SO_STATUS/SO_STATUS_ON_ORDER',
+    'TXN_STATUS_OUTSTANDING' : 'categories/SO_STATUS/SO_STATUS_OUTSTANDING',
     'SO_STATUS_URI' : 'categories/SO_STATUS'
 
 }
@@ -990,6 +991,9 @@ cimgApp.filter('productReservTxntypeFilter', function() {
 });
 cimgApp.filter('configCategoryFilter', function() {
     return function (status) {
+        if (status === undefined || status === null) {
+            return '';
+        }
         return status.displayName;
     };
 });

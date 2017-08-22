@@ -512,5 +512,12 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
 
     $scope.enableRefundButton = function() {
         return $scope.refundMode && ($scope.txnHeaderForm.invoiceTxnType.categoryCode === 'TXN_TYPE_INVOICE');
+    };
+    $scope.addPaymentEvent = function(keyEvent) {
+        if (keyEvent.which != 13) {
+            return;
+        }
+        $scope.addTxnMedia();
     }
+
 });

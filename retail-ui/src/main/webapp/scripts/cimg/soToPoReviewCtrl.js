@@ -16,7 +16,8 @@ cimgApp.controller('soToPoReviewCtrl', function($scope,saleOrderList, $state, $t
                 }
             },
             {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
-            {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'}
+            {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'},
+            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="grid.appScope.isTxnLineVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
         ]
     };
     $scope.gridOptions.enableRowSelection = false;
@@ -29,7 +30,7 @@ cimgApp.controller('soToPoReviewCtrl', function($scope,saleOrderList, $state, $t
     };
     initPageData();
     function initPageData() {
-       $scope.gridOptions.data = saleOrderList;
+       $scope.gridOptions.data = angular.copy(saleOrderList);
     };
     $scope.submit = function () {
         var txhdIdList = [];
@@ -46,4 +47,20 @@ cimgApp.controller('soToPoReviewCtrl', function($scope,saleOrderList, $state, $t
         //$scope.$destroy();
         $scope.closeThisDialog('button');
     };
+    $scope.removeItem = function(row) {
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this item?').then(function(result){
+            if (result) {
+                if (row == undefined || row.entity == undefined) {
+                    alert('item is undefined');
+                    return;
+                }
+
+            } else {
+                return;
+            }
+            $scope.gridOptions.data.splice(baseDataService.getArrIndexOf($scope.gridOptions.data, row.entity, 1));
+        });
+    };
+
+
 });
