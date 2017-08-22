@@ -11,8 +11,23 @@
                             <div class="col-lg-9">
                                 <div class="form-group">
                                     <label>Supplier</label>
-                                    <input class="form-control" data-ng-model="supplier.supplierName" ng-disabled="true">
-                                    <button type="button" class="btn btn-success" ng-click="searchSupplier()">Supplier</button>
+                                    <ui-select ng-model="model.supplier"
+                                               reset-search-input="true"
+                                               ng-change="getProductsPerSupplier()"
+                                               title="Choose a Supplier">
+                                        <ui-select-match placeholder="Select a supplier in the list or search by Name, ABN">
+                                            <span ng-bind="$select.selected.supplierName"></span>
+                                        </ui-select-match>
+                                        <!--ui-select-choices repeat="item in (supplierSet | filter: $select.search) track by item.id"-->
+                                        <ui-select-choices repeat="item in supplierSet | propsFilter: {supplierName: $select.search, supplierCode: $select.search} track by item.id">
+                                            <div ng-bind-html="item.supplierName | highlight: $select.search"></div>
+                                            <small>
+                                                ABN: <span ng-bind-html="''+item.supplierCode | highlight: $select.search"></span>
+                                            </small>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <!--input class="form-control" data-ng-model="supplier.supplierName" ng-disabled="true">
+                                    <button type="button" class="btn btn-success" ng-click="searchSupplier()">Supplier</button-->
                                 </div >
                             </div>
                         </div >

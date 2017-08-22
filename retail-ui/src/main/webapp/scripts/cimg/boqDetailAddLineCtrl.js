@@ -1,16 +1,22 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqDetailAddLineCtrl', function($scope, $timeout,ngDialog, uiGridConstants, baseDataService, SUCCESS, FAILURE, GET_PURCHASE_ITEMS_PER_SUPPLIER_URI, POL_CREATION_TYPE_MANUAL, BOQ_LINE_STATUS_PENDING) {
+cimgApp.controller('boqDetailAddLineCtrl', function($scope, $timeout,ngDialog, uiGridConstants, baseDataService, SUCCESS, FAILURE, GET_PURCHASE_ITEMS_PER_SUPPLIER_URI, POL_CREATION_TYPE_MANUAL, BOQ_LINE_STATUS_PENDING, SUPPLIER_ALL_URI) {
 
     initPageData();
     function initPageData() {
+        $scope.model = {};
         $scope.boqDetail = {};
         baseDataService.getBaseData(POL_CREATION_TYPE_MANUAL).then(function(response){
             $scope.boqDetail.bqdCreationType = response.data;
         });
         baseDataService.getBaseData(BOQ_LINE_STATUS_PENDING).then(function(response){
             $scope.boqDetail.bqdStatus = response.data;
+        });
+        baseDataService.getBaseData(SUPPLIER_ALL_URI).then(function(response){
+            $scope.supplierSet = response.data;
+            $scope.model.supplier = baseDataService.populateSelectList($scope.model.supplier,$scope.supplierSet);
+            $scope.getProductsPerSupplier();
         });
     }
 
@@ -98,10 +104,8 @@ cimgApp.controller('boqDetailAddLineCtrl', function($scope, $timeout,ngDialog, u
     });
     //getAllProductPurchaseItemsPerSupplier();
     $scope.getProductsPerSupplier = function() {
-        var supplier = $scope.supplier;
-        baseDataService.getBaseData(GET_PURCHASE_ITEMS_PER_SUPPLIER_URI+supplier.id).then(function(response){
-            var data = angular.copy(response.data);
-            $scope.gridOptions.data = data;
+        baseDataService.getBaseData(GET_PURCHASE_ITEMS_PER_SUPPLIER_URI+$scope.model.supplier.id+'/'+'@ALL@').then(function(response){
+            $scope.gridOptions.data = response.data;
         });
     }
     $scope.submit = function () {
@@ -121,7 +125,7 @@ cimgApp.controller('boqDetailAddLineCtrl', function($scope, $timeout,ngDialog, u
             }
             var boqDetailObject = {
                 'id':-1,
-                'supplier':$scope.supplier,
+                'supplier':$scope.model.supplier,
                 'product':product,
                 'unitOfMeasure' : selectedItem.unitOfMeasure,
                 'cost' : selectedItem.price,
@@ -148,21 +152,5 @@ cimgApp.controller('boqDetailAddLineCtrl', function($scope, $timeout,ngDialog, u
     $scope.calculateBalance = function() {
         $scope.boqDetail.qtyBalance = $scope.boqDetail.quantity - $scope.boqDetail.qtyOnStock;
     }
-
-    $scope.searchSupplier = function () {
-        ngDialog.openConfirm({
-            template:'views/pages/supplierSearch.html',
-            controller:'supplierSearchCtrl',
-            className: 'ngdialog-theme-default',
-            closeByDocument:false
-        }).then (function (value){
-                //alert('returned value = ' + value);
-                $scope.supplier = value;
-                $scope.getProductsPerSupplier();
-            }, function(reason) {
-                console.log('Modal promise rejected. Reason:', reason);
-            }
-        );
-    };
 
 });
