@@ -68,45 +68,11 @@ public class TxnDetail {
      * @return item cost
      */
     public double getItemCost() {
-        if (this.getProduct() == null || this.getProduct().getSellPrice() == null) {
+        if (this.getProduct() == null || this.getProduct().getCostPrice() == null) {
             return 0.00;
         }
-        return this.getProduct().getSellPrice().getPrcePrice();
+        return this.getProduct().getCostPrice().getPrcePrice();
     }
-
-    /**
-     * get Item Gross Value after adding profit and before applying tax.
-     * @return gross value
-     */
-    public double getItemGrossValue() {
-        return this.getItemCost() + this.getProfitMargin() * this.getItemCost();
-    }
-
-    /**
-     * get total tax paid for this item.
-     * @return total tax paid
-     */
-    public double getItemTaxPaid () {
-        return this.getTotalTaxRate() * this.getItemGrossValue();
-    }
-    /**
-     * calculate total Tax Rate on product.
-     * @return tax rate.
-     */
-    public double getTotalTaxRate() {
-        double taxRate = 0.00;
-        if (this.product == null || this.product.getProdOrguLink() == null || this.getProduct().getProdOrguLink().getTaxRules() == null) {
-            return 0.10;
-        }
-        for (TaxRule taxRule : this.getProduct().getProdOrguLink().getTaxRules()) {
-            if (taxRule == null) {
-                continue;
-            }
-            taxRate = taxRate + taxRule.getTaxLegVariance().getTxlvRate();
-        }
-        return taxRate;
-    }
-
 
     /**
      * check if item selected for invoice or refund.
