@@ -93,8 +93,8 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
 
         .state('dashboard.createProduct',{
             url:'/createProduct',
-            controller: 'productCtrl',
-            templateUrl:'views/pages/product2.html',
+            controller: 'productCtrl2',
+            templateUrl:'views/pages/product.html',
             access: "user",
             resolve: {viewMode: function(){return false},
                 taxCodeSet: function(baseDataService, TAXLEGVARIANCE_ALL_URI){

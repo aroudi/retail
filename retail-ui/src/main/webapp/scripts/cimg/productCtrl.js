@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productCtrl', function($scope, $state, UserService, baseDataService, ngDialog,viewMode, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI, taxCodeSet, TAXLEGVARIANCE_ALL_URI, SUPPLIER_ALL_URI) {
+cimgApp.controller('productCtrl', function($scope, $state, UserService, baseDataService, ngDialog,viewMode, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI, taxCodeSet, TAXLEGVARIANCE_ALL_URI, SUPPLIER_ALL_URI, PRODUCT_AUDIT_TRAIL_URI) {
     //set default data on the page
     $scope.taxLegVarianceSet = taxCodeSet.data;
     initPageData();
@@ -120,6 +120,23 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
             closeByDocument:false,
             resolve: {productId: function(){return $scope.productForm.prodId}, txnType: function(){return transactionType}}
         }).then (function (){
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+    };
+
+    $scope.displayProductAuditTrail = function () {
+        if ($scope.isNewPage) {
+            return;
+        }
+        ngDialog.openConfirm({
+            template:'views/pages/generalPopUpList.html',
+            controller:'productAuditTrailCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false,
+            resolve: {searchUrl: function(){return PRODUCT_AUDIT_TRAIL_URI + $scope.productForm.prodId}}
+        }).then (function (selectedItem){
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }

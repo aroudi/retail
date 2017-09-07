@@ -4,6 +4,8 @@ import au.com.biztune.retail.domain.Stock;
 import au.com.biztune.retail.domain.StockEvent;
 import au.com.biztune.retail.domain.TxnHeader;
 
+import java.util.List;
+
 /**
  * Created by arash on 26/07/2016.
  */
@@ -32,4 +34,11 @@ public interface StockService {
      * @param txnHeader txnHeader
      */
     void processTxnForStockUpdate(TxnHeader txnHeader);
+
+    /**
+     * view product audit trail.
+     * @param prodId prodId
+     * @return List of StockEvent
+     */
+    List<StockEvent> viewProductAuditTrail(long prodId);
 }

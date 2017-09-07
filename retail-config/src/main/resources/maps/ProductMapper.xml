@@ -121,6 +121,28 @@
         <association resultMap="prodOrguLinkListMap" property="prodOrguLink" />
     </resultMap>
 
+    <resultMap id="productCheckLiteMap" type="Product" >
+        <id column="PROD_ID" property="id" />
+        <result column="PROD_SKU" property="prodSku" />
+        <result column="PROD_BARCODE" property="prodBarcode" />
+        <result column="REFERENCE" property="reference" />
+        <result column="ORGU_ID_OWNING" property="orguIdOwning" />
+        <result column="PROD_NAME" property="prodName" />
+        <result column="PROD_DESC" property="prodDesc" />
+        <result column="PROD_OWN_BRAND" property="prodOwnBrand" />
+        <result column="PROD_URL" property="prodUrl" />
+        <result column="PROD_CREATED" property="prodCreated" />
+        <result column="PROD_MODIFIED" property="prodModified" />
+        <result column="PROD_RECEIPT_DESC" property="prodReceiptDesc" />
+        <result column="PROD_WARRANTY_TERM" property="prodWarrantyTerm" />
+        <result column="PROD_BRAND" property="prodBrand" />
+        <result column="PROD_IMAGE_DESC" property="prodImageDesc" />
+        <result column="PROD_URL_THUMB" property="prodUrlThumb" />
+        <result column="PROD_CLASS" property="prodClass" />
+        <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
+        <result column="PROD_LOCATION" property="prodLocation" />
+    </resultMap>
+
     <resultMap id="prodOrguLinkListMap" type="ProdOrguLink" >
         <id column="PROU_ID" property="id" />
         <result column="PROD_ID" property="prodId" />
@@ -345,6 +367,15 @@
         CONFIG_CATEGORY prodStatus on (prou.CAT_ID_STATUS = prodStatus.CATEGORY_ID)
         WHERE prod.PROD_SKU = #{value}
     </select>
+
+    <select id="checkProductExistPerSkuAndRef" resultMap="productCheckLiteMap" >
+        SELECT
+        <include refid="productColumns"><property name="alias" value="prod"/></include>
+        FROM
+          PRODUCT prod
+        WHERE prod.PROD_SKU = #{param1} and prod.REFERENCE = #{param2}
+    </select>
+
 
     <select id="getProductSaleItemPerSku" resultMap="productSaleItemMap" >
         SELECT

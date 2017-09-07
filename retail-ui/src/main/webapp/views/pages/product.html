@@ -17,8 +17,12 @@
                                                 <div class="col-lg-12">
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
-                                                            <label>SKU</label>
-                                                            <input class="form-control" data-ng-model="productForm.prodSku" maxlength="60">
+                                                            <label>SKU
+                                                                <span class="btn btn-warning btn-xs" ng-show="mainForm.sku.$error.required">
+                                                                    Required!
+                                                               </span>
+                                                            </label>
+                                                            <input class="form-control" name = "sku" data-ng-model="productForm.prodSku" required maxlength="60">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-2">
@@ -29,8 +33,12 @@
                                                     </div >
                                                     <div class="col-lg-2">
                                                         <div class="form-group">
-                                                            <label>Product Name</label>
-                                                            <input class="form-control" data-ng-model="productForm.prodName" maxlength="60">
+                                                            <label>Product Name
+                                                                <span class="btn btn-warning btn-xs" ng-show="mainForm.prodName.$error.required">
+                                                                    Required!
+                                                               </span>
+                                                            </label>
+                                                            <input class="form-control" name="prodName" data-ng-model="productForm.prodName" required maxlength="60">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-2">
@@ -99,6 +107,14 @@
                                                     </div >
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
+                                                    <button type="button" class="btn btn-success" ng-click="createProduct()" ng-show="!isViewMode" ng-disabled="!mainForm.$valid">Submit</button>
+                                                    <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -110,7 +126,7 @@
                                         </div>
                                         <div class="panel-body">
                                                 <div class="col-lg-12">
-                                                        <div id="supplierPriceGrid" ui-grid ="gridOptions" class="grid" ui-grid-selection style="height:200px;" ui-grid-autoresize ui-grid-resize-columns ui-grid-expandable ui-grid-edit ui-grid-cellNav ></div>
+                                                        <div id="supplierPriceGrid" ui-grid ="gridOptions" class="grid" style="height:200px;" ui-grid-autoresize ui-grid-resize-columns ui-grid-expandable ui-grid-edit ui-grid-cellNav ></div>
                                                 </div>
                                         </div>
                                     </div>
@@ -153,7 +169,7 @@
                                                             <input class="form-control" data-ng-model="productForm.prcePrice" type="text" data-blur-currency>
                                                         </div >
                                                     </div>
-                                                    <div class="col-lg-3">
+                                                    <!--div class="col-lg-3">
                                                         <label>Tax Included</label>
                                                         <div class="form-group">
                                                             <label class="checkbox-inline">
@@ -163,7 +179,7 @@
 
                                                         <div class="form-group">
                                                         </div >
-                                                    </div>
+                                                    </div-->
                                                 </div>
                                             </div>
                                             <!--div class="row">
@@ -187,17 +203,11 @@
                                 <div class="col-lg-12">
                                     <div class="col-lg-11">
                                         <div class="form-group">
-                                            <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
-                                            <button type="button" class="btn btn-success" ng-click="createProduct()" ng-show="!isViewMode">Submit</button>
-                                            <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;
-                                            <button type="button" class="btn btn-success" ng-click="displayProductPurchaseOrders()" ng-show="!isNewPage">Purchase Orders</button>
-                                            <button type="button" class="btn btn-success" ng-click="displayProductTxns('TXN')" ng-show="!isNewPage">Sale Orders/Quotes</button>
-                                            <button type="button" class="btn btn-success" ng-click="displayProductTxns('INVOICE')" ng-show="!isNewPage">Invoices</button>
+                                            <button type="button" class="btn btn-group" ng-click="displayProductPurchaseOrders()" ng-show="!isNewPage">Purchase Orders</button>
+                                            <button type="button" class="btn btn-group" ng-click="displayProductTxns('TXN')" ng-show="!isNewPage">Sale Orders/Quotes</button>
+                                            <button type="button" class="btn btn-group" ng-click="displayProductTxns('INVOICE')" ng-show="!isNewPage">Invoices</button>
+                                            <button type="button" class="btn btn-group" ng-click="displayProductAuditTrail()" ng-show="!isNewPage">Audit Trail</button>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-1">
-
                                     </div>
                                 </div>
                             </div>

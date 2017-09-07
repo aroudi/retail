@@ -34,6 +34,10 @@ public class StockEvent {
     private String txnNrReservedFor;
     private long txnIdReservedFor;
     private long txnItemReservedFor;
+    //for audit trail
+    private ConfigCategory stockCategory;
+    //for audit trail
+    private ConfigCategory transactionType;
 
     public long getId() {
         return id;
@@ -257,5 +261,21 @@ public class StockEvent {
 
     public void setTxnIdReservedFor(long txnIdReservedFor) {
         this.txnIdReservedFor = txnIdReservedFor;
+    }
+
+    public ConfigCategory getStockCategory() {
+        return stockCategory;
+    }
+
+    public void setStockCategory(ConfigCategory stockCategory) {
+        this.stockCategory = stockCategory;
+    }
+
+    public ConfigCategory getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(ConfigCategory transactionType) {
+        this.transactionType = transactionType;
     }
 }

@@ -73,7 +73,7 @@ public interface ProductDao {
      * @param skuCode skuCode
      * @return List of Product
      */
-    Product getProductPerSku(String skuCode);
+    List<Product> getProductPerSku(String skuCode);
 
     /**
      * delete product orgu link.
@@ -162,4 +162,12 @@ public interface ProductDao {
      * @return product search total records.
      */
     long searchProductsTotalRecords(long orguId, List<SearchClause> searchClauses);
+
+    /**
+     * check if product exists per sku and ref.
+     * @param sku sku code.
+     * @param ref reference
+     * @return list of products match
+     */
+    List<Product> checkProductExistPerSkuAndRef(String sku, String ref);
 }

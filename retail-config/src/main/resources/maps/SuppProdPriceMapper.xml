@@ -555,6 +555,9 @@
         <if test="taxLegVariance != null">
             TXLV_ID =#{taxLegVariance.id},
         </if>
+        <if test="sprcPrefferBuy != null">
+            SPRC_PREFER_BUY =#{sprcPrefferBuy},
+        </if>
             BULK_QTY=#{bulkQty},
             BULK_QTY2=#{bulkQty2},
             BULK_QTY3=#{bulkQty3},

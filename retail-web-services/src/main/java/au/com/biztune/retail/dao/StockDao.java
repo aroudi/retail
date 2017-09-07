@@ -84,4 +84,12 @@ public interface StockDao {
      * @param id id
      */
     void updateStockReservePerId(long id, double qty);
+
+    /**
+     * get product audit trail.
+     * @param prodId prodId
+     * @param orguId orguId
+     * @return List of StockEvent
+     */
+    List<StockEvent> getProductAuditTrail(long prodId, long orguId);
 }

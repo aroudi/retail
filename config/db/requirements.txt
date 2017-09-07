@@ -8,6 +8,15 @@
 11- log url
 19- in delivery note list, user should not able to select records
 20- on invoice print, 'PAID TODAY' shows all payments while it should shows current invoice payment.
+21- on viewing a refund, the caption of page showes 'Invoice'
+22****- on importing products, it first search product per reference. if found it then ingore importing it. if product exists and then it is importing for different supplier we should add it.
+THIS IS NOT CONSISTENT WITH ADDING PRODUCT PAGE which we allow for duplicate product sku
+and it is a poor performance search which try fetch all the product related items when searching it
+this is while in importing boq, we add supplier to the current product.
+23- IN PRODUCT LIST CHANGE ARTICLE CODE TO PRODUCT NAME
+24- check for product list in change price. it seems showing duplicate copy
+25- check if we can add suppliers with same names????? from supplier page
+26- sell price in invoice is calculated incorrectly
 -------------------------------------------------------------- resolved------------------------------------------------------------------------
 3- bug(resolved): when sale order is finalised and user add payment, it try to submit the form -- resolved
 4- bug: after creating Po from SO, it does not refresh the txn status

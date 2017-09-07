@@ -47,23 +47,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     @Autowired
     private CustomerDao customerDao;
     @Autowired
-    private SupplierDao supplierDao;
-    @Autowired
     private ConfigCategoryDao configCategoryDao;
-    @Autowired
-    private ProductDao productDao;
-    @Autowired
-    private TaxRuleDao taxRuleDao;
-    @Autowired
-    private UnitOfMeasureDao unitOfMeasureDao;
-    @Autowired
-    private LegalTenderDao legalTenderDao;
-    @Autowired
-    private SuppProdPriceDao suppProdPriceDao;
-    @Autowired
-    private PriceBandDao priceBandDao;
-    @Autowired
-    private PriceDao priceDao;
     @Autowired
     private PurchaseOrderService purchaseOrderService;
     @Autowired
@@ -74,6 +58,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     private PoBoqLinkDao poBoqLinkDao;
     @Autowired
     private StockService stockService;
+    @Autowired
+    private ProductImportServiceImpl productImportService;
     private SecurityContext securityContext;
 
     /**
@@ -165,172 +151,20 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             return;
         }
         final Timestamp currentTime = new Timestamp(new Date().getTime());
-        Supplier supplier = null;
-        boolean prodIsNew = false;
+        final boolean prodIsNew = false;
         //delete all BoqDetails ...
         boqDetailDao.deleteBoqDetailPerBoqId(billOfQuantity.getId());
         for (BillOfQuantity.BillOfQuantities.Product importedProduct: billOfQuantities.getProduct()) {
             if (importedProduct == null) {
                 continue;
             }
-            //get unit of measure
-            UnitOfMeasure unitOfMeasure = unitOfMeasureDao.getUnomByCode(importedProduct.getUnit());
-            if (unitOfMeasure == null) {
-                unitOfMeasure = new UnitOfMeasure();
-                unitOfMeasure.setUnomCode(importedProduct.getUnit());
-                unitOfMeasure.setUnomDesc(importedProduct.getUnit());
-                unitOfMeasure.setUnomCreated(currentTime);
-                unitOfMeasure.setUnomModified(currentTime);
-                unitOfMeasureDao.insert(unitOfMeasure);
-            }
-            //import supplier
-            supplier = supplierDao.getSupplierByOrgUnitIdAndSuppName(sessionState.getOrgUnit().getId(), importedProduct.getSupplier());
-            if (supplier == null) {
-                supplier = new Supplier();
-                supplier.setSupplierName(importedProduct.getSupplier());
-                supplier.setSupplierCode(importedProduct.getSupplier());
-                supplier.setCreateDate(currentTime);
-                supplierDao.insertSupplier(supplier);
-
-                final ConfigCategory supplierStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.CONFIG_SUPLIER_STATUS, IdBConstant.SUPPLIER_STATUS_IMPORTED);
-                final SuppOrguLink suppOrguLink = new SuppOrguLink();
-                suppOrguLink.setOrguId(sessionState.getOrgUnit().getId());
-                suppOrguLink.setSuppId(supplier.getId());
-                suppOrguLink.setStatus(supplierStatus);
-                supplierDao.insertSuppOrguLink(suppOrguLink);
-                supplier.setSuppOrguLink(suppOrguLink);
-            }
-            //insert product. search product per reference. if dose not exist, add it
-            Product product = productDao.getProductPerReference(importedProduct.getReference());
-            if (product == null) {
-                prodIsNew = true;
-                product = new Product();
-                product.setOrguIdOwning(sessionState.getOrgUnit().getId());
-                product.setProdSku(importedProduct.getCatalogueNo());
-                product.setReference(importedProduct.getReference());
-                product.setProdName(importedProduct.getDescription());
-                product.setProdDesc(importedProduct.getDescription());
-                product.setProdOwnBrand(false);
-                productDao.insertProduct(product);
-
-                //insert prod orgunit
-                final ProdOrguLink prodOrguLink = new ProdOrguLink();
-                prodOrguLink.setId(product.getId());
-                prodOrguLink.setOrguId(sessionState.getOrgUnit().getId());
-                //get product status IMPORTED
-                final ConfigCategory productStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.CONFIG_PRODUCT_STATUS, IdBConstant.PRODUCT_STATUS_IMPORTED);
-                prodOrguLink.setStatus(productStatus);
-                prodOrguLink.setProdId(product.getId());
-                productDao.insertProdOrguLink(prodOrguLink);
-
-                //insert product tax rule
-                final TaxRule taxRule = taxRuleDao.getTaxRuleByCode(importedProduct.getTaxName());
-                if (taxRule != null) {
-                    final ProuTxrlLink prouTxrlLink = new ProuTxrlLink();
-                    prouTxrlLink.setProuId(prodOrguLink.getId());
-                    prouTxrlLink.setTxrlId(taxRule.getId());
-                    productDao.insertProdTaxLink(prouTxrlLink);
-                }
-                //TODO: we need to set Quantity and price for each of imported BOQ in suppProdPrice table
-                //get supplier legal tender
-                final LegalTender legalTender = legalTenderDao.getLegalTenderByCode(IdBConstant.LEGAL_TENDER_AU);
-                final SuppProdPrice suppProdPrice = new SuppProdPrice();
-                suppProdPrice.setSolId(supplier.getSuppOrguLink().getId());
-                suppProdPrice.setCatalogueNo(importedProduct.getCatalogueNo());
-                suppProdPrice.setUnitOfMeasure(unitOfMeasure);
-                suppProdPrice.setUnitOfMeasureContent(unitOfMeasure);
-                suppProdPrice.setUnomQty(1);
-                suppProdPrice.setLegalTender(legalTender);
-                if (importedProduct.getCost() != null) {
-                    suppProdPrice.setPrice(importedProduct.getCost());
-                    suppProdPrice.setCostBeforeTax(importedProduct.getCost());
-                }
-                suppProdPrice.setSprcCreated(currentTime);
-                suppProdPrice.setSprcModified(currentTime);
-                suppProdPrice.setProdId(product.getId());
-                suppProdPrice.setSprcPrefferBuy(true);
-                //insert product tax rule
-                TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(importedProduct.getTaxName());
-                if (taxLegVariance == null) {
-                    taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
-                }
-                suppProdPrice.setTaxLegVariance(taxLegVariance);
-
-                suppProdPriceDao.insert(suppProdPrice);
-
-                //import product price
-                //get price band
-                final PriceBand priceBand = priceBandDao.getPriceBandPerCode(IdBConstant.PRICE_BAND_CODE);
-
-                //
-                final Price prodPrice = new Price();
-                //get price code
-
-                PriceCode priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.SELL_PRICE_CODE);
-
-
-                final Price price1 = new Price();
-                //TODO: we need to set Quantity and price for each of imported BOQ in Price table
-                price1.setUnomQty(1);
-                //price1.setMargin(margin);
-                price1.setPrcePrice(importedProduct.getSellPrice());
-                //price1.setPrceTaxIncluded(taxInclude);
-                price1.setPriceBand(priceBand);
-                price1.setPriceCode(priceCode);
-                price1.setProdId(product.getId());
-                price1.setUnitOfMeasure(unitOfMeasure);
-                price1.setPrceCreated(currentTime);
-                price1.setPrceModified(currentTime);
-                price1.setPrceFromDate(currentTime);
-                price1.setPrceToDate(currentTime);
-                price1.setPrceSetCentral(false);
-                priceDao.insert(price1);
-
-                //INSERT COST PRICE, SAME AS SELL PRICE
-                priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.COST_PRICE_CODE);
-                price1.setPriceCode(priceCode);
-                price1.setPrcePrice(importedProduct.getCost());
-                priceDao.insert(price1);
-
-
-            //if product exists, update supplier information
-            } else {
-                //check if this product is already assigned to the supplier
-                SuppProdPrice suppProdPrice = suppProdPriceDao.checkIfSupplierProductExistsPerOrguIdAndProdIdAndSuppId(
-                        sessionState.getOrgUnit().getId(), product.getId(), supplier.getId());
-                if (suppProdPrice == null) {
-                    //get supplier legal tender
-                    final LegalTender legalTender = legalTenderDao.getLegalTenderByCode(IdBConstant.LEGAL_TENDER_AU);
-                    suppProdPrice = new SuppProdPrice();
-                    suppProdPrice.setSolId(supplier.getSuppOrguLink().getId());
-                    suppProdPrice.setCatalogueNo(importedProduct.getCatalogueNo());
-                    suppProdPrice.setUnitOfMeasure(unitOfMeasure);
-                    suppProdPrice.setUnitOfMeasureContent(unitOfMeasure);
-                    suppProdPrice.setUnomQty(1);
-                    suppProdPrice.setLegalTender(legalTender);
-                    if (importedProduct.getCost() != null) {
-                        suppProdPrice.setPrice(importedProduct.getCost());
-                        suppProdPrice.setCostBeforeTax(importedProduct.getCost());
-                    }
-                    suppProdPrice.setSprcCreated(currentTime);
-                    suppProdPrice.setSprcModified(currentTime);
-                    suppProdPrice.setProdId(product.getId());
-                    suppProdPrice.setSprcPrefferBuy(true);
-                    //insert product tax rule
-                    TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(importedProduct.getTaxName());
-                    if (taxLegVariance == null) {
-                        taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
-                    }
-                    suppProdPrice.setTaxLegVariance(taxLegVariance);
-
-                    suppProdPriceDao.insert(suppProdPrice);
-                } else {
-                    if (importedProduct.getCost() != null) {
-                        suppProdPrice.setPrice(importedProduct.getCost());
-                    }
-                    suppProdPriceDao.updateValues(suppProdPrice);
-                }
-            }
+            //////////////////////////// import product //////////////////////////
+            final ImportProductResult importProductResult = productImportService.importProductWhole(null, null, importedProduct.getCatalogueNo(),
+                    importedProduct.getReference(), importedProduct.getDescription(),
+                    null, importedProduct.getSupplier(), null, importedProduct.getUnit(),
+                    importedProduct.getTaxName(), importedProduct.getCost() == null ? 0.00 : importedProduct.getCost(),
+                    importedProduct.getSellPrice() == null ? 0.00 : importedProduct.getSellPrice(), 0);
+            ///////////////////////////
             final BoqDetail boqDetail = new BoqDetail();
             boqDetail.setBillOfQuantity(billOfQuantity);
             if (importedProduct.getCost() != null) {
@@ -339,15 +173,15 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 boqDetail.setCost(0.0);
             }
             boqDetail.setProdIsNew(prodIsNew);
-            boqDetail.setProduct(product);
+            boqDetail.setProduct(importProductResult.getImportedProduct());
             if (importedProduct.getQty() != null) {
                 boqDetail.setQuantity(importedProduct.getQty());
             } else {
                 boqDetail.setQuantity(0);
             }
             boqDetail.setSellPrice(importedProduct.getSellPrice());
-            boqDetail.setUnitOfMeasure(unitOfMeasure);
-            boqDetail.setSupplier(supplier);
+            boqDetail.setUnitOfMeasure(importProductResult.getUnitOfMeasure());
+            boqDetail.setSupplier(importProductResult.getImportedSupplier());
             boqDetail.setQtyOnStock(0);
             boqDetail.setQtyPurchased(0);
             boqDetail.setItemValue(boqDetail.getCost() * boqDetail.getQuantity());

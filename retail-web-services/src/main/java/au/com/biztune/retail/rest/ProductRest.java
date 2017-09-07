@@ -2,17 +2,16 @@
 
 package au.com.biztune.retail.rest;
 
-import au.com.biztune.retail.domain.ProductSale;
-import au.com.biztune.retail.domain.ProductSaleItem;
-import au.com.biztune.retail.domain.StockReserve;
-import au.com.biztune.retail.domain.SuppProdPrice;
+import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.form.ProductSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.ProductImportServiceImpl;
 import au.com.biztune.retail.service.ProductService;
+import au.com.biztune.retail.service.StockService;
 import au.com.biztune.retail.service.TransactionService;
+import au.com.biztune.retail.util.IdBConstant;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +48,8 @@ public class ProductRest {
 
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private StockService stockService;
     /**
      * Get All Unit Of Measures as JSON.
      * @return List of categories
@@ -264,5 +265,45 @@ public class ProductRest {
             logger.error ("Error in retrieving product reservation info :", e);
             return null;
         }
+    }
+
+    /**
+     * view product audit trail.
+     * @param prodId prodId
+     * @return product audit trail info.
+     */
+    @Secured
+    @Path("/getProductAuditTrail/{prodId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<StockEvent> getProductAuditTrailInfo(@PathParam("prodId") long prodId) {
+        try {
+            return stockService.viewProductAuditTrail(prodId);
+        } catch (Exception e) {
+            logger.error ("Error in retrieving product audit trail info :", e);
+            return null;
+        }
+    }
+
+    /**
+     * check if product exists per sku and ref.
+     * @param sku sku
+     * @param ref ref
+     * @return success if exists otherwise return failure
+     */
+    @Secured
+    @Path("/checkIfProductExists/{sku}/{ref}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse checkIfProductExists (@PathParam("sku") String sku, @PathParam("ref") String ref) {
+        final CommonResponse response = new CommonResponse();
+        if (productService.checkIfProductExistsPerSkuAndReference(sku, ref)) {
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Product exists");
+        } else {
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+            response.setMessage("Product does not exists");
+        }
+        return response;
     }
 }

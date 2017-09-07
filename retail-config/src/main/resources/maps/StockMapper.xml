@@ -49,6 +49,36 @@
         <result column="STCK_COND" property="stckCond" />
         <result column="STCK_CAT" property="stckCat" />
     </resultMap>
+    <resultMap id="productAuditTrailMap" type="StockEvent" >
+        <id column="STCK_EVNT_ID" property="id" />
+        <result column="STCK_ID" property="stckId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="USR_ID" property="userId" />
+        <result column="SUPPLIER_ID" property="supplierId" />
+        <result column="UNOM_ID" property="unomId" />
+        <result column="PROD_ID" property="prodId" />
+        <result column="PRGP_ID" property="prgpId" />
+        <result column="SELC_ID" property="selcId" />
+        <result column="STCK_EVNT_DATE" property="stckEvntDate" />
+        <result column="TXN_DATE" property="txnDate" />
+        <result column="TXN_TYPE" property="txnType" />
+        <result column="TXN_TYPE_RESERVED_FOR" property="txnTypeReservedFor" />
+        <result column="TXN_NR_RESERVED_FOR" property="txnNrReservedFor" />
+        <result column="TXN_ID_RESERVED_FOR" property="txnIdReservedFor" />
+        <result column="TXN_ITEM_RESERVED_FOR" property="txnItemReservedFor" />
+        <result column="TXN_HEADER" property="txnHeader" />
+        <result column="TXN_LINE" property="txnLine" />
+        <result column="TXN_NUMBER" property="txnNumber" />
+        <result column="STCK_LOCN_ID" property="stckLocId" />
+        <result column="STCK_QTY" property="stckQty" />
+        <result column="SELL_PRICE" property="sellPrice" />
+        <result column="COST_PRICE" property="costPrice" />
+        <result column="STCK_COND" property="stckCond" />
+        <result column="STCK_CAT" property="stckCat" />
+        <association property="transactionType" column="TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="stockCategory" column="STCK_CAT" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+    </resultMap>
 
     <resultMap id="stockReserveMap" type="StockReserve" >
         <id column="STCK_RSV_ID" property="id" />
@@ -578,6 +608,15 @@
         STOCK_LOCATION stckLcn
         WHERE
         stckLcn.ORGU_ID = #{value}
+    </select>
+    <select id="getProductAuditTrail" resultMap="productAuditTrailMap" >
+        SELECT
+        <include refid="stockEventColumns"><property name="alias" value="stkevnt"/></include>
+        FROM
+        STOCK_EVENT stkevnt
+        WHERE
+        stkevnt.PROD_ID = #{param1}
+        AND stkevnt.ORGU_ID = #{param2}
     </select>
 
 </mapper>

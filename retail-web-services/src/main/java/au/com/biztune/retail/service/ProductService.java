@@ -135,4 +135,12 @@ public interface ProductService {
      * @return list of product reservation list.
      */
     List<StockReserve> getProductReservationInfo(long prodOId);
+
+    /**
+     * check if product already exists in db.
+     * @param sku sku
+     * @param ref ref
+     * @return true if exists otherwise return false
+     */
+    boolean checkIfProductExistsPerSkuAndReference(String sku, String ref);
 }

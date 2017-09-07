@@ -2,10 +2,7 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.PriceDao;
 import au.com.biztune.retail.dao.SuppProdPriceDao;
-import au.com.biztune.retail.domain.PriceCode;
-import au.com.biztune.retail.domain.Product;
-import au.com.biztune.retail.domain.Supplier;
-import au.com.biztune.retail.domain.UnitOfMeasure;
+import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.util.IdBConstant;
 import au.com.biztune.retail.util.StringUtil;
@@ -104,8 +101,9 @@ public class ProductImportServiceImpl {
      * @param cost cost
      * @param price price
      * @param bulkPrice bulkPrice
+     * @return ImportedProductResult
      */
-    public void importProductWhole(String brand
+    public ImportProductResult importProductWhole(String brand
             , String partNo
             , String catalogueNo
             , String reference
@@ -120,13 +118,19 @@ public class ProductImportServiceImpl {
             , double bulkPrice)
     {
         try {
+            final ImportProductResult importProductResult = new ImportProductResult();
             final UnitOfMeasure unitOfMeasure1 = unitOfMeasureService.addUnitOfMeasure(unitOfMeasure, unitOfMeasure);
             final Supplier supplier = supplierService.addSupplier(supplierCode, supplierName, 0, 0, 0, 0.00, 0, "", 0.00, "");
-            final Product product = productService.addProduct(reference, reference, description, reference
+            final Product product = productService.addProduct(catalogueNo, catalogueNo, description, reference
                     , taxCode, brand, prodType, prodType, supplier, catalogueNo, unitOfMeasure1, cost, price
             , bulkPrice);
+            importProductResult.setImportedProduct(product);
+            importProductResult.setImportedSupplier(supplier);
+            importProductResult.setUnitOfMeasure(unitOfMeasure1);
+            return importProductResult;
         } catch (Exception e) {
             logger.error("Exception in importing product: " + partNo, e);
+            return null;
         }
 
     }

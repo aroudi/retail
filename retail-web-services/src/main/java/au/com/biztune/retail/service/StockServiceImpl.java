@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by arash on 25/07/2016.
@@ -332,6 +333,21 @@ public class StockServiceImpl implements StockService {
             }
         } catch (Exception e) {
             logger.error("Exception in updating stock qty:", e);
+        }
+
+    }
+
+    /**
+     * view product audit trail.
+     * @param prodId prodId
+     * @return List of StockEvent
+     */
+    public List<StockEvent> viewProductAuditTrail(long prodId) {
+        try {
+            return stockDao.getProductAuditTrail(prodId, sessionState.getOrgUnit().getId());
+        } catch (Exception e) {
+            logger.error("Exception in returning product audit trail:", e);
+            return null;
         }
     }
 
