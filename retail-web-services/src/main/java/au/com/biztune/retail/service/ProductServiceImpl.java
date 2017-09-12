@@ -346,6 +346,27 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * get product object per sku.
+     * @param skuCode skuCode
+     * @param reference reference
+     * @return Product
+     */
+    public Product getProductPerSkuAndRef(String skuCode, String reference) {
+        try {
+            final List<Product> result = productDao.getProductPerSkuAndRef(skuCode, reference);
+            if (result == null) {
+                return null;
+            } else {
+                return result.get(0);
+            }
+
+        } catch (Exception e) {
+            logger.error("Error in getting product per sku:", e);
+            return null;
+        }
+    }
+
+    /**
      * search products per sku or name or reference.
      * @param searchStr search string
      * @return List of product sale item.
@@ -466,7 +487,7 @@ public class ProductServiceImpl implements ProductService {
             //check if product exists.
             Product product = null;
             if (checkIfProductExistsPerSkuAndReference(prodSku, reference)) {
-                product = getProductPerSku(prodSku);
+                product = getProductPerSkuAndRef(prodSku, reference);
                 //check if this product is already assigned to the supplier
                 SuppProdPrice suppProdPrice = suppProdPriceDao.checkIfSupplierProductExistsPerOrguIdAndProdIdAndSuppId(
                         sessionState.getOrgUnit().getId(), product.getId(), supplier.getId());
@@ -497,11 +518,19 @@ public class ProductServiceImpl implements ProductService {
                     suppProdPriceDao.insert(suppProdPrice);
                 } else {
                     suppProdPrice.setPrice(cost);
+                    TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(taxName);
+                    if (taxLegVariance == null) {
+                        taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
+                    }
+                    suppProdPrice.setTaxLegVariance(taxLegVariance);
                     if (suppProdPrice.getTaxLegVariance() != null) {
                         suppProdPrice.setCostBeforeTax(cost - cost * suppProdPrice.getTaxLegVariance().getTxlvRate());
                     }
                     suppProdPriceDao.updateValues(suppProdPrice);
                 }
+                //update product cost to default supplier cost.
+                updateProductCostBaseDefaultSupplier(product.getId());
+
             } else {
                 //insert product
                 product = new Product();
@@ -547,7 +576,7 @@ public class ProductServiceImpl implements ProductService {
                 suppProdPrice.setUnomQty(1);
                 suppProdPrice.setLegalTender(legalTender);
                 suppProdPrice.setPrice(cost);
-                suppProdPrice.setCostBeforeTax(cost);
+                //suppProdPrice.setCostBeforeTax(cost);
                 suppProdPrice.setSprcCreated(currentTime);
                 suppProdPrice.setSprcModified(currentTime);
                 suppProdPrice.setProdId(product.getId());
@@ -559,6 +588,9 @@ public class ProductServiceImpl implements ProductService {
                     taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
                 }
                 suppProdPrice.setTaxLegVariance(taxLegVariance);
+                if (suppProdPrice.getTaxLegVariance() != null) {
+                    suppProdPrice.setCostBeforeTax(cost - cost * suppProdPrice.getTaxLegVariance().getTxlvRate());
+                }
                 suppProdPriceDao.insert(suppProdPrice);
 
                 //import product price
@@ -682,6 +714,8 @@ public class ProductServiceImpl implements ProductService {
                 suppProdPriceDao.updateProductCostsPerSolIdAndProdId(suppProdPrice.getSolId(), suppProdPrice.getProdId()
                         , suppProdPrice.getPrice(), suppProdPrice.getBulkPrice());
                 priceDao.updatePricePerProdIdAndPrccId(suppProdPrice.getProdId(), priceCode.getId(), suppProdPrice.getRrp());
+                //update product cost base default supplier
+                updateProductCostBaseDefaultSupplier(suppProdPrice.getProdId());
             }
             return response;
         } catch (Exception e) {
@@ -722,5 +756,18 @@ public class ProductServiceImpl implements ProductService {
             logger.error("Exceptoion in checking product existance");
             return  false;
         }
+    }
+
+    private void updateProductCostBaseDefaultSupplier(long prodId) {
+        //update product cost to default supplier cost.
+        final List<SuppProdPrice> defaultSpps = suppProdPriceDao.getDefaultSuppliersPerOrguIdAndProdId(sessionState.getOrgUnit().getId(), prodId);
+        if (defaultSpps != null && defaultSpps.size() > 0) {
+            final Price productCost = priceDao.getProductCostPricePerProdId(prodId);
+            if (productCost != null) {
+                productCost.setPrcePrice(defaultSpps.get(0).getPrice());
+                priceDao.updatePricePerProdIdAndPrccId(prodId, productCost.getPriceCode().getId(), productCost.getPrcePrice());
+            }
+        }
+
     }
 }

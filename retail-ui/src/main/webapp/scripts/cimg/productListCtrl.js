@@ -139,8 +139,8 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
             //redirect to the supplier page.
             //$state.go('dashboard.createProduct');
             ngDialog.openConfirm({
-                template:'views/pages/product2.html',
-                controller:'productCtrl',
+                template:'views/pages/product.html',
+                controller:'productCtrl2',
                 className: 'ngdialog-pdfView',
                 closeByDocument:false,
                 resolve: {viewMode: function(){return true},

@@ -368,6 +368,19 @@
         WHERE prod.PROD_SKU = #{value}
     </select>
 
+    <select id="getProductPerSkuAndRef" resultMap="productDetailMap" >
+        SELECT
+        <include refid="productColumns"><property name="alias" value="prod"/></include>,
+        <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>,
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="prodStatus"/></include>
+        FROM
+        PRODUCT prod
+        INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
+        LEFT OUTER JOIN
+        CONFIG_CATEGORY prodStatus on (prou.CAT_ID_STATUS = prodStatus.CATEGORY_ID)
+        WHERE prod.PROD_SKU = #{param1} AND prod.REFERENCE = #{param2}
+    </select>
+
     <select id="checkProductExistPerSkuAndRef" resultMap="productCheckLiteMap" >
         SELECT
         <include refid="productColumns"><property name="alias" value="prod"/></include>

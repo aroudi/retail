@@ -143,4 +143,12 @@ public interface ProductService {
      * @return true if exists otherwise return false
      */
     boolean checkIfProductExistsPerSkuAndReference(String sku, String ref);
+
+    /**
+     * get product object per sku.
+     * @param skuCode skuCode
+     * @param reference reference
+     * @return Product
+     */
+    Product getProductPerSkuAndRef(String skuCode, String reference);
 }

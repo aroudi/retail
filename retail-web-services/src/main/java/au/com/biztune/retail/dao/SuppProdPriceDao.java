@@ -26,6 +26,14 @@ public interface SuppProdPriceDao {
      * @return SuppProdPrice
      */
     SuppProdPrice checkIfSupplierProductExistsPerOrguIdAndProdIdAndSuppId(long orguId, long prodId, long suppId);
+
+    /**
+     * get default suppliers for a product.
+     * @param orguId orguId
+     * @param prodId prodId
+     * @return SuppProdPrice for default suppliers.
+     */
+    List<SuppProdPrice> getDefaultSuppliersPerOrguIdAndProdId(long orguId, long prodId);
     /**
      * get supplier Produc Price per OrgUId, ProdId.
      * @param orguId orguId
