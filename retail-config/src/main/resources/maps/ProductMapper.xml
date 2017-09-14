@@ -276,9 +276,9 @@
         INNER JOIN CONFIG_CATEGORY cat on (cat. CATEGORY_ID= prou.CAT_ID_STATUS)
         LEFT OUTER JOIN SUPP_PROD_PRICE spp on (prod.PROD_ID = spp.PROD_ID)
         LEFT OUTER JOIN SUPP_ORGU_LINK sol on (sol.SOL_ID = spp.SOL_ID)
-        LEFT OUTER JOIN STOCK stock on (prod.prod_id = stock.prod_id)
-        LEFT OUTER JOIN CONFIG_CATEGORY cat2 on (cat2.CATEGORY_ID = stock.STCK_CAT AND cat2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE')
-        LEFT OUTER JOIN CONFIG_CATEGORY cat3 on (cat3.CATEGORY_ID = stock.STCK_COND and cat3.CATEGORY_CODE = 'STOCK_CONDITION_PRISTINE')
+        LEFT OUTER JOIN  (select stck.* from STOCK stck
+                            inner JOIN CONFIG_CATEGORY cat2 on (cat2.CATEGORY_ID = stck.STCK_CAT AND cat2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE')
+                         ) STOCK on (prod.prod_id = stock.prod_id)
         WHERE prou.orgu_id = #{param1}
             <if test="param4 != null">
                 AND

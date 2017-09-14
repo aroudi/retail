@@ -177,6 +177,7 @@
         <result column="PROD_SKU" property="prodSku" />
         <result column="PROD_NAME" property="prodName" />
         <result column="PROD_DESC" property="prodDesc" />
+        <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
     </resultMap>
 
     <sql id="suppProdPriceColumns">

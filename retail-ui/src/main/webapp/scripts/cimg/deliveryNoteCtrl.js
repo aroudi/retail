@@ -188,6 +188,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
     function populateDateFromPurchaseOrder (purchaseOrder) {
 
         $scope.deliveryNoteHeader.pohOrderNumber = purchaseOrder.pohOrderNumber;
+        $scope.deliveryNoteHeader.delnPrjCode = purchaseOrder.pohPrjCode;
         $scope.deliveryNoteHeader.pohId = purchaseOrder.id;
         for (var i = 0; i < purchaseOrder.lines.length; i++) {
             var createdLine = createDeliveryNoteLine(purchaseOrder.lines[i]);

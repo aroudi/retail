@@ -16,7 +16,12 @@ this is while in importing boq, we add supplier to the current product.
 23- IN PRODUCT LIST CHANGE ARTICLE CODE TO PRODUCT NAME
 24- check for product list in change price. it seems showing duplicate copy
 25- check if we can add suppliers with same names????? from supplier page
-26- sell price in invoice is calculated incorrectly
+26- (not reproducable) sell price in invoice is calculated incorrectly
+27- saving good received take long time for long list. we need to take updating relating objects in a separate thread.
+28-display transaction no in view and edit mode.
+29-for product code PHB800 WITH 0 in stock and 6 in reserve stock,
+    1- did a sale order with qty 6  --> not any transaction in stock
+    2- did an invoice txn. 6 was reduced from reserved stock
 -------------------------------------------------------------- resolved------------------------------------------------------------------------
 3- bug(resolved): when sale order is finalised and user add payment, it try to submit the form -- resolved
 4- bug: after creating Po from SO, it does not refresh the txn status

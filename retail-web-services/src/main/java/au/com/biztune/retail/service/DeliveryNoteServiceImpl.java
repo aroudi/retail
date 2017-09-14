@@ -204,12 +204,13 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             ConfigCategory polStatus = null;
             for (DeliveryNoteLine deliveryNoteLine : deliveryNoteHeader.getLines()) {
                 qtyReceived = 0;
-                if (deliveryNoteLine == null) {
+                if (deliveryNoteLine == null || deliveryNoteLine.isDeleted()) {
                     continue;
                 }
                 purchaseLine = purchaseOrderDao.getPurchaseLinePerId(deliveryNoteLine.getPolId());
                 //check if PurchaseOrderLine is already received. if so skip it
-                if (purchaseLine.getPolStatus() != null && purchaseLine.getPolStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED)) {
+                if (purchaseLine == null || (purchaseLine.getPolStatus() != null
+                        && purchaseLine.getPolStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED))) {
                    continue;
                 }
                 if (purchaseLine.getPolQtyReceived() >= 0) {
@@ -306,7 +307,7 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 poBoqLink.setComment(purchaseLine.getPolFreeText());
                 poBoqLinkDao.updateQtyReceived(poBoqLink);
                 //update qty on linked boqdetail.
-                boqDetailDao.updateQtyAndStatus(poBoqLink.getPoQtyReceived(), poBoqLink.getBoqQtyBalance(), poBoqLink.getStatus().getId(), poBoqLink.getBoqId());
+                boqDetailDao.updateQtyAndStatus(poBoqLink.getPoQtyReceived(), poBoqLink.getBoqQtyBalance(), poBoqLink.getStatus().getId(), poBoqLink.getBoqDetailId());
                 //push stock event
                 updateStockQuantityForLinkedBoq(deliveryNoteHeader, deliveryNoteLine, poBoqLink);
                 if (qtyRemain == 0) {

@@ -73,6 +73,9 @@ public class ConfigCategoryServiceImpl implements ConfigCategoryService {
             , String color)
     {
         try {
+            if (categoryCode == null || displayName == null) {
+                return null;
+            }
             final ConfigType configType = categoryDao.getConfigTypeByCode(configTypeCode);
             if (configType == null) {
                 logger.error("Config Type not found.");
