@@ -913,36 +913,40 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
             //for each txhdId, extract the transactionHeader and change the status
             extractedtxhdIdList.forEach((extractedtxhdId, linkedSaleOrderList) -> {
-                final List<TxnDetail> saleOrderLineList = txnDao.getTxnDetailStatusPerTxhdId(extractedtxhdId);
-                final long receivedCount = saleOrderLineList
-                        .stream()
-                        .map(TxnDetail::getStatus)
-                        .filter(orderStatus -> (orderStatus != null) && (orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_RECEIVED)))
-                        .count();
+                final ConfigCategory txnStatus = txnDao.getTxnHeaderStatusByTxhdId(extractedtxhdId);
+                //if txn status is finalise then we should not change its status.
+                if (txnStatus == null || !txnStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_FINAL)) {
+                    final List<TxnDetail> saleOrderLineList = txnDao.getTxnDetailStatusPerTxhdId(extractedtxhdId);
+                    final long receivedCount = saleOrderLineList
+                            .stream()
+                            .map(TxnDetail::getStatus)
+                            .filter(orderStatus -> (orderStatus != null) && (orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_RECEIVED)))
+                            .count();
 
-                final long outsTandingCount = saleOrderLineList
-                        .stream()
-                        .map(TxnDetail::getStatus)
-                        .filter(orderStatus -> orderStatus == null || orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_OUTSTANDING))
-                        .count();
-                final long partialReceivedCount = saleOrderLineList
-                        .stream()
-                        .map(TxnDetail::getStatus)
-                        .filter(orderStatus -> (orderStatus != null) && (orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_PARTIAL_REC)))
-                        .count();
+                    final long outsTandingCount = saleOrderLineList
+                            .stream()
+                            .map(TxnDetail::getStatus)
+                            .filter(orderStatus -> orderStatus == null || orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_OUTSTANDING))
+                            .count();
+                    final long partialReceivedCount = saleOrderLineList
+                            .stream()
+                            .map(TxnDetail::getStatus)
+                            .filter(orderStatus -> (orderStatus != null) && (orderStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_PARTIAL_REC)))
+                            .count();
 
-                if (outsTandingCount > 0) {
-                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_OUTSTANDING);
-                    txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
-                    return;
-                }
-                //if all items received
-                if (receivedCount == saleOrderLineList.size()) {
-                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_RECEIVED);
-                    txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
-                } else if (partialReceivedCount > 0) {
-                    final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_PARTIAL_REC);
-                    txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
+                    if (outsTandingCount > 0) {
+                        final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_OUTSTANDING);
+                        txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
+                        return;
+                    }
+                    //if all items received
+                    if (receivedCount == saleOrderLineList.size()) {
+                        final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_RECEIVED);
+                        txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
+                    } else if (partialReceivedCount > 0) {
+                        final ConfigCategory newStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_PARTIAL_REC);
+                        txnDao.updateTxnHeaderStatusPerTxhdId(extractedtxhdId, newStatus.getId());
+                    }
                 }
             });
 

@@ -1,9 +1,6 @@
 package au.com.biztune.retail.dao;
 
-import au.com.biztune.retail.domain.ProductSale;
-import au.com.biztune.retail.domain.TxnDetail;
-import au.com.biztune.retail.domain.TxnHeader;
-import au.com.biztune.retail.domain.TxnMedia;
+import au.com.biztune.retail.domain.*;
 
 import java.util.List;
 
@@ -237,4 +234,11 @@ public interface TxnDao {
      * @return txndetail
      */
     TxnDetail getTxnDetailLightPerId(long txdeId);
+
+    /**
+     * get status of txn by id.
+     * @param txhdId txhdId
+     * @return config category
+     */
+    ConfigCategory getTxnHeaderStatusByTxhdId(long txhdId);
 }

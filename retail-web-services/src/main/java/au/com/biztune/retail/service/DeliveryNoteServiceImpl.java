@@ -210,7 +210,8 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 purchaseLine = purchaseOrderDao.getPurchaseLinePerId(deliveryNoteLine.getPolId());
                 //check if PurchaseOrderLine is already received. if so skip it
                 if (purchaseLine == null || (purchaseLine.getPolStatus() != null
-                        && purchaseLine.getPolStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED))) {
+                        && purchaseLine.getPolStatus().getCategoryCode().equals(IdBConstant.POH_STATUS_GOOD_RECEIVED)))
+                {
                    continue;
                 }
                 if (purchaseLine.getPolQtyReceived() >= 0) {
@@ -328,7 +329,8 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 return false;
             }
             final List<PoSoLink> linkedSoList = poSoLinkDao.getAllPoSoLinkPerPolId(purchaseLine.getId());
-            final double qtyReceived = purchaseLine.getPolQtyReceived();
+            final double qtyReceived = deliveryNoteLine.getRcvdQty();
+            //purchaseLine.getPolQtyReceived();
             ConfigCategory status = null;
             double qtyRemain = qtyReceived;
             double qtyAssigned = 0.00;
@@ -353,6 +355,12 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 //update po_so_link table
                 poSoLinkDao.updateQtyReceived(poSoLink);
                 //update sale order itself.
+                //check if sale order status is not finalised. if finalised then we should not change its status and also
+                //reserve the incoming goods that sale order
+                final ConfigCategory txnStatus = txnDao.getTxnHeaderStatusByTxhdId(poSoLink.getTxhdId());
+                if (txnStatus != null && txnStatus.getCategoryCode().equals(IdBConstant.SO_STATUS_FINAL)) {
+                    continue;
+                }
                 final TxnDetail txnDetail = txnDao.getTxnDetailLightPerId(poSoLink.getTxdeId());
                 if (txnDetail != null) {
                     //check status on txn detail
@@ -363,8 +371,9 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                     }
                     txnDao.updateTxnDetailRcvdQtyAndStatus(status.getId(), qtyAssigned + txnDetail.getTxdeQtyReceived(), poSoLink.getTxdeId());
                 }
+                //todo: we have reserved the qty in first place(on sale order). no need to reserve it again.
                 //create stock event for linked sale order
-                updateStockQuantityForLinkedSaleOrder(deliveryNoteHeader, deliveryNoteLine, poSoLink);
+                //updateStockQuantityForLinkedSaleOrder(deliveryNoteHeader, deliveryNoteLine, poSoLink);
                 if (qtyRemain == 0) {
                     break;
                 }

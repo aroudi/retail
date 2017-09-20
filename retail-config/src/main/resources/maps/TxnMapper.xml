@@ -1213,5 +1213,10 @@
         order by txde.TXDE_PROD_ID
     </select>
 
-
+    <select id="getTxnHeaderStatusByTxhdId" resultMap="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryMap" >
+        SELECT
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="cat"/></include>
+        FROM CONFIG_CATEGORY cat INNER join TXN_HEADER txn on (txn.TXHD_STATUS = cat.CATEGORY_ID)
+        WHERE txn.TXHD_ID=#{value}
+    </select>
 </mapper>

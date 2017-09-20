@@ -190,6 +190,9 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeItemVoid(txnDetailForm.isTxdeItemVoid());
                 txnDetail.setTxdeProdName(txnDetailForm.getTxdeProdName());
                 txnDetail.setOriginalQuantity(txnDetailForm.getOriginalQuantity());
+                if (txnDetailForm.getStatus() != null) {
+                    txnDetail.setStatus(txnDetailForm.getStatus());
+                }
                 if (txnDetailForm.getTxdeQtyBalance() == 0) {
                     final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_FINAL);
                     txnDetail.setStatus(status);

@@ -68,12 +68,14 @@ public class StockServiceImpl implements StockService {
                     if (txnDetail.getOriginalQuantity() != txnDetail.getTxdeQuantitySold()) {
                         final StockEvent stockEvent2 = new StockEvent();
                         //we only need to reserve those available on stock. (available on stock = qtySold - qtyBackOrdered)
-                        double quantity;
+                        final double quantity = txnDetail.getTxdeQuantitySold() - txnDetail.getOriginalQuantity();
+                        /*;
                         if ((txnDetail.getTxdeQuantitySold() - txnDetail.getOriginalQuantity()) >= txnDetail.getProduct().getStockQty()) {
                             quantity = txnDetail.getProduct().getStockQty();
                         } else {
                             quantity = txnDetail.getTxdeQuantitySold() - txnDetail.getOriginalQuantity();
                         }
+                        */
                         stockEvent2.setStckQty(quantity);
                         //if item is voided then return the item to saleable stock.
                         if (txnDetail.isTxdeItemVoid()) {
@@ -101,12 +103,14 @@ public class StockServiceImpl implements StockService {
                     stockEvent.setStckQty(txnDetail.getTxdeQtyInvoiced());
 
                 } else if (txnType.equals(IdBConstant.TXN_TYPE_SALE)) {
-                    double quantity;
+                    final double quantity = txnDetail.getTxdeQuantitySold() - txnDetail.getOriginalQuantity();
+                    /*
                     if ((txnDetail.getTxdeQuantitySold() - txnDetail.getOriginalQuantity()) >= txnDetail.getProduct().getStockQty()) {
                         quantity = txnDetail.getProduct().getStockQty();
                     } else {
                         quantity = txnDetail.getTxdeQuantitySold() - txnDetail.getOriginalQuantity();
                     }
+                    */
                     stockEvent.setStckQty(quantity);
                     stockEvent.setTxnTypeReservedFor(IdBConstant.TXN_TYPE_SALE);
                     stockEvent.setTxnNrReservedFor(txnHeader.getTxhdTxnNr());
