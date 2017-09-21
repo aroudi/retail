@@ -2156,3 +2156,5 @@ GO
 ALTER TABLE SUPPLIER
   alter COLUMN 	SUPPLIER_CODE varchar(50)
 GO
+-- up to this point deployed on jomon on 21/09/17 (ver 2.1)
+
