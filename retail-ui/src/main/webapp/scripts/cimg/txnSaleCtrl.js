@@ -61,6 +61,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 }
             }
         }
+        $scope.transactionNo = '';  //for display on the page
+        if (!$scope.isPageNew) {
+            //var txnType = ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') ? $scope.txnHeaderForm.invoiceTxnType.displayName : $scope.txnHeaderForm.txhdTxnType.displayName;
+            $scope.transactionNo = 'No: ' + $scope.txnHeaderForm.txhdTxnNr;  //for display on the page
+        }
         $scope.sendEmail = false;
         if ($scope.isPageNew && !$scope.txnHeaderForm.temporarySaved) {
             baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){

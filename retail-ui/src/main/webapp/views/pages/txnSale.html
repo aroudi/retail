@@ -3,7 +3,7 @@
     <div class="col-lg-12">
         <div class="panel  panel-primary">
             <div class="panel-heading">
-                {{txnHeaderForm.txhdTxnType.displayName}}
+                {{txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE' ? txnHeaderForm.invoiceTxnType.displayName : txnHeaderForm.txhdTxnType.displayName}}
                 <!--button type="button" class="btn btn-primary" ng-click="saveAsDraft()">Save As Draft</button-->
             </div>
             <div class="panel-body">
@@ -14,7 +14,7 @@
                                 <div class="col-lg-12">
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
-                                            Transaction Header
+                                            <b>{{transactionNo}}</b>
                                         </div>
                                         <div class="panel-body">
                                             <div class="row">
