@@ -18,6 +18,7 @@
         <result column="BOQ_VALUE_NETT" property="boqValueNett" />
         <result column="BOQ_TOTAL_QTY" property="boqTotalQty" />
         <result column="BOQ_TOTAL_LINES" property="boqTotalLines" />
+        <result column="DATE_RELEASED" property="dateReleased" />
         <association property="user" column="BOQ_LAST_MODIFIED_BY" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="project" column="PROJECT_ID" select="au.com.biztune.retail.dao.ProjectDao.getProjectById" />
         <association property="boqStatus" column="BOQ_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -57,7 +58,8 @@
      ${alias}.BOQ_VALUE_GROSS,
      ${alias}.BOQ_VALUE_NETT,
      ${alias}.BOQ_TOTAL_QTY,
-     ${alias}.BOQ_TOTAL_LINES
+     ${alias}.BOQ_TOTAL_LINES,
+     ${alias}.DATE_RELEASED
     </sql>
 
     <sql id="getBillOfQuantity">
@@ -307,6 +309,8 @@
             #{item}
         </foreach>
     </delete>
-
-
+    <update id="updateBoqDateReleasedPerId">
+        UPDATE BILL_OF_QUANTITY set DATE_RELEASED = #{param1}
+        WHERE BOQ_ID = #{param2}
+    </update>
 </mapper>

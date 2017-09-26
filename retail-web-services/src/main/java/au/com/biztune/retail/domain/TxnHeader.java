@@ -52,6 +52,8 @@ public class TxnHeader {
     //ordering status : OUTSTANDING, ON ORDER, PARTIAL RECEIVED, RECIEVED AND FINALISED
     private ConfigCategory status;
     private String txhdPrjCode;
+    private boolean txivImported;
+    private Timestamp txivImportTime;
 
     /**
      * add txn detail to txn header.
@@ -393,5 +395,21 @@ public class TxnHeader {
 
     public void setTxhdAmountPaid(double txhdAmountPaid) {
         this.txhdAmountPaid = txhdAmountPaid;
+    }
+
+    public boolean isTxivImported() {
+        return txivImported;
+    }
+
+    public void setTxivImported(boolean txivImported) {
+        this.txivImported = txivImported;
+    }
+
+    public Timestamp getTxivImportTime() {
+        return txivImportTime;
+    }
+
+    public void setTxivImportTime(Timestamp txivImportTime) {
+        this.txivImportTime = txivImportTime;
     }
 }

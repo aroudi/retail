@@ -3,6 +3,7 @@ package au.com.biztune.retail.dao;
 import au.com.biztune.retail.domain.BillOfQuantity;
 import au.com.biztune.retail.util.SearchClause;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -97,4 +98,11 @@ public interface BillOfQuantityDao {
      * @param boqIdList boqIdList
      */
     void deleteBoqDetailPerBoqId(List<Long> boqIdList);
+
+    /**
+     * update date released per boqId.
+     * @param dateReleased dateReleased
+     * @param boqId boqId
+     */
+    void updateBoqDateReleasedPerId(Timestamp dateReleased, long boqId);
 }

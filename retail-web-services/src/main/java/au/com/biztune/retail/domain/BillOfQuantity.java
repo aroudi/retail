@@ -24,6 +24,7 @@ public class BillOfQuantity {
     private int boqTotalLines;
     private List<BoqDetail> lines;
     private AppUser user;
+    private Timestamp dateReleased;
 
     public long getId() {
         return id;
@@ -159,5 +160,13 @@ public class BillOfQuantity {
 
     public void setUser(AppUser user) {
         this.user = user;
+    }
+
+    public Timestamp getDateReleased() {
+        return dateReleased;
+    }
+
+    public void setDateReleased(Timestamp dateReleased) {
+        this.dateReleased = dateReleased;
     }
 }

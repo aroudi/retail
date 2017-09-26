@@ -2158,3 +2158,21 @@ ALTER TABLE SUPPLIER
 GO
 -- up to this point deployed on jomon on 21/09/17 (ver 2.1)
 
+alter table BILL_OF_QUANTITY
+   add DATE_RELEASED datetime NULL
+go
+
+alter table BOQ_DETAIL
+   add QTY_RELEASED DECIMAL(31,4) DEFAULT 0 NOT NULL
+go
+
+alter table BOQ_DETAIL
+   add RLEASED_FOR_INVOICE varchar(200)
+go
+
+alter table INVOICE
+   add TXIV_IMPORTED BIT DEFAULT 0
+go
+alter table INVOICE
+   add TXIV_IMPORT_TIME datetime
+go

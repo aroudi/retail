@@ -18,6 +18,8 @@
         <result column="SELL_PRICE" property="sellPrice" />
         <result column="COMMENT" property="comment" />
         <result column="CHANGE_COMMENT" property="changeComment" />
+        <result column="QTY_RELEASED" property="qtyReleased" />
+        <result column="RLEASED_FOR_INVOICE" property="releasedForInvoice" />
         <!--association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" /-->
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="product" column="PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
@@ -41,6 +43,8 @@
         <result column="SELL_PRICE" property="sellPrice" />
         <result column="COMMENT" property="comment" />
         <result column="CHANGE_COMMENT" property="changeComment" />
+        <result column="QTY_RELEASED" property="qtyReleased" />
+        <result column="RLEASED_FOR_INVOICE" property="releasedForInvoice" />
         <association property="bqdStatus" column="BQD_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
@@ -58,6 +62,8 @@
         <result column="SELL_PRICE" property="sellPrice" />
         <result column="COMMENT" property="comment" />
         <result column="CHANGE_COMMENT" property="changeComment" />
+        <result column="QTY_RELEASED" property="qtyReleased" />
+        <result column="RLEASED_FOR_INVOICE" property="releasedForInvoice" />
         <association property="billOfQuantity" column="BOQ_ID" select="au.com.biztune.retail.dao.BillOfQuantityDao.getBillOfQuantityById" />
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="product" column="PROD_ID" select="au.com.biztune.retail.dao.ProductDao.getProductPerProdId" />
@@ -85,7 +91,9 @@
      ${alias}.BQD_STATUS,
      ${alias}.BQD_CREATION_TYPE,
      ${alias}.CHANGE_COMMENT,
-     ${alias}.ITEM_VALUE
+     ${alias}.ITEM_VALUE,
+     ${alias}.QTY_RELEASED,
+     ${alias}.RLEASED_FOR_INVOICE
     </sql>
 
     <sql id="getBoqDetail">
@@ -368,5 +376,11 @@
         QTY_BALANCE = #{param3},
         BQD_STATUS = #{param4}
         WHERE BOQ_DETAIL_ID = #{param5}
+    </update>
+    <update id="updateBoqQtyReleasedPerBoqdId">
+        UPDATE BOQ_DETAIL SET
+        QTY_RELEASED = #{param1},
+        RLEASED_FOR_INVOICE = #{param2}
+        WHERE BOQ_DETAIL_ID = #{param3}
     </update>
 </mapper>

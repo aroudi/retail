@@ -26,6 +26,8 @@
         <result column="TXIV_EMAIL_TO" property="txhdEmailTo" />
         <result column="TXIV_FULLY_REFUNDED" property="txivFullyRefunded" />
         <result column="TXIV_PRJ_CODE" property="txhdPrjCode" />
+        <result column="TXIV_IMPORTED" property="txivImported" />
+        <result column="TXIV_IMPORT_TIME" property="txivImportTime" />
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="user" column="TXIV_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
         <association property="invoiceTxnType" column="TXIV_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -56,6 +58,8 @@
         <result column="TXIV_EMAIL_TO" property="txhdEmailTo" />
         <result column="TXIV_FULLY_REFUNDED" property="txivFullyRefunded" />
         <result column="TXIV_PRJ_CODE" property="txhdPrjCode" />
+        <result column="TXIV_IMPORTED" property="txivImported" />
+        <result column="TXIV_IMPORT_TIME" property="txivImportTime" />
         <!--association property="store" column="STORE_ID" select="au.com.biztune.retail.dao.OrgUnitDao.getStoreById" /-->
         <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
         <association property="invoiceTxnType" column="TXIV_TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -146,7 +150,9 @@
         ${alias}.TXIV_PO_NR,
         ${alias}.TXIV_EMAIL_TO,
         ${alias}.TXIV_FULLY_REFUNDED,
-        ${alias}.TXIV_PRJ_CODE
+        ${alias}.TXIV_PRJ_CODE,
+        ${alias}.TXIV_IMPORTED,
+        ${alias}.TXIV_IMPORT_TIME
     </sql>
 
     <sql id="invoiceDetailColumns">
@@ -193,7 +199,9 @@
         TXIV_CONTACT_PHONE,
         TXIV_PO_NR,
         TXIV_EMAIL_TO,
-        TXIV_PRJ_CODE
+        TXIV_PRJ_CODE,
+        TXIV_IMPORTED,
+        TXIV_IMPORT_TIME
         ) VALUES (
         #{parentId},
         #{orgUnit.id},
@@ -324,6 +332,18 @@
             ,#{txhdPrjCode}
         </if>
         <if test="txhdPrjCode == null">
+            ,null
+        </if>
+        <if test="txivImported != null">
+            ,#{txivImported}
+        </if>
+        <if test="txivImported == null">
+            ,null
+        </if>
+        <if test="txivImportTime != null">
+            ,#{txivImportTime}
+        </if>
+        <if test="txivImportTime == null">
             ,null
         </if>
         )

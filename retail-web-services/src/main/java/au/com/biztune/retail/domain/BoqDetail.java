@@ -21,6 +21,8 @@ public class BoqDetail {
     private double qtyPurchased;
     private double qtyBalance;
     private double qtyReceived;
+    private double qtyReleased;
+    private String releasedForInvoice;
     private ConfigCategory bqdStatus;
     private ConfigCategory bqdCreationType;
     private String comment;
@@ -194,5 +196,21 @@ public class BoqDetail {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public double getQtyReleased() {
+        return qtyReleased;
+    }
+
+    public void setQtyReleased(double qtyReleased) {
+        this.qtyReleased = qtyReleased;
+    }
+
+    public String getReleasedForInvoice() {
+        return releasedForInvoice;
+    }
+
+    public void setReleasedForInvoice(String releasedForInvoice) {
+        this.releasedForInvoice = releasedForInvoice;
     }
 }
