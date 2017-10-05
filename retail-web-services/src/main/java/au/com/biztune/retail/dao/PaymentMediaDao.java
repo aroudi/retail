@@ -41,6 +41,14 @@ public interface PaymentMediaDao {
     PaymentMedia getPaymentMediaPerCode(String paymentCode);
 
     /**
+     * get payment media by name.
+     *
+     * @param paymentName paymentName
+     * @return payment media.
+     */
+    PaymentMedia getPaymentMediaPerName(String paymentName);
+
+    /**
      * get all payment medias.
      *
      * @return List of Payment Media.

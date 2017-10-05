@@ -115,8 +115,15 @@ public class TransactionServiceImpl implements TransactionService {
                     txnHeader.setTxhdTxnType(txnType);
                 }
             } else {
-                txnHeader.setTxhdTradingDate(currentDate);
                 txnHeader.setTxhdVoided(false);
+                if (txnHeaderForm.isImported()) {
+                    txnHeader.setTxivImportTime(currentDate);
+                    txnHeader.setTxivImported(true);
+                    txnHeader.setTxhdTradingDate(txnHeaderForm.getTxhdTradingDate());
+                    txnHeader.setTxhdTxnNr(txnHeaderForm.getTxhdTxnNr());
+                } else {
+                    txnHeader.setTxhdTradingDate(currentDate);
+                }
             }
             txnHeader.setOrgUnit(sessionState.getStore().getOrgUnit());
             txnHeader.setStore(sessionState.getStore());
@@ -144,13 +151,15 @@ public class TransactionServiceImpl implements TransactionService {
             if (isNew) {
                 //save it to database.
                 txnDao.insertTxnHeader(txnHeader);
-                if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
-                    txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.TXN_NUMBER_PREFIX));
-                } else if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_QUOTE)) {
-                    txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.QUOTE_NUMBER_PREFIX));
+                if (!txnHeaderForm.isImported()) {
+                    if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)) {
+                        txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.TXN_NUMBER_PREFIX));
+                    } else if (txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_QUOTE)) {
+                        txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.QUOTE_NUMBER_PREFIX));
+                    }
+                    txnDao.assigneTxnNumber(txnHeader);
+                    txnHeaderForm.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
                 }
-                txnDao.assigneTxnNumber(txnHeader);
-                txnHeaderForm.setTxhdTxnNr(txnHeader.getTxhdTxnNr());
             } else {
                 txnDao.updateTxnHeader(txnHeader);
             }
@@ -589,6 +598,12 @@ public class TransactionServiceImpl implements TransactionService {
             txnHeader.setTxhdPoNo(txnHeaderForm.getTxhdPoNo());
             txnHeader.setTxhdEmailTo(txnHeaderForm.getTxhdEmailTo());
             txnHeader.setTxhdPrjCode(txnHeaderForm.getTxhdPrjCode());
+            txnHeader.setTxhdTxnNr(txnHeaderForm.getTxhdTxnNr());
+            //if it is imported from a file...
+            if (txnHeaderForm.isImported()) {
+                txnHeader.setTxivImported(true);
+                txnHeader.setTxivImportTime(currentDate);
+            }
             final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_INVOICE);
             if (txnType != null) {
                 txnHeader.setInvoiceTxnType(txnType);
@@ -602,8 +617,10 @@ public class TransactionServiceImpl implements TransactionService {
             //save invoice
             invoiceDao.insertInvoice(txnHeader);
             invoiceId = txnHeader.getId();
-            txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.INVOICE_PREFIX));
-            invoiceDao.assigneInvoiceNumber(txnHeader);
+            if (!txnHeaderForm.isImported()) {
+                txnHeader.setTxhdTxnNr(generateTxnNumber(txnHeader.getId(), IdBConstant.INVOICE_PREFIX));
+                invoiceDao.assigneInvoiceNumber(txnHeader);
+            }
 
             //push event to cash session processor.
             //set the parent transaction to sale order

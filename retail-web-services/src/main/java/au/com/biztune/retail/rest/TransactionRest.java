@@ -7,7 +7,9 @@ import au.com.biztune.retail.form.TxnHeaderForm;
 import au.com.biztune.retail.report.TransactionRptMgr;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
+import au.com.biztune.retail.service.InvoiceImportService;
 import au.com.biztune.retail.service.TransactionService;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -35,6 +38,8 @@ public class TransactionRest {
     private TransactionRptMgr transactionRptMgr;
     @Context
     private SecurityContext securityContext;
+    @Autowired
+    private InvoiceImportService invoiceImportService;
 
     /**
      * Returns list of sale transactions.
@@ -315,4 +320,16 @@ public class TransactionRest {
         return transactionService.deleteQuote(id);
     }
 
+    /**
+     * upload bill of quantity.
+     * @param uploadedInputStream uploadedInputStream
+     * @return CommonResponse
+     */
+    @Secured
+    @POST
+    @Path("/importInvoice")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public CommonResponse uploadBillOfQuantity(@FormDataParam("file")InputStream uploadedInputStream) {
+        return invoiceImportService.importInvoice(uploadedInputStream, securityContext);
+    }
 }

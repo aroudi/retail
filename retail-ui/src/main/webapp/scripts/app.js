@@ -185,7 +185,9 @@ var service_uri = {
     'PRODUCT_PRICE_UPDATE_BULK' : 'product/updateProductPriceInBulk/',
     'GENERATE_PO_FROM_SO_URI' : 'saleOrder/convertSoToPo',
     'POH_OF_SO_URI' : 'purchaseOrder/header/ofSaleOrder/',
-    'INVOICE_OF_SO_URI' : 'saleOrder/getInvoiceOfSo/'
+    'INVOICE_OF_SO_URI' : 'saleOrder/getInvoiceOfSo/',
+    'INVOICE_IMPORT_URI' : 'transaction/importInvoice'
+
 };
 
 var response_status = {

@@ -1,5 +1,8 @@
 package au.com.biztune.retail.response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by arash on 22/02/2016.
  */
@@ -17,6 +20,33 @@ public class CommonResponse {
      */
     protected String info;
 
+    /**
+     * list of messages.
+     */
+    protected List<String> messageList;
+
+    /**
+     * add message to message list.
+     * @param message message to be displayed.
+     */
+    public void addMessage(String message) {
+        if (messageList == null) {
+            messageList = new ArrayList<String>();
+        }
+        messageList.add(message);
+    }
+
+    /**
+     * print message list.
+     * @return message list.
+     */
+    public String toString() {
+        final StringBuilder result = new StringBuilder("");
+        for (String msg: messageList) {
+            result.append(msg + "\n");
+        }
+        return result.toString();
+    }
     public int getStatus() {
         return status;
     }
@@ -39,6 +69,14 @@ public class CommonResponse {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public List<String> getMessageList() {
+        return messageList;
+    }
+
+    public void setMessageList(List<String> messageList) {
+        this.messageList = messageList;
     }
 }
 

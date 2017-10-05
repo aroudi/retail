@@ -393,7 +393,12 @@ public class ProductServiceImpl implements ProductService {
      */
     public ProductSaleItem getProductSaleItemPerOrguIdAndSku(String sku) {
         try {
-            return productDao.getProductSaleItemPerOrgUnitIdAndSku(sessionState.getOrgUnit().getId(), sku);
+            final List<ProductSaleItem> productSaleItemList = productDao.getProductSaleItemPerOrgUnitIdAndSku(sessionState.getOrgUnit().getId(), sku);
+            if (productSaleItemList != null && productSaleItemList.size() > 0) {
+                return productSaleItemList.get(0);
+            } else {
+                return null;
+            }
 
         } catch (Exception e) {
             logger.error("Error in retrieving sale item per sku");
@@ -408,7 +413,12 @@ public class ProductServiceImpl implements ProductService {
      */
     public ProductSaleItem getProductSaleItemPerSku(String skuCode) {
         try {
-            return productDao.getProductSaleItemPerSku(skuCode);
+            final List<ProductSaleItem> productSaleItemList = productDao.getProductSaleItemPerSku(skuCode);
+            if (productSaleItemList != null && productSaleItemList.size() > 0) {
+                return productSaleItemList.get(0);
+            } else {
+                return null;
+            }
 
         } catch (Exception e) {
             logger.error("Error in getting product sale item per sku:", e);

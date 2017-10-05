@@ -542,6 +542,10 @@
         INVOICE invoice WHERE invoice.TXHD_ID=#{value}
     </select>
 
+    <select id="checkInvoiceExistsPerNo" resultType="int" >
+        SELECT count(*) from INVOICE where TXIV_TXN_NR = #{value};
+    </select>
+
     <select id="getInvoiceHeaderPerInvoiceId" resultMap="invoiceMap" >
         SELECT
         <include refid="invoiceColumns"><property name="alias" value="invoice"/></include>

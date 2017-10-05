@@ -2176,3 +2176,8 @@ go
 alter table INVOICE
    add TXIV_IMPORT_TIME datetime
 go
+
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Import Invoice', 'importInvoice', 'Import Invoice');
+go
+INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'importInvoice' ));
+go

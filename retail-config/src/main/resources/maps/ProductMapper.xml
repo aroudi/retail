@@ -397,7 +397,7 @@
         FROM
         PRODUCT prod
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
-        WHERE prod.SKU = #{value}
+        WHERE prod.PROD_SKU = #{value}
     </select>
 
     <select id="getProductSaleItemPerReference" resultMap="productSaleItemMap" >

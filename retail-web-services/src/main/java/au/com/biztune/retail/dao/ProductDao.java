@@ -120,7 +120,7 @@ public interface ProductDao {
      * @param sku sku
      * @return List of Product
      */
-    ProductSaleItem getProductSaleItemPerSku(String sku);
+    List<ProductSaleItem> getProductSaleItemPerSku(String sku);
 
 
     /**
@@ -136,7 +136,7 @@ public interface ProductDao {
      * @param sku sku
      * @return ProductSaleItem
      */
-    ProductSaleItem getProductSaleItemPerOrgUnitIdAndSku(long orguId, String sku);
+    List<ProductSaleItem> getProductSaleItemPerOrgUnitIdAndSku(long orguId, String sku);
 
     /**
      * get product list in page format.

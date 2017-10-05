@@ -2,6 +2,8 @@ package au.com.biztune.retail.form;
 
 import au.com.biztune.retail.domain.*;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,9 +39,31 @@ public class TxnHeaderForm {
     private String txhdEmailTo;
     private ConfigCategory status;
     private String txhdPrjCode;
+    private Timestamp txhdTradingDate;
+    private boolean imported;
 
 
+    /**
+     * add txndetail to detail list.
+     * @param txnDetailForm txnDetailForm
+     */
+    public void addTxnDetailForm(TxnDetailForm txnDetailForm) {
+        if (txnDetailFormList == null){
+            txnDetailFormList = new ArrayList<TxnDetailForm>();
+        }
+        txnDetailFormList.add(txnDetailForm);
+    }
 
+    /**
+     * add TxnMediaForm to payment list.
+     * @param txnMediaForm txnMediaForm
+     */
+    public void addTxnMediaForm(TxnMediaForm txnMediaForm) {
+        if (txnMediaFormList == null) {
+            txnMediaFormList = new ArrayList<TxnMediaForm>();
+        }
+        txnMediaFormList.add(txnMediaForm);
+    }
     public long getId() {
         return id;
     }
@@ -270,5 +294,21 @@ public class TxnHeaderForm {
 
     public void setTxhdPrjCode(String txhdPrjCode) {
         this.txhdPrjCode = txhdPrjCode;
+    }
+
+    public Timestamp getTxhdTradingDate() {
+        return txhdTradingDate;
+    }
+
+    public void setTxhdTradingDate(Timestamp txhdTradingDate) {
+        this.txhdTradingDate = txhdTradingDate;
+    }
+
+    public boolean isImported() {
+        return imported;
+    }
+
+    public void setImported(boolean imported) {
+        this.imported = imported;
     }
 }

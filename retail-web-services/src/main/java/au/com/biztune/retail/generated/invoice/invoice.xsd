@@ -1,0 +1,185 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Invoices">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Invoice" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Header">
+                <xs:annotation>
+                  <xs:documentation>rounding amount</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="invoiceNo"/>
+                    <xs:element type="xs:string" name="invoiceDate">
+                      <xs:annotation>
+                        <xs:documentation>Invoice No</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element type="xs:float" name="totalAmountGross">
+                      <xs:annotation>
+                        <xs:documentation>Invoice Date and Time format:YYYY-MM-DD HH:MM:SS</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element type="xs:float" name="totalAmountTax">
+                      <xs:annotation>
+                        <xs:documentation>Total invoice amount before tax</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element type="xs:float" name="totalAmountNet">
+                      <xs:annotation>
+                        <xs:documentation>Total tax amount</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element type="xs:float" name="totalAmountPaid">
+                      <xs:annotation>
+                        <xs:documentation>Total invoice amount after tax</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element type="xs:float" name="valueChange">
+                      <xs:annotation>
+                        <xs:documentation>total amount paid by customer</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element type="xs:float" name="valueRounding">
+                      <xs:annotation>
+                        <xs:documentation>value change delivered to customer</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Boq">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="name"/>
+                    <xs:element type="xs:string" name="orderNumber">
+                      <xs:annotation>
+                        <xs:documentation>Bill of quantity name or reference. this must be unique id for each bill of quantity</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Project">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="projectNo"/>
+                    <xs:element type="xs:string" name="projectName"/>
+                    <xs:element type="xs:string" name="referenceNo"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Client">
+                <xs:annotation>
+                  <xs:documentation>delivery address for this invoice</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="clientName"/>
+                    <xs:element type="xs:string" name="contactName">
+                      <xs:annotation>
+                        <xs:documentation>client company name</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element type="xs:string" name="contactNo">
+                      <xs:annotation>
+                        <xs:documentation>contact person</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element type="xs:string" name="deliveryAddress">
+                      <xs:annotation>
+                        <xs:documentation>contact no for delivery</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Products">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Product" maxOccurs="unbounded" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>product list  total value of this line which equals : GrossAmount + taxAmount</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element type="xs:string" name="sku"/>
+                          <xs:element type="xs:string" name="barcode">
+                            <xs:annotation>
+                              <xs:documentation>product sku</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element type="xs:string" name="ProductName">
+                            <xs:annotation>
+                              <xs:documentation>product barcode</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element type="xs:string" name="description">
+                            <xs:annotation>
+                              <xs:documentation>product name</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element type="xs:string" name="supplier">
+                            <xs:annotation>
+                              <xs:documentation>product description</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element type="xs:string" name="unit"/>
+                          <xs:element type="xs:float" name="sellPrice"/>
+                          <xs:element type="xs:float" name="qty">
+                            <xs:annotation>
+                              <xs:documentation>selling price of product before tax</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element type="xs:float" name="grossAmount"/>
+                          <xs:element type="xs:string" name="taxName">
+                            <xs:annotation>
+                              <xs:documentation>gross amount for this line which equals: SellPrice * Qty</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element type="xs:float" name="taxAmount">
+                            <xs:annotation>
+                              <xs:documentation>tax code applied to this product</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element type="xs:float" name="netAmount">
+                            <xs:annotation>
+                              <xs:documentation>tax amount applied to this line</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Payments">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Payment" maxOccurs="unbounded" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>payment amount  payment amount</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element type="xs:string" name="paymentMethod"/>
+                          <xs:element type="xs:float" name="amount">
+                            <xs:annotation>
+                              <xs:documentation>payment method for example Cash, Card, Cheque .....  payment method for example Cash, Card, Cheque .....</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

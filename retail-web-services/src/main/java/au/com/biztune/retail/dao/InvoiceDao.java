@@ -139,4 +139,11 @@ public interface InvoiceDao {
      * @return list of invoices
      */
     List<TxnHeader> getAllInvoiceOfSaleOrder(long orguId, long txhdId);
+
+    /**
+     * check if invoice exists per invoice no.
+     * @param invoiceNo invoiceNo
+     * @return recourd count
+     */
+    int checkInvoiceExistsPerNo(String invoiceNo);
 }
