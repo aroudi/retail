@@ -294,9 +294,12 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
 
         //line.totalCost = line.dlnlUnitCost * line.rcvdQty;
         calculateSubTotal();
-    }
+    };
     $scope.saveDeliveryNote = function () {
 
+        if (!validForm()) {
+            return;
+        }
 
         if ($scope.disablePage) {
             baseDataService.displayMessage("info","Warning", "You can not submit an already confirmed delivery note!!!! ");
@@ -482,5 +485,16 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             return;
         }
         $scope.searchProduct();
+    };
+    function validForm() {
+        if ($scope.deliveryNoteHeader.supplier === undefined || $scope.deliveryNoteHeader.supplier.id === -1) {
+            baseDataService.displayMessage('info','Form is not valid','Please select supplier');
+            return false;
+        }
+        if ($scope.gridOptions.data.length < 1) {
+            baseDataService.displayMessage('info','Form is not valid','Product list is empty');
+            return false;
+        }
+        return true;
     }
 });

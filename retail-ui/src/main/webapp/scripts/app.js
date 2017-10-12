@@ -974,6 +974,16 @@ cimgApp.filter('booleanFilter', function() {
             return 'No'
         }
     };
+
+});
+cimgApp.filter('invoiceSource', function() {
+    return function (status) {
+        if (status === true) {
+            return 'Doors3'
+        } else {
+            return 'Pos'
+        }
+    };
 });
 cimgApp.filter('accImportFilter', function() {
     return function (status) {

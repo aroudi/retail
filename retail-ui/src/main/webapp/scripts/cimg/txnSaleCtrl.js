@@ -719,6 +719,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         totalTransaction();
         //check if transaction is fully paid
         if ($scope.txnHeaderForm.txhdValueDue == 0) {
+
+            if ($scope.txnDetailList.data.length < 1) {
+                //baseDataService.displayMessage('info','Form is not valid','Product list is empty');
+                return;
+            }
             baseDataService.displayMessage('yesNo','Sumbit!!','Do you want to Submit Transaction?').then(function(result){
                 if (result) {
                     if ($scope.showSubmitButtom()) {
@@ -766,6 +771,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
     $scope.createTransactionSale = function () {
 
+        if ($scope.txnDetailList.data.length < 1) {
+            baseDataService.displayMessage('info','Form is not valid','Product list is empty');
+            return false;
+        }
 
         $scope.txnHeaderForm.txnDetailFormList = $scope.txnDetailList.data;
         $scope.txnHeaderForm.txnMediaFormList = $scope.txnMediaList.data;
@@ -1070,6 +1079,12 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         totalTransaction();
     };
     $scope.invoiceTransactionSale = function () {
+
+        if ($scope.txnDetailList.data.length < 1) {
+            baseDataService.displayMessage('info','Form is not valid','Product list is empty');
+            return false;
+        }
+
         if (!checkEmailIsValid()) {
             return;
         }

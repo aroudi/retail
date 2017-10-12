@@ -174,6 +174,13 @@ public class SearchClauseBuilder {
                     clauseList.add(searchClause);
                 }
             }
+            if ("INVOICE".equals(searchTable)) {
+                if (searchForm.isImported()) {
+                    searchClause = new SearchClause("TXIV_IMPORTED", " = ", 1);
+                    clauseList.add(searchClause);
+                }
+            }
+
         }
         if (clauseList.size() > 0) {
             return clauseList;

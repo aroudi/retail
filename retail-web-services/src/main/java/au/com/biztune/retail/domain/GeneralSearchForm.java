@@ -23,6 +23,7 @@ public class GeneralSearchForm {
     private long totalRecords;
     private List result;
     private long supplierId;
+    private boolean imported;
 
 
 
@@ -152,5 +153,13 @@ public class GeneralSearchForm {
 
     public void setCreationTypeId(long creationTypeId) {
         this.creationTypeId = creationTypeId;
+    }
+
+    public boolean isImported() {
+        return imported;
+    }
+
+    public void setImported(boolean imported) {
+        this.imported = imported;
     }
 }

@@ -119,6 +119,13 @@
           boq.BOQ_NAME = #{value}
     </select>
 
+    <select id="getBillOfQuantityByNameAndOrderNo" resultMap="BillOfQuantityMap" >
+        <include refid="getBillOfQuantity">
+        </include>
+        WHERE
+        boq.BOQ_NAME = #{param1} and boq.ORDER_NO = #{param2}
+    </select>
+
     <select id="getBillOfQuantitiesByClientId" resultMap="BillOfQuantityMap" >
         SELECT
           <include refid="boqColumns"><property name="alias" value="boq"/></include>

@@ -22,6 +22,7 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
     $scope.searchForm.clientId = -1;
     $scope.includeInvoice = true;
     $scope.includeRefund = true;
+    $scope.searchForm.imported = false;
 
     $scope.getPage = function(){
         console.log('get page called');
@@ -65,7 +66,16 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
             {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
             {field:'txhdTradingDate', displayName:'Create Date',enableCellEdit:false, width:'10%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
             {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'15%'},
-            {field:'txhdOrigTxnNr', cellTemplate: txnNumberTemplate,displayName:'Ref No',enableCellEdit:false, width:'10%'},
+            {field:'txivImported', displayName:'Source', enableCellEdit:false, width:'8%', cellFilter:'invoiceSource',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    if (grid.getCellValue(row, col) === true) {
+                        return 'amber';
+                    } else if (grid.getCellValue(row, col) === false) {
+                        return 'green'
+                    }
+                }
+            },
+            {field:'txhdOrigTxnNr', cellTemplate: txnNumberTemplate,displayName:'Ref No',enableCellEdit:false, width:'8%'},
             {field:'txhdTxnNr', displayName:'Invoice/Refund No',enableCellEdit:false, width:'15%'},
             {field:'invoiceTxnType.displayName', displayName:'Type',enableCellEdit:false, width:'5%',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
@@ -78,8 +88,8 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
                     }
                 }
             },
-            {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
-            {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'},
+            {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'7%', cellFilter:'currency'},
+            {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'7%', cellFilter:'currency'},
         ]
     }
     $scope.gridOptions.enableRowSelection = true;

@@ -153,6 +153,9 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
         totalTransaction();
         //check if transaction is fully paid
         if ($scope.debtorPaymentForm.amountDue == 0) {
+            if (!$scope.validForm()) {
+                return;
+            }
             baseDataService.displayMessage('yesNo','Sumbit!!','Do you want to Submit Transaction?').then(function(result){
                 if (result) {
                     $scope.createTxnAccPayment();
@@ -257,5 +260,16 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
             row.paying = 0.00;
         }
 
+    }
+    $scope.validForm = function() {
+        if ($scope.model.customer === undefined || $scope.model.customer.id === -1) {
+            //baseDataService.displayMessage('info','Form is not valid','Please select supplier');
+            return false;
+        }
+        if ($scope.debtList.data === undefined || $scope.debtList.data.length < 1) {
+            //baseDataService.displayMessage('info','Form is not valid','Product list is empty');
+            return false;
+        }
+        return true;
     }
 });

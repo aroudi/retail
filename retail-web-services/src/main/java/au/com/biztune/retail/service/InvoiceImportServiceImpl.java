@@ -43,6 +43,10 @@ public class InvoiceImportServiceImpl implements InvoiceImportService {
     private InvoiceDao invoiceDao;
     @Autowired
     private ConfigCategoryDao configCategoryDao;
+    @Autowired
+    private BillOfQuantityDao billOfQuantityDao;
+    @Autowired
+    private BoqDetailDao boqDetailDao;
 
     private SecurityContext securityContext;
     /**
@@ -198,4 +202,40 @@ public class InvoiceImportServiceImpl implements InvoiceImportService {
         return response;
     }
 
+    /**
+     * update related relatedBoq.
+     * @param txnHeaderForm txnHeaderForm
+     * @param relatedBoq relatedBoq
+     */
+    public void updateReleatedBoq(TxnHeaderForm txnHeaderForm, Invoices.Invoice.Boq relatedBoq) {
+        try {
+            //fetch related boq.
+            //todo: boq name should be unique and be mandatory for xsl
+            final BillOfQuantity billOfQuantity = billOfQuantityDao.getBillOfQuantityByNameAndOrderNo(relatedBoq.getName(), relatedBoq.getOrderNumber());
+            if (billOfQuantity == null) {
+                logger.debug("boq with name " + relatedBoq.getName() + " and " + relatedBoq.getOrderNumber() + " Not found.");
+                return;
+            }
+            billOfQuantity.getLines().forEach(boqLine -> {
+                //get all quantity released;
+                final double quantityInvoiced = txnHeaderForm.getTxnDetailFormList().stream()
+                        .filter(txnDetailForm -> txnDetailForm.getProduct().getId() == boqLine.getProduct().getId())
+                        .map(txnDetailForm -> txnDetailForm.getTxdeQtyInvoiced()).reduce(0.00, Double::sum);
+                if (quantityInvoiced > 0) {
+                    boqDetailDao.updateBoqQtyReleasedPerBoqdId(quantityInvoiced, txnHeaderForm.getTxhdTxnNr(), boqLine.getId());
+                }
+            });
+            //check if all products has been released.
+            final long boqLineCount = billOfQuantity.getLines().size();
+            final long noOfLineReleased = billOfQuantity.getLines().stream().filter(boqDetail -> boqDetail.getQtyReleased() >= boqDetail.getQuantity()).count();
+            if (noOfLineReleased >= boqLineCount) {
+
+            } else if (noOfLineReleased > 0) {
+
+            }
+
+        } catch (Exception e) {
+            logger.debug("InvoiceImporter: Exception in updating related BOQ", e);
+        }
+    }
 }

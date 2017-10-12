@@ -327,21 +327,24 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             line.polValueOrdered = line.polValueGross*1 + line.polValueTax*1;
         }
         totalTransaction();
-    }
+    };
 
     $scope.savePoAsDraft = function() {
         $scope.purchaseOrderHeader.pohStatus = $scope.statusOnProgress;
         savePurchaseOrder('draft');
-    }
+    };
 
     $scope.submitPo = function() {
         $scope.purchaseOrderHeader.pohStatus = $scope.statusConfirmed;
         savePurchaseOrder('submit');
-    }
+    };
 
     function savePurchaseOrder(mode) {
 
         //$scope.facility.lastModifiedBy = userId;
+        if (!validForm()) {
+            return;
+        }
         var rowObject = $scope.purchaseOrderHeader;
         if ($scope.pageIsNew) {
             $scope.purchaseOrderHeader.lines = $scope.gridOptions.data
@@ -733,6 +736,18 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             $scope.gridOptions.data.push(purchaseOrder.lines[i]);
         }
         totalTransaction();
+    }
+
+    function validForm() {
+        if ($scope.purchaseOrderHeader.supplier === undefined || $scope.purchaseOrderHeader.supplier.id === -1) {
+            baseDataService.displayMessage('info','Form is not valid','Please select supplier');
+            return false;
+        }
+        if ($scope.gridOptions.data.length < 1) {
+            baseDataService.displayMessage('info','Form is not valid','Product list is empty');
+            return false;
+        }
+        return true;
     }
 
 });

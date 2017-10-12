@@ -123,8 +123,10 @@
                             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                             <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
                             <button type="button" class="btn btn-success" ng-click="submitPo()" ng-show="!isViewMode">Submit</button>
-                            <button type="button" class="btn btn-success" ng-click="mergePurchaseOrder()" ng-show="(!isViewMode)&&(purchaseOrderHeader.pohStatus.categoryCode === 'POH_STATUS_IN_PROGRESS')">Merge another po into this</button>
                             <button type="button" class="btn btn-success" ng-click="savePoAsDraft()" ng-show="(!isViewMode)&&(purchaseOrderHeader.pohStatus.categoryCode === 'POH_STATUS_IN_PROGRESS')">Save As Draft</button>
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            <button type="button" class="btn btn-group" ng-click="mergePurchaseOrder()" ng-show="(!isViewMode)&&(purchaseOrderHeader.pohStatus.categoryCode === 'POH_STATUS_IN_PROGRESS')">Merge another po into this</button>
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                             <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
 
                             <!--button type="button" class="btn btn-success" ng-click="exportToPdf()" ng-show="!pageIsNew">Export to PDF</button-->
