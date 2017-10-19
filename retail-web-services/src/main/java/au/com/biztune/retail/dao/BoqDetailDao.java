@@ -116,7 +116,8 @@ public interface BoqDetailDao {
      * update qty released.
      * @param qtyReleased qtyReleased
      * @param invoiceNo invoiceNo
+     * @param status status
      * @param boqdId boqdId
      */
-    void updateBoqQtyReleasedPerBoqdId(double qtyReleased, String invoiceNo, long boqdId);
+    void updateBoqQtyReleasedPerBoqdId(double qtyReleased, String invoiceNo, long status, long boqdId);
 }

@@ -131,6 +131,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
     */
     initPageData();
     function initPageData() {
+        $scope.transactionNo = '';  //for display on the page
         baseDataService.getBaseData(POL_CREATION_TYPE_MANUAL).then(function(response){
             var data = angular.copy(response.data);
             $scope.polCreationTypeManual = data;
@@ -191,6 +192,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,uiGridCon
             $scope.pageIsNew = true;
         } else {
             $scope.purchaseOrderHeader = angular.copy(baseDataService.getRow());
+            $scope.transactionNo = 'No: ' + $scope.purchaseOrderHeader.pohOrderNumber;  //for display on the page
             $scope.gridOptions.data = $scope.purchaseOrderHeader.lines;
             $scope.purchaseOrderHeader.pohExpDeliveryStr = new Date($scope.purchaseOrderHeader.pohExpDeliveryStr);
             $scope.purchaseOrderHeader.pohCreatedDateStr = new Date($scope.purchaseOrderHeader.pohCreatedDateStr);

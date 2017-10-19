@@ -95,6 +95,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
 
     initPageData();
     function initPageData() {
+        $scope.transactionNo = '';  //for display on the page
         $scope.disablePage = false;
         if ( baseDataService.getIsPageNew()) {
             $scope.deliveryNoteHeader = {};
@@ -106,6 +107,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             $scope.deliveryNoteHeader.costsIncludeTax = false;
         } else {
             $scope.deliveryNoteHeader = angular.copy(baseDataService.getRow());
+            $scope.transactionNo = 'No: ' + $scope.deliveryNoteHeader.delnGrn;  //for display on the page
             $scope.gridOptions.data = $scope.deliveryNoteHeader.lines;
             angular.forEach($scope.gridOptions.data,function(row){
                 row.backOrder = function() {

@@ -380,7 +380,8 @@
     <update id="updateBoqQtyReleasedPerBoqdId">
         UPDATE BOQ_DETAIL SET
         QTY_RELEASED = #{param1},
-        RLEASED_FOR_INVOICE = #{param2}
-        WHERE BOQ_DETAIL_ID = #{param3}
+        RLEASED_FOR_INVOICE = #{param2},
+        BQD_STATUS = #{param3}
+        WHERE BOQ_DETAIL_ID = #{param4}
     </update>
 </mapper>

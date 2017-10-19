@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.ws.rs.core.SecurityContext;
 import java.io.InputStream;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -196,8 +198,13 @@ public class InvoiceImportServiceImpl implements InvoiceImportService {
         }
         // save invoice
         final CommonResponse addInvoiceResponse = transactionService.createInvoice(txnHeaderForm, securityContext);
+        //update related boq status and qty released.
+        updateReleatedBoq(txnHeaderForm, invoiceList);
         response.addMessage(addInvoiceResponse.getMessage());
         response.setStatus(addInvoiceResponse.getStatus());
+        if (addInvoiceResponse.getStatus() == IdBConstant.RESULT_SUCCESS) {
+            response.addMessage("Invoice/s imported successfully.");
+        }
         logger.debug("InvoiceImporter: result =" + response.toString());
         return response;
     }
@@ -205,35 +212,54 @@ public class InvoiceImportServiceImpl implements InvoiceImportService {
     /**
      * update related relatedBoq.
      * @param txnHeaderForm txnHeaderForm
-     * @param relatedBoq relatedBoq
+     * @param invoiceList invoiceList
      */
-    public void updateReleatedBoq(TxnHeaderForm txnHeaderForm, Invoices.Invoice.Boq relatedBoq) {
+    public void updateReleatedBoq(TxnHeaderForm txnHeaderForm, Invoices invoiceList) {
         try {
-            //fetch related boq.
-            //todo: boq name should be unique and be mandatory for xsl
-            final BillOfQuantity billOfQuantity = billOfQuantityDao.getBillOfQuantityByNameAndOrderNo(relatedBoq.getName(), relatedBoq.getOrderNumber());
-            if (billOfQuantity == null) {
-                logger.debug("boq with name " + relatedBoq.getName() + " and " + relatedBoq.getOrderNumber() + " Not found.");
-                return;
-            }
-            billOfQuantity.getLines().forEach(boqLine -> {
-                //get all quantity released;
-                final double quantityInvoiced = txnHeaderForm.getTxnDetailFormList().stream()
-                        .filter(txnDetailForm -> txnDetailForm.getProduct().getId() == boqLine.getProduct().getId())
-                        .map(txnDetailForm -> txnDetailForm.getTxdeQtyInvoiced()).reduce(0.00, Double::sum);
-                if (quantityInvoiced > 0) {
-                    boqDetailDao.updateBoqQtyReleasedPerBoqdId(quantityInvoiced, txnHeaderForm.getTxhdTxnNr(), boqLine.getId());
+            logger.debug("updating related boq for invoice.");
+            for (Invoices.Invoice invoice : invoiceList.getInvoice()) {
+                //fetch related boq.
+                //todo: boq name should be unique and be mandatory for xsl
+                BillOfQuantity billOfQuantity = billOfQuantityDao.getBillOfQuantityByNameAndOrderNo(invoice.getBoq().getName(), invoice.getBoq().getOrderNumber());
+                if (billOfQuantity == null) {
+                    logger.debug("boq with name " + invoice.getBoq().getName() + " and " + invoice.getBoq().getOrderNumber() + " Not found.");
+                    return;
                 }
-            });
-            //check if all products has been released.
-            final long boqLineCount = billOfQuantity.getLines().size();
-            final long noOfLineReleased = billOfQuantity.getLines().stream().filter(boqDetail -> boqDetail.getQtyReleased() >= boqDetail.getQuantity()).count();
-            if (noOfLineReleased >= boqLineCount) {
+                billOfQuantity.getLines().forEach(boqLine -> {
+                    //get all quantity released;
+                    final double quantityInvoiced = txnHeaderForm.getTxnDetailFormList().stream()
+                            .filter(txnDetailForm -> txnDetailForm.getProduct().getId() == boqLine.getProduct().getId())
+                            .map(txnDetailForm -> txnDetailForm.getTxdeQtyInvoiced()).reduce(0.00, Double::sum);
+                    logger.debug("quantityInvoiced = " + quantityInvoiced);
+                    if (quantityInvoiced > 0 && quantityInvoiced >= boqLine.getQuantity()) {
+                        final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_FINAL);
+                        boqDetailDao.updateBoqQtyReleasedPerBoqdId(quantityInvoiced, txnHeaderForm.getTxhdTxnNr(), status.getId(), boqLine.getId());
+                    }
+                    if (quantityInvoiced > 0 && quantityInvoiced < boqLine.getQuantity()) {
+                        final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_PAR_RELEASED);
+                        boqDetailDao.updateBoqQtyReleasedPerBoqdId(quantityInvoiced, txnHeaderForm.getTxhdTxnNr(), status.getId(), boqLine.getId());
+                    }
+                });
+                //check if all products has been released.
+                billOfQuantity = billOfQuantityDao.getBillOfQuantityByNameAndOrderNo(invoice.getBoq().getName(), invoice.getBoq().getOrderNumber());
+                final long boqLineCount = billOfQuantity.getLines().size();
+                final long noOfLineTotallyReleased = billOfQuantity.getLines().stream().filter(boqDetail -> boqDetail.getQtyReleased() >= boqDetail.getQuantity()).count();
+                final long noOfLinePartiallyReleased = billOfQuantity.getLines().stream().filter(boqDetail -> (boqDetail.getQtyReleased() < boqDetail.getQuantity())
+                        && (boqDetail.getQtyReleased() > 0)).count();
+                ConfigCategory status = null;
+                logger.debug("noOfLineTotallyReleased = " + noOfLineTotallyReleased);
+                logger.debug("noOfLinePartiallyReleased = " + noOfLinePartiallyReleased);
 
-            } else if (noOfLineReleased > 0) {
-
+                if (noOfLineTotallyReleased >= boqLineCount) {
+                    status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_FINAL);
+                    billOfQuantityDao.updateBoqStatusPerId(status.getId(), billOfQuantity.getId());
+                } else if (noOfLineTotallyReleased < boqLineCount && (noOfLinePartiallyReleased > 0 || noOfLineTotallyReleased > 0)) {
+                    status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_PAR_RELEASED);
+                    billOfQuantityDao.updateBoqStatusPerId(status.getId(), billOfQuantity.getId());
+                }
+                final Timestamp currentDate = new Timestamp(new Date().getTime());
+                billOfQuantityDao.updateBoqDateReleasedPerId(currentDate, billOfQuantity.getId());
             }
-
         } catch (Exception e) {
             logger.debug("InvoiceImporter: Exception in updating related BOQ", e);
         }

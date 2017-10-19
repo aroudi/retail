@@ -119,7 +119,7 @@
           boq.BOQ_NAME = #{value}
     </select>
 
-    <select id="getBillOfQuantityByNameAndOrderNo" resultMap="BillOfQuantityMap" >
+    <select id="getBillOfQuantityByNameAndOrderNo" resultMap="BillOfQuantityDetailMap" >
         <include refid="getBillOfQuantity">
         </include>
         WHERE

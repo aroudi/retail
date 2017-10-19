@@ -19,7 +19,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'supplier.supplierName', displayName:'Supplier', enableCellEdit:false, width:'10%'},
-            {field:'product.prodSku', displayName:'SKU',enableCellEdit:false, width:'15%',
+            {field:'product.prodSku', displayName:'SKU',enableCellEdit:false, width:'10%',
                 cellTooltip: function(row,col) {
                     return row.entity.product.prodName + "\n" + "Available in stock: " + row.entity.product.stockQty
                 }
@@ -35,6 +35,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             },
             {field:'comment', displayName:'Location', width:'5%', enableCellEdit:true, cellClass:"blue"},
             {field:'qtyBalance', displayName:'Balance', enableCellEdit:false, width:'5%', type: 'number'},
+            {field:'qtyReleased', displayName:'Released', enableCellEdit:false, width:'5%', type: 'number'},
             {field:'linkedPurchaseOrders', displayName:'Purchase Order',enableCellEdit:false, width:'9%', cellFilter:'poBoqLinkOrderNumberFilter',
                 cellTemplate:'<a href="" ng-click="grid.appScope.viewPohDetail(row)">{{grid.appScope.getPoBoqLinkOrderNo(row)}}</a>'
             },
@@ -47,6 +48,9 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             {field:'bqdStatus', displayName:'status',enableCellEdit:false, width:'7%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
+                },
+                cellTooltip: function(row,col) {
+                    return 'Released by invoice: ' + row.entity.releasedForInvoice;
                 }
             },
             {name:'Action', cellTemplate:'<a href=""><i tooltip="void item" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-show="grid.appScope.showVoidButton(row.entity)" ng-click="grid.appScope.voidItem(row)"></i></a><a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)" ng-show="row.entity.id < 0 "></i></a>', width:'10%' }
