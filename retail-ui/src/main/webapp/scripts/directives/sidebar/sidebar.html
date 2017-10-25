@@ -16,7 +16,7 @@
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=1">
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.createCustomer">Create Customer</a>
+                        <a ui-sref="dashboard.createCustomer({blankPage:'true'})">Create Customer</a>
                     </li>
                     <!--
                     <li ui-sref-active="active">
@@ -40,7 +40,7 @@
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=2">
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.createSupplier">Create Supplier</a>
+                        <a ui-sref="dashboard.createSupplier({blankPage:'true'})">Create Supplier</a>
                     </li>
                     <!--
                     <li ui-sref-active="active">
@@ -59,7 +59,7 @@
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=3">
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.createProduct">New Product</a>
+                        <a ui-sref="dashboard.createProduct({blankPage:'true'})">New Product</a>
                     </li>
                     <!--
                     <li ui-sref-active="active">
@@ -95,7 +95,7 @@
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=6">
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.purchaseOrderDetail">Create Purchase Order</a>
+                        <a ui-sref="dashboard.purchaseOrderDetail({blankPage:'true'})">Create Purchase Order</a>
                     </li>
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.purchaseOrderList">Purchase Order List</a>
@@ -108,7 +108,7 @@
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=7">
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.deliveryNote">Create Received Note</a>
+                        <a ui-sref="dashboard.deliveryNote(({blankPage:'true'}))">Create Received Note</a>
                     </li>
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.deliveryNoteList">Received Note List</a>
@@ -120,13 +120,13 @@
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=8">
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.createSaleTransaction({txnType:'quote'})">Quote</a>
+                        <a ui-sref="dashboard.createSaleTransaction({txnType:'quote', blankPage:'true'})">Quote</a>
                     </li>
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.createSaleTransaction({txnType:'txnSale'})">Sale Order</a>
+                        <a ui-sref="dashboard.createSaleTransaction({txnType:'txnSale', blankPage:'true'})">Sale Order</a>
                     </li>
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.createInvoice({txnType:'txnInvoice'})">Invoice</a>
+                        <a ui-sref="dashboard.createInvoice({txnType:'txnInvoice', blankPage:'true'})">Invoice</a>
                     </li>
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.listSaleTransaction">Sale Order/Quote List</a>
@@ -191,13 +191,13 @@
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=11">
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.addUser">Create User</a>
+                        <a ui-sref="dashboard.addUser({blankPage:'true'})">Create User</a>
                     </li>
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.listUser">User List</a>
                     </li>
                     <li ui-sref-active="active">
-                        <a ui-sref="dashboard.addRole">Create Role</a>
+                        <a ui-sref="dashboard.addRole({blankPage:'true'})">Create Role</a>
                     </li>
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.listRole">Role List</a>

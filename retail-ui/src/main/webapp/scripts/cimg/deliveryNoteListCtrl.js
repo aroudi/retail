@@ -111,7 +111,7 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
         }
         var delnGetURI = DEL_NOTE_GET_URI +  row.entity.id;
         baseDataService.getBaseData(delnGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             if (viewMode) {
@@ -142,7 +142,7 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
         }
         var pohGetURI = POH_GET_URI +  row.entity.pohId;
         baseDataService.getBaseData(pohGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.purchaseOrderDetail');

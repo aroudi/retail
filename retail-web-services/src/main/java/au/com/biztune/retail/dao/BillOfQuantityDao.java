@@ -107,7 +107,7 @@ public interface BillOfQuantityDao {
     void updateBoqDateReleasedPerId(Timestamp dateReleased, long boqId);
 
     /**
-     * get Bill Of Quantity per Name and OrderNo
+     * get Bill Of Quantity per Name and OrderNo.
      * @param boqName boqName
      * @param orderNo orderNo
      * @return Bill Of Quantity

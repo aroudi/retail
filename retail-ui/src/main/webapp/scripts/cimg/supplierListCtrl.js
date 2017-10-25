@@ -45,7 +45,7 @@ cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,baseDat
         }
         var supplierGetURI = SUPPLIER_GET_URI + '/' + row.entity.id;
         baseDataService.getBaseData(supplierGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.createSupplier');

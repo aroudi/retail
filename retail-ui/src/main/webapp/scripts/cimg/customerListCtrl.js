@@ -58,7 +58,7 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout,baseDat
         }
         var customerGetURI = CUSTOMER_GET_URI + '/' + row.entity.id;
         baseDataService.getBaseData(customerGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the customer page.
             $state.go('dashboard.createCustomer');

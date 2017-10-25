@@ -46,7 +46,7 @@ cimgApp.controller('roleListCtrl', function($scope, $state, $timeout,baseDataSer
         }
         var roleGetURI = ROLE_GET_URI  + row.entity.id;
         baseDataService.getBaseData(roleGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the role page.
             $state.go('dashboard.addRole');

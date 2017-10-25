@@ -23,8 +23,8 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         //set new paid media list
         //$scope.txnHeaderForm.txnMediaFormList = [];
         //select all rows for refund
-        baseDataService.setRow({});
-        baseDataService.setIsPageNew(true);
+        //baseDataService.setRow({});
+        //baseDataService.setIsPageNew(true);
         baseDataService.getBaseData(PAYMENT_MEDIA_ALL_URI).then(function(response){
             //$scope.mediaTypeSet = response.data;
             //$scope.mediaType = baseDataService.populateSelectList($scope.mediaType,$scope.mediaTypeSet);

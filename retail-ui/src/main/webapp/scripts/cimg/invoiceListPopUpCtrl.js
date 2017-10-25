@@ -72,7 +72,7 @@ cimgApp.controller('invoiceListPopUpCtrl', function($scope, $state, ngDialog, $t
         }
         var txnSaleGetURI = INVOICE_GET_URI + row.entity.id;
         baseDataService.getBaseData(txnSaleGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             if (viewMode)

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('supplierCtrl', function($scope, $state, UserService,uiGridConstants, baseDataService, SUCCESS, FAILURE, SUPPLIER_ADD_URI, SUPPLIER_STATUS_URI, SUPPLIER_TYPE_URI, SUPPLIER_GET_PO_LIST_URI, SUPPLIER_GET_DN_LIST_URI, SUPPLIER_GET_PRODUCT_LIST_URI, POH_GET_URI,DEL_NOTE_GET_URI) {
+cimgApp.controller('supplierCtrl', function($scope, $state,$stateParams, UserService,uiGridConstants, baseDataService, SUCCESS, FAILURE, SUPPLIER_ADD_URI, SUPPLIER_STATUS_URI, SUPPLIER_TYPE_URI, SUPPLIER_GET_PO_LIST_URI, SUPPLIER_GET_DN_LIST_URI, SUPPLIER_GET_PRODUCT_LIST_URI, POH_GET_URI,DEL_NOTE_GET_URI) {
     //set default data on the page
 
     initProductList();
@@ -117,7 +117,7 @@ cimgApp.controller('supplierCtrl', function($scope, $state, UserService,uiGridCo
     }
 
     function initPageData() {
-        if ( baseDataService.getIsPageNew()) {
+        if ( $stateParams.blankPage) {
             $scope.supplier = {};
             $scope.supplier.id = -1;
             $scope.supplier.contact = {};
@@ -125,8 +125,8 @@ cimgApp.controller('supplierCtrl', function($scope, $state, UserService,uiGridCo
         } else {
             $scope.isPageNew = false;
             $scope.supplier = angular.copy(baseDataService.getRow());
-            baseDataService.setIsPageNew(true);
-            baseDataService.setRow({});
+            //baseDataService.setIsPageNew(true);
+            //baseDataService.setRow({});
             initSupplierRelatedData($scope.supplier);
         }
         baseDataService.getBaseData(SUPPLIER_STATUS_URI).then(function(response){
@@ -188,7 +188,7 @@ cimgApp.controller('supplierCtrl', function($scope, $state, UserService,uiGridCo
         }
         var pohGetURI = POH_GET_URI +  row.entity.id;
         baseDataService.getBaseData(pohGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.purchaseOrderDetail');
@@ -202,7 +202,7 @@ cimgApp.controller('supplierCtrl', function($scope, $state, UserService,uiGridCo
         }
         var delnGetURI = DEL_NOTE_GET_URI +  row.entity.id;
         baseDataService.getBaseData(delnGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.deliveryNote');

@@ -55,7 +55,7 @@ cimgApp.controller('userListCtrl', function($scope, $state, $timeout,baseDataSer
         }
         var userGetURI = USER_GET_URI  + row.entity.id;
         baseDataService.getBaseData(userGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the user page.
             $state.go('dashboard.addUser');

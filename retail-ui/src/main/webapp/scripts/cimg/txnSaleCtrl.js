@@ -7,8 +7,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     if (viewMode!=undefined) {
         $scope.isViewMode = viewMode;
     }
-
-    $scope.isPageNew = baseDataService.getIsPageNew();
+    console.log('$stateParams.blankPage =' + $stateParams.blankPage);
+    $scope.isPageNew = $stateParams.blankPage;
     /*
           *  by default it is a sale order until user select invoice option on the page.
           *  this variable indicates display mode which are InvoiceMode and SaleOrderMode
@@ -35,7 +35,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.txnMediaTypeDeposit = response.data;
         });
         $scope.model={};
-        if ( baseDataService.getIsPageNew()) {
+        if ( $stateParams.blankPage) {
             //get txn_type from state params.
             $scope.txnType = $stateParams.txnType;
             $scope.txnHeaderForm = {};
@@ -51,8 +51,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         } else {
             $scope.txnHeaderForm = angular.copy(baseDataService.getRow());
             $scope.model.customer = $scope.txnHeaderForm.customer;
-            baseDataService.setRow({});
-            baseDataService.setIsPageNew(true);
+            //baseDataService.setRow({});
+            //baseDataService.setIsPageNew(true);
             $scope.paymentAmount = maxPaymentAllowed()*1;
             if ($scope.txnHeaderForm.temporarySaved) {
                 $scope.isPageNew = true;

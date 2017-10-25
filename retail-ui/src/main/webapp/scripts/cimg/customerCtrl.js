@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConstants, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_PAYMENT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI, TXN_EXPORT_PDF ) {
+cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialog,uiGridConstants, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_PAYMENT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI, TXN_EXPORT_PDF ) {
     $scope.isNewPage = true;
     initContactList();
     initCustomerDebtList();
@@ -202,7 +202,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
     }
 
     function initPageData() {
-        if ( baseDataService.getIsPageNew()) {
+        if ( $stateParams.blankPage) {
             $scope.customer = {};
             $scope.customer.creditStartEom = false;
             $scope.customer.creditStartEom = false;
@@ -213,8 +213,8 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
             $scope.customer = angular.copy(baseDataService.getRow());
             $scope.gridOptions.data = $scope.customer.contacts;
             $scope.customer.creditStartDate = new Date($scope.customer.creditStartDate);
-            baseDataService.setIsPageNew(true);
-            baseDataService.setRow({});
+            //baseDataService.setIsPageNew(true);
+            //baseDataService.setRow({});
             initCustomerRelatedData($scope.customer);
         }
         baseDataService.getBaseData(CUSTOMERGRADE_ALL_URI).then(function(response){
@@ -338,7 +338,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
         }
         var txnSaleGetURI = INVOICE_GET_URI + row.entity.id;
         baseDataService.getBaseData(txnSaleGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.createSaleTransaction');
@@ -357,7 +357,7 @@ cimgApp.controller('customerCtrl', function($scope, $state,ngDialog,uiGridConsta
         }
         var txnSaleGetURI = TXN_GET_URI + row.entity.id;
         baseDataService.getBaseData(txnSaleGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.createSaleTransaction');

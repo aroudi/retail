@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, baseDataService, SUCCESS, FAILURE, USER_ADD_URI) {
+cimgApp.controller('userCtrl', function($scope, $state,$stateParams,ngDialog, UserService, baseDataService, SUCCESS, FAILURE, USER_ADD_URI) {
     //set default data on the page
     $scope.accessPoints = {
         enableFiltering: true,
@@ -66,7 +66,7 @@ cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, ba
 
     initPageData();
     function initPageData() {
-        if ( baseDataService.getIsPageNew()) {
+        if ( $stateParams.blankPage) {
             $scope.appUser = {};
             $scope.pageIsNew = true;
             $scope.retryPassword='';
@@ -75,8 +75,8 @@ cimgApp.controller('userCtrl', function($scope, $state,ngDialog, UserService, ba
             $scope.appUser = angular.copy(baseDataService.getRow());
             $scope.accessPoints.data = $scope.appUser.accessPoints;
             $scope.appRoles.data = $scope.appUser.appRoles;
-            baseDataService.setIsPageNew(true);
-            baseDataService.setRow({});
+            //baseDataService.setIsPageNew(true);
+            //baseDataService.setRow({});
         }
    }
 

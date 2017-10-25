@@ -48,7 +48,7 @@ public class TxnHeaderForm {
      * @param txnDetailForm txnDetailForm
      */
     public void addTxnDetailForm(TxnDetailForm txnDetailForm) {
-        if (txnDetailFormList == null){
+        if (txnDetailFormList == null) {
             txnDetailFormList = new ArrayList<TxnDetailForm>();
         }
         txnDetailFormList.add(txnDetailForm);

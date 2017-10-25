@@ -32,7 +32,7 @@ cimgApp.controller('draftPageListCtrl', function($scope, $state, $timeout,baseDa
 
     $scope.openPage = function(pageData) {
         baseDataService.setRow(pageData.formData);
-        baseDataService.setIsPageNew(false);
+        //baseDataService.setIsPageNew(false);
         //delete page from list
         multiPageService.deletePage(pageData.id);
         if (pageData.pageType.categoryCode === 'TXN_TYPE_SALE' ||  pageData.pageType.categoryCode === 'TXN_TYPE_QUOTE' || pageData.pageType.categoryCode === 'TXN_TYPE_INVOICE' ) {

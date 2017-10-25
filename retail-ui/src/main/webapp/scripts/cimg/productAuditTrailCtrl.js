@@ -66,7 +66,7 @@ cimgApp.controller('productAuditTrailCtrl', function($scope, $state, $timeout, n
     function viewSaleOrder(row) {
         var txnSaleGetURI = TXN_GET_URI + row.entity.txnHeader;
         baseDataService.getBaseData(txnSaleGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             ngDialog.openConfirm({
                 template:'views/pages/txnSale.html',
@@ -85,7 +85,7 @@ cimgApp.controller('productAuditTrailCtrl', function($scope, $state, $timeout, n
     function viewInvoice(row) {
         var txnSaleGetURI = INVOICE_GET_URI + row.entity.txnHeader;
         baseDataService.getBaseData(txnSaleGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
         //redirect to the supplier page.
             ngDialog.openConfirm({
@@ -105,7 +105,7 @@ cimgApp.controller('productAuditTrailCtrl', function($scope, $state, $timeout, n
     function viewDeliveryNoteDetail(row) {
         var delnGetURI = DEL_NOTE_GET_URI +  row.entity.txnHeader;
         baseDataService.getBaseData(delnGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             ngDialog.openConfirm({
                 template:'views/pages/deliveryNote.html',

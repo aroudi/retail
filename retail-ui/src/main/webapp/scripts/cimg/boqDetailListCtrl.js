@@ -117,7 +117,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             displayLinkedPurchaseOrders($scope.billOfQuantity.lines[i])
         }
         $scope.gridOptions.data = $scope.billOfQuantity.lines;
-        baseDataService.setRow({});
+        //baseDataService.setRow({});
     }
 
     $scope.editProduct = function(row) {
@@ -127,7 +127,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
         }
         var productGetURI = PRODUCT_GET_URI + '/' + row.entity.product.id;
         baseDataService.getBaseData(productGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.createProduct');
@@ -200,7 +200,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
         }
         var pohGetURI = POH_GET_URI +  row.entity.linkedPurchaseOrders[0].pohId;
         baseDataService.getBaseData(pohGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.purchaseOrderDetail');

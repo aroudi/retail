@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productCtrl2', function($scope, $state, UserService, baseDataService, ngDialog,viewMode, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI, taxCodeSet, PRODUCT_AUDIT_TRAIL_URI, PRODUCT_CHECK_EXISTENCE_URI) {
+cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserService, baseDataService, ngDialog,viewMode, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI, taxCodeSet, PRODUCT_AUDIT_TRAIL_URI, PRODUCT_CHECK_EXISTENCE_URI) {
     //set default data on the page
     $scope.taxLegVarianceSet = taxCodeSet.data;
     initPageData();
@@ -10,7 +10,7 @@ cimgApp.controller('productCtrl2', function($scope, $state, UserService, baseDat
         $scope.isViewMode = viewMode;
     }
     function initPageData() {
-        if ( baseDataService.getIsPageNew()) {
+        if ($stateParams.blankPage) {
             $scope.isNewPage = true;
             $scope.productForm = {};
             $scope.productForm.prodId = -1;
@@ -18,11 +18,11 @@ cimgApp.controller('productCtrl2', function($scope, $state, UserService, baseDat
         } else {
             $scope.isNewPage = false;
             $scope.productForm = angular.copy(baseDataService.getRow());
-            baseDataService.setRow({});
-            baseDataService.setIsPageNew(true);
+            //baseDataService.setRow({});
+            //baseDataService.setIsPageNew(true);
         }
         initSupplierPriceGrid();
-        baseDataService.setIsPageNew(true);
+        //baseDataService.setIsPageNew(true);
         baseDataService.getBaseData(PRODUCT_STATUS_URI).then(function(response){
             $scope.productStatusSet = response.data;
             $scope.productForm.status = baseDataService.populateSelectList($scope.productForm.status,$scope.productStatusSet);

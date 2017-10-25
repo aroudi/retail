@@ -253,11 +253,13 @@ angular.forEach(type_constant, function(key, value) {
 });
 
 
-cimgApp.service('configService', function (SERVER,PORT,WEBAPP) {
-    var address = 'http://' + SERVER+':'+ PORT +'/' +WEBAPP + '/rest/'
+cimgApp.service('configService', function ($http, UserService, SERVER,PORT,WEBAPP) {
+    var address = 'http://' + SERVER+':'+ PORT +'/' +WEBAPP + '/rest/';
+
 
     return {
         getAddress: function () {
+            $http.defaults.headers.common['Authorization'] = 'Bearer ' + UserService.getUserToken();
             return address
         }
     };
@@ -266,37 +268,41 @@ cimgApp.service('configService', function (SERVER,PORT,WEBAPP) {
 
 cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDialog, configService, $sessionStorage,UserService, GET_DATA_CHANGE_INDICATOR_URI) {
 
-    var row;
-    var rowId;
-    var isPageNew = true;
-    var rowSelected = false;
+    //$sessionStorage.isPageNew = true;
+    //$sessionStorage.rowSelected = false;
     var pdfFile;
     return {
 
         setRow: function (myRow) {
-            row = myRow;
+            $sessionStorage.rowObject = myRow;
+            //row = myRow;
         },
         getRow: function () {
-            return row;
+            return $sessionStorage.rowObject;
         },
         setRowId: function (myRowId) {
-            rowId = myRowId;
+            $sessionStorage.rowId = myRowId;
+            //rowId = myRowId;
         },
         getRowId: function () {
-            return rowId;
+            return $sessionStorage.rowId;
         },
         setRowSelected: function (selected) {
-            rowSelected = selected;
+            $sessionStorage.rowSelected = selected;
+
         },
         getRowSelected: function () {
-            return rowSelected;
+            return $sessionStorage.rowSelected;
         },
         getIsPageNew: function () {
-            return isPageNew;
+            if ($sessionStorage.isPageNew === undefined || $sessionStorage.isPageNew === null) {
+                $sessionStorage.isPageNew = true;
+            }
+            return $sessionStorage.isPageNew;
         },
 
         setIsPageNew: function (isNew) {
-            isPageNew=isNew;
+            $sessionStorage.isPageNew=isNew;
         },
         getBaseData: function (baseDataURI) {
             var serviceUrl = configService.getAddress() + baseDataURI;
@@ -525,153 +531,6 @@ cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDia
 
 });
 
-cimgApp.service('incidentService', function ($location, $http, configService) {
-    var isPageNew = true; //default is new page
-    var incident = {};
-    return {
-
-        getIncident: function () {
-            return incident;
-        },
-
-        setIncident:function(row){
-          incident = row;
-        },
-        getIsPageNew: function () {
-            return isPageNew;
-        },
-
-        setIsPageNew: function (isNew) {
-            isPageNew=isNew;
-        },
-
-        // populating script list
-        synchScriptModel: function (scriptList,$scope) {
-            if (scriptList == undefined || scriptList == null)
-                return;
-            for (var i = 0; i < scriptList.length; i++) {
-                this.synchScriptItemList (scriptList[i], $scope);
-            }
-        },
-        synchScriptItemList: function (scriptNode,$scope) {
-
-            var itemList = scriptNode.scriptItemList;
-            var scriptName = scriptNode.name;
-            var itemSelected=false;
-            var elementId;
-            var itemOrder;
-            var itemId;
-            var wholeScriptText='';
-            if (itemList == undefined || itemList == null)
-                return;
-            if (scriptName === 'notification_script_reason') {
-                    //itemList[0].selected = true;
-                    itemList[0].paramList[0].valueNumeric = $scope.incident.reason.id;
-                    itemList[0].paramList[0].paramText = $scope.incident.reason.description;
-
-                    //itemList[i].selected = true;
-                    itemList[0].paramList[1].valueNumeric = $scope.incident.dueTo.id;
-                    itemList[0].paramList[1].paramText = $scope.incident.dueTo.name;
-                //var preparedScriptText = itemList[0].scriptText.replace(itemList[0].paramList[0].name,itemList[0].paramList[0].paramText);
-                //preparedScriptText = preparedScriptText.replace(itemList[0].paramList[1].name,itemList[0].paramList[1].paramText);
-                // we only need the due to text
-                scriptNode.preparedScriptText = $scope.incident.dueTo.name;
-                return;
-            }
-            for (var i = 0; i < itemList.length; i++) {
-
-                //continue if no buss has been selected.
-                /*
-                if (scriptName ==='notification_script_buss' && i===0)
-                    continue;
-                 */
-                itemOrder = itemList[i].order;
-                itemId= itemOrder - 1;
-                elementId = scriptName + '_' +itemId;
-                if (document.getElementById(elementId) !=null ) {
-                    itemSelected = document.getElementById(elementId).checked;
-                    itemList[i].selected = itemSelected;
-                }
-                this.synchItemParamList (scriptName,itemList[i],$scope);
-                if (itemList[i].selected){
-                    wholeScriptText = wholeScriptText +itemList[i].preparedText+' ';
-                }
-            }
-            scriptNode.preparedScriptText = wholeScriptText;
-        },
-        synchItemParamList: function (scriptName, itemNode,$scope) {
-
-            var paramList = itemNode.paramList;
-            var elementId;
-            var paramOrder;
-            var paramId;
-            var paramType;
-            var preparedItemText = itemNode.scriptText;
-            var itemId = itemNode.order -1;
-            var replacementText;
-            if (paramList == undefined || paramList == null || paramList.length==0) {
-                if (preparedItemText.indexOf("No ") >-1 ) {
-                    itemNode.preparedText ='';
-                } else
-                    itemNode.preparedText = preparedItemText;
-                return;
-            }
-            for (var i = 0; i < paramList.length; i++) {
-                paramOrder = paramList[i].order;
-                paramId= paramOrder - 1;
-                elementId = scriptName + '_' +itemId+'_'+paramId;
-                var element = document.getElementById(elementId);
-                if (element !=null ) {
-                    paramType = paramList[i].type;
-                    if (paramType === 'select') {
-                        var itemVal = element.options[element.selectedIndex].value
-                        paramList[i].valueNumeric = itemVal;
-                        paramList[i].paramText = element.options[element.selectedIndex].text;
-                    }
-                    if (paramType === 'text' || paramType === 'textArea' ) {
-                        itemVal = element.value;
-                        paramList[i].valueText = itemVal;
-                        paramList[i].paramText = itemVal;
-                    }
-                    // prepare script text for item
-                    if (itemNode.selected) {
-                        replacementText = paramList[i].name;
-                        preparedItemText = preparedItemText.replace(replacementText,paramList[i].paramText);
-
-                    }
-                }
-            }
-            itemNode.preparedText = preparedItemText;
-        },
-        getWholeScriptText: function (scriptList, scriptName) {
-            if (scriptList == undefined || scriptList == null)
-                return '';
-            for (var i = 0; i < scriptList.length; i++) {
-                if (scriptList[i].name === scriptName)
-                    return scriptList[i].preparedScriptText;
-            }
-        },
-        stripeScriptModel: function (scriptList) {
-            var itemList;
-            if (scriptList == undefined || scriptList == null)
-                return;
-            for (var i = 0; i < scriptList.length; i++) {
-                scriptList[i].preparedScriptText='';
-                itemList = scriptList[i].scriptItemList;
-                if (itemList == undefined || itemList == null)
-                    continue;
-                for (var j = 0; j < itemList.length; j++) {
-                    itemList[j].htmlScriptText='';
-                    itemList[j].scriptText='';
-                }
-            }
-        }
-        // end of populating script list
-
-    }
-});
-
-
 cimgApp.service('purchaseOrderService', function () {
     /*userType must be user,admin or reader*/
     var sourceOfData = 'Manual';
@@ -693,10 +552,12 @@ cimgApp.service('purchaseOrderService', function () {
 });
 
 cimgApp.service('multiPageService', function ($location,$http,$sessionStorage, $state, baseDataService) {
-    var pageList = [];
-    var sequence = 0;
     return {
         addPage: function(pageId, pageType, pageNo, formData) {
+            var pageList = $sessionStorage.pageList;
+            if (pageList === undefined || pageList===null) {
+                pageList = [];
+            }
             var pageData;
             //delete existing form list
             if (pageId != -1) {
@@ -710,31 +571,38 @@ cimgApp.service('multiPageService', function ($location,$http,$sessionStorage, $
                 'formData' : formData
             }
             pageList.push(pageData);
+            $sessionStorage.pageList = pageList;
             return pageData;
         },
         getPageList: function() {
-            return pageList;
+            return $sessionStorage.pageList;
         },
         getPageSequence : function() {
-            sequence = sequence + 1;
+            var sequence = $sessionStorage.sequence;
+            if (sequence === undefined || sequence === null) {
+                sequence = 0;
+            } else {
+                sequence = sequence + 1;
+            }
+            $sessionStorage.sequence = sequence;
             return sequence;
         },
         deletePage : function(pageId) {
             //var pageList = $sessionStorage.pageList;
-            if (pageList.length < 1) {
+            var pageList = $sessionStorage.pageList;
+            if (pageList === undefined || pageList===null ||pageList.length < 1) {
                 return;
             }
             for (var i = 0; i < pageList.length; i++) {
                 if (pageList[i].id === pageId) {
                     pageList.splice(i, 1);
-                    //$sessionStorage.pageList = pageList;
+                    $sessionStorage.pageList = pageList;
                     return;
                 }
             }
         },
         removePageList : function(){
-            //delete $sessionStorage.pageList;
-            pageList = [];
+            $sessionStorage.pageList = [];
         }
     }
 });
@@ -750,6 +618,7 @@ cimgApp.service('UserService', function ($location,$http,$sessionStorage) {
         removeUser: function() {
             delete $sessionStorage.user;
             delete $sessionStorage.userAccess;
+            delete $sessionStorage.userToken;
         },
         doLoggin: function (params, url) {
             var promise = $http({
@@ -779,6 +648,14 @@ cimgApp.service('UserService', function ($location,$http,$sessionStorage) {
         setUserAccess: function (userAccess) {
             //$window.$sessionStorage.addItem('userAccess', userAccess);
             $sessionStorage.userAccess = userAccess;
+        },
+        getUserToken: function () {
+            //return $window.$sessionStorage.getItem('userAccess');
+            return $sessionStorage.userToken;
+        },
+        setUserToken: function (userToken) {
+            //$window.$sessionStorage.addItem('userAccess', userAccess);
+            $sessionStorage.userToken = userToken;
         }
     };
 });
@@ -805,7 +682,7 @@ cimgApp.service('AccessChecker2', function ($state, $rootScope, UserService, bas
             }
             console.log('accessName = ' + accessName);
             //user dont have access. display message and return to the previouse state
-            baseDataService.displayMessage("info","Warning", "Access Denied!!")
+            baseDataService.displayMessage("info","Warning", "Access Denied!!");
             $state.go($rootScope.previouseState);
         }
     };

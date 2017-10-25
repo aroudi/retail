@@ -23,8 +23,8 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
             if ($scope.productForm.suppProdPrices != undefined && $scope.productForm.suppProdPrices.length > 0) {
                 $scope.productSupplier = $scope.productForm.suppProdPrices[0];
             }
-            baseDataService.setRow({});
-            baseDataService.setIsPageNew(true);
+            //baseDataService.setRow({});
+            //baseDataService.setIsPageNew(true);
         }
         baseDataService.setIsPageNew(true);
         baseDataService.getBaseData(PRODUCT_STATUS_URI).then(function(response){

@@ -120,7 +120,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
         }
         var productGetURI = PRODUCT_GET_URI + '/' + row.entity.id;
         baseDataService.getBaseData(productGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.createProduct');
@@ -134,7 +134,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
         }
         var productGetURI = PRODUCT_GET_URI + '/' + row.entity.id;
         baseDataService.getBaseData(productGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             //$state.go('dashboard.createProduct');

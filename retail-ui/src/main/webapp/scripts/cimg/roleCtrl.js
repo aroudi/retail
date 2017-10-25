@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('roleCtrl', function($scope, $state,ngDialog, UserService, baseDataService, SUCCESS, FAILURE, ROLE_ADD_URI) {
+cimgApp.controller('roleCtrl', function($scope, $state,$stateParams,ngDialog, UserService, baseDataService, SUCCESS, FAILURE, ROLE_ADD_URI) {
     //set default data on the page
     $scope.accessPoints = {
         enableFiltering: true,
@@ -76,7 +76,7 @@ cimgApp.controller('roleCtrl', function($scope, $state,ngDialog, UserService, ba
 
     initPageData();
     function initPageData() {
-        if ( baseDataService.getIsPageNew()) {
+        if ( $stateParams.blankPage) {
             $scope.appRole = {};
             $scope.pageIsNew = true;
         } else {
@@ -84,8 +84,8 @@ cimgApp.controller('roleCtrl', function($scope, $state,ngDialog, UserService, ba
             $scope.appRole = angular.copy(baseDataService.getRow());
             $scope.accessPoints.data = $scope.appRole.accessPoints;
             $scope.appUsers.data = $scope.appRole.appUsers;
-            baseDataService.setIsPageNew(true);
-            baseDataService.setRow({});
+            //baseDataService.setIsPageNew(true);
+            //baseDataService.setRow({});
         }
    }
 

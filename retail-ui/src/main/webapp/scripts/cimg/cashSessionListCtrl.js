@@ -52,7 +52,7 @@ cimgApp.controller('cashSessionListCtrl', function($scope, $state, $timeout,base
                 amount : 0.00,
                 comment : ''
             }
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(addFloatForm);
             $state.go('dashboard.addFloat');
         });
@@ -71,7 +71,7 @@ cimgApp.controller('cashSessionListCtrl', function($scope, $state, $timeout,base
                 amount : 0.00,
                 comment : ''
             }
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(addFloatForm);
             $state.go('dashboard.addFloat');
         });
@@ -90,7 +90,7 @@ cimgApp.controller('cashSessionListCtrl', function($scope, $state, $timeout,base
                 comment : '',
                 sessionEventDetailList : data
             }
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(reconciliationForm);
             $state.go('dashboard.reconcileSession');
         });

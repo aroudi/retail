@@ -21,6 +21,8 @@ cimgApp.controller('loginController', function($http, $scope, UserService, $stat
             if (userInfo != undefined && userInfo != null )
             {
                 var token = userInfo.token;
+                //store token in session so on refreshing the page we can access it.
+                UserService.setUserToken(token);
                 //set token to http header
                 $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
                 UserService.setUser(userInfo);

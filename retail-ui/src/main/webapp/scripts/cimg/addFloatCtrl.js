@@ -6,8 +6,8 @@ cimgApp.controller('addFloatCtrl', function($scope, $state, baseDataService, SUC
     initPageData();
     function initPageData() {
         $scope.addFloatForm = angular.copy(baseDataService.getRow());
-        baseDataService.setIsPageNew(true);
-        baseDataService.setRow({});
+        //baseDataService.setIsPageNew(true);
+        //baseDataService.setRow({});
     }
 
     //add float

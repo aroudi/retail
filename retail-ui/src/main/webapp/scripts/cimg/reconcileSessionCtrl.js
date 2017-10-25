@@ -40,8 +40,8 @@ cimgApp.controller('reconcileSessionCtrl', function($scope, $state, baseDataServ
     initPageData();
     function initPageData() {
         $scope.reconciliationForm = angular.copy(baseDataService.getRow());
-        baseDataService.setIsPageNew(true);
-        baseDataService.setRow({});
+        //baseDataService.setIsPageNew(true);
+        //baseDataService.setRow({});
         $scope.gridOptions.data = $scope.reconciliationForm.sessionEventDetailList;
     }
 

@@ -183,8 +183,8 @@ cimgApp.controller('purchaseOrderDetailSearchCtrl', function($filter, $scope,uiG
                         $scope.gridOptions.data[i].boqQuantity = $scope.gridOptions.data[i].calculateQtyAssigned();
                         displayLinkedBoqs($scope.gridOptions.data[i]);
                     }
-                    baseDataService.setRow({});
-                    baseDataService.setIsPageNew(true);
+                    //baseDataService.setRow({});
+                    //baseDataService.setIsPageNew(true);
                 }
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);

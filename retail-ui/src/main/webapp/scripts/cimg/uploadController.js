@@ -68,7 +68,7 @@ cimgApp.controller('UploadController', function($scope, $state,uiGridConstants, 
         }
         var boqGetURI = BOQ_GET_URI +  row.entity.id;
         baseDataService.getBaseData(boqGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.viewBoqDetail');
@@ -102,7 +102,7 @@ cimgApp.controller('UploadController', function($scope, $state,uiGridConstants, 
                 //dashboard.boqDetailPerBoqId
                 var boqGetURI = BOQ_GET_URI +  serviceResponse.info;
                 baseDataService.getBaseData(boqGetURI).then(function(response){
-                    baseDataService.setIsPageNew(false);
+                    //baseDataService.setIsPageNew(false);
                     baseDataService.setRow(response.data);
                     //redirect to the supplier page.
                     getBoqList();

@@ -124,7 +124,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         }
         var txnSaleGetURI = TXN_GET_URI + row.entity.id;
         baseDataService.getBaseData(txnSaleGetURI).then(function(response){
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             if (viewMode) {
@@ -156,7 +156,7 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
             for (var i = 0; i < txnDetailList.length; i++) {
                 txnDetailList[i].txdeQtyBalance = txnDetailList[i].txdeQtyTotalInvoiced*1 - txnDetailList[i].txdeQtyTotalRefund*1;
             }
-            baseDataService.setIsPageNew(false);
+            //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
             $state.go('dashboard.refundTxn');

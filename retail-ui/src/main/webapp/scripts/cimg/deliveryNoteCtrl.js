@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI, taxCodeSet, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, TAXLEGVARIANCE_GST_URI, GET_PURCHASE_ITEMS_PER_SUPPLIER_URI, GET_PURCHASE_ITEM_PER_ID_URI) {
+cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants, $state,$stateParams,ngDialog,viewMode, $timeout,baseDataService,multiPageService, SUCCESS, FAILURE, DEL_NOTE_SAVE_URI, DLV_NOTE_STATUS_URI, POH_GET_ALL_CONFIRMED_PER_SUPPLIER_URI, TAXRULE_ALL_URI, SUPPLIER_ALL_URI, taxCodeSet, GET_PURCHASE_ITEM_PER_SUPPLIER_CATALOG_URI, TAXLEGVARIANCE_GST_URI, GET_PURCHASE_ITEMS_PER_SUPPLIER_URI, GET_PURCHASE_ITEM_PER_ID_URI) {
     $scope.taxLegVarianceSet = taxCodeSet.data;
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -97,7 +97,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
     function initPageData() {
         $scope.transactionNo = '';  //for display on the page
         $scope.disablePage = false;
-        if ( baseDataService.getIsPageNew()) {
+        if ( $stateParams.blankPage) {
             $scope.deliveryNoteHeader = {};
             $scope.deliveryNoteHeader.deliveryDate = new Date();
             $scope.deliveryNoteHeader.id = -1;
@@ -115,8 +115,8 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
                 }
             });
             $scope.deliveryNoteHeader.deliveryDate = new Date($scope.deliveryNoteHeader.deliveryDate);
-            baseDataService.setRow({});
-            baseDataService.setIsPageNew(true);
+            //baseDataService.setRow({});
+            //baseDataService.setIsPageNew(true);
             $scope.pageIsNew = false;
             if ($scope.deliveryNoteHeader.delnStatus.categoryCode == 'DLV_NOTE_STATUS_COMPLETE') {
                 $scope.disablePage = true;

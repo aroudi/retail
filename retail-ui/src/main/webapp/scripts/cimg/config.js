@@ -70,6 +70,9 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/createCustomer',
             controller: 'customerCtrl',
             templateUrl:'views/pages/customer.html',
+            params: {
+                blankPage:false
+            },
             access: "user"
         })
         .state('dashboard.listCustomer',{
@@ -82,6 +85,9 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/createSupplier',
             controller: 'supplierCtrl',
             templateUrl:'views/pages/supplier.html',
+            params: {
+                blankPage:false
+            },
             access: "user"
         })
         .state('dashboard.listSupplier',{
@@ -96,6 +102,9 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             controller: 'productCtrl2',
             templateUrl:'views/pages/product.html',
             access: "user",
+            params: {
+                blankPage:false
+            },
             resolve: {viewMode: function(){return false},
                 taxCodeSet: function(baseDataService, TAXLEGVARIANCE_ALL_URI){
                     console.log('TAXLEGVARIANCE_ALL_URI = ' + TAXLEGVARIANCE_ALL_URI);
@@ -143,6 +152,9 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/purchaseOrderDetail',
             controller: 'purchaseOrderDetailCtrl',
             templateUrl:'views/pages/purchaseOrderDetail.html',
+            params: {
+                blankPage:false
+            },
             access: "user",
             resolve: {viewMode: function(){return false},
                 taxCodeSet: function(baseDataService, TAXLEGVARIANCE_ALL_URI){
@@ -161,6 +173,9 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/deliveryNote',
             controller: 'deliveryNoteCtrl',
             templateUrl:'views/pages/deliveryNote.html',
+            params: {
+                blankPage:false
+            },
             access: "user",
             resolve: {viewMode: function(){return false},
                 taxCodeSet: function(baseDataService, TAXLEGVARIANCE_ALL_URI){
@@ -174,7 +189,8 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/txnSale.html',
             access: "user",
             params: {
-                txnType:null
+                txnType:null,
+                blankPage:false
             },
             resolve: {viewMode: function(){return false}}
         })
@@ -184,7 +200,8 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/txnSale.html',
             access: "user",
             params: {
-                txnType:null
+                txnType:null,
+                blankPage:false
             },
             resolve: {viewMode: function(){return false}}
         })
@@ -204,6 +221,9 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/addUser',
             controller: 'userCtrl',
             templateUrl:'views/pages/user.html',
+            params: {
+                blankPage:false
+            },
             access: "user"
         })
         .state('dashboard.listUser',{
@@ -216,6 +236,9 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/addRole',
             controller: 'roleCtrl',
             templateUrl:'views/pages/role.html',
+            params: {
+                blankPage:false
+            },
             access: "user"
         })
         .state('dashboard.listRole',{

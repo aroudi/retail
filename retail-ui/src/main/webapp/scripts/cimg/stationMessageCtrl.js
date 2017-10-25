@@ -10,7 +10,7 @@ function stationMessageCtrl( $scope, $state, baseDataService, UserService, SUCCE
             $scope.pageIsNew = true;
         } else {
             $scope.stationMessage = angular.copy(baseDataService.getRow());
-            baseDataService.setIsPageNew(true);
+            //baseDataService.setIsPageNew(true);
             baseDataService.setRow({});
             $scope.pageIsNew = false;
         }
