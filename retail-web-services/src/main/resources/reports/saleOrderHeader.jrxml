@@ -39,7 +39,7 @@
 	</field>
 	<field name="txhdAmountPaid" class="java.lang.Double"/>
 	<variable name="Today" class="java.lang.String">
-		<variableExpression><![CDATA[(new SimpleDateFormat("yyyy/MM/dd")).format(new Date())]]></variableExpression>
+		<variableExpression><![CDATA[(new SimpleDateFormat("dd/MM/yyyy")).format(new Date())]]></variableExpression>
 	</variable>
 	<variable name="V_CURRENT_PAGE_NUMBER" class="java.lang.Integer" resetType="Page">
 		<variableExpression><![CDATA[1]]></variableExpression>

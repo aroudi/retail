@@ -521,20 +521,20 @@ public class ProductServiceImpl implements ProductService {
                         taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
                     }
                     suppProdPrice.setTaxLegVariance(taxLegVariance);
-                    suppProdPrice.setPrice(cost);
+                    suppProdPrice.setCostBeforeTax(cost);
                     if (taxLegVariance != null) {
-                        suppProdPrice.setCostBeforeTax(cost - cost * taxLegVariance.getTxlvRate());
+                        suppProdPrice.setPrice(cost + cost * taxLegVariance.getTxlvRate());
                     }
                     suppProdPriceDao.insert(suppProdPrice);
                 } else {
-                    suppProdPrice.setPrice(cost);
+                    suppProdPrice.setCostBeforeTax(cost);
                     TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(taxName);
                     if (taxLegVariance == null) {
                         taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
                     }
                     suppProdPrice.setTaxLegVariance(taxLegVariance);
                     if (suppProdPrice.getTaxLegVariance() != null) {
-                        suppProdPrice.setCostBeforeTax(cost - cost * suppProdPrice.getTaxLegVariance().getTxlvRate());
+                        suppProdPrice.setPrice(cost + cost * suppProdPrice.getTaxLegVariance().getTxlvRate());
                     }
                     suppProdPriceDao.updateValues(suppProdPrice);
                 }
@@ -585,7 +585,7 @@ public class ProductServiceImpl implements ProductService {
                 suppProdPrice.setUnitOfMeasureContent(unitOfMeasure);
                 suppProdPrice.setUnomQty(1);
                 suppProdPrice.setLegalTender(legalTender);
-                suppProdPrice.setPrice(cost);
+                suppProdPrice.setCostBeforeTax(cost);
                 //suppProdPrice.setCostBeforeTax(cost);
                 suppProdPrice.setSprcCreated(currentTime);
                 suppProdPrice.setSprcModified(currentTime);
@@ -599,7 +599,7 @@ public class ProductServiceImpl implements ProductService {
                 }
                 suppProdPrice.setTaxLegVariance(taxLegVariance);
                 if (suppProdPrice.getTaxLegVariance() != null) {
-                    suppProdPrice.setCostBeforeTax(cost - cost * suppProdPrice.getTaxLegVariance().getTxlvRate());
+                    suppProdPrice.setPrice(cost + cost * suppProdPrice.getTaxLegVariance().getTxlvRate());
                 }
                 suppProdPriceDao.insert(suppProdPrice);
 

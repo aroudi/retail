@@ -18,7 +18,7 @@
 	</variable>
 	<variable name="Today" class="java.lang.String">
 		<variableExpression><![CDATA[(new SimpleDateFormat("yyyy/MM/dd")).format(new Date())]]></variableExpression>
-		<initialValueExpression><![CDATA[(new SimpleDateFormat("yyyy/MM/dd")).format(new Date())]]></initialValueExpression>
+		<initialValueExpression><![CDATA[(new SimpleDateFormat("dd/MM/yyyy")).format(new Date())]]></initialValueExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>

@@ -12,7 +12,7 @@
 	<field name="jrnDebit" class="java.lang.Double"/>
 	<field name="jrnCredit" class="java.lang.Double"/>
 	<variable name="Today" class="java.lang.String">
-		<variableExpression><![CDATA[(new SimpleDateFormat("yyyy/MM/dd")).format(new Date())]]></variableExpression>
+		<variableExpression><![CDATA[(new SimpleDateFormat("MM/dd/MM/yyyy")).format(new Date())]]></variableExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
