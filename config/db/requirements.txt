@@ -40,5 +40,10 @@ this is while in importing boq, we add supplier to the current product.
 22- enter keyword not working on refund page
 23- on generating po from so, user should be able to remove sale order from confirmation page
 
+----------------------
+1- add view mode in BOQ list
+2- import a BOQ and create PO from it. received PO in 2 stage (say each stage half of the qty ordered). in second received, instead of moving qty recived from available stock to reserved stock
+    it moved the whole qty in boq(I think it pick the QTY received while it should pick the balance).
+3- in purchase order print, there is no enough room for Total amount
 
 

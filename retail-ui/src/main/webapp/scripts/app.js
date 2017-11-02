@@ -46,7 +46,7 @@ var config_data = {
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
-*/
+ */
 //SIT-9090
 /*
 var config_data = {
