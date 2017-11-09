@@ -236,4 +236,18 @@ public class CustomerServiceImpl implements CustomerService {
             return null;
         }
     }
+
+    /**
+     * get customer contact list by customer id.
+     * @param customerId customerId
+     * @return customer contact list.
+     */
+    public List<Contact> getCustomerContactListPerCustomerId(long customerId) {
+        try {
+            return contactDao.getCustomerContactList(customerId);
+        } catch (Exception e) {
+            logger.error("Error in getting customer contact list: ", e);
+            return null;
+        }
+    }
 }

@@ -104,6 +104,7 @@
         <result column="TXMD_AMNT_FOREIGN" property="txmdAmntForeign" />
         <result column="TXMD_PAN" property="txmdPan" />
         <result column="TXMD_VOIDED" property="txmdVoided" />
+        <result column="TXMD_COMMENT" property="txmdComment" />
         <association property="paymentMedia" column="PAYM_ID" select="au.com.biztune.retail.dao.PaymentMediaDao.getPaymentMediaPerId" />
         <association property="txmdType" column="TXMD_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
@@ -532,7 +533,8 @@
         <include refid="invoiceMediaColumns"><property name="alias" value="inme"/></include>
         FROM
         INVOICE_MEDIA inme  inner join  TXN_MEDIA txmd on (txmd.TXMD_ID = inme.TXMD_ID)
-        WHERE inme.TXIV_ID=#{value} and txmd.txmd_voided != 1
+                            inner join CONFIG_CATEGORY cc on (txmd.TXMD_TYPE  = cc.CATEGORY_ID)
+        WHERE inme.TXIV_ID=#{value} and txmd.txmd_voided != 1 and cc.CATEGORY_CODE != 'TXN_MEDIA_DEPOSIT'
     </select>
 
     <select id="getInvoiceHeaderPerTxhdId" resultMap="invoiceLightMap" >

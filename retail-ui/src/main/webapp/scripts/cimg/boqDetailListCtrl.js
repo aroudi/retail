@@ -1,7 +1,12 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE,  PRODUCT_GET_URI, UPDATE_BOQ_STOCK_URI, POH_GET_URI, BOQ_EXPORT_PICKING_SLIP_PDF) {
+cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService,viewMode, SUCCESS, FAILURE,  PRODUCT_GET_URI, UPDATE_BOQ_STOCK_URI, POH_GET_URI, BOQ_EXPORT_PICKING_SLIP_PDF) {
+
+    $scope.isViewMode = false;
+    if (viewMode!=undefined) {
+        $scope.isViewMode = viewMode;
+    }
 
     var rowtpl='<div ng-class="{\'red\':row.entity.bqdStatus.categoryCode==\'BOQ_LINE_STATUS_VOID\'}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
     $scope.gridOptions = {
@@ -323,7 +328,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
                 return;
             }
         });
-    }
+    };
     $scope.showVoidButton = function(item) {
         //BOQ_LINE_STATUS_PO_CREATED
         if (item.id < 0) {
@@ -336,7 +341,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             return true;
         }
         return false;
-    }
+    };
 
     function checkIfProductHasBeenSelected(item) {
 
@@ -346,6 +351,10 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             }
         }
         return false;
+    };
+    $scope.cancel = function() {
+        $scope.closeThisDialog('button');
     }
+
 
 });

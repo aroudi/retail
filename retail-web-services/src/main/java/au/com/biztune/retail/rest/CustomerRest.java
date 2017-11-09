@@ -1,9 +1,6 @@
 package au.com.biztune.retail.rest;
 
-import au.com.biztune.retail.domain.BillOfQuantity;
-import au.com.biztune.retail.domain.Customer;
-import au.com.biztune.retail.domain.CustomerAccountDebt;
-import au.com.biztune.retail.domain.CustomerGrade;
+import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.AccountDebtRptForm;
 import au.com.biztune.retail.report.CustomerStatementRptMgr;
 import au.com.biztune.retail.response.CommonResponse;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
@@ -184,5 +182,18 @@ public class CustomerRest {
     public Response generateCustomerStatements(AccountDebtRptForm accountDebtRptForm) {
         final StreamingOutput streamingOutput = customerStatementRptMgr.runReport(accountDebtRptForm);
         return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = customerStatementsRpt.pdf").build();
+    }
+
+    /**
+     * get customer by Id.
+     * @param id id.
+     * @return Customer
+     */
+    @Secured
+    @GET
+    @Path("/getContactList/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Contact> getCustomerContactListById (@PathParam("id") long id) {
+        return customerService.getCustomerContactListPerCustomerId(id);
     }
 }

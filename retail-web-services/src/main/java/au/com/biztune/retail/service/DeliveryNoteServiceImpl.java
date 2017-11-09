@@ -289,16 +289,19 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             final double qtyReceived = purchaseLine.getPolQtyReceived();
             ConfigCategory status = null;
             double qtyRemain = qtyReceived;
+            double qtyAssignedToBoq = 0.00;
             for (PoBoqLink poBoqLink:linkedBoq) {
                 if (poBoqLink == null || poBoqLink.getBoqQtyBalance() == 0) {
                     continue;
                 }
                 if (qtyRemain >= poBoqLink.getBoqQtyBalance()) {
+                    qtyAssignedToBoq = poBoqLink.getBoqQtyBalance();
                     poBoqLink.setPoQtyReceived(poBoqLink.getPoQtyReceived() + poBoqLink.getBoqQtyBalance());
                     poBoqLink.setBoqQtyBalance(0);
                     qtyRemain = qtyRemain - poBoqLink.getBoqQtyBalance();
                     status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_GOOD_RECEIVED);
                 } else {
+                    qtyAssignedToBoq = qtyRemain;
                     poBoqLink.setPoQtyReceived(poBoqLink.getPoQtyReceived() + qtyRemain);
                     poBoqLink.setBoqQtyBalance(poBoqLink.getBoqQtyBalance() - qtyRemain);
                     status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_LINE_STATUS, IdBConstant.BOQ_LINE_STATUS_PARTIAL_RECEIVED);
@@ -310,7 +313,7 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
                 //update qty on linked boqdetail.
                 boqDetailDao.updateQtyAndStatus(poBoqLink.getPoQtyReceived(), poBoqLink.getBoqQtyBalance(), poBoqLink.getStatus().getId(), poBoqLink.getBoqDetailId());
                 //push stock event
-                updateStockQuantityForLinkedBoq(deliveryNoteHeader, deliveryNoteLine, poBoqLink);
+                updateStockQuantityForLinkedBoq(deliveryNoteHeader, deliveryNoteLine, poBoqLink, qtyAssignedToBoq);
                 if (qtyRemain == 0) {
                     break;
                 }
@@ -432,7 +435,7 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
     }
 
 
-    private void updateStockQuantityForLinkedBoq(DeliveryNoteHeader deliveryNoteHeader, DeliveryNoteLine deliveryNoteLine, PoBoqLink poBoqLink) {
+    private void updateStockQuantityForLinkedBoq(DeliveryNoteHeader deliveryNoteHeader, DeliveryNoteLine deliveryNoteLine, PoBoqLink poBoqLink, double qtyReceived) {
         try {
 
             //get current user from security context.
@@ -456,7 +459,7 @@ public class DeliveryNoteServiceImpl implements DeliveryNoteService {
             stockEvent.setTxnNrReservedFor(poBoqLink.getBoqName());
             stockEvent.setTxnItemReservedFor(poBoqLink.getBoqDetailId());
             stockEvent.setTxnTypeConst(txnType);
-            stockEvent.setStckQty(poBoqLink.getPoQtyReceived());
+            stockEvent.setStckQty(qtyReceived);
             stockEvent.setUnomId(deliveryNoteLine.getRcvdCaseSize().getId());
             //stockEvent.setSupplierId(deliveryNoteLine.getPurchaseItem());
             stockEvent.setCostPrice(deliveryNoteLine.getDlnlUnitCost());

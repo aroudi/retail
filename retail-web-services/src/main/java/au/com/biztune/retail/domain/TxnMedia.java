@@ -23,6 +23,7 @@ public class TxnMedia {
     private long parentId;
     private boolean newAdded;
     private ConfigCategory invoiceMediaType;
+    private String txmdComment;
 
     /**
      * get value based on txmdType.
@@ -191,5 +192,13 @@ public class TxnMedia {
 
     public void setInvoiceMediaType(ConfigCategory invoiceMediaType) {
         this.invoiceMediaType = invoiceMediaType;
+    }
+
+    public String getTxmdComment() {
+        return txmdComment;
+    }
+
+    public void setTxmdComment(String txmdComment) {
+        this.txmdComment = txmdComment;
     }
 }

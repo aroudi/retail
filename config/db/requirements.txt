@@ -41,9 +41,27 @@ this is while in importing boq, we add supplier to the current product.
 23- on generating po from so, user should be able to remove sale order from confirmation page
 
 ----------------------
-1- add view mode in BOQ list
+1- add view mode in BOQ list - resolved
 2- import a BOQ and create PO from it. received PO in 2 stage (say each stage half of the qty ordered). in second received, instead of moving qty recived from available stock to reserved stock
-    it moved the whole qty in boq(I think it pick the QTY received while it should pick the balance).
-3- in purchase order print, there is no enough room for Total amount
+    it moved the whole qty in boq(I think it pick the QTY received while it should pick the balance). - resolved
+3- in purchase order print, there is no enough room for Total amount - resolved
+3- in adding supplier to product, make the supplier list searchable
+4- disable all edit kind in view mode.(view product)
+5- on transactions (quote, sale order and invoice) it does not calculate the price per customer grade. it always display RRP price - resolved
+6- on transaction page, does not load contact person and contact info from customer record. user need to enter on every transaction - done
+7- when generated po from so, on 'Purchase order list generated' page, supplier column is empty. - done
+8- after generating po from so, the status of sale order is still 'OUTSTANDING' - done
+9- on viewing invoice, it displays all the payments. ON PRINT ALSO it shows all amount paid up to date in 'Pay Today' field
+10- in sale summary report, total sale value is incorrect. it multiply quantity to total item value which should not.
+11- in cash-up banking summary report 'expected' and 'difference' columns values are other way around
+12- on accounting export report, printed on date dose not fit into the page
+13- price change should create an accounting journal entry - need to ask
+14- in debtor payment, user can pay more than debt amount. we shouldn't allow that
+15- on deleting a draft transaction(single or all), it dose not ask for confirmation
+16- add view for customer, supplier
+17- open a sale order, add number to invoice qty to enter invoice mode and then reopen it from draft page; page is corrupted
+
+
+
 
 

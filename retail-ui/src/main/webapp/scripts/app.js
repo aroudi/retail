@@ -73,6 +73,7 @@ var service_uri = {
     'CUSTOMER_ALL_INVOICE_URI' : 'transaction/invoice/customer/',
     'CUSTOMER_ALL_SALEORDER_URI' : 'transaction/saleOrder/customer/',
     'CUSTOMER_ALL_BOQ_URI' : 'customer/getBillOfQuantities/',
+    'CUSTOMER_CONTACT_LIST_URI' : 'customer/getContactList/',
     'ALL_CATEGORY_OFTYPE_URI' : 'categories/',
     'SUPPLIER_ALL_URI' : 'supplier/all',
     'SUPPLIER_ADD_URI' : 'supplier/add',

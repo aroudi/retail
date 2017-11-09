@@ -144,9 +144,9 @@
                                         <div class="panel-body">
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <div class="col-lg-9" ng-show="txnHeaderForm.txhdTxnType.categoryCode != 'TXN_TYPE_QUOTE'">
+                                                    <div class="col-lg-10" ng-show="txnHeaderForm.txhdTxnType.categoryCode != 'TXN_TYPE_QUOTE'">
                                                         <div class="col-lg-12">
-                                                            <div class="col-lg-3">
+                                                            <div class="col-lg-2">
                                                                 <div class="form-group">
                                                                     <!--div class="row">
                                                                         <label>Payment Type</label>
@@ -190,12 +190,12 @@
                                                                     </table>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-8">
+                                                            <div class="col-lg-9">
                                                                 <div id="txnMediaGrid" ui-grid ="txnMediaList" class="grid" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-cellNav style="height:200px;" ></div>
                                                             </div>
                                                         </div>
                                                     </div >
-                                                    <div class="col-lg-3">
+                                                    <div class="col-lg-2">
                                                         <div class="row">
                                                             <label>Total</label>
                                                             <span>{{txnHeaderForm.txhdValueNett |currency}}</span>

@@ -17,6 +17,8 @@ public class TxnMediaForm {
     private long txhdId;
     private long parentId;
     private ConfigCategory invoiceMediaType;
+    private String txmdComment;
+
 
 
     public long getId() {
@@ -97,5 +99,13 @@ public class TxnMediaForm {
 
     public void setInvoiceMediaType(ConfigCategory invoiceMediaType) {
         this.invoiceMediaType = invoiceMediaType;
+    }
+
+    public String getTxmdComment() {
+        return txmdComment;
+    }
+
+    public void setTxmdComment(String txmdComment) {
+        this.txmdComment = txmdComment;
     }
 }

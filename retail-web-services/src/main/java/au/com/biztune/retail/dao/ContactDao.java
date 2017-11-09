@@ -37,4 +37,11 @@ public interface ContactDao {
      * @param contactIds contactIds
      */
     void deleteContactWhereIdNotIn(List contactIds);
+
+    /**
+     * get customer contact list.
+     * @param customerId customerId
+     * @return Customer Contact List
+     */
+    List<Contact> getCustomerContactList (long customerId);
 }

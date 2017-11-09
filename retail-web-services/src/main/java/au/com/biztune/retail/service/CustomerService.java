@@ -1,5 +1,6 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.domain.Contact;
 import au.com.biztune.retail.domain.Customer;
 import au.com.biztune.retail.domain.CustomerAccountDebt;
 import au.com.biztune.retail.domain.CustomerGrade;
@@ -80,4 +81,10 @@ public interface CustomerService {
      */
     List<CustomerAccountDebt> customerAccountDebtReportForOneCustomer(Timestamp toDate, long customerId);
 
+    /**
+     * get customer contact list by customer id.
+     * @param customerId customerId
+     * @return customer contact list.
+     */
+    List<Contact> getCustomerContactListPerCustomerId(long customerId);
 }

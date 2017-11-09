@@ -57,6 +57,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private SecurityContext securityContext;
 
     @Autowired
+    private SupplierDao supplierDao;
+
+    @Autowired
     private TxnDao txnDao;
     /**
      * save Purchase Order Header into database.
@@ -318,8 +321,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             final Timestamp currentDate = new Timestamp(new Date().getTime());
             final PurchaseOrderHeader purchaseOrderHeader = new PurchaseOrderHeader();
             purchaseOrderHeader.setOrgUnit(sessionState.getOrgUnit());
-            final Supplier supplier = new Supplier();
-            supplier.setId(txnDetail.getSupplierId());
+            final Supplier supplier = supplierDao.getSupplierBySuppId(txnDetail.getSupplierId());
+            //supplier.setId(txnDetail.getSupplierId());
             purchaseOrderHeader.setSupplier(supplier);
             purchaseOrderHeader.setPohCreatedDate(currentDate);
             purchaseOrderHeader.setPohLastModifiedDate(currentDate);

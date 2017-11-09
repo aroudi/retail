@@ -134,7 +134,9 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/viewBoqDetail',
             controller: 'boqDetailListCtrl',
             templateUrl:'views/pages/boqWhole.html',
-            access: "user"
+            access: "user",
+            resolve: {viewMode: function(){return false}
+            }
         })
         .state('dashboard.boqList',{
             url:'/boqList',

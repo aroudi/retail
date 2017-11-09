@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI, CREATE_PO_FROM_BOQ_URI, BOQ_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, PROJECT_GET_ALL_URI, BOQ_STATUS_URI, BOQ_EXPORT_PICKING_SLIP_PDF, BOQ_DELETE_LIST_URI) {
+cimgApp.controller('boqListCtrl', function($scope, $state,ngDialog, uiGridConstants, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI, CREATE_PO_FROM_BOQ_URI, BOQ_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, PROJECT_GET_ALL_URI, BOQ_STATUS_URI, BOQ_EXPORT_PICKING_SLIP_PDF, BOQ_DELETE_LIST_URI) {
     $scope.getPage = function(){
         $scope.searchForm.pageNo = paginationOptions.pageNumber*1 ;
         $scope.searchForm.pageSize = paginationOptions.pageSize;
@@ -46,7 +46,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
         enableColumnResizing: true,
         enableSorting:true,
         columnDefs: [
-            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewBoqDetail(row)"></i></a> &nbsp; <a href=""><i tooltip="Picking Slip" tooltip-placement="bottom" class="fa fa-file-pdf-o fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' },
+            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewBoqDetail(row, false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.viewBoqDetail(row, true)"></i></a>&nbsp;<a href=""><i tooltip="Picking Slip" tooltip-placement="bottom" class="fa fa-file-pdf-o fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'project.projectCode', displayName:'Project No',enableCellEdit:false, width:'10%',
                 cellTooltip: function(row,col) {
@@ -113,7 +113,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
             $scope.getPage();
         });
     };
-    $scope.viewBoqDetail = function(row) {
+    $scope.viewBoqDetail = function(row, viewMode) {
         if (row == undefined || row.entity == undefined) {
             alert('row is undefined');
             return;
@@ -122,8 +122,25 @@ cimgApp.controller('boqListCtrl', function($scope, $state, uiGridConstants, purc
         baseDataService.getBaseData(boqGetURI).then(function(response){
             //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
-            //redirect to the supplier page.
-            $state.go('dashboard.viewBoqDetail');
+
+            if (viewMode) {
+                ngDialog.openConfirm({
+                    template:'views/pages/boqWhole.html',
+                    controller:'boqDetailListCtrl',
+                    className: 'ngdialog-pdfView',
+                    closeByDocument:false,
+                    resolve: {viewMode: function(){return true}}
+                }).then (function (){
+                    }, function(reason) {
+                        console.log('Modal promise rejected. Reason:', reason);
+                    }
+                );
+            } else {
+                //redirect to the supplier page.
+                $state.go('dashboard.viewBoqDetail');
+            }
+
+
         });
     }
     $scope.generatePurchaseOrder= function() {

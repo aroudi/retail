@@ -532,6 +532,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnMediaForm.setTxmdType(txnMedia.getTxmdType());
                 txnMediaForm.setTxmdAmountLocal(txnMedia.getTxmdAmountLocal());
                 txnMediaForm.setTxmdVoided(txnMedia.isTxmdVoided());
+                txnMediaForm.setTxmdComment(txnMedia.getTxmdComment());
                 txnMediaFormList.add(txnMediaForm);
             }
             txnHeaderForm.setTxnMediaFormList(txnMediaFormList);
@@ -992,6 +993,7 @@ public class TransactionServiceImpl implements TransactionService {
         txnMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
         txnMedia.setTxmdType(txnMediaForm.getTxmdType());
         txnMedia.setTxmdAmountLocal(txnMediaForm.getTxmdAmountLocal());
+        txnMedia.setTxmdComment(txnMediaForm.getTxmdComment());
         //insert new txn_media
         if (txnMediaForm.getId() <= 0) {
             txnDao.insertTxnMedia(txnMedia);
@@ -1049,6 +1051,10 @@ public class TransactionServiceImpl implements TransactionService {
         invoicePaymentMedia.setTxhdId(txnMediaForm.getTxhdId());
         invoicePaymentMedia.setTxmdVoided(false);
         invoicePaymentMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
+
+        final double depositRemain = txnMediaForm.getTxmdAmountLocal() - amount;
+        invoicePaymentMedia.setTxmdComment("Inv# " + invoiceId + "\n-Initial S.O balance $" +
+                String.format("%.2f", txnMediaForm.getTxmdAmountLocal()) + "\n-" + "Remain balance $" + String.format("%.2f", depositRemain));
         final ConfigCategory txnMediaType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_SALE);
         if (txnMediaType != null) {
             invoicePaymentMedia.setTxmdType(txnMediaType);
@@ -1059,7 +1065,6 @@ public class TransactionServiceImpl implements TransactionService {
         doInvoicePayment(invoicePaymentMedia, invoiceId);
 
         //check if we have any deposit amount left
-        final double depositRemain = txnMediaForm.getTxmdAmountLocal() - amount;
         if (depositRemain > 0) {
             final TxnMediaForm depositPaymentMedia = new TxnMediaForm();
             depositPaymentMedia.setTxmdAmountLocal(depositRemain);

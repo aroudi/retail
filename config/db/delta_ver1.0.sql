@@ -2186,3 +2186,6 @@ INSERT INTO CONFIG_CATEGORY(CONFIG_TYPE_ID, CATEGORY_CODE, DISPLAY_NAME, DESCRIP
 GO
 
 -- up to this point deployed on jomon on 26/10/17 (ver 2.2)
+alter table TXN_MEDIA
+   add     TXMD_COMMENT VARCHAR(500)
+go

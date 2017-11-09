@@ -175,6 +175,7 @@
         <result column="TXMD_AMNT_FOREIGN" property="txmdAmntForeign" />
         <result column="TXMD_PAN" property="txmdPan" />
         <result column="TXMD_VOIDED" property="txmdVoided" />
+        <result column="TXMD_COMMENT" property="txmdComment" />
         <association property="paymentMedia" column="PAYM_ID" select="au.com.biztune.retail.dao.PaymentMediaDao.getPaymentMediaPerId" />
         <association property="txmdType" column="TXMD_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
@@ -270,7 +271,8 @@
         ${alias}.TXMD_AMOUNT_LOCAL,
         ${alias}.TXMD_AMNT_FOREIGN,
         ${alias}.TXMD_PAN,
-        ${alias}.TXMD_VOIDED
+        ${alias}.TXMD_VOIDED,
+        ${alias}.TXMD_COMMENT
     </sql>
 
 
@@ -880,7 +882,8 @@
         TXMD_AMOUNT_LOCAL,
         TXMD_AMNT_FOREIGN,
         TXMD_PAN,
-        TXMD_VOIDED
+        TXMD_VOIDED,
+        TXMD_COMMENT
         ) VALUES (
         #{orguId},
         #{storeId},
@@ -931,6 +934,12 @@
             ,#{txmdVoided}
         </if>
         <if test="txmdVoided == null">
+            ,null
+        </if>
+        <if test="txmdComment != null">
+            ,#{txmdComment}
+        </if>
+        <if test="txmdComment == null">
             ,null
         </if>
         )

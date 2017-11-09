@@ -283,18 +283,20 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
                     className: 'ngdialog-theme-default',
                     closeByDocument:false,
                     resolve: {purchaseOrderList: function(){return purchaseOrderList}}
-                }).then (function (purchaseOrderList){
+                }).then (function (purchaseOrderList2){
+                    }, function(reason) {
                         for (var i = 0; i < $scope.backOrderList.length; i++) {
-                            if (baseDataService.getArrIndexOf($scope.gridOptions.data, $scope.backOrderList[i]) > 0) {
-                                $scope.gridOptions.data[i].status = $scope.txnStatusOnOrder;
-                                $scope.gridOptions.data[i].createPurchaseOrder = false;
+                            var arrIndex = baseDataService.getArrIndexOf($scope.gridOptions.data, $scope.backOrderList[i]);
+                            if ( arrIndex>= 0) {
+                                $scope.gridOptions.data[arrIndex].status = $scope.txnStatusOnOrder;
+                                $scope.gridOptions.data[arrIndex].createPurchaseOrder = false;
                             }
                         }
-                        $scope.$scope.backOrderList = [];
-                    }, function(reason) {
+                        $scope.backOrderList = [];
                         console.log('Modal promise rejected. Reason:', reason);
                     }
                 );
+
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }

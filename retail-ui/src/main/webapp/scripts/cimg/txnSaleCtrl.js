@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI, TXN_EXPORT_PDF, PRODUCT_SALE_ITEM_SEARCH_URI, TXN_STATUS_OUTSTANDING) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI, TXN_EXPORT_PDF, PRODUCT_SALE_ITEM_SEARCH_URI, TXN_STATUS_OUTSTANDING, CUSTOMER_CONTACT_LIST_URI) {
 
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -341,7 +341,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     }
                 }
             }
-
+            console.log('continued....');
             //cellData = txnDetail[event.targetScope.col.field];
             //if it has not been invoiced before and total invoiced is undefined:
             if (txnDetail['txdeQtyTotalInvoiced'] == undefined) {
@@ -403,13 +403,18 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             rowTemplate : tenderTpl,
             columnDefs: [
                 {field:'id', visible:false, enableCellEdit:false},
-                //{field:'txmdType.displayName',displayName:'Type', visible:true, enableCellEdit:false, width: '10%'},
-                {field:'paymentMedia.paymName',displayName:'Payment Media', visible:true, enableCellEdit:false, width: '45%',
+                {field:'txmdType.displayName',displayName:'Type', visible:true, enableCellEdit:false, width: '15%'},
+                {field:'paymentMedia.paymName',displayName:'Payment Media', visible:true, enableCellEdit:false, width: '25%',
                     cellTooltip: function(row,col) {
                         return row.entity.paymentMedia.paymName
                     }
                 },
-                {field:'txmdAmountLocal', displayName:'Amount', visible:true, cellFilter:'currency', footerCellFilter:'currency', /*aggregationType: uiGridConstants.aggregationTypes.sum, */ enableCellEdit:false, width: '35%'},
+                {field:'txmdAmountLocal', displayName:'Amount', visible:true, cellFilter:'currency', footerCellFilter:'currency', /*aggregationType: uiGridConstants.aggregationTypes.sum, */ enableCellEdit:false, width: '20%'},
+                {field:'txmdComment',displayName:'Comment', visible:true, enableCellEdit:false, width: '25%',
+                    cellTooltip: function(row,col) {
+                        return row.entity.txmdComment;
+                    }
+                },
                 {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTxnLineVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>', width: '15%'}
 
             ]
@@ -464,6 +469,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         //var mediaType;
         $scope.txnHeaderForm.txhdDlvAddress = $scope.model.customer.address2;
         $scope.txnHeaderForm.txhdEmailTo = $scope.model.customer.email;
+        baseDataService.getBaseData(CUSTOMER_CONTACT_LIST_URI+$scope.model.customer.id).then(function(response){
+            populateCustomerContactinfo(response.data);
+        });
         /*
         if ($scope.model.customer.customerType.categoryCode == 'CUSTOMER_TYPE_ACCOUNT') {
             mediaType = $scope.mediaTypeAccount;
@@ -624,6 +632,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             priceRule = $scope.model.customer.grade.description;
             rate = $scope.model.customer.grade.rate;
         }
+        console.log('priceRule = ' + priceRule);
         switch (priceRule) {
             case 'Cost + %' :
                 return productSaleItem.costPrice.prcePrice*(1 + rate*1);
@@ -710,6 +719,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             "txmdAmountLocal" : $scope.paymentAmount,
             "txmdVoided":false,
             "deleted" : false,
+            "txmdComment":'',
             "txmdType": txnMediaType
         }
         $scope.txnMediaList.data.push(txnMedia);
@@ -1036,6 +1046,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
      * @param mode true:invoice false:saleOrder
      */
     function changeToInvoiceMode() {
+        console.log('changeToInvoiceMode called');
         var mode = $scope.isInvoiceMode;
 
         //recalculate txnDetail rows.
@@ -1139,9 +1150,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         } else {
             $scope.isInvoiceMode = false;
         }
+        /*
         if ($scope.txnHeaderForm.temporarySaved) {
             return;
         }
+        */
         if (invoiceModeBeforeSelection != $scope.isInvoiceMode) {
             changeToInvoiceMode();
         }
@@ -1313,6 +1326,19 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             return;
         }
         $scope.addTxnMedia();
-    }
+    };
 
+    function populateCustomerContactinfo(contactLit) {
+        if (contactLit === undefined || contactLit === null) {
+            return;
+        }
+        for (var i = 0; i < contactLit.length; i++) {
+            if (contactLit[i].contactType.categoryCode === 'CONTACT_TYPE_CONTACT_PERSON') {
+                $scope.txnHeaderForm.txhdContactPerson = (contactLit[i].firstName) + ((contactLit[i].middleName===undefined || contactLit[i].middleName===null) ? '' : ' ' + contactLit[i].middleName) + ' ' + contactLit[i].surName;
+                $scope.txnHeaderForm.txhdContactPhone = (contactLit[i].mobile !== undefined) ? contactLit[i].mobile : contactLit[i].phone;
+                return;
+            }
+        }
+
+    }
 });

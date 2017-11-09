@@ -650,7 +650,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,$statePar
     });
     $scope.cancel = function() {
         $scope.closeThisDialog('button');
-    }
+    };
 
     function totalTransaction() {
         var poLineList =  $scope.gridOptions.data;

@@ -69,9 +69,11 @@
                     </div>
                     <div class="row">
                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                        <button type="button" class="btn btn-primary" ng-click="cancelForm()">Cancel</button>
-                        <button type="button" class="btn btn-success" ng-click="updateBoqStock()">Submit</button>
+                        <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
+                        <button type="button" class="btn btn-success" ng-click="updateBoqStock()" ng-show="!isViewMode">Submit</button>
                         <button type="button" class="btn btn-success" ng-show="billOfQuantity.boqStatus.categoryCode=='BOQ_STATUS_NEW'" ng-click="exportToPdf()">Picking Slip</button>
+                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                        <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
                     </div>
                     <div class="row">
                         &nbsp;
@@ -80,8 +82,8 @@
                         <div class="panel  panel-info">
                             <div class="panel-heading">
                                 Lines:
-                                <button type="button" class="btn btn-success" ng-click="addItem()" ng-disabled="billOfQuantity.boqStatus.categoryCode!='BOQ_STATUS_NEW'">add item</button>
-                                <button type="button" class="btn btn-primary" ng-click="addItemFromPurchaseOrder()" ng-disabled="billOfQuantity.boqStatus.categoryCode!='BOQ_STATUS_NEW'">add item from purchase order</button>
+                                <button type="button" class="btn btn-success" ng-click="addItem()" ng-disabled="billOfQuantity.boqStatus.categoryCode!='BOQ_STATUS_NEW'" ng-show="!isViewMode">add item</button>
+                                <button type="button" class="btn btn-primary" ng-click="addItemFromPurchaseOrder()" ng-disabled="billOfQuantity.boqStatus.categoryCode!='BOQ_STATUS_NEW'" ng-show="!isViewMode">add item from purchase order</button>
                             </div>
                             <div class="panel-body">
                                 <div class="row">

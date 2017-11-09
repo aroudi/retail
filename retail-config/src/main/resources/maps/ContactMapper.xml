@@ -158,6 +158,16 @@
         contact.CONTACT_ID=#{value}
     </select>
 
+    <select id="getCustomerContactList" resultMap="contactMap" >
+        SELECT
+        <include refid="contactColumns"><property name="alias" value="contact"/></include>
+        FROM
+        CONTACT contact inner join customer_contact cust_contact on (contact.contact_id = cust_contact.contact_id)
+                        inner join customer customer on (customer.customer_id = cust_contact.customer_id)
+        WHERE
+        customer.CUSTOMER_ID=#{value}
+    </select>
+
     <delete id="delete" >
         DELETE
         From CONTACT
