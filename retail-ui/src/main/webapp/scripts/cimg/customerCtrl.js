@@ -1,8 +1,12 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialog,uiGridConstants, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_PAYMENT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI, TXN_EXPORT_PDF ) {
+cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialog,uiGridConstants,viewMode, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_PAYMENT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI, TXN_EXPORT_PDF ) {
     $scope.isNewPage = true;
+    $scope.isViewMode = false;
+    if (viewMode!=undefined) {
+        $scope.isViewMode = viewMode;
+    }
     initContactList();
     initCustomerDebtList();
     initCustomerInvoiceList();
@@ -411,7 +415,10 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
             //redirect to the supplier page.
             $state.go('dashboard.viewBoqDetail');
         });
-    }
+    };
+    $scope.cancel = function() {
+        $scope.closeThisDialog('button');
+    };
 
 });
 

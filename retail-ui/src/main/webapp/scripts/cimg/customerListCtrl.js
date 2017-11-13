@@ -1,11 +1,11 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('customerListCtrl', function($scope, $state, $timeout,baseDataService, SUCCESS, FAILURE, CUSTOMER_ALL_URI, CUSTOMER_GET_URI) {
+cimgApp.controller('customerListCtrl', function($scope, $state, $timeout, ngDialog, baseDataService, SUCCESS, FAILURE, CUSTOMER_ALL_URI, CUSTOMER_GET_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
-            {name:'Action', enableFiltering:false,cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editCustomer(row)"></i></a>', width:'5%' },
+            {name:'Action', enableFiltering:false,cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editCustomer(row, false)"></i></a><a href="">&nbsp;&nbsp;<i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.editCustomer(row, true)"></i></a>', width:'5%' },
             {field:'customerId', visible:false, enableCellEdit:false},
             {field:'customerType', displayName:'Terms',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
@@ -51,7 +51,7 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout,baseDat
         });
     }
 
-    $scope.editCustomer = function(row) {
+    $scope.editCustomer = function(row, viewMode) {
         if (row == undefined || row.entity == undefined) {
             alert('row is undefined');
             return;
@@ -61,7 +61,22 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout,baseDat
             //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the customer page.
-            $state.go('dashboard.createCustomer');
+            if (viewMode) {
+                ngDialog.openConfirm({
+                    template:'views/pages/customer.html',
+                    controller:'customerCtrl',
+                    className: 'ngdialog-pdfView',
+                    closeByDocument:false,
+                    resolve: {viewMode: function(){return true}
+                    }
+                }).then (function (){
+                    }, function(reason) {
+                        console.log('Modal promise rejected. Reason:', reason);
+                    }
+                );
+            } else {
+                $state.go('dashboard.createCustomer');
+            }
         });
     }
 });

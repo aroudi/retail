@@ -1,9 +1,12 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('supplierCtrl', function($scope, $state,$stateParams, UserService,uiGridConstants, baseDataService, SUCCESS, FAILURE, SUPPLIER_ADD_URI, SUPPLIER_STATUS_URI, SUPPLIER_TYPE_URI, SUPPLIER_GET_PO_LIST_URI, SUPPLIER_GET_DN_LIST_URI, SUPPLIER_GET_PRODUCT_LIST_URI, POH_GET_URI,DEL_NOTE_GET_URI) {
+cimgApp.controller('supplierCtrl', function($scope, $state,$stateParams,viewMode, UserService,uiGridConstants, baseDataService, SUCCESS, FAILURE, SUPPLIER_ADD_URI, SUPPLIER_STATUS_URI, SUPPLIER_TYPE_URI, SUPPLIER_GET_PO_LIST_URI, SUPPLIER_GET_DN_LIST_URI, SUPPLIER_GET_PRODUCT_LIST_URI, POH_GET_URI,DEL_NOTE_GET_URI) {
     //set default data on the page
-
+    $scope.isViewMode = false;
+    if (viewMode!=undefined) {
+        $scope.isViewMode = viewMode;
+    }
     initProductList();
     initPurchaseOrderList();
     initDeliveryNoteList();
@@ -207,7 +210,10 @@ cimgApp.controller('supplierCtrl', function($scope, $state,$stateParams, UserSer
             //redirect to the supplier page.
             $state.go('dashboard.deliveryNote');
         });
-    }
+    };
 
+    $scope.cancel = function() {
+        $scope.closeThisDialog('button');
+    };
 
 });

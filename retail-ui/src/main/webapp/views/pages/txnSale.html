@@ -10,208 +10,209 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <form role="form" name="mainForm">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading">
-                                            <b>{{transactionNo}}</b>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <div class="col-lg-2">
-                                                            <div class="form-group">
-                                                                <label>Customer:<!--a href=""><i tooltip="Find" ng-show="!isTxnSaleAndFinal()" tooltip-placement="bottom" class="fa fa-search fa-x" ng-click="searchCustomer()"></i></a--></label>
-                                                                <!--select class="form-control" data-ng-model="customer" ng-disabled="isTxnSaleAndFinal()"
-                                                                        ng-options="type.companyName for type in customerSet" ng-change="onCustomerChange()">
-                                                                </select-->
-                                                                <ui-select ng-model="model.customer"
-                                                                           ng-change="onCustomerChange()"
-                                                                           ng-disabled="isTxnSaleAndFinal()"
-                                                                           reset-search-input="true"
-                                                                           title="Choose a Customer">
-                                                                    <ui-select-match placeholder="Select a customer in the list or search by Name, phone">
-                                                                        <span ng-bind="$select.selected.companyName"></span>
-                                                                    </ui-select-match>
-                                                                    <!--ui-select-choices repeat="item in (supplierSet | filter: $select.search) track by item.id"-->
-                                                                    <ui-select-choices repeat="item in customerSet | propsFilter: {companyName: $select.search, phone: $select.search}">
-                                                                        <div ng-bind-html="item.companyName | highlight: $select.search"></div>
-                                                                        <small>
-                                                                            phone: <span ng-bind-html="''+(item.phone===null?'' : item.phone) | highlight: $select.search"></span>
-                                                                        </small>
-                                                                    </ui-select-choices>
-                                                                </ui-select>
+                            <fieldset ng-disabled="isViewMode">
 
-                                                                <!--input class="form-control" data-ng-model="customer.companyName" ng-disabled="true" -->
-                                                            </div >
-                                                            <!--div class="col-lg-2">
-                                                                <div class="form-group">
-                                                                    <label>&nbsp;</label>
-                                                                    <button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchCustomer()">Customer</button>
-                                                                </div >
-                                                            </div-->
-                                                        </div >
-                                                        <div class="col-lg-5">
-                                                            <div class="form-group">
-                                                                <label>Delivery Address</label>
-                                                                <input class="form-control" data-ng-model="txnHeaderForm.txhdDlvAddress">
-                                                            </div >
-                                                        </div>
-                                                        <div class="col-sm-2">
-                                                            <div class="form-group">
-                                                                <label>Contact Person</label>
-                                                                <input class="form-control" data-ng-model="txnHeaderForm.txhdContactPerson">
-                                                            </div >
-                                                        </div>
-                                                        <div class="col-sm-2">
-                                                            <div class="form-group">
-                                                                <label>Contact No</label>
-                                                                <input class="form-control" data-ng-model="txnHeaderForm.txhdContactPhone">
-                                                            </div >
-                                                        </div>
-                                                        <div class="col-sm-1">
-                                                            <div class="form-group">
-                                                                <label> Project Code</label>
-                                                                <input class="form-control" data-ng-model="txnHeaderForm.txhdPrjCode">
-                                                            </div >
-                                                        </div>
-                                                    </div >
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                <b>{{transactionNo}}</b>
                                             </div>
-                                            <div class="row" ng-show="!isViewMode">
-                                                <div class="col-lg-6" ng-show="txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' && !isPageNew">
-                                                    <label>Convert to Sale Order</label>
-                                                    <div class="form-group">
-                                                        <label class="checkbox-inline">
-                                                            <input type="checkbox" data-ng-model="txnHeaderForm.convertedToTxnSale" ng-click="convertToSaleTxn()" >
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6" ng-show="txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' && !isPageNew">
-                                                    <label>Convert to Invoice</label>
-                                                    <div class="form-group">
-                                                        <label class="checkbox-inline">
-                                                            <input type="checkbox" data-ng-model="txnHeaderForm.convertedToInvoice" ng-click="convertToInvoice()" >
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                        </div>
-
-                                        </div>
-                                        <div class="row" ng-show="!isViewMode">
-                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                            <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
-                                            <button type="button" class="btn btn-success" ng-click="createTransactionSale()" ng-show="(!isViewMode)&&(showSubmitButtom())">Submit</button>
-                                            <!--button type="button" class="btn btn-success" ng-click="addPayment()" ng-show="showAddPaymentButtom()">Add Payment</button-->
-                                            <!--button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT'">Save draft</button -->
-                                            <button type="button" class="btn btn-success" ng-click="invoiceTransactionSale()" ng-show="(!isViewMode)&&(showInvoiceButtom())">Invoice</button>
-                                            <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
-                                            <!--button type="button" class="btn btn-success" ng-click="exportToPdf(exportSaleOrderToPdfUrl)">Print</button-->
-                                            <label>Send EMail:</label>
-                                            <input type="checkbox" data-ng-model="sendEmail">
-                                            <input data-ng-model="txnHeaderForm.txhdEmailTo" ng-show="sendEmail">
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading">
-                                                <!--button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchProduct()" ng-show="!isViewMode">Add Product</button-->
-                                                Add Product:
-                                                <input size="70" data-ng-model="searchBySku" ng-disabled="isTxnSaleAndFinal()" ng-keypress="searchProductBySku($event)" ng-show="!isViewMode" >
-                                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                                <button type="button" class="btn btn-primary"  ng-click="toggleAllRowSelection()" ng-show="(isTxnSaleAndPending())&&(!isViewMode)&&(!allItemsSelected)">Invoice All Items</button>
-                                                <button type="button" class="btn btn-primary"  ng-click="toggleAllRowSelection()" ng-show="(isTxnSaleAndPending())&&(!isViewMode)&&(allItemsSelected)">Unselect Items</button>
-
-                                        </div>
-                                        <div class="panel-body" ng-disabled="isTxnSaleAndFinal()">
-                                            <div class="row">
-                                                <div ui-grid="txnDetailList" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-cellNav style="height:400px;" class="grid" ng-disabled="isTxnSaleAndFinal()"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading">
-                                            Payment
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="col-lg-10" ng-show="txnHeaderForm.txhdTxnType.categoryCode != 'TXN_TYPE_QUOTE'">
+                                            <div class="panel-body">
+                                                <div class="row">
                                                         <div class="col-lg-12">
                                                             <div class="col-lg-2">
                                                                 <div class="form-group">
-                                                                    <!--div class="row">
-                                                                        <label>Payment Type</label>
-                                                                        <select class="form-control" data-ng-model="mediaType"
-                                                                                ng-options="type.medtName for type in mediaTypeSet" ng-change="onMediaTypeChange()" >
-                                                                        </select>
-                                                                    </div-->
-                                                                    <div class="row">
-                                                                        <label>Payment Method</label>
-                                                                        <select class="form-control" data-ng-model="paymentMedia"
-                                                                                ng-options="type.paymName for type in paymentMediaSet" >
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <label>Amount
-                                                                           <span class="btn btn-warning btn-xs" ng-show="mainForm.paymentAmount.$error.range">
-                                                                                max allowed is ${{maxPaymentAllowed()}}
-                                                                           </span>
-                                                                           <span class="btn btn-warning btn-xs" ng-show="mainForm.paymentAmount.$error.pattern">
-                                                                                Invalid Amount!!!
-                                                                           </span>
-                                                                        </label>
-                                                                        <input class="form-control" ng-keypress="addPaymentEvent($event)" type="number" min="0" ng-app-max="{{maxPaymentAllowed()}}" name="paymentAmount" data-ng-model="paymentAmount" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
-                                                                    </div>
+                                                                    <label>Customer:<!--a href=""><i tooltip="Find" ng-show="!isTxnSaleAndFinal()" tooltip-placement="bottom" class="fa fa-search fa-x" ng-click="searchCustomer()"></i></a--></label>
+                                                                    <!--select class="form-control" data-ng-model="customer" ng-disabled="isTxnSaleAndFinal()"
+                                                                            ng-options="type.companyName for type in customerSet" ng-change="onCustomerChange()">
+                                                                    </select-->
+                                                                    <ui-select ng-model="model.customer"
+                                                                               ng-change="onCustomerChange()"
+                                                                               ng-disabled="isTxnSaleAndFinal()"
+                                                                               reset-search-input="true"
+                                                                               title="Choose a Customer">
+                                                                        <ui-select-match placeholder="Select a customer in the list or search by Name, phone">
+                                                                            <span ng-bind="$select.selected.companyName"></span>
+                                                                        </ui-select-match>
+                                                                        <!--ui-select-choices repeat="item in (supplierSet | filter: $select.search) track by item.id"-->
+                                                                        <ui-select-choices repeat="item in customerSet | propsFilter: {companyName: $select.search, phone: $select.search}">
+                                                                            <div ng-bind-html="item.companyName | highlight: $select.search"></div>
+                                                                            <small>
+                                                                                phone: <span ng-bind-html="''+(item.phone===null?'' : item.phone) | highlight: $select.search"></span>
+                                                                            </small>
+                                                                        </ui-select-choices>
+                                                                    </ui-select>
+
+                                                                    <!--input class="form-control" data-ng-model="customer.companyName" ng-disabled="true" -->
+                                                                </div >
+                                                                <!--div class="col-lg-2">
+                                                                    <div class="form-group">
+                                                                        <label>&nbsp;</label>
+                                                                        <button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchCustomer()">Customer</button>
+                                                                    </div >
+                                                                </div-->
+                                                            </div >
+                                                            <div class="col-lg-5">
+                                                                <div class="form-group">
+                                                                    <label>Delivery Address</label>
+                                                                    <input class="form-control" data-ng-model="txnHeaderForm.txhdDlvAddress">
                                                                 </div >
                                                             </div>
-                                                            <div class="col-lg-1">
-                                                                <div class="col-lg-2">
-                                                                </div>
-                                                                <div class="col-lg-12">
-                                                                </div>
-                                                                <div class="col-lg-12">
-                                                                    <table>
-                                                                        <tr></tr><tr></tr>
-                                                                        <tr>
-                                                                            <td>
-                                                                                <!--<button type="button" class="btn btn-outline btn-primary" ng-click="addTransposition()">Add</button> -->
-                                                                                <a href=""><i tooltip="Add payment" tooltip-placement="bottom" class="fa fa-long-arrow-right fa-4x" ng-click="addTxnMedia()" ng-show="(!mainForm.paymentAmount.$error.range)&&(showAddPaymentButtom())" ></i> </a>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </table>
-                                                                </div>
+                                                            <div class="col-sm-2">
+                                                                <div class="form-group">
+                                                                    <label>Contact Person</label>
+                                                                    <input class="form-control" data-ng-model="txnHeaderForm.txhdContactPerson">
+                                                                </div >
                                                             </div>
-                                                            <div class="col-lg-9">
-                                                                <div id="txnMediaGrid" ui-grid ="txnMediaList" class="grid" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-cellNav style="height:200px;" ></div>
+                                                            <div class="col-sm-2">
+                                                                <div class="form-group">
+                                                                    <label>Contact No</label>
+                                                                    <input class="form-control" data-ng-model="txnHeaderForm.txhdContactPhone">
+                                                                </div >
                                                             </div>
+                                                            <div class="col-sm-1">
+                                                                <div class="form-group">
+                                                                    <label> Project Code</label>
+                                                                    <input class="form-control" data-ng-model="txnHeaderForm.txhdPrjCode">
+                                                                </div >
+                                                            </div>
+                                                        </div >
+                                                </div>
+                                                <div class="row" ng-show="!isViewMode">
+                                                    <div class="col-lg-6" ng-show="txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' && !isPageNew">
+                                                        <label>Convert to Sale Order</label>
+                                                        <div class="form-group">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox" data-ng-model="txnHeaderForm.convertedToTxnSale" ng-click="convertToSaleTxn()" >
+                                                            </label>
                                                         </div>
-                                                    </div >
-                                                    <div class="col-lg-2">
-                                                        <div class="row">
-                                                            <label>Total</label>
-                                                            <span>{{txnHeaderForm.txhdValueNett |currency}}</span>
+                                                    </div>
+                                                    <div class="col-lg-6" ng-show="txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE' && !isPageNew">
+                                                        <label>Convert to Invoice</label>
+                                                        <div class="form-group">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox" data-ng-model="txnHeaderForm.convertedToInvoice" ng-click="convertToInvoice()" >
+                                                            </label>
                                                         </div>
+                                                    </div>
+                                            </div>
 
-                                                        <div class="row">
-                                                            <label>Due</label>
-                                                            <span>{{txnHeaderForm.txhdValueDue | currency}}</span>
-                                                        </div>
-                                                        <div class="row" ng-show="false">
-                                                            <label>Discount</label>
-                                                            <input class="form-control">
-                                                        </div>
-                                                        <div class="row" ng-show="false">
-                                                            <label>Rounding</label>
-                                                            <input class="form-control" data-ng-model = txnHeaderForm.txhdValRounding>
+                                            </div>
+                                            <div class="row" ng-show="!isViewMode">
+                                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                                <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
+                                                <button type="button" class="btn btn-success" ng-click="createTransactionSale()" ng-show="(!isViewMode)&&(showSubmitButtom())">Submit</button>
+                                                <!--button type="button" class="btn btn-success" ng-click="addPayment()" ng-show="showAddPaymentButtom()">Add Payment</button-->
+                                                <!--button type="button" class="btn btn-success" ng-click="createTransactionSaleDraft()" ng-show="txnHeaderForm.txhdState.categoryCode == 'TXN_STATE_DRAFT'">Save draft</button -->
+                                                <button type="button" class="btn btn-success" ng-click="invoiceTransactionSale()" ng-show="(!isViewMode)&&(showInvoiceButtom())">Invoice</button>
+                                                <label>Send EMail:</label>
+                                                <input type="checkbox" data-ng-model="sendEmail">
+                                                <input data-ng-model="txnHeaderForm.txhdEmailTo" ng-show="sendEmail">
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                    <!--button type="button" class="btn btn-primary" ng-disabled="isTxnSaleAndFinal()" ng-click="searchProduct()" ng-show="!isViewMode">Add Product</button-->
+                                                    Add Product:
+                                                    <input size="70" data-ng-model="searchBySku" ng-disabled="isTxnSaleAndFinal()" ng-keypress="searchProductBySku($event)" ng-show="!isViewMode" >
+                                                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                                    <button type="button" class="btn btn-primary"  ng-click="toggleAllRowSelection()" ng-show="(isTxnSaleAndPending())&&(!isViewMode)&&(!allItemsSelected)">Invoice All Items</button>
+                                                    <button type="button" class="btn btn-primary"  ng-click="toggleAllRowSelection()" ng-show="(isTxnSaleAndPending())&&(!isViewMode)&&(allItemsSelected)">Unselect Items</button>
+
+                                            </div>
+                                            <div class="panel-body" ng-disabled="isTxnSaleAndFinal()">
+                                                <div class="row">
+                                                    <div ui-grid="txnDetailList" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-edit ui-grid-cellNav style="height:400px;" class="grid" ng-disabled="isTxnSaleAndFinal()"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                Payment
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="col-lg-10" ng-show="txnHeaderForm.txhdTxnType.categoryCode != 'TXN_TYPE_QUOTE'">
+                                                            <div class="col-lg-12">
+                                                                <div class="col-lg-2">
+                                                                    <div class="form-group">
+                                                                        <!--div class="row">
+                                                                            <label>Payment Type</label>
+                                                                            <select class="form-control" data-ng-model="mediaType"
+                                                                                    ng-options="type.medtName for type in mediaTypeSet" ng-change="onMediaTypeChange()" >
+                                                                            </select>
+                                                                        </div-->
+                                                                        <div class="row">
+                                                                            <label>Payment Method</label>
+                                                                            <select class="form-control" data-ng-model="paymentMedia"
+                                                                                    ng-options="type.paymName for type in paymentMediaSet" >
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <label>Amount
+                                                                               <span class="btn btn-warning btn-xs" ng-show="mainForm.paymentAmount.$error.range">
+                                                                                    max allowed is ${{maxPaymentAllowed()}}
+                                                                               </span>
+                                                                               <span class="btn btn-warning btn-xs" ng-show="mainForm.paymentAmount.$error.pattern">
+                                                                                    Invalid Amount!!!
+                                                                               </span>
+                                                                            </label>
+                                                                            <input class="form-control" ng-keypress="addPaymentEvent($event)" type="number" min="0" ng-app-max="{{maxPaymentAllowed()}}" name="paymentAmount" data-ng-model="paymentAmount" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
+                                                                        </div>
+                                                                    </div >
+                                                                </div>
+                                                                <div class="col-lg-1">
+                                                                    <div class="col-lg-2">
+                                                                    </div>
+                                                                    <div class="col-lg-12">
+                                                                    </div>
+                                                                    <div class="col-lg-12">
+                                                                        <table>
+                                                                            <tr></tr><tr></tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <!--<button type="button" class="btn btn-outline btn-primary" ng-click="addTransposition()">Add</button> -->
+                                                                                    <a href=""><i tooltip="Add payment" tooltip-placement="bottom" class="fa fa-long-arrow-right fa-4x" ng-click="addTxnMedia()" ng-show="(!mainForm.paymentAmount.$error.range)&&(showAddPaymentButtom())" ></i> </a>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-9">
+                                                                    <div id="txnMediaGrid" ui-grid ="txnMediaList" class="grid" ui-grid-selection ui-grid-autoresize ui-grid-resize-columns ui-grid-cellNav style="height:200px;" ></div>
+                                                                </div>
+                                                            </div>
+                                                        </div >
+                                                        <div class="col-lg-2">
+                                                            <div class="row">
+                                                                <label>Total</label>
+                                                                <span>{{txnHeaderForm.txhdValueNett |currency}}</span>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <label>Due</label>
+                                                                <span>{{txnHeaderForm.txhdValueDue | currency}}</span>
+                                                            </div>
+                                                            <div class="row" ng-show="false">
+                                                                <label>Discount</label>
+                                                                <input class="form-control">
+                                                            </div>
+                                                            <div class="row" ng-show="false">
+                                                                <label>Rounding</label>
+                                                                <input class="form-control" data-ng-model = txnHeaderForm.txhdValRounding>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -219,8 +220,10 @@
                                         </div>
                                     </div>
                                 </div>
+                            </fieldset>
+                            <div class="form-group">
+                                <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>
                             </div>
-
                         </form>
                     </div>
                 </div>

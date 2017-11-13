@@ -54,6 +54,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             //baseDataService.setRow({});
             //baseDataService.setIsPageNew(true);
             $scope.paymentAmount = maxPaymentAllowed()*1;
+            if ($scope.txnHeaderForm.temporarySaved === undefined) {
+                $scope.txnHeaderForm.temporarySaved = false;
+            }
             if ($scope.txnHeaderForm.temporarySaved) {
                 $scope.isPageNew = true;
                 if ($scope.txnHeaderForm.txhdTxnType.categoryCode === 'TXN_TYPE_INVOICE') {
@@ -680,6 +683,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
     $scope.addTxnMedia= function() {
         //check if selected Media Type is Account. then we need to check if customer is account customer and has enough credit
+        if (($scope.paymentAmount === 0.00) || ($scope.paymentAmount > $scope.maxPaymentAllowed())){
+            return;
+        }
+
         if ($scope.paymentMedia.paymName === 'Account') {
             //check if we are not in invoice mode then do nothing
             if (!$scope.isInvoiceMode) {

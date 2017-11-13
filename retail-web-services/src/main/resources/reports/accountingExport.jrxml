@@ -164,8 +164,7 @@
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="444" y="7" width="100" height="20" uuid="9775b779-5c1a-4bfb-a408-c1c87c1c094f"/>
-				<textElement textAlignment="Right"/>
+				<reportElement x="368" y="7" width="176" height="20" uuid="9775b779-5c1a-4bfb-a408-c1c87c1c094f"/>
 				<textFieldExpression><![CDATA["Printed on " + $V{Today}]]></textFieldExpression>
 			</textField>
 		</band>

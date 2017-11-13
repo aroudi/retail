@@ -73,7 +73,8 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             params: {
                 blankPage:false
             },
-            access: "user"
+            access: "user",
+            resolve: {viewMode: function(){return false}}
         })
         .state('dashboard.listCustomer',{
             url:'/listCustomer',
@@ -88,7 +89,8 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             params: {
                 blankPage:false
             },
-            access: "user"
+            access: "user",
+            resolve: {viewMode: function(){return false}}
         })
         .state('dashboard.listSupplier',{
             url:'/listSupplier',

@@ -111,7 +111,7 @@
                                                                                 Invalid Amount!!!
                                                                            </span>
                                                                         </label>
-                                                                        <input class="form-control" type="number" min="0" ng-app-max="{{maxPaymentAllowed()}}" name="paymentAmount" data-ng-model="paymentAmount" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
+                                                                        <input class="form-control" ng-keypress="addPaymentEvent($event)" type="number" min="0" ng-app-max="{{maxPaymentAllowed()}}" name="paymentAmount" data-ng-model="paymentAmount" ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" maxlength="10">
                                                                     </div>
                                                                 </div >
                                                             </div>

@@ -137,6 +137,9 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
 
     $scope.addTxnMedia= function() {
         var rowId;
+        if (($scope.paymentAmount === 0.00) || ($scope.paymentAmount > $scope.maxPaymentAllowed())){
+            return;
+        }
         if ($scope.txnMediaList.data == undefined && $scope.txnMediaList.data ==null) {
             rowId = -2000;
         } else {
@@ -240,9 +243,9 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
         var paymentLeft = angular.copy($scope.totalPayment);
         for (var i = 0; i < $scope.debtList.data.length; i++) {
             row = $scope.debtList.data[i];
-            if (row.cadAmountDebt<=paymentLeft) {
-                row.paying = row.cadAmountDebt;
-                paymentLeft = paymentLeft - row.cadAmountDebt;
+            if (row.balance<=paymentLeft) {
+                row.paying = row.balance;
+                paymentLeft = paymentLeft - row.balance;
             } else {
                 row.paying = paymentLeft;
                 paymentLeft = 0;
@@ -272,4 +275,11 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
         }
         return true;
     }
+    $scope.addPaymentEvent = function(keyEvent) {
+        if (keyEvent.which != 13) {
+            return;
+        }
+        $scope.addTxnMedia();
+    };
+
 });

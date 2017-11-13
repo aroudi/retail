@@ -51,14 +51,14 @@ this is while in importing boq, we add supplier to the current product.
 6- on transaction page, does not load contact person and contact info from customer record. user need to enter on every transaction - done
 7- when generated po from so, on 'Purchase order list generated' page, supplier column is empty. - done
 8- after generating po from so, the status of sale order is still 'OUTSTANDING' - done
-9- on viewing invoice, it displays all the payments. ON PRINT ALSO it shows all amount paid up to date in 'Pay Today' field
-10- in sale summary report, total sale value is incorrect. it multiply quantity to total item value which should not.
-11- in cash-up banking summary report 'expected' and 'difference' columns values are other way around
-12- on accounting export report, printed on date dose not fit into the page
+9- on viewing invoice, it displays all the payments. ON PRINT ALSO it shows all amount paid up to date in 'Pay Today' field - done
+10- in sale summary report, total sale value is incorrect. it multiply quantity to total item value which should not.-done
+11- in cash-up banking summary report 'expected' and 'difference' columns values are other way around-done
+12- on accounting export report, printed on date dose not fit into the page-done
 13- price change should create an accounting journal entry - need to ask
-14- in debtor payment, user can pay more than debt amount. we shouldn't allow that
+14- in debtor payment, user can pay more than debt amount. we shouldn't allow that-done
 15- on deleting a draft transaction(single or all), it dose not ask for confirmation
-16- add view for customer, supplier
+16- add view for customer, supplier-done
 17- open a sale order, add number to invoice qty to enter invoice mode and then reopen it from draft page; page is corrupted
 
 
