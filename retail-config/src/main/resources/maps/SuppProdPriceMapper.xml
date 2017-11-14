@@ -144,6 +144,7 @@
         <result column="PROD_SKU" property="prodSku" />
         <result column="PROD_NAME" property="prodName" />
         <result column="PROD_DESC" property="prodDesc" />
+        <result column="REFERENCE" property="reference" />
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="unitOfMeasureContent" column="UNOM_ID_CONTENT" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
         <association property="legalTender" column="LEGT_ID" select="au.com.biztune.retail.dao.LegalTenderDao.getLegalTenderById" />
@@ -177,6 +178,7 @@
         <result column="PROD_SKU" property="prodSku" />
         <result column="PROD_NAME" property="prodName" />
         <result column="PROD_DESC" property="prodDesc" />
+        <result column="REFERENCE" property="reference" />
         <association property="unitOfMeasure" column="UNOM_ID" select="au.com.biztune.retail.dao.UnitOfMeasureDao.getUnomById" />
     </resultMap>
 
@@ -308,7 +310,7 @@
     <select id="getProductPurchaseItemPerSprcId" resultMap="suppPurchaseProdMap" >
         SELECT
         <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>,
-        prod.PROD_SKU, prod.PROD_NAME, prod.PROD_DESC
+        prod.PROD_SKU, prod.PROD_NAME, prod.PROD_DESC, prod.REFERENCE
         FROM
         SUPP_PROD_PRICE spp inner join PRODUCT prod on (spp.PROD_ID = prod.PROD_ID)
         WHERE

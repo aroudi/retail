@@ -70,7 +70,7 @@
 				<textElement>
 					<font fontName="SansSerif" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[BAR CODE]]></text>
+				<text><![CDATA[Reference]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="356" y="1" width="32" height="19" uuid="1acd7d00-9d69-414f-8b0d-f3b1ad9f3dfc"/>
@@ -105,7 +105,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="93" y="2" width="101" height="14" uuid="10a82739-fb67-4c12-b317-7e9ca0d226eb"/>
-				<textFieldExpression><![CDATA[$F{purchaseItem}.getProdSku()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{purchaseItem}.getReference()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="356" y="3" width="32" height="14" uuid="024f90e0-1d52-453f-8d9e-35c4dc8ef314"/>

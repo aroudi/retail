@@ -22,7 +22,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,$statePar
         rowTemplate : rowtpl,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'26%',enableFiltering:false,
+            {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false, width:'21%',enableFiltering:false,
                 cellTooltip: function(row,col) {
                     return 'Price:  ' + row.entity.polUnitCost + '\n' + '--------------------------------' + '\n' +
                      'Bulk Quantity:  ' +  row.entity.purchaseItem.bulkQty + ' --> Price:  ' + row.entity.purchaseItem.bulkPrice +'\n' + '\n' +
@@ -32,22 +32,27 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,$statePar
                      'Bulk Quantity:  ' +  row.entity.purchaseItem.bulkQty5 + ' --> Price:  ' + row.entity.purchaseItem.bulkPrice5 +'\n'
                 }
             },
-            {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false,enableFiltering:false, width:'5%'},
-            {field:'taxLegVariance.txlvDesc',editType:'dropdown', displayName:'Tax',enableCellEdit:true,width:'8%',enableFiltering:false,
+            {field:'purchaseItem.reference', displayName:'Reference', enableCellEdit:false, width:'10%',enableFiltering:false,
+                cellTooltip: function(row,col) {
+                    return row.entity.purchaseItem.reference
+                }
+            },
+            {field:'unitOfMeasure.unomDesc', displayName:'Size', enableCellEdit:false,enableFiltering:false, width:'4%'},
+            {field:'taxLegVariance.txlvDesc',editType:'dropdown', displayName:'Tax',enableCellEdit:true,width:'7%',enableFiltering:false,
                 editableCellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance" ng-change="grid.appScope.updatePurchaseLineValues(row.entity)" ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
                 //cellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance"  ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
             },
-            {field:'polUnitCost', displayName:'Cost',enableCellEdit:true, width:'8%', cellFilter: 'currency',enableFiltering:false,
+            {field:'polUnitCost', displayName:'Cost',enableCellEdit:true, width:'7%', cellFilter: 'currency',enableFiltering:false,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
-            {field:'polQtyOrdered', displayName:'Qty Ordered',enableCellEdit:true, width:'8%',type: 'number',enableFiltering:false,
+            {field:'polQtyOrdered', displayName:'Qty Ordered',enableCellEdit:true, width:'7%',type: 'number',enableFiltering:false,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
             },
-            {field:'polValueTax', displayName:'Tax value',enableCellEdit:false, width:'7%', enableFiltering:false,cellFilter: 'currency'},
+            {field:'polValueTax', displayName:'Tax value',enableCellEdit:false, width:'6%', enableFiltering:false,cellFilter: 'currency'},
             {field:'polValueOrdered', displayName:'Total',enableCellEdit:false, width:'7%', enableFiltering:false,cellFilter: 'currency'},
             {field:'polQtyReceived', displayName:'Qty Received', enableCellEdit:false,width:'8%',type: 'number',enableFiltering:false,
                 cellTooltip: function(row,col) {

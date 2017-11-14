@@ -34,6 +34,7 @@ public class ProductPurchaseItem {
     private String prodSku;
     private String prodDesc;
     private String prodName;
+    private String reference;
 
 
     public long getId() {
@@ -274,5 +275,13 @@ public class ProductPurchaseItem {
 
     public void setRrp(double rrp) {
         this.rrp = rrp;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 }
