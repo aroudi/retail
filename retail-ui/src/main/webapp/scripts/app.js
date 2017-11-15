@@ -609,7 +609,7 @@ cimgApp.service('multiPageService', function ($location,$http,$sessionStorage, $
 });
 
 
-cimgApp.service('UserService', function ($location,$http,$sessionStorage) {
+cimgApp.service('UserService', function ($location,$http,$sessionStorage, ngDialog) {
     var message;
     return {
         setUser: function (user) {
@@ -650,13 +650,89 @@ cimgApp.service('UserService', function ($location,$http,$sessionStorage) {
             //$window.$sessionStorage.addItem('userAccess', userAccess);
             $sessionStorage.userAccess = userAccess;
         },
+        assigneUserAccess: function (accessToken) {
+            var userAccessList = $sessionStorage.userAccess;
+            if (userAccessList != undefined) {
+                userAccessList.push(accessToken);
+                $sessionStorage.userAccess = userAccessList;
+                //promote user
+                var user = $sessionStorage.user;
+                if (user != undefined) {
+                    user.promoted = true;
+                    $sessionStorage.user = user;
+                }
+            }
+        },
+        revokeUserAccess: function (accessToken) {
+            var userAccessList = $sessionStorage.userAccess;
+            if (userAccessList !== undefined) {
+                for (var i=0; i<userAccessList.length; i++) {
+                    if (userAccessList[i] === accessToken) {
+                        userAccessList.splice(i, 1);
+                        //check promotion flag on user
+                        var user = $sessionStorage.user;
+                        if (user !== undefined) {
+                            user.promoted = false;
+                            $sessionStorage.user = user;
+                        }
+                        break;
+                    }
+                }
+                $sessionStorage.userAccess = userAccessList;
+            }
+        },
+        checkUserHasAccess: function(accessToken) {
+            var userAccessList = $sessionStorage.userAccess;
+            if (userAccessList != undefined) {
+                for (var i = 0; i < userAccessList.length; i++) {
+                    if (userAccessList[i] === accessToken) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        },
+        checkIfUserPromoted: function () {
+            var user = $sessionStorage.user;
+            if (user === undefined || user.promoted === undefined) {
+                return false;
+            }
+            return user.promoted;
+
+        },
         getUserToken: function () {
             //return $window.$sessionStorage.getItem('userAccess');
             return $sessionStorage.userToken;
         },
+
         setUserToken: function (userToken) {
             //$window.$sessionStorage.addItem('userAccess', userAccess);
             $sessionStorage.userToken = userToken;
+        },
+        promoteUserForAccessToken : function (accessToken) {
+            var promise = ngDialog.openConfirm({
+                template:'views/pages/login.html',
+                controller:'userPromotionController',
+                className: 'ngdialog-theme-plain custom-width',
+                closeByDocument:false,
+                resolve: {userAccessToken: function(){return accessToken}}
+            }).then (function (result){
+                    if (result != undefined) {
+                        return result;
+                    }
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                    return false
+                }
+            );
+            /*
+             ngDialog.open({
+             template: '<h1>'+heading+'</h1><h1> <p>' + message + '</p>',
+             closeByDocument: false,
+             plain: true
+             });
+             */
+            return promise;
         }
     };
 });

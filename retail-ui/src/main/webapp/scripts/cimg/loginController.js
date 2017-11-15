@@ -2,7 +2,7 @@
  * Created by arash on 13/11/2015.
  */
 
-cimgApp.controller('loginController', function($http, $scope, UserService, $state, LOGIN_URI, baseDataService) {
+cimgApp.controller('loginController', function($http, $scope,$rootScope, UserService, $state, LOGIN_URI, baseDataService) {
     $scope.message = "";
     /*
      if ($window.sessionStorage.userInfo !=undefined ){
@@ -18,8 +18,9 @@ cimgApp.controller('loginController', function($http, $scope, UserService, $stat
         var rowObject = $scope.loginForm;
         baseDataService.addRow(rowObject, LOGIN_URI).then(function(response) {
             var userInfo = response.data;
-            if (userInfo != undefined && userInfo != null )
+            if (userInfo != undefined && userInfo != null && userInfo.usrName!=undefined )
             {
+                console.log('login succeeded...');
                 var token = userInfo.token;
                 //store token in session so on refreshing the page we can access it.
                 UserService.setUserToken(token);
@@ -28,6 +29,8 @@ cimgApp.controller('loginController', function($http, $scope, UserService, $stat
                 UserService.setUser(userInfo);
                 UserService.setMessage('');
                 UserService.setUserAccess(extractUserAccess(userInfo));
+                var userLoggedIn = ' - User: ' + userInfo.usrFirstName + ' ' + userInfo.usrSurName;
+                $rootScope.$emit('loginChanged', userLoggedIn);
                 $state.go('dashboard.firstPage');
             } else
             {

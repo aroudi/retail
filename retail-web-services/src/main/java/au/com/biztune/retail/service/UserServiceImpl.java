@@ -304,8 +304,8 @@ public class UserServiceImpl implements UserService {
                 token = generateToken();
                 appUser.setToken(token);
                 sessionState.addToken(token, appUser);
+                cashSessionService.assignCashSessionToLoggedinUser(appUser);
             }
-            cashSessionService.assignCashSessionToLoggedinUser(appUser);
             return appUser;
         } catch (Exception e) {
             logger.error("Exception in login user: ", e);

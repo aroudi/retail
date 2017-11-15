@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI, TXN_EXPORT_PDF, PRODUCT_SALE_ITEM_SEARCH_URI, TXN_STATUS_OUTSTANDING, CUSTOMER_CONTACT_LIST_URI) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService,UserService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI, TXN_EXPORT_PDF, PRODUCT_SALE_ITEM_SEARCH_URI, TXN_STATUS_OUTSTANDING, CUSTOMER_CONTACT_LIST_URI) {
 
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -286,6 +286,21 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         $scope.$on('uiGridEventEndCellEdit', function (event) {
             var txnDetail = event.targetScope.row.entity;
             if ( event.targetScope.col.field == 'txdeValueGross') {
+                //check if user have access for price change. if no then request for admin login.
+                if (!UserService.checkUserHasAccess('productPriceChangeBulk')) {
+                    UserService.promoteUserForAccessToken('productPriceChangeBulk').then(function(result){
+                        if (result) {
+                            console.log('user promoted');
+                            //continue.....
+                        } else {
+                            console.log('user not promoted');
+                            txnDetail['txdeValueGross'] = $scope.txdeValueGrossBeforeEditting;
+                            return;
+                        }
+                    });
+                }
+
+
                 //check if we already had invoiced this item. if so user can not change the price.
                 if (txnDetail.txdeQtyTotalInvoiced >0 ) {
                     baseDataService.displayMessage('info','Warnning', 'The Item is invoiced. you can not change the price.' );
@@ -1348,4 +1363,5 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
 
     }
+
 });
