@@ -1053,8 +1053,8 @@ public class TransactionServiceImpl implements TransactionService {
         invoicePaymentMedia.setPaymentMedia(txnMediaForm.getPaymentMedia());
 
         final double depositRemain = txnMediaForm.getTxmdAmountLocal() - amount;
-        invoicePaymentMedia.setTxmdComment("Inv# " + invoiceId + "\n-Initial S.O balance $" +
-                String.format("%.2f", txnMediaForm.getTxmdAmountLocal()) + "\n-" + "Remain balance $" + String.format("%.2f", depositRemain));
+        invoicePaymentMedia.setTxmdComment("Inv# " + invoiceId + "\n-Initial S.O balance $"
+                + String.format("%.2f", txnMediaForm.getTxmdAmountLocal()) + "\n-" + "Remain balance $" + String.format("%.2f", depositRemain));
         final ConfigCategory txnMediaType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_SALE);
         if (txnMediaType != null) {
             invoicePaymentMedia.setTxmdType(txnMediaType);

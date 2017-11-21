@@ -2189,3 +2189,4 @@ GO
 alter table TXN_MEDIA
    add     TXMD_COMMENT VARCHAR(500)
 go
+-- up to this point deployed on jomon on 20/11/17 (ver 2.2)

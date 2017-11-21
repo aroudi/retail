@@ -81,7 +81,7 @@ public class TotalerServiceImpl implements TotalerService {
                     totalTaxedValue = totalTaxedValue + txnDetail.getTxdePriceSold();
                     totalTaxdPaid = totalTaxdPaid + ((txnDetail.getTxdeValueNet() - txnDetail.getTxdeValueGross()) * txnDetail.getQuantity());
                     if (txnDetail.getTxdeDetailType().getCategoryCode().equals(IdBConstant.TXN_LINE_TYPE_SALE)) {
-                        totalSaleValue = totalSaleValue + txnDetail.getTxdePriceSold() ;
+                        totalSaleValue = totalSaleValue + txnDetail.getTxdePriceSold();
                     }
                     if (txnDetail.getTxdeDetailType().getCategoryCode().equals(IdBConstant.TXN_LINE_TYPE_REFUND)) {
                         totalRefundValue = totalRefundValue + txnDetail.getTxdePriceSold() * txnDetail.getQuantity();

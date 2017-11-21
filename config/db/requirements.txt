@@ -60,6 +60,8 @@ this is while in importing boq, we add supplier to the current product.
 15- on deleting a draft transaction(single or all), it dose not ask for confirmation
 16- add view for customer, supplier-done
 17- open a sale order, add number to invoice qty to enter invoice mode and then reopen it from draft page; page is corrupted
+18- when remove all role from user, it can not submit the form
+19- try to change a price and set it below the original price; 2 different message appears
 
 
 
