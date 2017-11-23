@@ -54,7 +54,7 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
                 {field:'id', visible:false, enableCellEdit:false},
                 {field:'solId', visible:false, enableCellEdit:false},
                 {field:'prodId', visible:false, enableCellEdit:false},
-                {field:'sprcPrefferBuy', displayName:'Default',enableCellEdit:true, type:'boolean', width:'5%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-change="grid.appScope.selectDefaultSupplier(row.entity)" ng-model="row.entity.sprcPrefferBuy">',
+                {field:'sprcPrefferBuy', displayName:'Prefer to buy',enableCellEdit:true, enableFiltering:false, type:'boolean', width:'10%',cellFilter:'booleanFilter', cellTemplate:'<input type="checkbox" ng-change="grid.appScope.selectDefaultSupplier(row.entity)" ng-model="row.entity.sprcPrefferBuy">',
                     cellClass:
                         function(grid, row, col, rowRenderIndex, colRenderIndex) {
                             if (grid.getCellValue(row, col) === true) {
@@ -64,12 +64,12 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
                             }
                         }
                 },
-                {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, width:'30%',
+                {field:'supplier.supplierName', displayName:'Supplier',enableCellEdit:false, enableFiltering:false, width:'25%',
                     cellTooltip: function(row,col) {
                         return row.entity.supplier.supplierName
                     }
                 },
-                {field:'catalogueNo', displayName:'CatNo',enableCellEdit:false, width:'20%',
+                {field:'catalogueNo', displayName:'CatNo',enableCellEdit:false,enableFiltering:false, width:'20%',
                     cellTooltip: function(row,col) {
                         return row.entity.catalogueNo
                     }
@@ -81,14 +81,14 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
                  }
                  },
                  */
-                {field:'unitOfMeasure.unomCode', displayName:'Size',enableCellEdit:false,width:'5%'},
+                {field:'unitOfMeasure.unomCode', displayName:'Size',enableCellEdit:false, enableFiltering:false, width:'5%'},
                 //{field:'unomQty',displayName:'Qty', enableCellEdit:true, type: 'number', width:'8%'},
-                {field:'taxLegVariance.txlvDesc',editType:'dropdown', displayName:'Tax',enableCellEdit:true,width:'10%',
+                {field:'taxLegVariance.txlvDesc',editType:'dropdown', displayName:'Tax',enableCellEdit:true,width:'10%', enableFiltering:false,
                     editableCellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance"  ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
                     //cellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance"  ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
                 },
-                {field:'costBeforeTax', displayName:'cost(ex tax)',enableCellEdit:true, cellFilter: 'currency', width:'10%'},
-                {field:'price', displayName:'cost(inc tax)',enableCellEdit:true, cellFilter: 'currency', width:'10%'},
+                {field:'costBeforeTax', displayName:'cost(ex tax)',enableCellEdit:true, cellFilter: 'currency', width:'10%', enableFiltering:false},
+                {field:'price', displayName:'cost(inc tax)',enableCellEdit:true, cellFilter: 'currency', width:'10%', enableFiltering:false},
                 {name:'Action',enableCellEdit:false,sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Remove" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-show="row.entity.id < 0" ng-click="grid.appScope.removeSuppProdPrice(row)"></i></a>&nbsp;<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-show="row.entity.id > 0" ng-click="grid.appScope.editSuppProdPrice(row)"></i></a>', width:'10%' }
 
             ]
@@ -107,6 +107,18 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
             gridApi.cellNav.on.navigate($scope, function(newRowCol, oldRowCol){
             });
         };
+
+        $scope.$on('uiGridEventEndCellEdit', function (event) {
+            var suppProdPrice = event.targetScope.row.entity;
+            if (event.targetScope.col.field == 'costBeforeTax') {
+                suppProdPrice['price'] = suppProdPrice.costBeforeTax * (1 + suppProdPrice.taxLegVariance.txlvRate);
+            }
+            if (event.targetScope.col.field == 'price') {
+                suppProdPrice['costBeforeTax'] = suppProdPrice.price * ( 1 - suppProdPrice.taxLegVariance.txlvRate);
+            }
+            $scope.selectDefaultSupplier(suppProdPrice);
+        });
+
 
         if (!$scope.isNewPage) {
             $scope.gridOptions.data = $scope.productForm.suppProdPrices;
@@ -184,6 +196,7 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
                     suppProdPrice.bulkPrice4 = updatedProductSupplier.suppBulkPrice4;
                     suppProdPrice.bulkPrice5 = updatedProductSupplier.suppBulkPrice5;
                     displayBulkPrices(suppProdPrice);
+                    $scope.selectDefaultSupplier(suppProdPrice);
                 }
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
@@ -231,6 +244,7 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
         }
         displayBulkPrices(suppProdPrice);
         $scope.gridOptions.data.push(suppProdPrice);
+        $scope.selectDefaultSupplier(suppProdPrice);
     };
     function displayBulkPrices(productSupplier) {
         productSupplier.subGridOptions = {

@@ -369,6 +369,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             purchaseLine.setPurchaseItem(productPurchaseItem);
             //todo: should it be the unit cost or the total cost????
             purchaseLine.setPolUnitCost(boqDetail.getCost());
+            purchaseLine.setTaxLegVariance(productPurchaseItem.getTaxLegVariance());
             purchaseLine.setPolSpecialBuy(false);
             purchaseLine.setUnitOfMeasure(productPurchaseItem.getUnitOfMeasure());
             purchaseLine.setPolQtyOrdered(boqDetail.getQtyBalance());
@@ -436,8 +437,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                     txnDetail.getProductId(), txnDetail.getSupplierId());
             purchaseLine.setPurchaseItem(productPurchaseItem);
             //todo: should it be the unit cost or the total cost????
-            purchaseLine.setPolUnitCost(productPurchaseItem.getPrice());
+            purchaseLine.setPolUnitCost(productPurchaseItem.getCostBeforeTax());
             purchaseLine.setPolSpecialBuy(false);
+            purchaseLine.setTaxLegVariance(productPurchaseItem.getTaxLegVariance());
             purchaseLine.setUnitOfMeasure(productPurchaseItem.getUnitOfMeasure());
             purchaseLine.setPolQtyOrdered(txnDetail.getTxdeQtyBackOrder() - txnDetail.getTxdeQtyOrdered());
             purchaseLine.setPolQtyReserved(txnDetail.getTxdeQtyBackOrder() - txnDetail.getTxdeQtyOrdered());

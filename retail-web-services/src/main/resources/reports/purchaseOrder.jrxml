@@ -62,20 +62,6 @@
 					</textElement>
 					<text><![CDATA[Supplier]]></text>
 				</staticText>
-				<textField isBlankWhenNull="true">
-					<reportElement x="420" y="83" width="134" height="20" uuid="c3a535cb-2a2f-4ca4-af61-d72a4cec4893"/>
-					<textElement>
-						<font size="12" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[($F{pohPrefix} != null)?$F{pohPrefix} + "-" + $F{pohOrderNumber} + " (rev-" + $F{pohRevision} + ")":$F{pohOrderNumber} + " (rev-" + $F{pohRevision} + ")"]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement x="387" y="83" width="26" height="20" uuid="10d9aa5a-6740-4f54-994d-6b454160b053"/>
-					<textElement>
-						<font size="12" isBold="true"/>
-					</textElement>
-					<text><![CDATA[No.]]></text>
-				</staticText>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 					<reportElement x="460" y="147" width="94" height="18" uuid="727a8bb3-0b39-443d-a56a-5fe2929bea8c"/>
 					<textElement>
@@ -90,20 +76,6 @@
 					</textElement>
 					<text><![CDATA[Deliver To]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement x="284" y="150" width="139" height="20" uuid="67ceddfd-2bd2-409a-bb0a-2b553252efd5"/>
-					<textElement>
-						<font isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{pohContactPerson}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement x="284" y="172" width="139" height="100" uuid="77aae85e-f29b-4b77-a06a-81b75cdd9cf8"/>
-					<textElement>
-						<font size="11"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{pohDlvAddress}]]></textFieldExpression>
-				</textField>
 			</elementGroup>
 			<elementGroup>
 				<staticText>
@@ -159,7 +131,7 @@
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{appUser} == null ? " " : $F{appUser}.getUsrFirstName() + " " + $F{appUser}.getUsrSurName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{pohPrefix}]]></textFieldExpression>
 			</textField>
 			<image>
 				<reportElement x="384" y="3" width="171" height="67" uuid="d9ea2dba-0f7e-4f70-a579-652413741094"/>
@@ -240,7 +212,21 @@
 				<textElement>
 					<font size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Served by:]]></text>
+				<text><![CDATA[Ordered by by:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="284" y="159" width="135" height="15" uuid="629b137e-1104-4e2b-b63f-d4b657a7aeec"/>
+				<textElement>
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<text><![CDATA[32 SPENCER STREET]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="284" y="173" width="135" height="15" uuid="b7d2496f-8190-4701-8d6f-441655e3379a"/>
+				<textElement>
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<text><![CDATA[FIVE DOCK NSW 2046]]></text>
 			</staticText>
 		</band>
 	</pageHeader>

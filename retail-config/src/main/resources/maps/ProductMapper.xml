@@ -207,7 +207,8 @@
         ${alias}.PROD_URL_THUMB,
         ${alias}.PROD_CLASS,
         ${alias}.PROD_WARRANTY_TEXT,
-        ${alias}.PROD_LOCATION
+        ${alias}.PROD_LOCATION,
+        ${alias}.CAT_ID_TYPE
     </sql>
 
 

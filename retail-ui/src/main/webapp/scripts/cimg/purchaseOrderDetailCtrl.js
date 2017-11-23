@@ -108,8 +108,8 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,$statePar
                 $scope.updatePurchaseLineValues(rowEntity);
             }
             if (colDef.name == 'polUnitCost') {
-                if (rowEntity.polUnitCost > rowEntity.purchaseItem.price) {
-                    baseDataService.displayMessage('info','Warning!!','The new price is more than item original price which is: ' + rowEntity.purchaseItem.price);
+                if (rowEntity.polUnitCost > rowEntity.purchaseItem.costBeforeTax) {
+                    baseDataService.displayMessage('info','Warning!!','The new cost is more than item original cost which is: ' + rowEntity.purchaseItem.costBeforeTax);
                     rowEntity.polUnitCost = $scope.polUnitCostBeforeEditting;
                     return;
                 }
@@ -284,7 +284,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,$statePar
             'pohId':$scope.purchaseOrderHeader.id,
             'pohOrderNumber':$scope.purchaseOrderHeader.pohOrderNumber,
             'purchaseItem' : item,
-            'polUnitCost' : item.price,
+            'polUnitCost' : item.costBeforeTax,
             'unitOfMeasure' : item.unitOfMeasure,
             'polQtyOrdered' : 0.00,
             'polValueOrdered' : 0.00,

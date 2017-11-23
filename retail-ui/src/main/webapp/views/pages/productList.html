@@ -42,31 +42,31 @@
                         <div class="col-lg-2">
                             <div class="form-group">
                                 <label>SKU</label>
-                                <input type="text" class="form-control" data-ng-model="productSearchForm.prodSku" type="text" />
+                                <input type="text" class="form-control" data-ng-model="productSearchForm.prodSku" type="text" ng-keypress="searchByEnter($event)" />
                             </div >
                         </div >
                         <div class="col-lg-2">
                             <div class="form-group">
                                 <label>Product Name</label>
-                                <input type="text" class="form-control" data-ng-model="productSearchForm.prodName" type="text" />
+                                <input type="text" class="form-control" data-ng-model="productSearchForm.prodName" type="text" ng-keypress="searchByEnter($event)"/>
                             </div >
                         </div >
                         <div class="col-lg-2">
                             <div class="form-group">
                                 <label>Reference</label>
-                                <input type="text" class="form-control" data-ng-model="productSearchForm.reference" type="text" />
+                                <input type="text" class="form-control" data-ng-model="productSearchForm.reference" type="text" ng-keypress="searchByEnter($event)" />
                             </div >
                         </div >
                         <div class="col-lg-2">
                             <div class="form-group">
                                 <label>In Stock Qty From</label>
-                                <input type="number" class="form-control" data-ng-model="productSearchForm.inStockQtyFrom" />
+                                <input type="number" class="form-control" data-ng-model="productSearchForm.inStockQtyFrom" ng-keypress="searchByEnter($event)" />
                             </div >
                         </div >
                         <div class="col-lg-2">
                             <div class="form-group">
                                 <label>In Stock Qty To</label>
-                                <input type="number" class="form-control" data-ng-model="productSearchForm.inStockQtyTo" />
+                                <input type="number" class="form-control" data-ng-model="productSearchForm.inStockQtyTo" ng-keypress="searchByEnter($event)"/>
                             </div >
                         </div >
                     </div>

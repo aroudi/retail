@@ -292,26 +292,24 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         if (result) {
                             console.log('user promoted');
                             //continue.....
+                            //check if we already had invoiced this item. if so user can not change the price.
+                            if (txnDetail.txdeQtyTotalInvoiced >0 ) {
+                                baseDataService.displayMessage('info','Warnning', 'The Item is invoiced. you can not change the price.' );
+                                txnDetail['txdeValueGross'] = $scope.txdeValueGrossBeforeEditting;
+                                return;
+                            }
+                            var originalPrice = calculateSalePrice(txnDetail.product);
+                            if (txnDetail.txdeValueGross < originalPrice ) {
+                                baseDataService.displayMessage('info','Warnning', 'You can not set the price below original which is $' + originalPrice );
+                                txnDetail['txdeValueGross'] = $scope.txdeValueGrossBeforeEditting;
+                                return;
+                            }
                         } else {
                             console.log('user not promoted');
                             txnDetail['txdeValueGross'] = $scope.txdeValueGrossBeforeEditting;
                             return;
                         }
                     });
-                }
-
-
-                //check if we already had invoiced this item. if so user can not change the price.
-                if (txnDetail.txdeQtyTotalInvoiced >0 ) {
-                    baseDataService.displayMessage('info','Warnning', 'The Item is invoiced. you can not change the price.' );
-                    txnDetail['txdeValueGross'] = $scope.txdeValueGrossBeforeEditting;
-                    return;
-                }
-                var originalPrice = calculateSalePrice(txnDetail.product);
-                if (txnDetail.txdeValueGross < originalPrice ) {
-                    baseDataService.displayMessage('info','Warnning', 'You can not set the price below original which is $' + originalPrice );
-                    txnDetail['txdeValueGross'] = $scope.txdeValueGrossBeforeEditting;
-                    return;
                 }
                 txnDetail['txdeQtyBalance'] = calculateBalance(txnDetail);//txnDetail.txdeQuantitySold*1 - (txnDetail.txdeQtyTotalInvoiced*1 + txnDetail.txdeQtyInvoiced*1);
             }

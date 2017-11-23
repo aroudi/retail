@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI, POH_EXPORT_PDF, POH_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, POH_STATUS_URI, POH_CREATION_TYPE_URI, POH_DELETE_URI) {
+cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, POH_GET_ALL_URI, POH_GET_URI, DEL_NOTE_GET_URI, POH_SEARCH_URI, POH_EXPORT_PDF, POH_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, POH_STATUS_URI, POH_CREATION_TYPE_URI, POH_DELETE_URI, TAXLEGVARIANCE_ALL_URI) {
 
     $scope.model= {};
     //$scope.model.supplier= {};

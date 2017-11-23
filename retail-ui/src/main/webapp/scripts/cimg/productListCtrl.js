@@ -212,4 +212,12 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
         );
     };
 
+    $scope.searchByEnter = function(keyEvent) {
+        if (keyEvent.which != 13) {
+            return
+        }
+        $scope.getPage();
+    }
+
+
 });

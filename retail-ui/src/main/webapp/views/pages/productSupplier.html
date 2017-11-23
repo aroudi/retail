@@ -25,12 +25,12 @@
                                 <input class="form-control" data-ng-model="productSupplier.suppCatalogueNo" maxlength="60">
                             </div >
                         </div>
-                        <div class="col-lg-4">
+                        <!--div class="col-lg-4">
                             <div class="form-group">
                                 <label>Part No</label>
                                 <input class="form-control" data-ng-model="productSupplier.suppPartNo" maxlength="60">
                             </div >
-                        </div>
+                        </div-->
                     </div>
                     <div class="row">
                         <div class="col-lg-4">
@@ -66,7 +66,7 @@
 
                         <div class="col-lg-4">
                             <div class="form-group">
-                                <label>Cost(before tax):
+                                <label>Cost(exclude tax):
                                                                        <span class="btn btn-warning btn-xs" ng-show="mainForm.costBeforeTax.$error.pattern">
                                                                             Invalid!
                                                                        </span>
@@ -76,7 +76,7 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="form-group">
-                                <label>Cost(after tax):
+                                <label>Cost(include tax):
                                                                        <span class="btn btn-warning btn-xs" ng-show="mainForm.suppPrice.$error.pattern">
                                                                             Invalid!
                                                                        </span>

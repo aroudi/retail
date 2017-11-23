@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_GET_ALL_URI, DEL_NOTE_GET_URI, POH_GET_URI, DEL_NOTE_SEARCH_URI, DEL_NOTE_SEARCH_PAGING_URI, SUPPLIER_ALL_URI) {
+cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_GET_ALL_URI, DEL_NOTE_GET_URI, POH_GET_URI, DEL_NOTE_SEARCH_URI, DEL_NOTE_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, TAXLEGVARIANCE_ALL_URI) {
 
     $scope.model= {};
     //$scope.model.supplier= {};
@@ -145,7 +145,22 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
             //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
-            $state.go('dashboard.purchaseOrderDetail');
+            //$state.go('dashboard.purchaseOrderDetail');
+            ngDialog.openConfirm({
+                template:'views/pages/purchaseOrderDetail.html',
+                controller:'purchaseOrderDetailCtrl',
+                className: 'ngdialog-pdfView',
+                closeByDocument:false,
+                resolve: {viewMode: function(){return true},
+                    taxCodeSet: function(baseDataService, TAXLEGVARIANCE_ALL_URI){
+                        return baseDataService.getBaseData(TAXLEGVARIANCE_ALL_URI);
+                    }
+                }
+            }).then (function (){
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                }
+            );
         });
     }
 
