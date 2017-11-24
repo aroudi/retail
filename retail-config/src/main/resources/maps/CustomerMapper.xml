@@ -30,6 +30,7 @@
         <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
         <association property="customerType" column="Customer_Type" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="customerStatus" column="CUSTOMER_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
     </resultMap>
 
     <resultMap id="customerMapWhole" type="Customer" >
@@ -58,6 +59,7 @@
         <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
         <association property="customerType" column="Customer_Type" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="customerStatus" column="CUSTOMER_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
         <collection property="contacts" javaType="ArrayList" column="customer_id" ofType="Contact" select="getAllContactsPerCustomerId"/>
     </resultMap>
 
@@ -86,7 +88,8 @@
         ${alias}.REMAIN_CREDIT,
         ${alias}.CREDIT_DURATION,
         ${alias}.CREDIT_START_DATE,
-        ${alias}.CREDIT_START_EOM
+        ${alias}.CREDIT_START_EOM,
+        ${alias}.CONTACT_ID
     </sql>
     <sql id="gradeColumns">
         ${alias}.grade_id,
@@ -175,7 +178,8 @@
         REMAIN_CREDIT,
         CREDIT_DURATION,
         CREDIT_START_DATE,
-        CREDIT_START_EOM
+        CREDIT_START_EOM,
+        CONTACT_ID
         ) VALUES (
         #{customerType.id}
         <if test="customerStatus != null">
@@ -316,6 +320,12 @@
         <if test="creditStartEom == null">
             ,null
         </if>
+        <if test="contact != null">
+            ,#{contact.id}
+        </if>
+        <if test="contact == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -419,6 +429,9 @@
             </if>
             <if test="creditStartEom != null">
                 ,CREDIT_START_EOM = #{creditStartEom}
+            </if>
+            <if test="contact != null">
+                ,CONTACT_ID = #{contact.id}
             </if>
 
         WHERE CUSTOMER_ID = #{id}

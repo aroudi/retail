@@ -11,10 +11,12 @@ public class Contact {
     private String middleName;
     private String country;
     private String state;
+    private String suburb;
     private String postCode;
     private String address1;
     private String address2;
     private String email;
+    private String email2;
     private String mobile;
     private String phone;
     private String fax;
@@ -147,5 +149,21 @@ public class Contact {
 
     public void setContactType(ConfigCategory contactType) {
         this.contactType = contactType;
+    }
+
+    public String getSuburb() {
+        return suburb;
+    }
+
+    public void setSuburb(String suburb) {
+        this.suburb = suburb;
+    }
+
+    public String getEmail2() {
+        return email2;
+    }
+
+    public void setEmail2(String email2) {
+        this.email2 = email2;
     }
 }

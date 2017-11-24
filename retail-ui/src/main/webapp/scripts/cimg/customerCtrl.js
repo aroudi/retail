@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialog,uiGridConstants,viewMode, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_PAYMENT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI, TXN_EXPORT_PDF ) {
+cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialog,uiGridConstants,viewMode, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_PAYMENT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI, TXN_EXPORT_PDF,ALL_CATEGORY_OFTYPE_URI, COUNTRY_LIST_URI ) {
     $scope.isNewPage = true;
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -211,6 +211,7 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
             $scope.customer.creditStartEom = false;
             $scope.customer.creditStartEom = false;
             $scope.customer.creditStartDate= getLastDateOfMonth();
+            $scope.customer.contact = {};
             $scope.isNewPage = true;
         } else {
             $scope.isNewPage = false;
@@ -233,12 +234,36 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
             $scope.customerStatusSet = response.data;
             $scope.customer.customerStatus = baseDataService.populateSelectList($scope.customer.customerStatus, $scope.customerStatusSet);
         });
+        baseDataService.getBaseData(COUNTRY_LIST_URI).then(function(response){
+            $scope.countrySet = response.data;
+            $scope.country = baseDataService.populateCategoryPerDisplayName($scope.customer.contact.country,$scope.countrySet);
+            $scope.customer.contact.country = $scope.country.displayName;
+            populateStateList();
+        });
+    }
+    $scope.onCountryChange = function () {
+        $scope.customer.contact.country = $scope.country.displayName;
+        populateStateList();
+    };
+
+    $scope.onStateChange = function () {
+        $scope.customer.contact.state = $scope.state.displayName;
+    };
+
+    function populateStateList() {
+        baseDataService.getBaseData(ALL_CATEGORY_OFTYPE_URI + $scope.country.categoryCode).then(function(response){
+            $scope.stateSet = response.data;
+            $scope.state = baseDataService.populateCategoryPerDisplayName($scope.customer.contact.state,$scope.stateSet);
+        });
     }
 
     //create new customer
     $scope.createCustomer = function () {
         //$scope.facility.lastModifiedBy = userId;
         $scope.customer.contacts = $scope.gridOptions.data;
+        $scope.customer.contact.state = $scope.state.displayName;
+        $scope.customer.contact.country = $scope.country.displayName;
+
         var rowObject = $scope.customer;
         baseDataService.addRow(rowObject, CUSTOMER_ADD_URI).then(function(response) {
             addResponse = response.data;

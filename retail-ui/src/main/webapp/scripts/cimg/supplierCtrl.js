@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('supplierCtrl', function($scope, $state,$stateParams,viewMode, UserService,uiGridConstants, baseDataService, SUCCESS, FAILURE, SUPPLIER_ADD_URI, SUPPLIER_STATUS_URI, SUPPLIER_TYPE_URI, SUPPLIER_GET_PO_LIST_URI, SUPPLIER_GET_DN_LIST_URI, SUPPLIER_GET_PRODUCT_LIST_URI, POH_GET_URI,DEL_NOTE_GET_URI) {
+cimgApp.controller('supplierCtrl', function($scope, $state,$stateParams,viewMode, UserService,uiGridConstants, baseDataService, SUCCESS, FAILURE, SUPPLIER_ADD_URI, SUPPLIER_STATUS_URI, SUPPLIER_TYPE_URI, SUPPLIER_GET_PO_LIST_URI, SUPPLIER_GET_DN_LIST_URI, SUPPLIER_GET_PRODUCT_LIST_URI, POH_GET_URI,DEL_NOTE_GET_URI, ALL_CATEGORY_OFTYPE_URI, COUNTRY_LIST_URI) {
     //set default data on the page
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -140,8 +140,29 @@ cimgApp.controller('supplierCtrl', function($scope, $state,$stateParams,viewMode
             $scope.supplierTypeSet = response.data;
             $scope.supplier.supplierType = baseDataService.populateSelectList($scope.supplier.supplierType,$scope.supplierTypeSet);
         });
+        baseDataService.getBaseData(COUNTRY_LIST_URI).then(function(response){
+            $scope.countrySet = response.data;
+            $scope.country = baseDataService.populateCategoryPerDisplayName($scope.supplier.contact.country,$scope.countrySet);
+            $scope.supplier.contact.country = $scope.country.displayName;
+            populateStateList();
+        });
     }
 
+    $scope.onCountryChange = function () {
+        $scope.supplier.contact.country = $scope.country.displayName;
+        populateStateList();
+    };
+
+    $scope.onStateChange = function () {
+        $scope.supplier.contact.state = $scope.state.displayName;
+    };
+
+    function populateStateList() {
+        baseDataService.getBaseData(ALL_CATEGORY_OFTYPE_URI + $scope.country.categoryCode).then(function(response){
+            $scope.stateSet = response.data;
+            $scope.state = baseDataService.populateCategoryPerDisplayName($scope.supplier.contact.state,$scope.stateSet);
+        });
+    }
     //create new supplier
     $scope.createSupplier = function () {
 
@@ -154,6 +175,9 @@ cimgApp.controller('supplierCtrl', function($scope, $state,$stateParams,viewMode
         */
 
         //$scope.facility.lastModifiedBy = userId;
+        $scope.supplier.contact.state = $scope.state.displayName;
+        $scope.supplier.contact.country = $scope.country.displayName;
+
         var rowObject = $scope.supplier;
         baseDataService.addRow(rowObject, SUPPLIER_ADD_URI).then(function(response) {
             addResponse = response.data;

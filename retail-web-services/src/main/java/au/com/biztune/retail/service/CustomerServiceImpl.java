@@ -83,8 +83,19 @@ public class CustomerServiceImpl implements CustomerService {
                     return response;
                 }
                 //customer.setDateOfBirth(DateUtil.stringToDate(customer.getDateOfBirthStr(), "dd-MM-yyyy HH:mm"));
+                if (customer.getContact() != null) {
+                    contactDao.insert(customer.getContact());
+                }
                 customerDao.insert(customer);
             } else {
+                if (customer.getContact() != null) {
+                    final Contact existingContact = contactDao.getContactById(customer.getContact().getId());
+                    if (existingContact != null) {
+                        contactDao.update(customer.getContact());
+                    } else {
+                        contactDao.insert(customer.getContact());
+                    }
+                }
                 customerDao.update(customer);
             }
             //update contact persons

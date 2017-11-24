@@ -233,7 +233,8 @@ var type_constant = {
     'PRICING_RULE_URI' : 'categories/PRICING_RULES',
     'TXN_STATUS_ONORDER' : 'categories/SO_STATUS/SO_STATUS_ON_ORDER',
     'TXN_STATUS_OUTSTANDING' : 'categories/SO_STATUS/SO_STATUS_OUTSTANDING',
-    'SO_STATUS_URI' : 'categories/SO_STATUS'
+    'SO_STATUS_URI' : 'categories/SO_STATUS',
+    'COUNTRY_LIST_URI' : 'categories/TYPE_COUNTRY'
 
 }
 
@@ -352,6 +353,20 @@ cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDia
             if (angular.isArray(arr)) {
                 for (var i = 0; i < arr.length; i++) {
                     if ( arr[i].id==selectName.id  ) {
+                        return arr[i];
+                    }
+                }
+            }
+            return selectedItem
+        },
+        populateCategoryPerDisplayName: function (displayName, sourceData) {
+            var selectedItem = sourceData[0];
+            if (displayName===undefined )
+                return selectedItem;
+            var arr=sourceData;
+            if (angular.isArray(arr)) {
+                for (var i = 0; i < arr.length; i++) {
+                    if ( arr[i].displayName.toLowerCase().trim()===displayName.toLowerCase().trim()  ) {
                         return arr[i];
                     }
                 }

@@ -38,6 +38,7 @@ public class Customer {
     private int creditDuration;
     private Timestamp creditStartDate;
     private boolean creditStartEom;
+    private Contact contact;
 
     public long getId() {
         return id;
@@ -253,5 +254,13 @@ public class Customer {
 
     public void setCreditStartEom(boolean creditStartEom) {
         this.creditStartEom = creditStartEom;
+    }
+
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 }
