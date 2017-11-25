@@ -549,6 +549,7 @@ INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Open Draft P
 INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Customer Statement Report', 'customerStatement', 'Customer Statement Report');
 INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Change Product Price', 'productPriceChangeBulk', 'Change Product Price');
 INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Import Invoice', 'importInvoice', 'Import Invoice');
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('View Customer Account Detail', 'viewCustomerAccountDetail', 'View customer account detail on customer page ');
 
 
 
@@ -594,6 +595,7 @@ INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER W
 INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'customerStatement' ));
 INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'productPriceChangeBulk' ));
 INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'importInvoice' ));
+INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'viewCustomerAccountDetail' ));
 
 ------------------------ STOCK TYPE -------------------
 INSERT INTO CONFIG_TYPE(CONFIG_CODE, DISPLAY_NAME, DESCRIPTION) VALUES ('STOCK_TYPE', 'STOCK TYPE', 'STOCK TYPE');

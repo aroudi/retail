@@ -20,6 +20,7 @@
         <result column="CONTACT_SUR_NAME" property="contactSurName" />
         <result column="CONTACT_TITLE" property="contactTitle" />
         <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
+        <result column="DELIVERY_FREIGHT_FREE" property="deliveryFreightFree" />
         <association property="supplierType" column="SUPPLIER_TYPE_ID" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
         <association resultMap="suppOrguLinkMap" property="suppOrguLink" />
@@ -40,6 +41,7 @@
         <result column="CONTACT_SUR_NAME" property="contactSurName" />
         <result column="CONTACT_TITLE" property="contactTitle" />
         <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
+        <result column="DELIVERY_FREIGHT_FREE" property="deliveryFreightFree" />
         <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
     </resultMap>
     <resultMap id="supplierOnlyMap" type="Supplier" >
@@ -58,6 +60,7 @@
         <result column="CONTACT_SUR_NAME" property="contactSurName" />
         <result column="CONTACT_TITLE" property="contactTitle" />
         <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
+        <result column="DELIVERY_FREIGHT_FREE" property="deliveryFreightFree" />
     </resultMap>
 
     <resultMap id="suppOrguLinkMap" type="SuppOrguLink" >
@@ -91,7 +94,9 @@
         ${alias}.CONTACT_KNOWN_AS,
         ${alias}.SUPPLIER_TYPE_ID,
         ${alias}.SUPPLIER_STATUS_ID,
-        ${alias}.CONTACT_ID
+        ${alias}.CONTACT_ID,
+        ${alias}.DELIVERY_FREIGHT_FREE
+
     </sql>
 
     <sql id="suppOrguLinkColumns">
@@ -216,7 +221,8 @@
         CONTACT_FIRST_NAME,
         CONTACT_SUR_NAME,
         CONTACT_TITLE,
-        CONTACT_KNOWN_AS
+        CONTACT_KNOWN_AS,
+        DELIVERY_FREIGHT_FREE
         ) VALUES (
         #{supplierCode},
         #{supplierName}
@@ -308,6 +314,12 @@
             ,#{contactKnownAs}
         </if>
         <if test="contactKnownAs == null">
+            ,null
+        </if>
+        <if test="deliveryFreightFree != null">
+            ,#{deliveryFreightFree}
+        </if>
+        <if test="deliveryFreightFree == null">
             ,null
         </if>
         <!--
@@ -442,6 +454,9 @@
         </if>
         <if test="contactKnownAs != null">
             ,CONTACT_KNOWN_AS =#{contactKnownAs}
+        </if>
+        <if test="deliveryFreightFree != null">
+            ,DELIVERY_FREIGHT_FREE =#{deliveryFreightFree}
         </if>
           WHERE SUPPLIER_ID = #{id}
     </update>

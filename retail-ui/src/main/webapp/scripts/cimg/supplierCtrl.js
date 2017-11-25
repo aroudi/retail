@@ -130,6 +130,9 @@ cimgApp.controller('supplierCtrl', function($scope, $state,$stateParams,viewMode
             $scope.supplier = angular.copy(baseDataService.getRow());
             //baseDataService.setIsPageNew(true);
             //baseDataService.setRow({});
+            if ($scope.supplier.contact === null || $scope.supplier.contact === undefined) {
+                $scope.supplier.contact = {};
+            }
             initSupplierRelatedData($scope.supplier);
         }
         baseDataService.getBaseData(SUPPLIER_STATUS_URI).then(function(response){
@@ -175,8 +178,13 @@ cimgApp.controller('supplierCtrl', function($scope, $state,$stateParams,viewMode
         */
 
         //$scope.facility.lastModifiedBy = userId;
-        $scope.supplier.contact.state = $scope.state.displayName;
-        $scope.supplier.contact.country = $scope.country.displayName;
+        if ($scope.state !== undefined) {
+            $scope.supplier.contact.state = $scope.state.displayName;
+        }
+        if ($scope.country !== undefined) {
+            $scope.supplier.contact.country = $scope.country.displayName;
+        }
+
 
         var rowObject = $scope.supplier;
         baseDataService.addRow(rowObject, SUPPLIER_ADD_URI).then(function(response) {

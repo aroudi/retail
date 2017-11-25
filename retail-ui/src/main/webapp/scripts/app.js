@@ -398,6 +398,29 @@ cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDia
             }
             return newLines;
         },
+        buildDeliveryAddress :function (contact) {
+            var deliveryAddress = '';
+            if (contact !== undefined && contact !== null) {
+                if (contact.address1 !== undefined && contact.address1 !== null ) {
+                    deliveryAddress = deliveryAddress + contact.address1;
+                }
+                if (contact.address2 !== undefined && contact.address2 !== null ) {
+                    deliveryAddress = deliveryAddress + ' ' + contact.address2;
+                }
+                if (contact.suburb !== undefined && contact.suburb !== null ) {
+                    deliveryAddress = deliveryAddress + ' ' + contact.suburb;
+                }
+                if (contact.state !== undefined && contact.state !== null ) {
+                    deliveryAddress = deliveryAddress + ' ' + contact.state;
+                }
+                if (contact.postCode !== undefined && contact.postCode !== null ) {
+                    deliveryAddress = deliveryAddress + ' ' + contact.postCode;
+                }
+            }
+            return deliveryAddress;
+
+        },
+
         arrayToCommaSeparatedFormat: function(arr) {
             var arrayContent='';
             if (arr == undefined)

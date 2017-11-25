@@ -49,17 +49,28 @@
                             <div class="col-lg-3" >
                                 <div class="form-group">
                                     <label>Country</label>
-                                    <input class="form-control" data-ng-model="contact.country" maxlength="100">
+                                    <select class="form-control" data-ng-model="country"
+                                            ng-options="type.displayName for type in countrySet" ng-change="onCountryChange()" >
+                                    </select>
+                                    <!--input class="form-control" data-ng-model="contact.country" maxlength="100"-->
                                 </div >
                             </div >
 
                             <div class="col-lg-3" >
                                 <div class="form-group">
                                     <label>State</label>
-                                    <input class="form-control" data-ng-model="contact.state" maxlength="100">
+                                    <select class="form-control" data-ng-model="state"
+                                            ng-options="type.displayName for type in stateSet" ng-change="onStateChange()" >
+                                    </select>
+                                    <!--input class="form-control" data-ng-model="contact.state" maxlength="100"-->
                                 </div >
                             </div >
-
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>Suburb:</label>
+                                    <input class="form-control" data-ng-model="contact.suburb" maxlength="20">
+                                </div >
+                            </div >
                             <div class="col-lg-3" >
                                 <div class="form-group">
                                     <label>PostCode</label>

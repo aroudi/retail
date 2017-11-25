@@ -465,7 +465,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }).then (function (value){
                 $scope.model.customer = value;
                 //var mediaType;
-                $scope.txnHeaderForm.txhdDlvAddress = $scope.model.customer.address2;
+                $scope.txnHeaderForm.txhdDlvAddress = baseDataService.buildDeliveryAddress($scope.model.customer.contact);
                 /*
                 if ($scope.model.customer.customerType.categoryCode == 'CUSTOMER_TYPE_ACCOUNT') {
                     mediaType = $scope.mediaTypeAccount;
@@ -483,8 +483,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
     $scope.onCustomerChange = function () {
         //var mediaType;
-        $scope.txnHeaderForm.txhdDlvAddress = $scope.model.customer.address2;
-        $scope.txnHeaderForm.txhdEmailTo = $scope.model.customer.email;
+        $scope.txnHeaderForm.txhdDlvAddress = baseDataService.buildDeliveryAddress($scope.model.customer.contact);
+        $scope.txnHeaderForm.txhdEmailTo = $scope.model.customer.contact.email;
         baseDataService.getBaseData(CUSTOMER_CONTACT_LIST_URI+$scope.model.customer.id).then(function(response){
             populateCustomerContactinfo(response.data);
         });
@@ -1361,5 +1361,4 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
 
     }
-
 });

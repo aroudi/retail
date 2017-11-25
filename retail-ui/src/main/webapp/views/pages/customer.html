@@ -90,55 +90,6 @@
                                     </div>
                                     <div class="panel panel-info">
                                         <div class="panel-heading">
-                                            Account Details
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>No of Days:</label>
-                                                            <input class="form-control" data-ng-model="customer.creditDuration">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Credit Limit:</label>
-                                                            <input class="form-control" data-ng-model="customer.creditLimit" ng-change="onCreditLimitChange()">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Owing:</label>
-                                                            <input class="form-control" data-ng-model="customer.owing" ng-disabled="true">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Remaining Credit:</label>
-                                                            <input class="form-control" data-ng-model="customer.remainCredit" ng-disabled="true">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Start From EOM:</label>
-                                                            <input type="checkbox" data-ng-model="customer.creditStartEom" ng-click="setCreditStartEom()">
-                                                        </div>
-                                                    </div>
-                                                    <!--
-                                                    <div class="col-lg-2">
-                                                        <div class="form-group">
-                                                            <label>Credit Start Date:</label>
-                                                            <input type="date" class="form-control" data-ng-model="customer.creditStartDate" ng-show="customer.creditStartEom">
-                                                        </div >
-                                                    </div >
-                                                    -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading">
                                             Company Contact Info
                                         </div>
                                         <div class="panel-body">
@@ -194,30 +145,40 @@
                                                 <div class="col-lg-12">
                                                     <div class="col-lg-3">
                                                         <div class="form-group">
-                                                            <label>EMail
+                                                            <label>EMail1
                                                                 <span class="btn btn-warning btn-xs" ng-show="mainForm.email.$error.email">
-                                                        Invalid Email!
-                                                   </span>
+                                                                    Invalid Email!
+                                                                </span>
                                                             </label>
-                                                            <input type="email" name="email" class="form-control" data-ng-model="customer.email" maxlength="50">
+                                                            <input type="email" name="email" class="form-control" data-ng-model="customer.contact.email" maxlength="50">
                                                         </div >
                                                     </div >
                                                     <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label>EMail2
+                                                                <span class="btn btn-warning btn-xs" ng-show="mainForm.email.$error.email2">
+                                                                    Invalid Email!
+                                                                </span>
+                                                            </label>
+                                                            <input type="email" name="email2" class="form-control" data-ng-model="customer.contact.email2" maxlength="50">
+                                                        </div >
+                                                    </div >
+                                                    <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Web:</label>
-                                                            <input class="form-control" data-ng-model="customer.webSite" maxlength="100">
+                                                            <input class="form-control" data-ng-model="customer.contact.webSite" maxlength="100">
                                                         </div >
                                                     </div >
-                                                    <div class="col-lg-3">
+                                                    <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Phone:</label>
-                                                            <input class="form-control" data-ng-model="customer.phone" maxlength="20">
+                                                            <input class="form-control" data-ng-model="customer.contact.phone" maxlength="20">
                                                         </div >
                                                     </div >
-                                                    <div class="col-lg-3">
+                                                    <div class="col-lg-2">
                                                         <div class="form-group">
                                                             <label>Fax:</label>
-                                                            <input class="form-control" data-ng-model="customer.fax" maxlength="20">
+                                                            <input class="form-control" data-ng-model="customer.contact.fax" maxlength="20">
                                                         </div >
                                                     </div >
                                                 </div>
@@ -225,15 +186,65 @@
                                         </div>
                                     </div>
 
+                                    <div class="panel panel-info" ng-show="checkAccessToAccountDetail()">
+                                        <div class="panel-heading">
+                                            Account Details
+                                        </div>
+                                        <div class="panel-body">
                                             <div class="row">
-                                                <!--button type="button" class="btn btn-outline btn-warning" ng-click="">Cancel</button-->
-                                                <!--button type="button" class="btn btn-outline btn-info" ng-click="">Clear</button-->
-                                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                                <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
-                                                <button type="button" class="btn btn-success" ng-click="createCustomer()" ng-show="!isViewMode" ng-disabled="!mainForm.$valid">Submit</button>
-
-                                                <!--button type="button" class="btn btn-outline btn-success" ng-click="createIncident()">Submit</button -->
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label>No of Days:</label>
+                                                            <input class="form-control" data-ng-model="customer.creditDuration">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label>Credit Limit:</label>
+                                                            <input class="form-control" data-ng-model="customer.creditLimit" ng-change="onCreditLimitChange()">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label>Owing:</label>
+                                                            <input class="form-control" data-ng-model="customer.owing" ng-disabled="true">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label>Remaining Credit:</label>
+                                                            <input class="form-control" data-ng-model="customer.remainCredit" ng-disabled="true">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label>Start From EOM:</label>
+                                                            <input type="checkbox" data-ng-model="customer.creditStartEom" ng-click="setCreditStartEom()">
+                                                        </div>
+                                                    </div>
+                                                    <!--
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label>Credit Start Date:</label>
+                                                            <input type="date" class="form-control" data-ng-model="customer.creditStartDate" ng-show="customer.creditStartEom">
+                                                        </div >
+                                                    </div >
+                                                    -->
+                                                </div>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!--button type="button" class="btn btn-outline btn-warning" ng-click="">Cancel</button-->
+                                        <!--button type="button" class="btn btn-outline btn-info" ng-click="">Clear</button-->
+                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                        <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
+                                        <button type="button" class="btn btn-success" ng-click="createCustomer()" ng-show="!isViewMode" ng-disabled="!mainForm.$valid">Submit</button>
+
+                                        <!--button type="button" class="btn btn-outline btn-success" ng-click="createIncident()">Submit</button -->
+                                    </div>
                                 </fieldset>
                                 <div class="form-group">
                                     <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="cancel()" ng-show="isViewMode">Return</button>

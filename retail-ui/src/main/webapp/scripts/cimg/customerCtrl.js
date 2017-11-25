@@ -218,6 +218,9 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
             $scope.customer = angular.copy(baseDataService.getRow());
             $scope.gridOptions.data = $scope.customer.contacts;
             $scope.customer.creditStartDate = new Date($scope.customer.creditStartDate);
+            if ($scope.customer.contact === null || $scope.customer.contact === undefined) {
+                $scope.customer.contact = {};
+            }
             //baseDataService.setIsPageNew(true);
             //baseDataService.setRow({});
             initCustomerRelatedData($scope.customer);
@@ -261,8 +264,12 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
     $scope.createCustomer = function () {
         //$scope.facility.lastModifiedBy = userId;
         $scope.customer.contacts = $scope.gridOptions.data;
-        $scope.customer.contact.state = $scope.state.displayName;
-        $scope.customer.contact.country = $scope.country.displayName;
+        if ($scope.state !== undefined) {
+            $scope.customer.contact.state = $scope.state.displayName;
+        }
+        if ($scope.country !== undefined) {
+            $scope.customer.contact.country = $scope.country.displayName;
+        }
 
         var rowObject = $scope.customer;
         baseDataService.addRow(rowObject, CUSTOMER_ADD_URI).then(function(response) {
@@ -444,6 +451,10 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
     $scope.cancel = function() {
         $scope.closeThisDialog('button');
     };
+
+    $scope.checkAccessToAccountDetail = function() {
+        return UserService.checkUserHasAccess('viewCustomerAccountDetail');
+    }
 
 });
 

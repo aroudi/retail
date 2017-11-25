@@ -436,11 +436,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,$statePar
     }
 
     $scope.changeSupplier = function() {
-        if ($scope.purchaseOrderHeader.supplier.contact != undefined && $scope.purchaseOrderHeader.supplier.contact.address1 != undefined) {
-            $scope.purchaseOrderHeader.pohDlvAddress = $scope.purchaseOrderHeader.supplier.contact.address1;
-        } else {
-            $scope.purchaseOrderHeader.pohDlvAddress = '';
-        }
+        $scope.purchaseOrderHeader.pohDlvAddress = baseDataService.buildDeliveryAddress($scope.purchaseOrderHeader.supplier.contact);
         var contactPerson = '';
         if ($scope.purchaseOrderHeader.supplier.contactFirstName != undefined) {
             contactPerson = contactPerson + $scope.purchaseOrderHeader.supplier.contactFirstName;
@@ -464,11 +460,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,$statePar
         }).then (function (value){
                 //alert('returned value = ' + value);
                 $scope.purchaseOrderHeader.supplier = value;
-                if ($scope.purchaseOrderHeader.supplier.contact != undefined && $scope.purchaseOrderHeader.supplier.contact.address1 != undefined) {
-                    $scope.purchaseOrderHeader.pohDlvAddress = $scope.purchaseOrderHeader.supplier.contact.address1;
-                } else {
-                    $scope.purchaseOrderHeader.pohDlvAddress = '';
-                }
+                $scope.purchaseOrderHeader.pohDlvAddress = baseDataService.buildDeliveryAddress($scope.purchaseOrderHeader.supplier.contact);
                 var contactPerson = '';
                 if ($scope.purchaseOrderHeader.supplier.contactFirstName != undefined) {
                     contactPerson = contactPerson + $scope.purchaseOrderHeader.supplier.contactFirstName;

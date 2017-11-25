@@ -25,6 +25,7 @@ public class Supplier {
     private String contactTitle;
     private String contactKnownAs;
     private SuppOrguLink suppOrguLink;
+    private boolean deliveryFreightFree;
 
     public long getId() {
         return id;
@@ -176,5 +177,13 @@ public class Supplier {
 
     public void setSuppOrguLink(SuppOrguLink suppOrguLink) {
         this.suppOrguLink = suppOrguLink;
+    }
+
+    public boolean isDeliveryFreightFree() {
+        return deliveryFreightFree;
+    }
+
+    public void setDeliveryFreightFree(boolean deliveryFreightFree) {
+        this.deliveryFreightFree = deliveryFreightFree;
     }
 }
