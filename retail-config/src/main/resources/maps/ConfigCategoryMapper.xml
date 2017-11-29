@@ -104,6 +104,17 @@
         ORDER BY
           cat.CATEGORY_ORDER
     </select>
+    <select id="getCategoryOfTypeAndDisplayName" resultMap="configCategoryMap" >
+        SELECT
+        <include refid="configCategoryColumns"><property name="alias" value="cat"/></include>
+        FROM
+        CONFIG_CATEGORY cat inner join CONFIG_TYPE type on (cat.CONFIG_TYPE_ID=type.CONFIG_TYPE_ID)
+        WHERE
+        type.CONFIG_CODE=#{param1}
+        AND  cat.DISPLAY_NAME=#{param2}
+        ORDER BY
+        cat.CATEGORY_ORDER
+    </select>
     <select id="getCategoryById" resultMap="configCategoryMap" >
         SELECT
           <include refid="configCategoryColumns"><property name="alias" value="cat"/></include>

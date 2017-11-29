@@ -76,4 +76,11 @@ public interface SupplierService {
      * @return list of Supplier's products
      */
     List<SuppProdPrice> getSupplierProductsWithPrice(long supplierId);
+
+    /**
+     * get supplier by name.
+     * @param name name
+     * @return Supplier
+     */
+    Supplier getSupplierByName(String name);
 }

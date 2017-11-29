@@ -82,6 +82,7 @@ var service_uri = {
     'SUPPLIER_GET_DN_LIST_URI' : 'deliveryNote/getSupplierDeliveryNotes/',
     'SUPPLIER_GET_PRODUCT_LIST_URI' : 'supplier/productList/',
     'SUPPLIER_GET_PRODUCT_LIST_WITH_PRICE_URI' : 'supplier/productListWithPrice/',
+    'SUPPLIER_IMPORT_CSV_URI' : 'supplier/importCsv',
     'UNOM_ALL_URI' : 'unitOfMeasure/all',
     'TAXRULE_ALL_URI' : 'taxRule/all',
     'TAXLEGVARIANCE_ALL_URI' : 'taxRule/taxLegVariance/allActive',

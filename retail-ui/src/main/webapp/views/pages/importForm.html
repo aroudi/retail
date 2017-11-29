@@ -6,7 +6,7 @@ ng-multiple="false" accept="*.xml" resetOnClick="true">
     <div class="col-lg-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                Import Invoice
+                {{title}}
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -29,7 +29,7 @@ ng-multiple="false" accept="*.xml" resetOnClick="true">
                                         <I ng-show="myForm.file.$error.required">*Required</I> &nbsp &nbsp
                                 </div>
                                 <div class="col-lg-1">
-                                    <button class="btn btn-primary" ng-click="onFileSelect(myFile)" ng-disabled ="!myForm.$valid">Upload</button>
+                                    <button class="btn btn-primary" ng-click="onFileSelect(myFile)" ng-disabled ="!myForm.$valid">Import</button>
                                 </div>
                             </FORM>
                     </div >

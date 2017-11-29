@@ -126,7 +126,7 @@ public class TestProduct {
             System.out.println("tax rule link inserted");
 
             //get supplier
-            Supplier supplier = supplierDao.getSupplierByOrgUnitIdAndSuppCode(orgUnit.getId(), supplierCode);
+            Supplier supplier = supplierDao.getSupplierByOrgUnitIdAndSuppCode(orgUnit.getId(), supplierCode).get(0);
             System.out.println("supplier fetched");
 
             //get supplier unit of measure

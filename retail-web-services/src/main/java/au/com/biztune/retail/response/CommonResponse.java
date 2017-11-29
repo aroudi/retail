@@ -37,6 +37,19 @@ public class CommonResponse {
     }
 
     /**
+     * add all messages from list.
+     * @param messages messages.
+     */
+    public void addAll(List<String> messages) {
+        if (messageList == null) {
+            messageList = new ArrayList<String>();
+        }
+        if (messages != null) {
+            messageList.addAll(messages);
+        }
+    }
+
+    /**
      * print message list.
      * @return message list.
      */

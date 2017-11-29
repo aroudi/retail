@@ -47,7 +47,7 @@ public interface SupplierDao {
      * @param suppCode suppCode
      * @return Supplier.
      */
-    Supplier getSupplierByOrgUnitIdAndSuppCode(long orgUnitId, String suppCode);
+    List<Supplier> getSupplierByOrgUnitIdAndSuppCode(long orgUnitId, String suppCode);
 
 
     /**
@@ -72,7 +72,7 @@ public interface SupplierDao {
      * @param suppName suppName
      * @return Supplier.
      */
-    Supplier getSupplierByOrgUnitIdAndSuppName(long orgUnitId, String suppName);
+    List<Supplier> getSupplierByOrgUnitIdAndSuppName(long orgUnitId, String suppName);
     /**
      * get supplier by solId.
      * @param solId solId

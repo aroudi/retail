@@ -4,17 +4,17 @@ import au.com.biztune.retail.domain.SuppProdPrice;
 import au.com.biztune.retail.domain.Supplier;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
+import au.com.biztune.retail.service.SupplierImportService;
 import au.com.biztune.retail.service.SupplierService;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -31,6 +31,10 @@ public class SupplierRest {
 
     @Autowired
     private SupplierService supplierService;
+    @Autowired
+    private SupplierImportService supplierImportService;
+    @Context
+    private SecurityContext securityContext;
 
     /**
      * Returns list of suppliers.
@@ -99,5 +103,23 @@ public class SupplierRest {
     @Produces(MediaType.APPLICATION_JSON)
     public List<SuppProdPrice> getSupplierProductsWithPrice (@PathParam("id") long id) {
         return supplierService.getSupplierProductsWithPrice(id);
+    }
+
+    /**
+     * upload bill of quantity.
+     * @param uploadedInputStream uploadedInputStream
+     * @return CommonResponse
+     */
+    @Secured
+    @POST
+    @Path("/importCsv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public CommonResponse importSupplier(@FormDataParam("file")InputStream uploadedInputStream) {
+        try {
+            return supplierImportService.importSupplierFromCsvInputStream(uploadedInputStream);
+        } catch (Exception e) {
+            logger.error("Exception in importing supplier from csv.", e);
+            return null;
+        }
     }
 }

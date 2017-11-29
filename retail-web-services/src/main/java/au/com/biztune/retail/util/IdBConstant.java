@@ -53,6 +53,16 @@ public interface IdBConstant {
     String SUPPLIER_STATUS_IMPORTED = "IMPORTED";
 
     /**
+     * SUPPLIER STATUS IMPORTED.
+     */
+    String SUPPLIER_STATUS_ACTIVE = "SUPPLIER_STATUS_ACTIVE";
+
+    /**
+     * SUPPLIER STATUS IMPORTED.
+     */
+    String SUPPLIER_STATUS_HELD = "SUPPLIER_STATUS_HELD";
+
+    /**
      * PRODUCT STATE.
      */
     String TYPE_PRODUCT_TYPE = "PRODUCT_TYPE";
@@ -587,4 +597,8 @@ public interface IdBConstant {
     String CUSTOMER_GRADE_DEFAULT= "Default";
 
     String DEFAULT_PRODUCT_TAX_CODE = "GST";
+    /**
+     * TYPE COUNTRY.
+     */
+    String TYPE_COUNTRY = "TYPE_COUNTRY";
 }

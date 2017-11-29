@@ -2241,3 +2241,11 @@ go
 alter table SUPPLIER
    add  DELIVERY_FREIGHT_FREE BIT DEFAULT 0 NULL
 go
+
+update config_category set display_name = 'On hold', description='On hold' where display_name = 'held'
+go
+
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Import supplier', 'importSupplier', 'Import supplier');
+GO
+INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'importSupplier' ));
+go

@@ -43,4 +43,12 @@ public interface ConfigCategoryDao {
      * @return ConfigType
      */
     ConfigType getConfigTypeByCode(String typeCode);
+
+    /**
+     * get category by type and display name.
+     * @param typeConstant typeConstant
+     * @param catDisplayName catDisplayName
+     * @return ConfigCategory
+     */
+    List<ConfigCategory> getCategoryOfTypeAndDisplayName(String typeConstant, String catDisplayName);
 }
