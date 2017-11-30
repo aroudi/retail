@@ -195,7 +195,7 @@
             <property name="max" value="500"/>
         </module>
         <module name="ParameterNumber">
-            <property name="max" value="20"/>
+            <property name="max" value="30"/>
         </module>
         <module name="OuterTypeNumber"/>
 
