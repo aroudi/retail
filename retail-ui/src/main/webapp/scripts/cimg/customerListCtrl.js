@@ -12,15 +12,20 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout, ngDial
                     return grid.getCellValue(row, col).color
                 }
             },
-            {field:'code', displayName:'ABN', enableCellEdit:false, width:'10%'},
-            {field:'companyName', displayName:'Company Name',enableCellEdit:false, width:'35%',
+            {field:'surName', displayName:'Surname',enableCellEdit:false, width:'20%',
                 cellTooltip: function(row,col) {
-                    return row.entity.companyName
+                    return row.entity.surName
                 }
             },
-            {field:'address', enableCellEdit:false , width:'30%',
+            {field:'firstName', displayName:'Given Names',enableCellEdit:false, width:'20%',
                 cellTooltip: function(row,col) {
-                    return row.entity.address
+                    return row.entity.firstName
+                }
+            },
+            {field:'code', displayName:'ABN', enableCellEdit:false, width:'10%'},
+            {field:'companyName', displayName:'Company Name',enableCellEdit:false, width:'25%',
+                cellTooltip: function(row,col) {
+                    return row.entity.companyName
                 }
             },
             {field:'customerStatus', displayName:'status',enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',

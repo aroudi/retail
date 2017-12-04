@@ -333,6 +333,10 @@ public interface IdBConstant {
      * CUSTOMER STATUS CONFIRMED.
      */
     String CUSTOMER_STATUS_CONFIRMED = "CUSTOMER_STATUS_CONFIRMED";
+    /**
+     * CUSTOMER STATUS INACTIVE.
+     */
+    String CUSTOMER_STATUS_IN_ACTIVE = "CUSTOMER_STATUS_IN_ACTIVE";
 
     /**
      * CUSTOMER TYPE.
@@ -595,6 +599,22 @@ public interface IdBConstant {
      * CUSTOMER GRADE CODE
      */
     String CUSTOMER_GRADE_DEFAULT= "Default";
+    /**
+     * CUSTOMER GRADE CODE
+     */
+    String CUSTOMER_GRADE_A= "A";
+    /**
+     * CUSTOMER GRADE CODE
+     */
+    String CUSTOMER_GRADE_B= "B";
+    /**
+     * CUSTOMER GRADE CODE
+     */
+    String CUSTOMER_GRADE_C= "C";
+    /**
+     * CUSTOMER GRADE CODE
+     */
+    String CUSTOMER_GRADE_D= "D ";
 
     String DEFAULT_PRODUCT_TAX_CODE = "GST";
     /**

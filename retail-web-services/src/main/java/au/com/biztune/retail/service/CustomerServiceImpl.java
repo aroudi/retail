@@ -76,11 +76,21 @@ public class CustomerServiceImpl implements CustomerService {
             */
             if (isNew) {
                 //check if customer code is already in there
-                final Customer customer1 = customerDao.getCustomerByCode(customer.getCode());
-                if (customer1 != null) {
-                    response.setStatus(IdBConstant.RESULT_FAILURE);
-                    response.setMessage("customer with code " + customer.getClass() + " already exists");
-                    return response;
+                if (customer.getCode() != null && !customer.getCode().isEmpty()) {
+                    final Customer customer1 = customerDao.getCustomerByCode(customer.getCode());
+                    if (customer1 != null) {
+                        response.setStatus(IdBConstant.RESULT_FAILURE);
+                        response.setMessage("customer with code " + customer.getCode() + " already exists");
+                        return response;
+                    }
+                }
+                if (customer.getCompanyName() != null && !customer.getCompanyName().isEmpty()) {
+                    final Customer customer1 = customerDao.getCustomerByCompanyName(customer.getCompanyName());
+                    if (customer1 != null) {
+                        response.setStatus(IdBConstant.RESULT_FAILURE);
+                        response.setMessage("customer with company name " + customer.getCompanyName() + " already exists");
+                        return response;
+                    }
                 }
                 //customer.setDateOfBirth(DateUtil.stringToDate(customer.getDateOfBirthStr(), "dd-MM-yyyy HH:mm"));
                 if (customer.getContact() != null) {
@@ -99,28 +109,30 @@ public class CustomerServiceImpl implements CustomerService {
                 customerDao.update(customer);
             }
             //update contact persons
-            final ArrayList<Long> contactList = new ArrayList<Long>();
-            for (Contact contact : customer.getContacts()) {
-                if (contact == null) {
-                    continue;
-                }
+            if (customer.getContacts() != null && customer.getContacts().size() > 1) {
+                final ArrayList<Long> contactList = new ArrayList<Long>();
+                for (Contact contact : customer.getContacts()) {
+                    if (contact == null) {
+                        continue;
+                    }
                     //if contact is new
-                if (contact.getId() < 0) {
-                    contactDao.insert(contact);
-                    final CustomerContact customerContact = new CustomerContact();
-                    customerContact.setContact(contact);
-                    customerContact.setCustomerId(customer.getId());
-                    customerDao.insertCustomerContact(customerContact);
-                // update existing one
-                } else {
-                    contactDao.update(contact);
+                    if (contact.getId() < 0) {
+                        contactDao.insert(contact);
+                        final CustomerContact customerContact = new CustomerContact();
+                        customerContact.setContact(contact);
+                        customerContact.setCustomerId(customer.getId());
+                        customerDao.insertCustomerContact(customerContact);
+                        // update existing one
+                    } else {
+                        contactDao.update(contact);
+                    }
+                    contactList.add(contact.getId());
                 }
-                contactList.add(contact.getId());
-            }
-            //delete contacts
-            if (contactList.size() > 0) {
-                //contactDao.deleteContactWhereIdNotIn(contactList);
-                customerDao.deleteCustomerContactWhereIdNotIn(customer.getId(), contactList);
+                //delete contacts
+                if (contactList.size() > 0) {
+                    //contactDao.deleteContactWhereIdNotIn(contactList);
+                    customerDao.deleteCustomerContactWhereIdNotIn(customer.getId(), contactList);
+                }
             }
             return response;
         } catch (Exception e) {

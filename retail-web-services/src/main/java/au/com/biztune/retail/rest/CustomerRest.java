@@ -6,7 +6,9 @@ import au.com.biztune.retail.report.CustomerStatementRptMgr;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.BillOfQuantityService;
+import au.com.biztune.retail.service.CustomerImportService;
 import au.com.biztune.retail.service.CustomerService;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.MediaType;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -37,6 +40,9 @@ public class CustomerRest {
 
     @Autowired
     private BillOfQuantityService billOfQuantityService;
+
+    @Autowired
+    private CustomerImportService customerImportService;
     /**
      * Returns list of customers.
      * @return list of Customer
@@ -196,4 +202,22 @@ public class CustomerRest {
     public List<Contact> getCustomerContactListById (@PathParam("id") long id) {
         return customerService.getCustomerContactListPerCustomerId(id);
     }
+    /**
+     * import customer records from csv.
+     * @param uploadedInputStream uploadedInputStream
+     * @return CommonResponse
+     */
+    @Secured
+    @POST
+    @Path("/importCsv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public CommonResponse importSupplier(@FormDataParam("file")InputStream uploadedInputStream) {
+        try {
+            return customerImportService.importCustomerFromCsvInputStream(uploadedInputStream);
+        } catch (Exception e) {
+            logger.error("Exception in importing customer from csv.", e);
+            return null;
+        }
+    }
+
 }

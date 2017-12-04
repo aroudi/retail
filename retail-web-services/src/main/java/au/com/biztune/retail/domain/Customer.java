@@ -15,6 +15,7 @@ public class Customer {
     private ConfigCategory customerStatus;
     private String firstName;
     private String surName;
+    private String custPosition;
     private String middleName;
     private String companyName;
     @JsonIgnore
@@ -262,5 +263,13 @@ public class Customer {
 
     public void setContact(Contact contact) {
         this.contact = contact;
+    }
+
+    public String getCustPosition() {
+        return custPosition;
+    }
+
+    public void setCustPosition(String custPosition) {
+        this.custPosition = custPosition;
     }
 }

@@ -26,6 +26,7 @@ CREATE TABLE [dbo].[Customer](
 	[First_Name] [varchar](100) NULL,
 	[Sur_Name] [varchar](100) NULL,
 	[Middle_Name] [varchar](100) NULL,
+	[CUST_POSITION] [varchar](100) NULL,
 	[Company_Name] [nchar](100) NULL,
 	[Date_Of_Birth] [datetime] NULL,
 	[Address] [varchar](500) NULL,

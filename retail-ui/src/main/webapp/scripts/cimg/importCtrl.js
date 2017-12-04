@@ -1,7 +1,7 @@
 /**
  * Created by arash on 05/10/2017.
  */
-cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, importEntity, fileUploadService,singleFileUploadService,baseDataService, SUCCESS, FAILURE, INVOICE_IMPORT_URI, SUPPLIER_IMPORT_CSV_URI) {
+cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, importEntity, fileUploadService,singleFileUploadService,baseDataService, SUCCESS, FAILURE, INVOICE_IMPORT_URI, SUPPLIER_IMPORT_CSV_URI, CUSTOMER_IMPORT_CSV_URI) {
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -18,7 +18,8 @@ cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, impor
     $scope.fileName ='Import invoice from doors3(xml)';
     $scope.fileSet = [
         'Import invoice from doors3(xml)',
-        'Import supplier from MYOB(csv)'
+        'Import supplier from MYOB(csv)',
+        'Import customer from MYOB(csv)'
     ];
     $scope.title = "Import Invoice";
     var importUrl = INVOICE_IMPORT_URI;
@@ -33,10 +34,10 @@ cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, impor
             $scope.fileName ='Import supplier from MYOB(csv)';
             importUrl = SUPPLIER_IMPORT_CSV_URI;
             break;
-        case 'client' :
-            $scope.title = "Import Client";
-            $scope.fileName ='Import client from MYOB(csv)';
-            //importUrl = CLIENT_IMPORT_URI;
+        case 'customer' :
+            $scope.title = "Import Customer";
+            $scope.fileName ='Import customer from MYOB(csv)';
+            importUrl = CUSTOMER_IMPORT_CSV_URI;
             break;
     }
     $scope.gridOptions.enableRowSelection = true;

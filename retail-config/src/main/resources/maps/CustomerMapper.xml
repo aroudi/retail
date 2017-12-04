@@ -9,6 +9,7 @@
         <result column="First_Name" property="firstName" />
         <result column="Sur_Name" property="surName" />
         <result column="Middle_Name" property="middleName" />
+        <result column="CUST_POSITION" property="custPosition" />
         <result column="Company_Name" property="companyName" />
         <result column="Date_Of_Birth" property="dateOfBirth" />
         <result column="Address" property="address" />
@@ -38,6 +39,7 @@
         <result column="First_Name" property="firstName" />
         <result column="Sur_Name" property="surName" />
         <result column="Middle_Name" property="middleName" />
+        <result column="CUST_POSITION" property="custPosition" />
         <result column="Company_Name" property="companyName" />
         <result column="Date_Of_Birth" property="dateOfBirth" />
         <result column="Address" property="address" />
@@ -89,7 +91,8 @@
         ${alias}.CREDIT_DURATION,
         ${alias}.CREDIT_START_DATE,
         ${alias}.CREDIT_START_EOM,
-        ${alias}.CONTACT_ID
+        ${alias}.CONTACT_ID,
+        ${alias}.CUST_POSITION
     </sql>
     <sql id="gradeColumns">
         ${alias}.grade_id,
@@ -179,7 +182,8 @@
         CREDIT_DURATION,
         CREDIT_START_DATE,
         CREDIT_START_EOM,
-        CONTACT_ID
+        CONTACT_ID,
+        CUST_POSITION
         ) VALUES (
         #{customerType.id}
         <if test="customerStatus != null">
@@ -326,6 +330,12 @@
         <if test="contact == null">
             ,null
         </if>
+        <if test="custPosition != null">
+            ,#{custPosition}
+        </if>
+        <if test="custPosition == null">
+            ,null
+        </if>
         )
     </insert>
 
@@ -432,6 +442,9 @@
             </if>
             <if test="contact != null">
                 ,CONTACT_ID = #{contact.id}
+            </if>
+            <if test="custPosition != null">
+                ,CUST_POSITION = #{custPosition}
             </if>
 
         WHERE CUSTOMER_ID = #{id}

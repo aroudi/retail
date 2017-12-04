@@ -392,7 +392,14 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/importForm.html',
             access: "user",
             resolve: {importEntity: function(){return 'supplier'}}
-        });
+        })
+    .state('dashboard.importCustomer',{
+        url:'/importCustomer',
+        controller: 'importCtrl',
+        templateUrl:'views/pages/importForm.html',
+        access: "user",
+        resolve: {importEntity: function(){return 'customer'}}
+    });
     /**
      }]).run(function($rootScope, AccessChecker) {
     $rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
