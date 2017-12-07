@@ -151,7 +151,7 @@ public class ProductImportServiceImpl {
             if (csvReader == null) {
                 logger.error("not able to open product price csv file");
                 commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
-                commonResponse.setMessage("not able to open csv file");
+                commonResponse.addMessage("not able to open csv file");
                 return commonResponse;
             }
             iterator = csvReader.readAll().listIterator();
@@ -170,13 +170,15 @@ public class ProductImportServiceImpl {
                 suppProdPriceDao.updateProductCostsPerSolIdAndProdId(StringUtil.strToLong(csvRow[1]), StringUtil.strToLong(csvRow[2])
                         , StringUtil.strToDouble(csvRow[6]), StringUtil.strToDouble(csvRow[10]));
                 priceDao.updatePricePerProdIdAndPrccId(StringUtil.strToLong(csvRow[2]), priceCode.getId(), StringUtil.strToDouble(csvRow[8]));
+                productService.updateProductCostBaseDefaultSupplier(StringUtil.strToLong(csvRow[2]));
 
             }
+            commonResponse.addMessage("product price imported successfully");
             return commonResponse;
         } catch (Exception e) {
             logger.error("error in importing products : ", e);
             commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
-            commonResponse.setMessage("error in updating product price from csv. see the logs");
+            commonResponse.addMessage("error in updating product price from csv. see the logs");
         } finally {
             if (csvReader != null) {
                 csvReader.close();

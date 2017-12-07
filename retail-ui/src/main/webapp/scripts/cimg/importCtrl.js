@@ -1,8 +1,8 @@
 /**
  * Created by arash on 05/10/2017.
  */
-cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, importEntity, fileUploadService,singleFileUploadService,baseDataService, SUCCESS, FAILURE, INVOICE_IMPORT_URI, SUPPLIER_IMPORT_CSV_URI, CUSTOMER_IMPORT_CSV_URI) {
-
+cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, importEntity, fileUploadService,singleFileUploadService,baseDataService, SUCCESS, FAILURE, INVOICE_IMPORT_URI, SUPPLIER_IMPORT_CSV_URI, CUSTOMER_IMPORT_CSV_URI, PRODUCT_PRICE_UPDATE_BULK) {
+    $scope.importEntity = importEntity;
     $scope.gridOptions = {
         enableFiltering: true,
         enableSelectAll:false,
@@ -19,7 +19,8 @@ cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, impor
     $scope.fileSet = [
         'Import invoice from doors3(xml)',
         'Import supplier from MYOB(csv)',
-        'Import customer from MYOB(csv)'
+        'Import customer from MYOB(csv)',
+        'Import Product Price(csv)'
     ];
     $scope.title = "Import Invoice";
     var importUrl = INVOICE_IMPORT_URI;
@@ -38,6 +39,11 @@ cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, impor
             $scope.title = "Import Customer";
             $scope.fileName ='Import customer from MYOB(csv)';
             importUrl = CUSTOMER_IMPORT_CSV_URI;
+            break;
+        case 'productPrice' :
+            $scope.title = "Import Product Price From CSV";
+            $scope.fileName ='Import Product Price(csv)';
+            importUrl = PRODUCT_PRICE_UPDATE_BULK;
             break;
     }
     $scope.gridOptions.enableRowSelection = true;
@@ -61,5 +67,7 @@ cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, impor
     $scope.cancelForm = function() {
         $state.go($scope.previouseState);
     }
-
+    $scope.close = function() {
+        $scope.confirm('success');
+    }
 });

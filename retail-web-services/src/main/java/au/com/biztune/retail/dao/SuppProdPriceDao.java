@@ -140,4 +140,12 @@ public interface SuppProdPriceDao {
      * @param bulkPrice product bulk price
      */
     void updateProductCostsPerSolIdAndProdId(long solId, long prodId, double price, double bulkPrice);
+
+    /**
+     * update product price and bulk price per sprc id.
+     * @param sprcId sprcId
+     * @param price product cost
+     * @param bulkPrice bulk price.
+     */
+    void updateProductCostsPerSprcId(long sprcId, double price, double bulkPrice);
 }

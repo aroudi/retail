@@ -22,7 +22,7 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout, ngDial
                     return row.entity.firstName
                 }
             },
-            {field:'code', displayName:'ABN', enableCellEdit:false, width:'10%'},
+            {field:'code', displayName:' ', enableCellEdit:false, width:'10%'},
             {field:'companyName', displayName:'Company Name',enableCellEdit:false, width:'25%',
                 cellTooltip: function(row,col) {
                     return row.entity.companyName

@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeout, uiGridConstants, baseDataService, SUCCESS, FAILURE, SUPPLIER_GET_PRODUCT_LIST_WITH_PRICE_URI, SUPPLIER_ALL_URI, PRODUCT_PRICE_UPDATE_BULK) {
+cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeout, uiGridConstants,ngDialog, baseDataService, SUCCESS, FAILURE, SUPPLIER_GET_PRODUCT_LIST_WITH_PRICE_URI, SUPPLIER_ALL_URI, PRODUCT_PRICE_UPDATE_BULK) {
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -182,6 +182,24 @@ cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeo
     };
     $scope.exportCSV = function() {
         var myElement = angular.element(document.querySelectorAll(".custome-csv-link-location"));
+        $scope.gridOptions.exporterCsvFilename = $scope.supplier.supplierName + '_product_list.csv';
         $scope.gridApi.exporter.csvExport('all','all', myElement);
+    }
+
+    $scope.importFromCsv = function () {
+
+        ngDialog.openConfirm({
+            template:'views/pages/importForm.html',
+            controller:'importCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false,
+            resolve: {importEntity: function(){return 'productPrice'}}
+        }).then (function (result){
+                getSupplierProducts();
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+
     }
 });

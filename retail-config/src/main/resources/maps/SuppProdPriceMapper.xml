@@ -590,6 +590,13 @@
         WHERE SOL_ID = #{param1} and PROD_ID = #{param2}
     </update>
 
+    <update id="updateProductCostsPerSprcId">
+        UPDATE SUPP_PROD_PRICE SET
+        PRICE =#{param2},
+        BULK_PRICE =#{param3}
+        WHERE SPRC_ID = #{param1}
+    </update>
+
     <delete id="deleteSuppProdPricePerId" >
         DELETE
         From SUPP_PROD_PRICE

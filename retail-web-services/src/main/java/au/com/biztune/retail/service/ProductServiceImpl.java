@@ -768,7 +768,11 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private void updateProductCostBaseDefaultSupplier(long prodId) {
+    /**
+     * update product cost base for default supplier.
+     * @param prodId prodId
+     */
+    public void updateProductCostBaseDefaultSupplier(long prodId) {
         //update product cost to default supplier cost.
         final List<SuppProdPrice> defaultSpps = suppProdPriceDao.getDefaultSuppliersPerOrguIdAndProdId(sessionState.getOrgUnit().getId(), prodId);
         if (defaultSpps != null && defaultSpps.size() > 0) {

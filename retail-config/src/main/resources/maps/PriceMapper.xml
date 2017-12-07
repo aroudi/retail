@@ -19,6 +19,18 @@
         <association resultMap="priceCodeMap" property="priceCode" />
     </resultMap>
 
+    <resultMap id="priceMapLight" type="Price" >
+        <id column="PRCE_ID" property="id" />
+        <result column="PROD_ID" property="prodId" />
+        <result column="MARGIN" property="margin" />
+        <result column="PRCE_PRICE" property="prcePrice" />
+        <result column="PRCE_CREATED" property="prceCreated" />
+        <result column="PRCE_MODIFIED" property="prceModified" />
+        <result column="PRCE_TAX_INCLUDED" property="prceTaxIncluded" />
+        <result column="UNOM_QTY" property="unomQty" />
+        <result column="PRCE_REDUCED" property="prceReduced" />
+        <association resultMap="priceCodeMap" property="priceCode" />
+    </resultMap>
 
 
     <resultMap id="priceCodeMap" type="PriceCode" >
@@ -88,10 +100,9 @@
         AND prcc.prcc_code = 'SELL_PRICE'
     </select>
 
-    <select id="getProductCostPricePerProdId" resultMap="priceMap" >
+    <select id="getProductCostPricePerProdId" resultMap="priceMapLight" >
         SELECT
-        <include refid="priceColumns"><property name="alias" value="prce"/></include>,
-        <include refid="priceCodeColumns"><property name="alias" value="prcc"/></include>
+        <include refid="priceColumns"><property name="alias" value="prce"/></include>
         FROM
         PRICE prce
         INNER JOIN

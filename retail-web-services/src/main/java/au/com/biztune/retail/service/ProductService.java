@@ -151,4 +151,12 @@ public interface ProductService {
      * @return Product
      */
     Product getProductPerSkuAndRef(String skuCode, String reference);
-}
+
+
+    /**
+     * update product cost base for default supplier.
+     * @param prodId prodId
+     */
+    void updateProductCostBaseDefaultSupplier(long prodId);
+
+    }
