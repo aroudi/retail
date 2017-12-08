@@ -56,7 +56,7 @@ public class ProductImportServiceImpl {
             if (csvReader == null) {
                 logger.error("not able to open product inputStream");
                 commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
-                commonResponse.setMessage("not able to open product inputStream");
+                commonResponse.addMessage("not able to open product inputStream");
                 return commonResponse;
             }
             iterator = csvReader.readAll().listIterator();
@@ -72,11 +72,12 @@ public class ProductImportServiceImpl {
                 importProductWhole(csvRow[1], csvRow[2], csvRow[3], csvRow[4], csvRow[5], csvRow[6], csvRow[7]
                         , csvRow[11], csvRow[14], csvRow[16], StringUtil.strToDouble(csvRow[19]), StringUtil.strToDouble(csvRow[21]), StringUtil.strToDouble(csvRow[20]));
             }
+            commonResponse.addMessage("Product list imported successfully");
             return commonResponse;
         } catch (Exception e) {
             logger.error("error in importing products : ", e);
             commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
-            commonResponse.setMessage("error in importing products. see the logs");
+            commonResponse.addMessage("error in importing products. see the logs");
         } finally {
             if (csvReader != null) {
                 csvReader.close();

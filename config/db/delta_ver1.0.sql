@@ -2255,3 +2255,5 @@ alter table Customer
 go
 INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Import customer', 'importCustomer', 'Import customer');
 INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'importCustomer' ));
+
+-- up to this point deployed on jomon on 08/12/17 (ver 2.4)

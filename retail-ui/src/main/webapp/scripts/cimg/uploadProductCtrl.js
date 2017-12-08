@@ -10,7 +10,7 @@ cimgApp.controller('uploadProductCtrl', function($scope, $state,fileUploadServic
 
         switch ($scope.fileName){
 
-            case 'Upload products from csv':
+            case 'Import products from csv':
                 uploadUrl = PRODUCT_UPLOAD_CSV_URI;
                 break;
         }
