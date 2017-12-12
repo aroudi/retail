@@ -47,6 +47,8 @@ public class TxnDetailForm {
     private double txdeQtyBackOrder;
     private double txdeQtyReceived;
     private ConfigCategory status;
+    //a dummy field just to highlight the item if user had not changed the quantity
+    private boolean qtyNotChanged;
 
 
 
@@ -336,5 +338,13 @@ public class TxnDetailForm {
 
     public void setTxdeQtyBackOrder(double txdeQtyBackOrder) {
         this.txdeQtyBackOrder = txdeQtyBackOrder;
+    }
+
+    public boolean isQtyNotChanged() {
+        return qtyNotChanged;
+    }
+
+    public void setQtyNotChanged(boolean qtyNotChanged) {
+        this.qtyNotChanged = qtyNotChanged;
     }
 }

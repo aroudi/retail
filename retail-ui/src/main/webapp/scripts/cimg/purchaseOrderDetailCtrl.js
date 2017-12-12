@@ -7,7 +7,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,$statePar
     if (viewMode!=undefined) {
         $scope.isViewMode = viewMode;
     }
-    var rowtpl='<div ng-class="{\'brown\':row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\'}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
+    var rowtpl='<div ng-class="{\'brown\':row.entity.polStatus.categoryCode==\'POH_STATUS_GOOD_RECEIVED\', \'amber\':row.entity.qtyNotChanged==true}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
     $scope.gridOptions = {
         enableFiltering: false,
         showGridFooter: true,
@@ -95,6 +95,7 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,$statePar
 
         gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef){
             if (colDef.name == 'polQtyOrdered') {
+                rowEntity.qtyNotChanged = false;
                 if (rowEntity.polCreationType.displayName=='AUTO') {
                     if (rowEntity.polQtyOrdered < getLinkeBoqQtyBalanceTotal(rowEntity)) {
                         baseDataService.displayMessage('info','Warning!!','You can not decrease quantity for auto created item.');
@@ -293,7 +294,8 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,$statePar
             'polStatus' :  $scope.statusOnProgress,
             'taxLegVariance' :  taxLegVar,
             'polValueTax' : 0.00,
-            'polValueGross' : 0.00
+            'polValueGross' : 0.00,
+            'qtyNotChanged' : true //dummy field to check if user changed the quantity or not.
             //polStatus
         }
         $scope.updatePurchaseLineValues(purchaseLineObject);

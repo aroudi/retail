@@ -153,6 +153,14 @@ background-color: #eee;
     font-weight: bold;
     display: inline;
 }
+.warning {
+
+    width: 200px;
+    /*background-color:#e6ac00 !important;*/
+    color: #f0ad4e !important;
+    font-weight: bold;
+    display: inline;
+}
 .grid{
     height: 500px;
 }

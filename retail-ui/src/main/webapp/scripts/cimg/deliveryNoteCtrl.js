@@ -7,7 +7,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
     if (viewMode!=undefined) {
         $scope.isViewMode = viewMode;
     }
-
+    var rowtpl='<div ng-class="{\'amber\':row.entity.qtyNotChanged==true}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
     $scope.gridOptions = {
         enableFiltering: false,
         showGridFooter: true,
@@ -15,6 +15,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         enableColumnResizing: true,
         enableCellEditOnFocus:true,
         enableSorting:true,
+        rowTemplate : rowtpl,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
             {field:'purchaseItem.catalogueNo', displayName:'Catalogue No', enableCellEdit:false,enableFiltering:false, width:'22%'},
@@ -82,6 +83,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
     };
     $scope.$on('uiGridEventEndCellEdit', function (event) {
         var deliveryNoteLine = event.targetScope.row.entity;
+        deliveryNoteLine.qtyNotChanged = false;
         //dlnlDiscrepancy
         if (deliveryNoteLine.dlnlQty == deliveryNoteLine.rcvdQty) {
             deliveryNoteLine.dlnlDiscrepancy = false;
@@ -266,7 +268,9 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             'polQty' : 0,
             'taxLegVariance' : taxLegVar,
             'delnValueTax' : 0,
-            'delnValueGross' : 0
+            'delnValueGross' : 0,
+            'qtyNotChanged' : true //dummy field to check if user changed the quantity or not.
+
         }
         $scope.updateLineTotalCost(deliveryNoteLineObject);
         return deliveryNoteLineObject;

@@ -48,6 +48,8 @@ public class PurchaseLine {
     private Timestamp pohCreatedDate;
     private String pohPrefix;
     private List<PoSoLink> poSoLinks;
+    private boolean qtyNotChanged;
+
 
     /**
      * add poBoqLink to list.
@@ -381,5 +383,13 @@ public class PurchaseLine {
 
     public void setMerged(boolean merged) {
         this.merged = merged;
+    }
+
+    public boolean isQtyNotChanged() {
+        return qtyNotChanged;
+    }
+
+    public void setQtyNotChanged(boolean qtyNotChanged) {
+        this.qtyNotChanged = qtyNotChanged;
     }
 }

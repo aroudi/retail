@@ -131,7 +131,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     */
 
     function initTxnDetail() {
-        var rowtpl='<div ng-class="{\'blue\':row.entity.txdeItemVoid==false, \'red\':row.entity.txdeItemVoid==true }"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
+        var rowtpl='<div ng-class="{\'red\':row.entity.txdeItemVoid==true, \'amber\':row.entity.qtyNotChanged==true}"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
         $scope.txnDetailList = {
             enableFiltering: false,
             showGridFooter: true,
@@ -151,6 +151,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     cellTooltip: function(row,col) {
                         return row.entity.txdeProdName + '\n' +
                             'Qty In Stock:' + row.entity.product.stockQty + '\n';
+                    },
+                    cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                        return 'editModeColor'
                     }
                 },
                 {field: 'unitOfMeasure.unomDesc', displayName: 'Size', enableCellEdit: false,enableFiltering:false, width: '5%',
@@ -160,8 +163,12 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 },
                 //{field: 'txdeValueLine', displayName: 'Cost', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 //{field: 'txdeValueProfit', displayName: 'Profit', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
-                {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency',enableFiltering:false, width: '7%'},
-                {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', enableFiltering:false,width: '6%',
+                {field: 'txdeValueGross', displayName: 'Price', cellFilter: 'currency',enableFiltering:false, width: '7%',
+                    cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                        return 'editModeColor'
+                    }
+                },
+                {field: 'txdeQuantitySold', displayName: 'Qty', type: 'number', enableFiltering:false,width: '6%', //cellTemplate:'<div ng-class="{\'green\':($scope.txnHeaderForm.txhdState.categoryCode === \'TXN_STATE_FINAL\')&&(row.entity.qtyNotChanged==true), \'yellow\':($scope.txnHeaderForm.txhdState.categoryCode !== \'TXN_STATE_FINAL\')&&(row.entity.qtyNotChanged==false) }" >{{grid.getCellValue(row, col)}}</div>',
                     cellTooltip: function(row,col) {
                         return 'Qty In Stock:' + row.entity.product.stockQty + '\n' +
                                'Total Qty Sold:' +  row.entity.txdeQuantitySold + '\n' +
@@ -170,9 +177,16 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                                'Qty on Order:' +  row.entity.txdeQtyOrdered + '\n' +
                                'Qty Received:' +  row.entity.txdeQtyReceived + '\n' +
                                'Qty Refund:' +  row.entity.txdeQtyTotalRefund
+                    },
+                    cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                        return 'editModeColor'
                     }
                 },
-                {field: 'txdeQtyInvoiced', displayName: 'Invoice', type: 'number',enableFiltering:false, width: '6%'},
+                {field: 'txdeQtyInvoiced', displayName: 'Invoice', type: 'number',enableFiltering:false, width: '6%',
+                    cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                        return 'editModeColor'
+                    }
+                },
                 {field: 'originalQuantity', visible: false, type: 'number',enableFiltering:false},
                 {field: 'txdeQtyBalance', enableCellEdit: false, displayName: 'Balance',enableFiltering:false, type: 'number', width: '6%',
                     cellTooltip: function(row,col) {
@@ -316,6 +330,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
             if ( event.targetScope.col.field === 'txdeQuantitySold') {
                 txnDetail['txdeQtyBackOrder'] = calculateItemBackOrder(txnDetail);
+                txnDetail['qtyNotChanged'] = false;  //set the value to true to change the color of row to normal
             }
 
             if ( event.targetScope.col.field === 'txdeQtyBackOrder') {
@@ -330,6 +345,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             // check invoiced qty. if bigger than qty available display a warnning.
             if ( event.targetScope.col.field === 'txdeQtyInvoiced') {
 
+                txnDetail['qtyNotChanged'] = false;  //set the value to true to change the color of row to normal
                 //if we have received items then check against it
                 if (txnDetail.status!=undefined && (txnDetail.status.categoryCode === 'SO_STATUS_RECEIVED' || txnDetail.status.categoryCode === 'SO_STATUS_PARTIAL_REC')) {
                     //if good received and user try to invoice more than qty received, display a warnning
@@ -431,7 +447,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         return row.entity.txmdComment;
                     }
                 },
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTxnLineVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>', width: '15%'}
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTenderVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>', width: '15%'}
 
             ]
         }
@@ -587,7 +603,8 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             'txdeLineRefund' : false,
             'txdeItemVoid' : false,
             'deleted' : false,
-            'invoiced' : false
+            'invoiced' : false,
+            'qtyNotChanged' : true //dummy field to check if user changed the quantity or not.
 
         }
         return txnDetailObject;
@@ -1010,11 +1027,16 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
     };
 
     $scope.isTxnLineVoidable = function (row) {
-        /* we dont have void at this point. we can only deleted a new added tender but not void tender.
-        if ( ($scope.txnHeaderForm.txhdState.categoryCode != 'TXN_STATE_FINAL') && (row.entity.id > 0)) {
+        if ( ($scope.txnHeaderForm.txhdTxnType.categoryCode !== 'TXN_TYPE_INVOICE')&&($scope.txnHeaderForm.txhdState.categoryCode !== 'TXN_STATE_FINAL') && (row.entity.id > 0)) {
             return true;
         }
-        */
+    };
+    $scope.isTenderVoidable = function (row) {
+        /* we dont have void at this point. we can only deleted a new added tender but not void tender.
+         if ( ($scope.txnHeaderForm.txhdState.categoryCode != 'TXN_STATE_FINAL') && (row.entity.id > 0)) {
+         return true;
+         }
+         */
         return false;
     };
     $scope.isTxnSaleAndFinal = function () {

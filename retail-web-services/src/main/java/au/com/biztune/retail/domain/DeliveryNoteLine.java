@@ -27,6 +27,8 @@ public class DeliveryNoteLine {
     private String dlnlComment;
     private boolean deleted;
     private TaxLegVariance taxLegVariance;
+    private boolean qtyNotChanged;
+
     public long getId() {
         return id;
     }
@@ -209,5 +211,13 @@ public class DeliveryNoteLine {
 
     public void setTaxLegVariance(TaxLegVariance taxLegVariance) {
         this.taxLegVariance = taxLegVariance;
+    }
+
+    public boolean isQtyNotChanged() {
+        return qtyNotChanged;
+    }
+
+    public void setQtyNotChanged(boolean qtyNotChanged) {
+        this.qtyNotChanged = qtyNotChanged;
     }
 }
