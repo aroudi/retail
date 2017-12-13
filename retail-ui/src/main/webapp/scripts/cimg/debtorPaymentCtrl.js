@@ -22,6 +22,8 @@ cimgApp.controller('debtorPaymentCtrl', function($scope, $state, $timeout, $stat
         });
         baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
             $scope.customerSet = response.data;
+            baseDataService.populateCustomerDropdownList($scope.customerSet);
+
             $scope.customer = baseDataService.populateSelectList($scope.customer,$scope.customerSet);
             $scope.onCustomerChange();
         });

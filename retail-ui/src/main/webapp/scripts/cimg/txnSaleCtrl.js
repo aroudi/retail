@@ -108,11 +108,12 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         });
         baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
             $scope.customerSet = response.data;
+            baseDataService.populateCustomerDropdownList($scope.customerSet);
             if ($scope.customerSet.length > 0) {
                 var customer = {
                     "id" : -1,
                     "companyName" : "Not Selected"
-                }
+                };
                 $scope.customerSet.unshift(customer);
             }
             //$scope.customer = baseDataService.populateSelectList($scope.customer,$scope.customerSet);

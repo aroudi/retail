@@ -40,13 +40,11 @@ var cimgApp = angular
   ]);
 
 //SIT
-/*
 var config_data = {
     'SERVER' : 'pos.jomon.com.au',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
-*/
 //SIT-9090
 /*
 var config_data = {
@@ -56,11 +54,13 @@ var config_data = {
 }
 */
 //DEV
+/*
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
+*/
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -346,6 +346,27 @@ cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDia
             }).error(function (data) {
             });
             return promise;
+        },
+        populateCustomerDropdownList: function (customerList) {
+            if (customerList === undefined || customerList === null) {
+                return ;
+            }
+            for (var i = 0; i < customerList.length; i++) {
+                if (((customerList[i].companyName === undefined) || (customerList[i].companyName === null) || (customerList[i].companyName.trim() === ''))) {
+                    var customerName = '';
+                    if (customerList[i].firstName !== undefined && customerList[i].firstName !== null) {
+                        customerName = customerList[i].firstName;
+                    }
+                    if (customerList[i].middleName !== undefined && customerList[i].middleName !== null) {
+                        customerName = customerName + ' ' +customerList[i].middleName;
+                    }
+                    if (customerList[i].surName !== undefined && customerList[i].surName !== null) {
+                        customerName = customerName + ' ' +customerList[i].surName;
+                    }
+                    customerList[i].companyName = customerName;
+                }
+            }
+
         },
         //return an item from the list
         populateSelectList: function (selectName, sourceData) {
@@ -1014,6 +1035,14 @@ cimgApp.filter('configCategoryFilter', function() {
             return lastModifiedBy.usrFirstName + ' ' + lastModifiedBy.usrSurName;
         };
     });
+cimgApp.filter('address', function() {
+    return function (contact) {
+        if (contact ==undefined || contact ==null) {
+            return '';
+        }
+        return contact.address1 + ' ' + contact.address2;
+    };
+});
 cimgApp.filter('poBoqLinkOrderNumberFilter', function() {
     return function (linkedPurchaseOrders) {
         if (linkedPurchaseOrders ==undefined || linkedPurchaseOrders ==null || linkedPurchaseOrders.length < 1 ) {

@@ -8,13 +8,15 @@ cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,ngDialo
             {name:'Action',enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editSupplier(row, false)"></i></a>&nbsp;&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.editSupplier(row, true)"></i></a>', width:'5%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'supplierCode', enableCellEdit:false, width:'20%'},
-            {field:'supplierName', enableCellEdit:false, width:'50%',
+            {field:'supplierName', enableCellEdit:false, width:'45%',
                 cellTooltip: function(row,col) {
                     return row.entity.supplierName
                 }
             },
-            {field:'supplierType.displayName', displayName:'Supplier Type',enableCellEdit:false, width:'10%'},
-            {field:'supplierStatus.displayName', displayName:'Status',enableCellEdit:false, width:'10%'}
+            {field:'contact.phone', displayName:'Phone',enableCellEdit:false, width:'10%'},
+            {field:'contact.fax', displayName:'Fax',enableCellEdit:false, width:'10%'},
+            //{field:'supplierType.displayName', displayName:'Supplier Type',enableCellEdit:false, width:'10%'},
+            {field:'suppOrguLink.supplierStatus.displayName', displayName:'Status',enableCellEdit:false, width:'10%'}
         ]
     }
     $scope.gridOptions.enableRowSelection = false;

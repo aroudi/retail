@@ -170,6 +170,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state,ngDialog, uiGridConsta
         $scope.getPage();
         baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
             $scope.clientSet = response.data;
+            baseDataService.populateCustomerDropdownList($scope.clientSet);
             if ($scope.clientSet.length > 0) {
                 var client = {
                     "id" : -1,

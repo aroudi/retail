@@ -94,6 +94,8 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
         });
         baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
             $scope.customerSet = response.data;
+            baseDataService.populateCustomerDropdownList($scope.customerSet);
+
             if ($scope.customerSet.length > 0) {
                 var customer = {
                     "id" : -1,

@@ -3,6 +3,7 @@
  */
 cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeout, uiGridConstants,ngDialog, baseDataService, SUCCESS, FAILURE, SUPPLIER_GET_PRODUCT_LIST_WITH_PRICE_URI, SUPPLIER_ALL_URI, PRODUCT_PRICE_UPDATE_BULK) {
 
+    $scope.model= {};
     $scope.gridOptions = {
         enableFiltering: true,
         enableSelectAll:false,
@@ -88,13 +89,13 @@ cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeo
     function initForm() {
         baseDataService.getBaseData(SUPPLIER_ALL_URI).then(function(response){
             $scope.supplierSet = response.data;
-            $scope.supplier = baseDataService.populateSelectList($scope.supplier,$scope.supplierSet);
+            $scope.model.supplier = baseDataService.populateSelectList($scope.model.supplier,$scope.supplierSet);
             //$scope.changeSupplier();
             getSupplierProducts();
         });
     };
     function getSupplierProducts() {
-        baseDataService.getBaseData(SUPPLIER_GET_PRODUCT_LIST_WITH_PRICE_URI+$scope.supplier.id).then(function(response){
+        baseDataService.getBaseData(SUPPLIER_GET_PRODUCT_LIST_WITH_PRICE_URI+$scope.model.supplier.id).then(function(response){
             //var data = angular.copy(response.data);
             //add dummy fields to the list.
 
@@ -182,7 +183,7 @@ cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeo
     };
     $scope.exportCSV = function() {
         var myElement = angular.element(document.querySelectorAll(".custome-csv-link-location"));
-        $scope.gridOptions.exporterCsvFilename = $scope.supplier.supplierName + '_product_list.csv';
+        $scope.gridOptions.exporterCsvFilename = $scope.model.supplier.supplierName + '_product_list.csv';
         $scope.gridApi.exporter.csvExport('all','all', myElement);
     }
 
