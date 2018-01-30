@@ -125,7 +125,7 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             controller: 'importCtrl',
             templateUrl:'views/pages/importForm.html',
             access: "user",
-            resolve: {importEntity: function(){return 'productMyob'}}
+            resolve: {importEntity: function(){return 'productDoors3'}}
         })
         .state('dashboard.uploadFile',{
             url:'/uploadFile',

@@ -20,7 +20,7 @@ cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, impor
         'Import invoice from doors3(xml)',
         'Import supplier from MYOB(csv)',
         'Import customer from MYOB(csv)',
-        'Import products from MYOB(csv)',
+        'Import products from doors3(csv)',
         'Import Product Price(csv)'
     ];
     $scope.title = "Import Invoice";
@@ -41,9 +41,9 @@ cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, impor
             $scope.fileName ='Import customer from MYOB(csv)';
             importUrl = CUSTOMER_IMPORT_CSV_URI;
             break;
-        case 'productMyob' :
+        case 'productDoors3' :
             $scope.title = "Import Product";
-            $scope.fileName ='Import products from MYOB(csv)';
+            $scope.fileName ='Import products from doors3(csv)';
             importUrl = PRODUCT_UPLOAD_CSV_URI;
             break;
         case 'productPrice' :

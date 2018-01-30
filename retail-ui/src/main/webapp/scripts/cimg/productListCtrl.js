@@ -90,6 +90,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
             baseDataService.setRow(row.entity);
         });
         */
+        /*
         $scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
             if (sortColumns.length == 0) {
                 paginationOptions.sort = null;
@@ -98,6 +99,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
             }
             $scope.getPage();
         });
+        */
         gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
             console.log('newPage =' + newPage + ' pageSize=' + pageSize);
             paginationOptions.pageNumber = newPage;

@@ -32,7 +32,7 @@ cimgApp.controller('supplierCtrl', function($scope, $state,$stateParams,viewMode
                 },
                 {field:'unitOfMeasure.unomCode', displayName:'Size',enableCellEdit:false,width:'10%'},
                 {field:'unomQty',displayName:'Qty', enableCellEdit:true, type: 'number', width:'10%'},
-                {field:'price', enableCellEdit:true, cellFilter: 'currency', width:'10%'},
+                {field:'costBeforeTax',displayName:'cost(ex tax)', enableCellEdit:true, cellFilter: 'currency', width:'10%'},
                 {field:'bulkQty', enableCellEdit:true, type: 'number', width:'10%'},
                 {field:'bulkPrice', enableCellEdit:true, cellFilter: 'currency', width:'10%'}
             ]
