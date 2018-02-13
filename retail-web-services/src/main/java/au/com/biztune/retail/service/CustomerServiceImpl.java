@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -271,6 +272,68 @@ public class CustomerServiceImpl implements CustomerService {
         } catch (Exception e) {
             logger.error("Error in getting customer contact list: ", e);
             return null;
+        }
+    }
+
+    /**
+     * delete a customer logically. set the deleted flag to true and add 'DELETED + TIMESTAMP' to some fields.
+     * @param customerIdList customer Id List.
+     * @return commonResponse.
+     */
+    public CommonResponse logicalDeleteCustomer(List<Long> customerIdList) {
+        final CommonResponse response = new CommonResponse();
+        try {
+            final Timestamp currentDate = new Timestamp(new Date().getTime());
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+            if (customerIdList == null || customerIdList.size() < 1) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("empty list");
+                return response;
+            }
+            Customer customer = null;
+            String newValue;
+            for (Long customerId : customerIdList) {
+                customer = customerDao.getCustomerById(customerId);
+                if (customer == null) {
+                    continue;
+                }
+                if (customer.getFirstName() != null) {
+                    newValue = customer.getFirstName().trim() + "-DELETED-" + currentDate;
+                    if (newValue.length() > 100) {
+                        newValue = newValue.substring(0, 99);
+                    }
+                    customer.setFirstName(newValue);
+                }
+                if (customer.getSurName() != null) {
+                    newValue = customer.getSurName().trim() + "-DELETED-" + currentDate;
+                    if (newValue.length() > 100) {
+                        newValue = newValue.substring(0, 99);
+                    }
+                    customer.setSurName(newValue);
+                }
+                if (customer.getCompanyName() != null) {
+                    newValue = customer.getCompanyName().trim() + "-DELETED-" + currentDate;
+                    if (newValue.length() > 100) {
+                        newValue = newValue.substring(0, 99);
+                    }
+                    customer.setCompanyName(newValue);
+                }
+                if (customer.getCode() != null) {
+                    newValue = customer.getCode().trim() + "-DELETED-" + currentDate;
+                    if (newValue.length() > 100) {
+                        newValue = newValue.substring(0, 99);
+                    }
+                    customer.setCode(newValue);
+                }
+                customer.setDeleted(true);
+                customerDao.update(customer);
+            }
+            return response;
+        } catch (Exception e) {
+            logger.error("Exception in deleting Customer: ", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Exception in deleting Customer");
+            return response;
         }
     }
 }

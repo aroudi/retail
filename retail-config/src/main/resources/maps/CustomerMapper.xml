@@ -28,6 +28,7 @@
         <result column="CREDIT_DURATION" property="creditDuration" />
         <result column="CREDIT_START_DATE" property="creditStartDate" />
         <result column="CREDIT_START_EOM" property="creditStartEom" />
+        <result column="DELETED" property="deleted" />
         <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
         <association property="customerType" column="Customer_Type" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="customerStatus" column="CUSTOMER_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -58,6 +59,7 @@
         <result column="CREDIT_DURATION" property="creditDuration" />
         <result column="CREDIT_START_DATE" property="creditStartDate" />
         <result column="CREDIT_START_EOM" property="creditStartEom" />
+        <result column="DELETED" property="deleted" />
         <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
         <association property="customerType" column="Customer_Type" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="customerStatus" column="CUSTOMER_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -92,7 +94,8 @@
         ${alias}.CREDIT_START_DATE,
         ${alias}.CREDIT_START_EOM,
         ${alias}.CONTACT_ID,
-        ${alias}.CUST_POSITION
+        ${alias}.CUST_POSITION,
+        ${alias}.DELETED
     </sql>
     <sql id="gradeColumns">
         ${alias}.grade_id,
@@ -117,7 +120,9 @@
         FROM
         CUSTOMER C
         LEFT OUTER JOIN
-        CUSTOMER_GRADE g on (c.grade_id = g.grade_id) order by c.company_name
+        CUSTOMER_GRADE g on (c.grade_id = g.grade_id)
+        where c.DELETED = 0
+        order by c.company_name
     </select>
 
     <select id="getCustomerByCode" resultMap="customerMap" >
@@ -129,7 +134,7 @@
         LEFT OUTER JOIN
           CUSTOMER_GRADE g on (c.grade_id = g.grade_id)
         WHERE
-          c.code = #{value}
+          c.code = #{value} and c.DELETED = 0
     </select>
 
     <select id="getCustomerByCompanyName" resultMap="customerMap" >
@@ -141,7 +146,7 @@
         LEFT OUTER JOIN
         CUSTOMER_GRADE g on (c.grade_id = g.grade_id)
         WHERE
-        c.Company_Name = #{value}
+        c.Company_Name = #{value} AND c.DELETED = 0
     </select>
 
     <select id="getCustomerById" resultMap="customerMapWhole" >
@@ -446,10 +451,12 @@
             <if test="custPosition != null">
                 ,CUST_POSITION = #{custPosition}
             </if>
+            <if test="deleted != null">
+                ,DELETED = #{deleted}
+            </if>
 
         WHERE CUSTOMER_ID = #{id}
     </update>
-
     <update id="updateCustomerDebt" parameterType="Customer" >
         UPDATE CUSTOMER SET
             OWING = #{owing},

@@ -40,11 +40,13 @@ var cimgApp = angular
   ]);
 
 //SIT
+/*
 var config_data = {
     'SERVER' : 'pos.jomon.com.au',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
+ */
 //SIT-9090
 /*
 var config_data = {
@@ -54,13 +56,12 @@ var config_data = {
 }
 */
 //DEV
-/*
+
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
-*/
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',
@@ -75,6 +76,7 @@ var service_uri = {
     'CUSTOMER_ALL_BOQ_URI' : 'customer/getBillOfQuantities/',
     'CUSTOMER_CONTACT_LIST_URI' : 'customer/getContactList/',
     'CUSTOMER_IMPORT_CSV_URI' : 'customer/importCsv',
+    'CUSTOMER_LOGICAL_DELETE_URI' : 'customer/logicalDelete',
     'ALL_CATEGORY_OFTYPE_URI' : 'categories/',
     'SUPPLIER_ALL_URI' : 'supplier/all',
     'SUPPLIER_ADD_URI' : 'supplier/add',

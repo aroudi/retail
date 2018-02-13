@@ -40,6 +40,7 @@ public class Customer {
     private Timestamp creditStartDate;
     private boolean creditStartEom;
     private Contact contact;
+    private boolean deleted;
 
     public long getId() {
         return id;
@@ -271,5 +272,13 @@ public class Customer {
 
     public void setCustPosition(String custPosition) {
         this.custPosition = custPosition;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

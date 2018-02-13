@@ -7,11 +7,16 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <div id="customerList" external-scopes="clickHandler" ui-grid ="gridOptions" ui-grid-pinning class="grid" ui-grid-autoresize ui-grid-resize-columns style="height:750px"  ></div>
+                        <div id="customerList" external-scopes="clickHandler" ui-grid-selection ui-grid ="gridOptions" ui-grid-pinning class="grid" ui-grid-autoresize ui-grid-resize-columns style="height:750px"  ></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="row">
+    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+    <button type="button" class="btn btn-warning" ng-click="deleteCustomerLogically()" ng-disabled="!isRowSelected()">Delete Customer</button>
+</div>
+
 
