@@ -83,4 +83,10 @@ public interface SupplierService {
      * @return Supplier
      */
     Supplier getSupplierByName(String name);
+    /**
+     * delete a supplier logically. set the deleted flag to true and add 'DELETED + TIMESTAMP' to some fields.
+     * @param supplierIdList supplier Id List.
+     * @return commonResponse.
+     */
+    CommonResponse logicalDeleteSupplier(List<Long> supplierIdList);
 }

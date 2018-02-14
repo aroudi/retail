@@ -51,6 +51,8 @@ public class SuppProdPrice {
     private double bulkQty5;
     private double bulkPrice5;
     private boolean changed;
+    private boolean supplierDeleted;
+    private boolean productDeleted;
 
     public long getId() {
         return id;
@@ -314,5 +316,21 @@ public class SuppProdPrice {
 
     public void setChanged(boolean changed) {
         this.changed = changed;
+    }
+
+    public boolean isSupplierDeleted() {
+        return supplierDeleted;
+    }
+
+    public void setSupplierDeleted(boolean supplierDeleted) {
+        this.supplierDeleted = supplierDeleted;
+    }
+
+    public boolean isProductDeleted() {
+        return productDeleted;
+    }
+
+    public void setProductDeleted(boolean productDeleted) {
+        this.productDeleted = productDeleted;
     }
 }

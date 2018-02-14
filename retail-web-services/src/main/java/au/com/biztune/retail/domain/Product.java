@@ -33,6 +33,7 @@ public class Product {
     private double reservedQty;
     private Price sellPrice;
     private String prodLocation;
+    private boolean deleted;
 
     public long getId() {
         return id;
@@ -240,5 +241,13 @@ public class Product {
 
     public void setProdBarcode(String prodBarcode) {
         this.prodBarcode = prodBarcode;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

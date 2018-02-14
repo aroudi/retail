@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog,baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI, TAXLEGVARIANCE_ALL_URI, PRODUCT_RESERVATION_INFO_URI) {
+cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog,baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI, TAXLEGVARIANCE_ALL_URI, PRODUCT_RESERVATION_INFO_URI, PRODUCT_LOGICAL_DELETE_URI) {
 
     $scope.getPage = function(){
         $scope.productSearchForm.pageNo = paginationOptions.pageNumber*1 ;
@@ -78,9 +78,9 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
             }
         ]
     };
-    $scope.gridOptions.enableRowSelection = false;
-    $scope.gridOptions.multiSelect = false;
-    $scope.gridOptions.noUnselect= true;
+    $scope.gridOptions.enableRowSelection = true;
+    $scope.gridOptions.multiSelect = true;
+    $scope.gridOptions.noUnselect= false;
 
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
@@ -221,5 +221,45 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
         $scope.getPage();
     }
 
+    $scope.isRowSelected = function(){
+        if ($scope.gridApi.selection.getSelectedRows().length > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    $scope.deleteProductLogically = function () {
+
+        var selectedProductIdList = [];
+        if ($scope.gridApi.selection.getSelectedRows() === undefined || $scope.gridApi.selection.getSelectedRows().length < 1){
+            baseDataService.displayMessage('info', 'rows not selected', 'please select item/s to delete');
+            return;
+        }
+        baseDataService.displayMessage('yesNo','Confirmation required!!','Do you want to delete selected rows?').then(function(result){
+            if (result) {
+                for (var i = 0; i < $scope.gridApi.selection.getSelectedRows().length; i++) {
+                    selectedProductIdList.push($scope.gridApi.selection.getSelectedRows()[i].id);
+                }
+                baseDataService.addRow(selectedProductIdList, PRODUCT_LOGICAL_DELETE_URI).then(function(response) {
+                    var res = response.data;
+                    if (res.status != SUCCESS ) {
+                        baseDataService.displayMessage('info', 'warning', 'Not able to delete product. message:' + res.message);
+                    } else {
+                        for (var i = 0; i < $scope.gridApi.selection.getSelectedRows().length; i++) {
+                            var itemIndex = baseDataService.getArrIndexOf($scope.gridOptions.data, $scope.gridApi.selection.getSelectedRows()[i]);
+                            console.log('index= ' + itemIndex);
+                            if (itemIndex > -1) {
+                                $scope.gridOptions.data.splice(itemIndex, 1);
+                            }
+                            $scope.gridApi.selection.unSelectRow($scope.gridApi.selection.getSelectedRows()[i]);
+                            //$scope.gridApi.core.setRowInvisible($scope.gridApi.selection.getSelectedRows()[i]);
+                        }
+                    }
+                });
+            } else {
+                return;
+            }
+        });
+    }
 
 });

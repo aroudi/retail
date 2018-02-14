@@ -159,4 +159,10 @@ public interface ProductService {
      */
     void updateProductCostBaseDefaultSupplier(long prodId);
 
+    /**
+     * delete a product logically. set the deleted flag to true and add 'DELETED + TIMESTAMP' to some fields.
+     * @param productIdList product Id List.
+     * @return commonResponse.
+     */
+    CommonResponse logicalDeleteProduct(List<Long> productIdList);
     }

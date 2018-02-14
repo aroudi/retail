@@ -782,6 +782,76 @@ public class ProductServiceImpl implements ProductService {
                 priceDao.updatePricePerProdIdAndPrccId(prodId, productCost.getPriceCode().getId(), productCost.getPrcePrice());
             }
         }
-
     }
+
+    /**
+     * delete a product logically. set the deleted flag to true and add 'DELETED + TIMESTAMP' to some fields.
+     * @param productIdList product Id List.
+     * @return commonResponse.
+     */
+    public CommonResponse logicalDeleteProduct(List<Long> productIdList) {
+        final CommonResponse response = new CommonResponse();
+        try {
+            final Timestamp currentDate = new Timestamp(new Date().getTime());
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+            if (productIdList == null || productIdList.size() < 1) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("empty list");
+                return response;
+            }
+            Product product = null;
+            String newValue;
+            for (Long productId : productIdList) {
+                product = productDao.getProductPerProdId(productId);
+                if (product == null) {
+                    continue;
+                }
+                if (product.getProdBarcode() != null) {
+                    newValue = product.getProdBarcode().trim() + "-DELETED-" + currentDate;
+                    if (newValue.length() > 500) {
+                        newValue = newValue.substring(0, 499);
+                    }
+                    product.setProdBarcode(newValue);
+                }
+                if (product.getProdName() != null) {
+                    newValue = product.getProdName().trim() + "-DELETED-" + currentDate;
+                    if (newValue.length() > 500) {
+                        newValue = newValue.substring(0, 499);
+                    }
+                    product.setProdName(newValue);
+                }
+                if (product.getProdDesc() != null) {
+                    newValue = product.getProdDesc().trim() + "-DELETED-" + currentDate;
+                    if (newValue.length() > 2048) {
+                        newValue = newValue.substring(0, 2047);
+                    }
+                    product.setProdDesc(newValue);
+                }
+                if (product.getProdSku() != null) {
+                    newValue = product.getProdSku().trim() + "-DELETED-" + currentDate;
+                    if (newValue.length() > 200) {
+                        newValue = newValue.substring(0, 199);
+                    }
+                    product.setProdSku(newValue);
+                }
+                if (product.getReference() != null) {
+                    newValue = product.getReference().trim() + "-DELETED-" + currentDate;
+                    if (newValue.length() > 200) {
+                        newValue = newValue.substring(0, 199);
+                    }
+                    product.setReference(newValue);
+                }
+                product.setDeleted(true);
+                productDao.updateProduct(product);
+                suppProdPriceDao.markProductAsDeletedPerProdId(product.getId());
+            }
+            return response;
+        } catch (Exception e) {
+            logger.error("Exception in deleting supplier: ", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Exception in deleting Supplier");
+            return response;
+        }
+    }
+
 }

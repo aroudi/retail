@@ -119,7 +119,8 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout, ngDial
                             if (itemIndex > -1) {
                                 $scope.gridOptions.data.splice(itemIndex, 1);
                             }
-                            $scope.gridApi.core.setRowInvisible($scope.gridApi.selection.getSelectedRows()[i]);
+                            $scope.gridApi.selection.unSelectRow($scope.gridApi.selection.getSelectedRows()[i]);
+                            //$scope.gridApi.core.setRowInvisible($scope.gridApi.selection.getSelectedRows()[i]);
                         }
                     }
                 });
