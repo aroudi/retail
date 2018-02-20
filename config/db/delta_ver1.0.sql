@@ -2277,3 +2277,16 @@ go
 alter table SUPP_PROD_PRICE
    add PRODUCT_DELETED BIT DEFAULT 0 NOT NULL
 go
+
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Delete Customer', 'deleteCustomer', 'Delete Customer');
+go
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Delete Supplier', 'deleteSupplier', 'Delete Supplier');
+go
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Delete Product', 'deleteProduct', 'Delete Product');
+go
+INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'deleteCustomer' ));
+go
+INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'deleteSupplier' ));
+go
+INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'deleteProduct' ));
+go

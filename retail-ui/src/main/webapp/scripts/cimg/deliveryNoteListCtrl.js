@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, DEL_NOTE_GET_ALL_URI, DEL_NOTE_GET_URI, POH_GET_URI, DEL_NOTE_SEARCH_URI, DEL_NOTE_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, TAXLEGVARIANCE_ALL_URI) {
+cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConstants, ngDialog, purchaseOrderService, $timeout,UserService,baseDataService, SUCCESS, FAILURE, DEL_NOTE_GET_ALL_URI, DEL_NOTE_GET_URI, POH_GET_URI, DEL_NOTE_SEARCH_URI, DEL_NOTE_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, TAXLEGVARIANCE_ALL_URI) {
 
     $scope.model= {};
     //$scope.model.supplier= {};
@@ -190,6 +190,15 @@ cimgApp.controller('deliveryNoteListCtrl', function($scope, $state, uiGridConsta
         baseDataService.addRow($scope.searchForm, DEL_NOTE_SEARCH_URI).then(function(response){
             $scope.gridOptions.data = response.data;
         });
+    }
+    $scope.createDeliveryNote = function () {
+        //check if customer has access
+        if (!UserService.checkUserHasAccess("deliveryNote")) {
+            baseDataService.displayMessage("info", "Access is denied!!", "You don't have access for creating Delivery Note");
+            return;
+        }
+        $state.go('dashboard.deliveryNote', {blankPage:'true'});
+
     }
 
 });

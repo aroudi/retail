@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,ngDialog, baseDataService, SUCCESS, FAILURE, SUPPLIER_ALL_URI, SUPPLIER_GET_URI, SUPPLIER_LOGICAL_DELETE_URI) {
+cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,ngDialog, UserService, baseDataService, SUCCESS, FAILURE, SUPPLIER_ALL_URI, SUPPLIER_GET_URI, SUPPLIER_LOGICAL_DELETE_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
@@ -79,6 +79,11 @@ cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,ngDialo
     }
 
     $scope.deleteSupplierLogically = function () {
+        //check if customer has access
+        if (!UserService.checkUserHasAccess("deleteSupplier")) {
+            baseDataService.displayMessage("info", "Access is denied!!", "You don't have delete access");
+            return;
+        }
 
         var selectedSupplierIdList = [];
         if ($scope.gridApi.selection.getSelectedRows() === undefined || $scope.gridApi.selection.getSelectedRows().length < 1){
@@ -110,5 +115,14 @@ cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,ngDialo
                 return;
             }
         });
+    }
+    $scope.createSupplier = function () {
+        //check if customer has access
+        if (!UserService.checkUserHasAccess("createSupplier")) {
+            baseDataService.displayMessage("info", "Access is denied!!", "You don't have access for creating supplier");
+            return;
+        }
+        $state.go('dashboard.createSupplier', {blankPage:true});
+
     }
 });

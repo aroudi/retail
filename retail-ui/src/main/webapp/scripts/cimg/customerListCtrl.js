@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('customerListCtrl', function($scope, $state, $timeout, ngDialog, baseDataService, SUCCESS, FAILURE, CUSTOMER_ALL_URI, CUSTOMER_GET_URI, CUSTOMER_LOGICAL_DELETE_URI) {
+cimgApp.controller('customerListCtrl', function($scope, $state, $timeout, ngDialog, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ALL_URI, CUSTOMER_GET_URI, CUSTOMER_LOGICAL_DELETE_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
@@ -98,6 +98,12 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout, ngDial
 
     $scope.deleteCustomerLogically = function () {
 
+        //check if customer has access
+        if (!UserService.checkUserHasAccess("deleteCustomer")) {
+            baseDataService.displayMessage("info", "Access is denied!!", "You don't have delete access");
+            return;
+        }
+
         var selectedCustomerIdList = [];
         if ($scope.gridApi.selection.getSelectedRows() === undefined || $scope.gridApi.selection.getSelectedRows().length < 1){
             baseDataService.displayMessage('info', 'rows not selected', 'please select item/s to delete');
@@ -128,5 +134,15 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout, ngDial
                 return;
             }
         });
+    }
+
+    $scope.createCustomer = function () {
+        //check if customer has access
+        if (!UserService.checkUserHasAccess("createCustomer")) {
+            baseDataService.displayMessage("info", "Access is denied!!", "You don't have access for creating customer");
+            return;
+        }
+        $state.go('dashboard.createCustomer', {blankPage:true});
+
     }
 });

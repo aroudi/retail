@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog,baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI, TAXLEGVARIANCE_ALL_URI, PRODUCT_RESERVATION_INFO_URI, PRODUCT_LOGICAL_DELETE_URI) {
+cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog, UserService, baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI, TAXLEGVARIANCE_ALL_URI, PRODUCT_RESERVATION_INFO_URI, PRODUCT_LOGICAL_DELETE_URI) {
 
     $scope.getPage = function(){
         $scope.productSearchForm.pageNo = paginationOptions.pageNumber*1 ;
@@ -230,6 +230,12 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
 
     $scope.deleteProductLogically = function () {
 
+        //check if customer has access
+        if (!UserService.checkUserHasAccess("deleteProduct")) {
+            baseDataService.displayMessage("info", "Access is denied!!", "You don't have delete access");
+            return;
+        }
+
         var selectedProductIdList = [];
         if ($scope.gridApi.selection.getSelectedRows() === undefined || $scope.gridApi.selection.getSelectedRows().length < 1){
             baseDataService.displayMessage('info', 'rows not selected', 'please select item/s to delete');
@@ -260,6 +266,15 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
                 return;
             }
         });
+    }
+    $scope.createProduct = function () {
+        //check if customer has access
+        if (!UserService.checkUserHasAccess("createProduct")) {
+            baseDataService.displayMessage("info", "Access is denied!!", "You don't have access for creating product");
+            return;
+        }
+        $state.go('dashboard.createProduct', {blankPage:true});
+
     }
 
 });

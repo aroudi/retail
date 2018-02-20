@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, TXN_STATUS_ONORDER, SO_STATUS_URI, POH_OF_SO_URI, INVOICE_OF_SO_URI) {
+cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,UserService,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, TXN_STATUS_ONORDER, SO_STATUS_URI, POH_OF_SO_URI, INVOICE_OF_SO_URI) {
 
     $scope.saleOrderSearchForm = {};
     $scope.model = {};
@@ -338,4 +338,24 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
             }
         );
     };
+    $scope.createSaleOrder = function () {
+        //check if customer has access
+        if (!UserService.checkUserHasAccess("createSaleTransaction")) {
+            baseDataService.displayMessage("info", "Access is denied!!", "You don't have access for creating Sale Order");
+            return;
+        }
+        $state.go('dashboard.createSaleTransaction', {txnType:'txnSale', blankPage:'true'});
+
+    }
+
+    $scope.createQuote = function () {
+        //check if customer has access
+        if (!UserService.checkUserHasAccess("createSaleTransaction")) {
+            baseDataService.displayMessage("info", "Access is denied!!", "You don't have access for creating Quote");
+            return;
+        }
+        $state.go('dashboard.createSaleTransaction', {txnType:'quote', blankPage:'true'});
+
+    }
+
 });
