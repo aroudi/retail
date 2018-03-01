@@ -306,4 +306,18 @@ public class ProductRest {
         }
         return response;
     }
+
+    /**
+     * delete product logically.
+     * @param productIdList product id list to be deleted.
+     * @return response.
+     */
+    @Secured
+    @Path("/logicalDelete")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse logicalDelete (List<Long> productIdList) {
+        return productService.logicalDeleteProduct(productIdList);
+    }
 }

@@ -246,7 +246,7 @@
         PRODUCT prod
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
         INNER JOIN CONFIG_CATEGORY cat on (cat.CATEGORY_ID=  prou.CAT_ID_STATUS)
-        WHERE prou.orgu_id = #{value}
+        WHERE prou.orgu_id = #{value} and prod.DELETED = 0
     </select>
 
     <select id="getAllProductsPerOrgUnitIdPaging" resultMap="productListMap" >
@@ -259,7 +259,7 @@
         FROM product prod
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
         INNER JOIN CONFIG_CATEGORY cat on (cat.CATEGORY_ID= prou. CAT_ID_STATUS)
-        WHERE prou.orgu_id = #{param1}
+        WHERE prou.orgu_id = #{param1} and prod.DELETED = 0
         ) q_result
         where q_result.NUMBER BETWEEN #{param2} AND #{param3}
     </select>
@@ -280,7 +280,7 @@
         LEFT OUTER JOIN  (select stck.* from STOCK stck
                             inner JOIN CONFIG_CATEGORY cat2 on (cat2.CATEGORY_ID = stck.STCK_CAT AND cat2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE')
                          ) STOCK on (prod.prod_id = stock.prod_id)
-        WHERE prou.orgu_id = #{param1}
+        WHERE prou.orgu_id = #{param1} AND prod.DELETED = 0
             <if test="param4 != null">
                 AND
                 <foreach collection="param4" item="item" index="index"
@@ -307,7 +307,7 @@
         LEFT OUTER JOIN STOCK stock on (prod.prod_id = stock.prod_id)
         LEFT OUTER JOIN CONFIG_CATEGORY cat2 on (cat2.CATEGORY_ID = stock.STCK_CAT AND cat2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE')
         LEFT OUTER JOIN CONFIG_CATEGORY cat3 on (cat3.CATEGORY_ID = stock.STCK_COND and cat3.CATEGORY_CODE = 'STOCK_CONDITION_PRISTINE')
-        WHERE prou.orgu_id = #{param1}
+        WHERE prou.orgu_id = #{param1} AND prod.DELETED = 0
         <if test="param2 != null">
             AND
             <foreach collection="param2" item="item" index="index"
@@ -353,7 +353,7 @@
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
         LEFT OUTER JOIN
         CONFIG_CATEGORY prodStatus on (prou.CAT_ID_STATUS = prodStatus.CATEGORY_ID)
-        WHERE prod.REFERENCE = #{value}
+        WHERE prod.REFERENCE = #{value} and prod.DELETED = 0
     </select>
 
     <select id="getProductPerSku" resultMap="productDetailMap" >
@@ -366,7 +366,7 @@
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
         LEFT OUTER JOIN
         CONFIG_CATEGORY prodStatus on (prou.CAT_ID_STATUS = prodStatus.CATEGORY_ID)
-        WHERE prod.PROD_SKU = #{value}
+        WHERE prod.PROD_SKU = #{value} and prod.DELETED = 0
     </select>
 
     <select id="getProductPerSkuAndRef" resultMap="productDetailMap" >
@@ -379,7 +379,7 @@
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
         LEFT OUTER JOIN
         CONFIG_CATEGORY prodStatus on (prou.CAT_ID_STATUS = prodStatus.CATEGORY_ID)
-        WHERE prod.PROD_SKU = #{param1} AND prod.REFERENCE = #{param2}
+        WHERE prod.PROD_SKU = #{param1} AND prod.REFERENCE = #{param2} AND prod.DELETED = 0
     </select>
 
     <select id="checkProductExistPerSkuAndRef" resultMap="productCheckLiteMap" >
@@ -387,7 +387,7 @@
         <include refid="productColumns"><property name="alias" value="prod"/></include>
         FROM
           PRODUCT prod
-        WHERE prod.PROD_SKU = #{param1} and prod.REFERENCE = #{param2}
+        WHERE prod.PROD_SKU = #{param1} and prod.REFERENCE = #{param2} and prod.DELETED = 0
     </select>
 
 
@@ -398,7 +398,7 @@
         FROM
         PRODUCT prod
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
-        WHERE prod.PROD_SKU = #{value}
+        WHERE prod.PROD_SKU = #{value} and prod.DELETED = 0
     </select>
 
     <select id="getProductSaleItemPerReference" resultMap="productSaleItemMap" >
@@ -426,7 +426,7 @@
         SELECT
         prod.prod_id, prod.prod_sku, prod.reference, prod.prod_name
         FROM
-        PRODUCT prod where prod.prod_sku like #{value} or prod.reference like #{value} or prod.prod_name like #{value}
+        PRODUCT prod where prod.DELETED = 0 and (prod.prod_sku like #{value} or prod.reference like #{value} or prod.prod_name like #{value})
     </select>
 
     <select id="getProductSaleItemPerOrgUnitIdAndSku" resultMap="productSaleItemMap" >
@@ -436,7 +436,7 @@
         FROM
         PRODUCT prod
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
-        WHERE prou.orgu_id = #{param1} AND prod.prod_sku = #{param2}
+        WHERE prou.orgu_id = #{param1} AND prod.prod_sku = #{param2} and prod.DELETED = 0
     </select>
 
     <insert id="insertProduct" parameterType="Product" useGeneratedKeys="true" keyProperty="id" keyColumn="PROD_ID">
@@ -601,6 +601,9 @@
         </if>
         <if test="prodLocation != null">
             ,PROD_LOCATION = #{prodLocation}
+        </if>
+        <if test="deleted != null">
+            ,DELETED = #{deleted}
         </if>
         WHERE PROD_ID = #{id}
     </update>

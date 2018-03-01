@@ -2257,3 +2257,36 @@ INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Import custo
 INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'importCustomer' ));
 
 -- up to this point deployed on jomon on 08/12/17 (ver 2.4)
+
+alter table CUSTOMER
+   add DELETED BIT DEFAULT 0 NOT NULL
+go
+
+alter table SUPPLIER
+   add DELETED BIT DEFAULT 0 NOT NULL
+go
+
+alter table PRODUCT
+   add DELETED BIT DEFAULT 0 NOT NULL
+go
+
+alter table SUPP_PROD_PRICE
+   add SUPPLIER_DELETED BIT DEFAULT 0 NOT NULL
+go
+
+alter table SUPP_PROD_PRICE
+   add PRODUCT_DELETED BIT DEFAULT 0 NOT NULL
+go
+
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Delete Customer', 'deleteCustomer', 'Delete Customer');
+go
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Delete Supplier', 'deleteSupplier', 'Delete Supplier');
+go
+INSERT INTO ACCESS_POINT (ACPT_NAME, ACPT_TOKEN,ACPT_DESC) VALUES ('Delete Product', 'deleteProduct', 'Delete Product');
+go
+INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'deleteCustomer' ));
+go
+INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'deleteSupplier' ));
+go
+INSERT INTO USER_ACCESS(USR_ID, ACPT_ID) VALUES ( (select USR_ID from APP_USER WHERE USR_NAME = 'Admin'), (select ACPT_ID FROM ACCESS_POINT WHERE ACPT_TOKEN = 'deleteProduct' ));
+go

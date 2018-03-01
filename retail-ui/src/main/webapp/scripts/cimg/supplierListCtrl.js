@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,ngDialog, baseDataService, SUCCESS, FAILURE, SUPPLIER_ALL_URI, SUPPLIER_GET_URI) {
+cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,ngDialog, UserService, baseDataService, SUCCESS, FAILURE, SUPPLIER_ALL_URI, SUPPLIER_GET_URI, SUPPLIER_LOGICAL_DELETE_URI) {
     $scope.gridOptions = {
         enableFiltering: true,
         columnDefs: [
@@ -19,9 +19,9 @@ cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,ngDialo
             {field:'suppOrguLink.supplierStatus.displayName', displayName:'Status',enableCellEdit:false, width:'10%'}
         ]
     }
-    $scope.gridOptions.enableRowSelection = false;
-    $scope.gridOptions.multiSelect = false;
-    $scope.gridOptions.noUnselect= true;
+    $scope.gridOptions.enableRowSelection = true;
+    $scope.gridOptions.multiSelect = true;
+    $scope.gridOptions.noUnselect= false;
 
     //
     $scope.gridOptions.onRegisterApi = function (gridApi) {
@@ -68,6 +68,61 @@ cimgApp.controller('supplierListCtrl', function($scope, $state, $timeout,ngDialo
                 $state.go('dashboard.createSupplier');
             }
         });
+
+    }
+
+    $scope.isRowSelected = function(){
+        if ($scope.gridApi.selection.getSelectedRows().length > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    $scope.deleteSupplierLogically = function () {
+        //check if customer has access
+        if (!UserService.checkUserHasAccess("deleteSupplier")) {
+            baseDataService.displayMessage("info", "Access is denied!!", "You don't have delete access");
+            return;
+        }
+
+        var selectedSupplierIdList = [];
+        if ($scope.gridApi.selection.getSelectedRows() === undefined || $scope.gridApi.selection.getSelectedRows().length < 1){
+            baseDataService.displayMessage('info', 'rows not selected', 'please select item/s to delete');
+            return;
+        }
+        baseDataService.displayMessage('yesNo','Confirmation required!!','Do you want to delete selected rows?').then(function(result){
+            if (result) {
+                for (var i = 0; i < $scope.gridApi.selection.getSelectedRows().length; i++) {
+                    selectedSupplierIdList.push($scope.gridApi.selection.getSelectedRows()[i].id);
+                }
+                baseDataService.addRow(selectedSupplierIdList, SUPPLIER_LOGICAL_DELETE_URI).then(function(response) {
+                    var res = response.data;
+                    if (res.status != SUCCESS ) {
+                        baseDataService.displayMessage('info', 'warning', 'Not able to delete supplier. message:' + res.message);
+                    } else {
+                        for (var i = 0; i < $scope.gridApi.selection.getSelectedRows().length; i++) {
+                            var itemIndex = baseDataService.getArrIndexOf($scope.gridOptions.data, $scope.gridApi.selection.getSelectedRows()[i]);
+                            console.log('index= ' + itemIndex);
+                            if (itemIndex > -1) {
+                                $scope.gridOptions.data.splice(itemIndex, 1);
+                            }
+                            $scope.gridApi.selection.unSelectRow($scope.gridApi.selection.getSelectedRows()[i]);
+                            //$scope.gridApi.core.setRowInvisible($scope.gridApi.selection.getSelectedRows()[i]);
+                        }
+                    }
+                });
+            } else {
+                return;
+            }
+        });
+    }
+    $scope.createSupplier = function () {
+        //check if customer has access
+        if (!UserService.checkUserHasAccess("createSupplier")) {
+            baseDataService.displayMessage("info", "Access is denied!!", "You don't have access for creating supplier");
+            return;
+        }
+        $state.go('dashboard.createSupplier', {blankPage:true});
 
     }
 });

@@ -148,4 +148,16 @@ public interface SuppProdPriceDao {
      * @param bulkPrice bulk price.
      */
     void updateProductCostsPerSprcId(long sprcId, double price, double bulkPrice);
+
+    /**
+     * mark product as deleted.
+     * @param prodId product id
+     */
+    void markProductAsDeletedPerProdId(long prodId);
+
+    /**
+     * mark supplier as deleted.
+     * @param solId supplier-orgu-id
+     */
+    void markSupplierAsDeletedPerSolId(long solId);
 }

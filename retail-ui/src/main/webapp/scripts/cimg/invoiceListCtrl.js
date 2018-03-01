@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialog, baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, TXN_TYPE_INVOICE, TXN_TYPE_REFUND, INVOICE_SEARCH_URI, INVOICE_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, DELIVERY_DOCKET_REPRINT_URI) {
+cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialog, UserService, baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, TXN_TYPE_INVOICE, TXN_TYPE_REFUND, INVOICE_SEARCH_URI, INVOICE_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, DELIVERY_DOCKET_REPRINT_URI) {
 
     $scope.showRefNo = function(row) {
         if (row.txhdOrigTxnNr == undefined || row.txhdOrigTxnNr == null) {
@@ -247,6 +247,15 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
         $scope.model={};
         $scope.model.client ={};
         $scope.model.client.id = -1;
+    }
+    $scope.createInvoice = function () {
+        //check if customer has access
+        if (!UserService.checkUserHasAccess("createInvoice")) {
+            baseDataService.displayMessage("info", "Access is denied!!", "You don't have access for creating Invoice");
+            return;
+        }
+        $state.go('dashboard.createInvoice', {txnType:'txnInvoice', blankPage:'true'});
+
     }
 
 

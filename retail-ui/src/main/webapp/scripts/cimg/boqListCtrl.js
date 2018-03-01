@@ -216,7 +216,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state,ngDialog, uiGridConsta
     $scope.deleteBoqList= function() {
         var selectedBoqList = [];
         if ($scope.gridApi.selection.getSelectedRows() === undefined || $scope.gridApi.selection.getSelectedRows().length < 1){
-            baseDataService.displayMessage('info', 'not selected', 'please select item/s to delete');
+            baseDataService.displayMessage('info', 'rows not selected', 'please select item/s to delete');
             return;
         }
         baseDataService.displayMessage('yesNo','Confirmation required!!','Do you want to delete selected rows?').then(function(result){

@@ -122,4 +122,19 @@ public class SupplierRest {
             return null;
         }
     }
+    /**
+     * delete supplier logically.
+     * @param supplierIdList supplier id list to be deleted.
+     * @return response.
+     */
+    @Secured
+    @Path("/logicalDelete")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse logicalDelete (List<Long> supplierIdList) {
+        return supplierService.logicalDeleteSupplier(supplierIdList);
+    }
+
+
 }

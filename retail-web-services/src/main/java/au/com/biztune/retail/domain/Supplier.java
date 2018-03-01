@@ -26,6 +26,7 @@ public class Supplier {
     private String contactKnownAs;
     private SuppOrguLink suppOrguLink;
     private boolean deliveryFreightFree;
+    private boolean deleted;
 
     public long getId() {
         return id;
@@ -185,5 +186,13 @@ public class Supplier {
 
     public void setDeliveryFreightFree(boolean deliveryFreightFree) {
         this.deliveryFreightFree = deliveryFreightFree;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

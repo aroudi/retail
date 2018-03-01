@@ -87,4 +87,12 @@ public interface CustomerService {
      * @return customer contact list.
      */
     List<Contact> getCustomerContactListPerCustomerId(long customerId);
+
+    /**
+     * delete a customer logically. set the deleted flag to true and add 'DELETED + TIMESTAMP' to some fields.
+     * @param customerIdList customer Id List.
+     * @return commonResponse.
+     */
+    CommonResponse logicalDeleteCustomer(List<Long> customerIdList);
+
 }

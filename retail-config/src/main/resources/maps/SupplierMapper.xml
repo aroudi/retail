@@ -21,6 +21,7 @@
         <result column="CONTACT_TITLE" property="contactTitle" />
         <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
         <result column="DELIVERY_FREIGHT_FREE" property="deliveryFreightFree" />
+        <result column="DELETED" property="deleted" />
         <association property="supplierType" column="SUPPLIER_TYPE_ID" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
         <association resultMap="suppOrguLinkMap" property="suppOrguLink" />
@@ -42,6 +43,7 @@
         <result column="CONTACT_TITLE" property="contactTitle" />
         <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
         <result column="DELIVERY_FREIGHT_FREE" property="deliveryFreightFree" />
+        <result column="DELETED" property="deleted" />
         <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
     </resultMap>
     <resultMap id="supplierOnlyMap" type="Supplier" >
@@ -61,6 +63,7 @@
         <result column="CONTACT_TITLE" property="contactTitle" />
         <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
         <result column="DELIVERY_FREIGHT_FREE" property="deliveryFreightFree" />
+        <result column="DELETED" property="deleted" />
     </resultMap>
 
     <resultMap id="suppOrguLinkMap" type="SuppOrguLink" >
@@ -95,7 +98,8 @@
         ${alias}.SUPPLIER_TYPE_ID,
         ${alias}.SUPPLIER_STATUS_ID,
         ${alias}.CONTACT_ID,
-        ${alias}.DELIVERY_FREIGHT_FREE
+        ${alias}.DELIVERY_FREIGHT_FREE,
+        ${alias}.DELETED
 
     </sql>
 
@@ -124,7 +128,7 @@
         INNER JOIN SUPP_ORGU_LINK suporgl ON (supp.supplier_id = suporgl.supp_id)
         LEFT OUTER JOIN
         CONFIG_CATEGORY suppStatus on (suporgl.CAT_ID_STATUS = suppStatus.CATEGORY_ID)
-        WHERE suporgl.orgu_id = #{value}
+        WHERE suporgl.orgu_id = #{value} AND supp.DELETED = 0
     </select>
 
     <select id="getSupplierByOrgUnitIdAndSuppCode" resultMap="supplierMap" >
@@ -139,7 +143,7 @@
         LEFT OUTER JOIN
         CONFIG_CATEGORY suppStatus on (suporgl.CAT_ID_STATUS = suppStatus.CATEGORY_ID)
         WHERE suporgl.orgu_id = #{param1}
-        AND supp.SUPPLIER_CODE = #{param2}
+        AND supp.SUPPLIER_CODE = #{param2} AND supp.DELETED = 0
     </select>
 
     <select id="getSupplierByOrgUnitIdAndSuppName" resultMap="supplierMap" >
@@ -154,7 +158,7 @@
         LEFT OUTER JOIN
         CONFIG_CATEGORY suppStatus on (suporgl.CAT_ID_STATUS = suppStatus.CATEGORY_ID)
         WHERE suporgl.orgu_id = #{param1}
-        AND supp.SUPPLIER_NAME = #{param2}
+        AND supp.SUPPLIER_NAME = #{param2} AND supp.DELETED = 0
     </select>
 
     <select id="getSupplierByOrgUnitIdAndSuppId" resultMap="supplierMap" >
@@ -458,6 +462,9 @@
         <if test="deliveryFreightFree != null">
             ,DELIVERY_FREIGHT_FREE =#{deliveryFreightFree}
         </if>
+        <if test="deleted != null">
+            ,DELETED =#{deleted}
+        </if>
           WHERE SUPPLIER_ID = #{id}
     </update>
 
@@ -499,12 +506,12 @@
         <include refid="supplierColumns"><property name="alias" value="supp"/></include>
         FROM
         SUPPLIER supp
-        WHERE supp.ACC_EXPORTED = 0
+        WHERE supp.ACC_EXPORTED = 0 and supp.DELETED=0
     </select>
 
     <select id="getNoOfSupplierToBeExported" resultType="java.lang.Integer" >
         SELECT
-          COUNT(SUPPLIER_ID) FROM SUPPLIER WHERE ACC_EXPORTED = 0
+          COUNT(SUPPLIER_ID) FROM SUPPLIER WHERE ACC_EXPORTED = 0 and DELETED=0
     </select>
 
     <update id="setSupplierExportFlagPerSuppId">

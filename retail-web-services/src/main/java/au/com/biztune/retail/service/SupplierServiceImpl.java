@@ -263,4 +263,53 @@ public class SupplierServiceImpl implements SupplierService {
         }
     }
 
+    /**
+     * delete a supplier logically. set the deleted flag to true and add 'DELETED + TIMESTAMP' to some fields.
+     * @param supplierIdList supplier Id List.
+     * @return commonResponse.
+     */
+    public CommonResponse logicalDeleteSupplier(List<Long> supplierIdList) {
+        final CommonResponse response = new CommonResponse();
+        try {
+            final Timestamp currentDate = new Timestamp(new Date().getTime());
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+            if (supplierIdList == null || supplierIdList.size() < 1) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("empty list");
+                return response;
+            }
+            Supplier supplier = null;
+            String newValue;
+            for (Long supplierId : supplierIdList) {
+                supplier = supplierDao.getSupplierByOrgUnitIdAndSuppId(sessionState.getOrgUnit().getId(), supplierId);
+                if (supplier == null) {
+                    continue;
+                }
+                if (supplier.getSupplierName() != null) {
+                    newValue = supplier.getSupplierName().trim() + "-DELETED-" + currentDate;
+                    if (newValue.length() > 100) {
+                        newValue = newValue.substring(0, 99);
+                    }
+                    supplier.setSupplierName(newValue);
+                }
+                if (supplier.getSupplierCode() != null) {
+                    newValue = supplier.getSupplierCode().trim() + "-DELETED-" + currentDate;
+                    if (newValue.length() > 100) {
+                        newValue = newValue.substring(0, 99);
+                    }
+                    supplier.setSupplierCode(newValue);
+                }
+                supplier.setDeleted(true);
+                supplierDao.updateSupplier(supplier);
+                suppProdPriceDao.markSupplierAsDeletedPerSolId(supplier.getSuppOrguLink().getId());
+            }
+            return response;
+        } catch (Exception e) {
+            logger.error("Exception in deleting supplier: ", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Exception in deleting Supplier");
+            return response;
+        }
+    }
+
 }

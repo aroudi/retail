@@ -251,7 +251,7 @@
         WHERE
         sol.ORGU_ID = #{param1}
         AND spp.PROD_ID= #{param2}
-        AND spp.SPRC_PREFER_BUY = 1
+        AND spp.SPRC_PREFER_BUY = 1 AND spp.SUPPLIER_DELETED = 0
     </select>
 
     <select id="getAllSuppProdPricesByOrguIdAndProdId" resultMap="suppProdPriceeMap" >
@@ -263,7 +263,7 @@
         SUPP_PROD_PRICE spp on (sol.SOL_ID = spp.SOL_ID)
         WHERE
         sol.ORGU_ID = #{param1}
-        AND spp.PROD_ID= #{param2}
+        AND spp.PROD_ID= #{param2} AND spp.SUPPLIER_DELETED = 0
     </select>
 
     <select id="getAllSuppProdPricesByProdId" resultMap="suppProdPriceeMap" >
@@ -272,7 +272,7 @@
         FROM
         SUPP_PROD_PRICE spp
         WHERE
-          spp.PROD_ID= #{value}
+          spp.PROD_ID= #{value} and spp.SUPPLIER_DELETED = 0
     </select>
 
     <select id="getAllProductPurchaseItemsPerOrgUnitIdAndSuppId" resultMap="suppPurchaseProdLightMap" >
@@ -281,7 +281,7 @@
         FROM
         SUPP_PROD_PRICE spp INNER JOIN SUPP_ORGU_LINK sol ON (spp.sol_id = sol.sol_id)
         WHERE
-        sol.ORGU_ID= #{param1} AND sol.SUPP_ID = #{param2} and (spp.CATALOGUE_NO like #{param3} or spp.PART_NO like #{param3})
+        sol.ORGU_ID= #{param1} AND sol.SUPP_ID = #{param2} and spp.PRODUCT_DELETED = 0 and (spp.CATALOGUE_NO like #{param3} or spp.PART_NO like #{param3})
     </select>
 
     <select id="getAllProductPurchaseItemsWithRrpPerOrgUnitIdAndSuppId" resultMap="suppProdPriceWithRrpOnlyMap" >
@@ -295,7 +295,7 @@
             INNER JOIN
               PRICE_CODE prcc on (prce.PRCC_ID = prcc.PRCC_ID)
         WHERE
-          sol.ORGU_ID= #{param1} AND sol.SUPP_ID = #{param2}
+        spp.PRODUCT_DELETED = 0 AND sol.ORGU_ID= #{param1} AND sol.SUPP_ID = #{param2}
         and prcc.PRCC_CODE = 'SELL_PRICE'
     </select>
 
@@ -340,7 +340,7 @@
         SUPP_PROD_PRICE spp on (sol.SOL_ID = spp.SOL_ID)
         WHERE
         sol.ORGU_ID = #{param1}
-        AND sol.SUPP_ID = #{param2}
+        AND sol.SUPP_ID = #{param2} AND spp.PRODUCT_DELETED = 0
     </select>
 
     <insert id="insert" parameterType="SuppProdPrice" useGeneratedKeys="true" keyProperty="id" keyColumn="SPRC_ID">
@@ -596,6 +596,18 @@
         PRICE =#{param2},
         BULK_PRICE =#{param3}
         WHERE SPRC_ID = #{param1}
+    </update>
+
+    <update id="markProductAsDeletedPerProdId">
+        UPDATE SUPP_PROD_PRICE SET
+        PRODUCT_DELETED = 1
+        WHERE PROD_ID = #{param1}
+    </update>
+
+    <update id="markSupplierAsDeletedPerSolId">
+        UPDATE SUPP_PROD_PRICE SET
+        SUPPLIER_DELETED = 1
+        WHERE SOL_ID = #{param1}
     </update>
 
     <delete id="deleteSuppProdPricePerId" >

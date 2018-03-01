@@ -220,4 +220,19 @@ public class CustomerRest {
         }
     }
 
+    /**
+     * crate a Sale Transaction.
+     * @param customerIdList txhdIdList
+     * @return List of generated purchase orders.
+     */
+    @Secured
+    @Path("/logicalDelete")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse logicalDelete (List<Long> customerIdList) {
+        return customerService.logicalDeleteCustomer(customerIdList);
+    }
+
+
 }
