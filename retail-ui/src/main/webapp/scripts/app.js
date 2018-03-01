@@ -40,13 +40,11 @@ var cimgApp = angular
   ]);
 
 //SIT
-/*
 var config_data = {
     'SERVER' : 'pos.jomon.com.au',
     'PORT'   : '8080',
     'WEBAPP' :'retail-web-services'
 }
- */
 //SIT-9090
 /*
 var config_data = {
@@ -56,12 +54,13 @@ var config_data = {
 }
 */
 //DEV
-
+/*
 var config_data = {
     'SERVER' : 'localhost',
     'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
+*/
 var service_uri = {
     'CUSTOMER_ALL_URI' : 'customer/all',
     'CUSTOMER_ADD_URI' : 'customer/add',

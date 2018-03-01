@@ -18,7 +18,7 @@ subprojects {
 			throw new GradleException("Unable to locate tomCatHome : ${tomCatHome}")
 		}
 		
-		projectVersion = '0.0.1-SNAPSHOT'
+		projectVersion = '2.6.RELEASE'
 		commonsDbcp2Version = '2.0.1'
 		springVersion = '4.3.1.RELEASE'
         springSecurityVersion = '4.1.1.RELEASE'
