@@ -3,7 +3,7 @@
 
 
         <ul class="nav in" id="side-menu">
-            <img  src="images/logo.png"
+            <img  src="images/logo.jpg"
                   class="logo"/>
             <!--sidebar-search></sidebar-search-->
             <!--
@@ -154,15 +154,25 @@
             </li>
 
 
-            <li ui-sref-active="active">
-                <a ui-sref="dashboard.debtorPayment"><i class="fa fa-money fa-fw"></i> Debtor Payment</a>
+            <li ng-class="{active: collapseVar==10}">{{dropDown}}
+                <a href="" ng-click="check(10)"><i class="fa fa-money fa-fw"></i> Debtor Payments<span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=10">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.debtorPayment"><i class="fa fa-money fa-fw"></i> Debtor Payment</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.reverseDebtorPayment"><i class="fa fa-arrow-circle-left fa-fw"></i>Reverse Debtor Payments</a>
+                    </li>
+                </ul>
             </li>
 
 
-            <li ng-class="{active: collapseVar==10}">{{dropDown}}
-                <a href="" ng-click="check(10)"><i class="fa fa-dollar fa-fw"></i> Accounting<span
+
+            <li ng-class="{active: collapseVar==11}">{{dropDown}}
+                <a href="" ng-click="check(11)"><i class="fa fa-dollar fa-fw"></i> Accounting<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=10">
+                <ul class="nav nav-second-level" collapse="collapseVar!=11">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.updateAccountCodes">Accounting Chart</a>
                     </li>
@@ -179,10 +189,10 @@
             </li>
 
 
-            <li ng-class="{active: collapseVar==11}">{{dropDown}}
-                <a href="" ng-click="check(11)"><i class="fa fa-users fa-fw"></i> User Management<span
+            <li ng-class="{active: collapseVar==12}">{{dropDown}}
+                <a href="" ng-click="check(12)"><i class="fa fa-users fa-fw"></i> User Management<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=11">
+                <ul class="nav nav-second-level" collapse="collapseVar!=12">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.addUser({blankPage:'true'})">Create User</a>
                     </li>
@@ -200,19 +210,19 @@
                     </li>
                 </ul>
             </li>
-            <li ng-class="{active: collapseVar==12}">{{dropDown}}
-                <a href="" ng-click="check(12)"><i class="fa fa-wrench fa-fw"></i> Configuration<span
+            <li ng-class="{active: collapseVar==13}">{{dropDown}}
+                <a href="" ng-click="check(13)"><i class="fa fa-wrench fa-fw"></i> Configuration<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=12">
+                <ul class="nav nav-second-level" collapse="collapseVar!=13">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.updatePricingGradeList">Pricing Grades</a>
                     </li>
                 </ul>
             </li>
-            <li ng-class="{active: collapseVar==13}">{{dropDown}}
-                <a href="" ng-click="check(13)"><i class="fa fa-database fa-fw"></i> Import<span
+            <li ng-class="{active: collapseVar==14}">{{dropDown}}
+                <a href="" ng-click="check(14)"><i class="fa fa-database fa-fw"></i> Import<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=13">
+                <ul class="nav nav-second-level" collapse="collapseVar!=14">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.importCustomer">Import Customer from MYOB</a>
                     </li>

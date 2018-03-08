@@ -4,6 +4,47 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="au.com.biztune.retail.dao.CustomerAccountDebtDao">
     <!-- result maps -->
+
+    <resultMap id="txnDebtorPaymentMap" type="TxnDebtorPayment" >
+        <id column="TXHD_ID" property="id" />
+        <result column="TXHD_TXN_NR" property="txhdTxnNr" />
+        <result column="TXHD_ORIG_TXN_NR" property="txhdOrigTxnNr" />
+        <result column="TXHD_TRADING_DATE" property="txhdTradingDate" />
+        <result column="TXHD_VALUE_GROSS" property="txhdValueGross" />
+        <result column="TXHD_VALUE_NETT" property="txhdValueNett" />
+        <result column="TXHD_VALUE_DUE" property="txhdValueDue" />
+        <result column="TXHD_VALUE_CHANGE" property="txhdValueChange" />
+        <result column="TXHD_VAL_ROUNDING" property="txhdValRounding" />
+        <result column="TXHD_VALUE_TAXABLE" property="txhdValueTaxable" />
+        <result column="TXHD_VALUE_TAX" property="txhdValueTax" />
+        <association property="customer" column="CUSTOMER_ID" select="au.com.biztune.retail.dao.CustomerDao.getCustomerById" />
+        <association property="user" column="TXHD_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getLiteUserById" />
+        <collection property="lines" javaType="ArrayList" column="TXHD_ID" ofType="TxnAccPayment" select="getTxnAccPaymentByTxhdId"/>
+    </resultMap>
+
+    <resultMap id="customerAccountDebtLightMap" type="CustomerAccountDebt" >
+        <id column="CAD_ID" property="cadId" />
+        <result column="TXHD_ID" property="txhdId" />
+        <result column="TXHD_TXN_NR" property="txhdTxnNr" />
+        <result column="CAD_AMOUNT_DEBT" property="cadAmountDebt" />
+        <result column="BALANCE" property="balance" />
+        <result column="CAD_START_DATE" property="cadStartDate" />
+        <result column="CAD_DUE_DATE" property="cadDueDate" />
+        <result column="CAD_PAYMENT_DATE" property="cadPaymentDate" />
+        <result column="CAD_PAIED" property="cadPaid" />
+    </resultMap>
+    <resultMap id="txnAccPaymentWithCustomerAccountDebtMap" type="TxnAccPayment" >
+        <id column="TAP_ID" property="id" />
+        <result column="TXHD_ID" property="txhdId" />
+        <result column="CAD_ID" property="cadId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="TAP_PAYMENT_DATE" property="tapPaymentDate" />
+        <result column="TAP_AMOUNT_PAID" property="tapAmountPaid" />
+        <result column="TXHD_TXN_NR" property="txhdTxnNr" />
+        <association property="customerAccountDebt" column="CAD_ID" select="getCustomerAccountDebtById" />
+    </resultMap>
+
     <resultMap id="customerAccountDebtMap" type="CustomerAccountDebt" >
         <id column="CAD_ID" property="cadId" />
         <result column="TXHD_ID" property="txhdId" />
@@ -164,12 +205,38 @@
         )
     </insert>
 
+    <insert id="insertTxnAccPaymentObject" parameterType="TxnAccPayment" useGeneratedKeys="true" keyProperty="id" keyColumn="TAP_ID">
+        INSERT INTO TXN_ACC_PAYMENT(
+        TXHD_ID,
+        CAD_ID,
+        ORGU_ID,
+        STORE_ID,
+        TAP_PAYMENT_DATE,
+        TAP_AMOUNT_PAID
+        ) VALUES (
+        #{txhdId},
+        #{cadId},
+        #{orguId},
+        #{storeId},
+        #{tapPaymentDate},
+        #{tapAmountPaid}
+        )
+    </insert>
+
     <select id="getAllCustomerAccountDebt" resultMap="customerAccountDebtMap" >
         SELECT
         <include refid="customerAccountDebtColumns"><property name="alias" value="cad"/></include>
         FROM
         CUSTOMER_ACCOUNT_DEBT cad
         where CAD_PAIED = 0 order by customer_id
+    </select>
+
+    <select id="getCustomerAccountDebtById" resultMap="customerAccountDebtLightMap" >
+        SELECT
+        <include refid="customerAccountDebtColumns"><property name="alias" value="cad"/></include>
+        FROM
+        CUSTOMER_ACCOUNT_DEBT cad
+        where CAD_ID=#{value}
     </select>
 
     <select id="getCustomerAccountDebtPerCustomerId" resultMap="customerAccountDebtMap" >
@@ -205,6 +272,21 @@
         where tap.CAD_ID = #{value} and tap.TAP_AMOUNT_PAID > 0
     </select>
 
+    <select id="getTxnAccPaymentByTxhdId" resultMap="txnAccPaymentWithCustomerAccountDebtMap" >
+        SELECT
+        <include refid="txnAccPaymentColumns"><property name="alias" value="tap"/></include>
+        FROM
+        TXN_ACC_PAYMENT tap
+        where tap.TXHD_ID = #{value}
+    </select>
+
+    <select id="getTxnAccPaymentWithCustomerAccDebtyByCustomerId" resultMap="txnAccPaymentWithCustomerAccountDebtMap" >
+        SELECT
+        <include refid="txnAccPaymentColumns"><property name="alias" value="tap"/></include>
+        FROM
+        TXN_ACC_PAYMENT tap inner join CUSTOMER_ACCOUNT_DEBT cad on (tap.CAD_ID = cad.CAD_ID)
+        where cad.CUSTOMER_ID = #{value}
+    </select>
 
     <select id="customerAccountPaymentReportMultiCustomer" resultMap="customerAccountDebtRptMap" >
         SELECT
@@ -240,4 +322,13 @@
         where CAD_PAIED = 0 and <![CDATA[cad.CAD_START_DATE <= #{param1}]]>
         AND cad.CUSTOMER_ID = #{param2}
     </select>
+
+    <select id="getDebtorPaymentTxnByCustomerIdAndType" resultMap="txnDebtorPaymentMap" >
+        SELECT
+        <include refid="au.com.biztune.retail.dao.TxnDao.txnHeaderColumns"><property name="alias" value="txhd"/></include>
+        FROM
+        TXN_HEADER txhd
+        where txhd.CUSTOMER_ID = #{param1} and txhd.TXHD_TXN_TYPE = #{param2} and txhd.TXHD_STATUS is null
+    </select>
+
 </mapper>

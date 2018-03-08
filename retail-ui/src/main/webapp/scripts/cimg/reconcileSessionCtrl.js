@@ -29,7 +29,7 @@ cimgApp.controller('reconcileSessionCtrl', function($scope, $state, baseDataServ
     $scope.$on('uiGridEventEndCellEdit', function (event) {
         var eventDetail = event.targetScope.row.entity;
         if ( event.targetScope.col.field == 'mediaValueActual') {
-            eventDetail['mediaValueDiff'] = eventDetail.mediaValueExpected*1 - eventDetail.mediaValueActual*1 ;
+            eventDetail['mediaValueDiff'] = eventDetail.mediaValueActual*1 - eventDetail.mediaValueExpected*1 ;
         }
 
     })

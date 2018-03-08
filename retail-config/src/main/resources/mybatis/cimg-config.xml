@@ -73,6 +73,7 @@
         <typeAlias type="au.com.biztune.retail.domain.TxnAccPayment" alias="TxnAccPayment" />
         <typeAlias type="au.com.biztune.retail.domain.PoSoLink" alias="PoSoLink" />
         <typeAlias type="au.com.biztune.retail.domain.StockReserve" alias="StockReserve" />
+        <typeAlias type="au.com.biztune.retail.domain.TxnDebtorPayment" alias="TxnDebtorPayment" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />

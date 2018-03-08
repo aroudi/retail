@@ -56,7 +56,8 @@ public class AccountingExtractServiceImpl implements AccountingExtractService {
             if (!(txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_INVOICE)
                     || txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_REFUND)
                     || txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_SALE)
-                    || txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_ACCOUNT_PAYMENT)))
+                    || txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_ACCOUNT_PAYMENT)
+                    || txnHeader.getTxhdTxnType().getCategoryCode().equals(IdBConstant.TXN_TYPE_REVERSE_ACC_PAYMENT)))
             {
                 logger.debug("AccountingExtractService : wrong type transaction");
                 return;
@@ -73,6 +74,10 @@ public class AccountingExtractServiceImpl implements AccountingExtractService {
                     processSaleOrderForExtractingJournalEntry(txnHeader);
                     break;
                 case IdBConstant.TXN_TYPE_ACCOUNT_PAYMENT :
+                    processDebtorPaymentForExtractingJournalEntry(txnHeader);
+                    break;
+                //TODO: JournalEntry for Reversal Debtor Payment
+                case IdBConstant.TXN_TYPE_REVERSE_ACC_PAYMENT :
                     processDebtorPaymentForExtractingJournalEntry(txnHeader);
                     break;
                 default:

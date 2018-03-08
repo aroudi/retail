@@ -14,6 +14,7 @@ public class TxnAccPayment {
     private Timestamp tapPaymentDate;
     private double tapAmountPaid;
     private String txhdTxnNr;
+    private CustomerAccountDebt customerAccountDebt;
 
     public long getId() {
         return id;
@@ -77,5 +78,13 @@ public class TxnAccPayment {
 
     public void setTxhdTxnNr(String txhdTxnNr) {
         this.txhdTxnNr = txhdTxnNr;
+    }
+
+    public CustomerAccountDebt getCustomerAccountDebt() {
+        return customerAccountDebt;
+    }
+
+    public void setCustomerAccountDebt(CustomerAccountDebt customerAccountDebt) {
+        this.customerAccountDebt = customerAccountDebt;
     }
 }

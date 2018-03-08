@@ -1,9 +1,7 @@
 package au.com.biztune.retail.service;
 
-import au.com.biztune.retail.domain.DebtorPaymentForm;
-import au.com.biztune.retail.domain.GeneralSearchForm;
-import au.com.biztune.retail.domain.ProductSale;
-import au.com.biztune.retail.domain.TxnHeader;
+import au.com.biztune.retail.domain.*;
+import au.com.biztune.retail.form.ReversalDebtorPaymentForm;
 import au.com.biztune.retail.form.TxnHeaderForm;
 import au.com.biztune.retail.response.CommonResponse;
 
@@ -161,4 +159,19 @@ public interface TransactionService {
      * @return List of invoice for product.
      */
     List<ProductSale> getInvoicesOfProduct(long productId);
+
+    /**
+     * get txn account payments per customer id.
+     * @param customerId customerId
+     * @return List of TxnAccPayment for customer
+     */
+    List<TxnDebtorPayment> getTxnAccPaymentsPerCustomerId(long customerId);
+
+        /**
+         * reverse a debtor payment transaction..
+         * @param reversalDebtorPaymentForm reversalDebtorPaymentForm
+         * @param securityContext securityContext
+         * @return CommonResponse.
+         */
+    CommonResponse reversalTxnAccPayment(ReversalDebtorPaymentForm reversalDebtorPaymentForm, SecurityContext securityContext);
 }

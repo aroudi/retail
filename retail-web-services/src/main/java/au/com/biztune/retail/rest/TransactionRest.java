@@ -1,8 +1,7 @@
 package au.com.biztune.retail.rest;
 
-import au.com.biztune.retail.domain.DebtorPaymentForm;
-import au.com.biztune.retail.domain.GeneralSearchForm;
-import au.com.biztune.retail.domain.TxnHeader;
+import au.com.biztune.retail.domain.*;
+import au.com.biztune.retail.form.ReversalDebtorPaymentForm;
 import au.com.biztune.retail.form.TxnHeaderForm;
 import au.com.biztune.retail.report.TransactionRptMgr;
 import au.com.biztune.retail.response.CommonResponse;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
 import java.util.List;
 
@@ -331,5 +331,37 @@ public class TransactionRest {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public CommonResponse uploadBillOfQuantity(@FormDataParam("file")InputStream uploadedInputStream) {
         return invoiceImportService.importInvoice(uploadedInputStream, securityContext);
+    }
+
+    /**
+     * get transaction account payments per customer id. this is used for reversing debtor payments.
+     * @param customerId customer id.
+     * @return list of TxnAccPayment
+     */
+    @Secured
+    @Path("/getTxnDebtorPaymentPerCustomerId/{customerId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TxnDebtorPayment> getTxnAccPaymentPerCustomerId(@PathParam("customerId") long customerId) {
+        try {
+            return transactionService.getTxnAccPaymentsPerCustomerId(customerId);
+        } catch (Exception e) {
+            logger.error ("Error in retrieving transaction account payment per customer id :", e);
+            return null;
+        }
+    }
+
+    /**
+     * crate a Sale Transaction.
+     * @param reversalDebtorPaymentForm Reversal Debtor Payment Form
+     * @return CommonResponse
+     */
+    @Secured
+    @Path("/reversDebtorPayment")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse reverseDebtorPayment (ReversalDebtorPaymentForm reversalDebtorPaymentForm) {
+        return transactionService.reversalTxnAccPayment(reversalDebtorPaymentForm, securityContext);
     }
 }

@@ -54,6 +54,7 @@ public class TxnHeader {
     private String txhdPrjCode;
     private boolean txivImported;
     private Timestamp txivImportTime;
+    private String txhdComment;
 
     /**
      * add txn detail to txn header.
@@ -411,5 +412,13 @@ public class TxnHeader {
 
     public void setTxivImportTime(Timestamp txivImportTime) {
         this.txivImportTime = txivImportTime;
+    }
+
+    public String getTxhdComment() {
+        return txhdComment;
+    }
+
+    public void setTxhdComment(String txhdComment) {
+        this.txhdComment = txhdComment;
     }
 }

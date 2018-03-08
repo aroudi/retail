@@ -1,7 +1,6 @@
 package au.com.biztune.retail.dao;
 
-import au.com.biztune.retail.domain.Customer;
-import au.com.biztune.retail.domain.CustomerAccountDebt;
+import au.com.biztune.retail.domain.*;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -38,11 +37,16 @@ public interface CustomerAccountDebtDao {
     List<CustomerAccountDebt> getAllCustomerAccountDebt();
 
     /**
-     * insert Txn Account Payment. a payment for customer debt.
+     * insert Txn Account Payment-from customerAccountDebt object. a payment for customer debt.
      * @param customerAccountDebt customerAccountDebt
      */
     void insertTxnAccPayment(CustomerAccountDebt customerAccountDebt);
 
+    /**
+     * insert Transaction Account Payment per its object.
+     * @param txnAccPayment txnAccPayment.
+     */
+    void insertTxnAccPaymentObject(TxnAccPayment txnAccPayment);
     /**
      * get customer account debt per customer id and txhd id.
      * @param customerId customerId
@@ -50,6 +54,14 @@ public interface CustomerAccountDebtDao {
      * @return CustomerAccountDebt
      */
     CustomerAccountDebt getCustomerAccountDebtPerCustomerIdAndTxhdId(long customerId, long txhdId);
+
+    /**
+     * get customer account debt by CAD ID.
+     * @param cadId cadId
+     * @return CustomerAccountDebt
+     */
+    CustomerAccountDebt getCustomerAccountDebtById(long cadId);
+
 
     /**
      * get customer account payment per customer id.
@@ -81,4 +93,19 @@ public interface CustomerAccountDebtDao {
      * @return balance
      */
     double customerAccountBalancePerCustomerAndDate(Timestamp toDate, long customerId);
+
+    /**
+     * return all payment made for customer account debt per customer id.
+     * @param customerId customerId
+     * @return List of TxnAccPayment
+     */
+    List<TxnAccPayment> getTxnAccPaymentWithCustomerAccDebtyByCustomerId(long customerId);
+
+    /**
+     * get debtor payment transactions by customer id and type id.
+     * @param customerId customerId
+     * @param txhdTypeId txhdTypeId
+     * @return list of debtor payment transaction
+     */
+    List<TxnDebtorPayment> getDebtorPaymentTxnByCustomerIdAndType (long customerId, long txhdTypeId);
 }

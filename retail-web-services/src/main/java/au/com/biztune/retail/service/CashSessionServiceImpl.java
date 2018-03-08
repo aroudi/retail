@@ -476,26 +476,28 @@ public class CashSessionServiceImpl implements CashSessionService {
                 cashSessionId = sessionEventDetail.getCssnSessionId();
                 sessionEventId = sessionEventDetail.getSeevId();
                 orguId = sessionEventDetail.getOrguId();
-                if (sessionEventDetail.getMediaValueActual() != 0) {
-                    if (sessionEventDetail.getMediaValueActual() > 0) {
+                if (sessionEventDetail.getMediaValueDiff() != 0) {
+                    if (sessionEventDetail.getMediaValueDiff() > 0) {
                         credit = false;
                     } else {
                         credit = true;
                     }
                     insertJournalEntry(orguId, userid, cashSessionId,
                             txnType, sessionEventId, IdBConstant.JOURNAL_ACTION_ACTUAL_BANK_ACCOUNT,
-                            sessionEventDetail.getPaymentMedia().getPaymName(), Math.abs(sessionEventDetail.getMediaValueActual()), credit);
+                            sessionEventDetail.getPaymentMedia().getPaymName(), Math.abs(sessionEventDetail.getMediaValueDiff()), credit);
                 }
                 actualTotal = actualTotal + sessionEventDetail.getMediaValueActual();
                 expectedTotal = expectedTotal + sessionEventDetail.getMediaValueExpected();
             }
-            if (actualTotal - expectedTotal > 0) {
-                credit = true;
-            } else {
-                credit = false;
+            if (actualTotal - expectedTotal != 0) {
+                if (actualTotal - expectedTotal > 0) {
+                    credit = true;
+                } else {
+                    credit = false;
+                }
+                insertJournalEntry(orguId, userid, cashSessionId,
+                        txnType, sessionEventId, IdBConstant.JOURNAL_ACTION_TILL_ADJUSTMENT, "", Math.abs(actualTotal - expectedTotal), credit);
             }
-            insertJournalEntry(orguId, userid, cashSessionId,
-                    txnType, sessionEventId, IdBConstant.JOURNAL_ACTION_TILL_ADJUSTMENT, "", Math.abs(actualTotal - expectedTotal), credit);
 
         } catch (Exception e) {
             logger.error("Error in extracting journal entry from reconciliation", e);

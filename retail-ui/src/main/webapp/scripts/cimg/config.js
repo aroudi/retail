@@ -287,6 +287,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             templateUrl:'views/pages/debtorPayment.html',
             access: "user"
         })
+        .state('dashboard.reverseDebtorPayment',{
+            url:'/reverseDebtorPayment',
+            controller: 'reverseDebtorPaymentCtrl',
+            templateUrl:'views/pages/reverseDebtorPayment.html',
+            access: "user"
+        })
         .state('dashboard.customerStatement',{
             url:'/customerStatement',
             controller: 'customerStatementCtrl',

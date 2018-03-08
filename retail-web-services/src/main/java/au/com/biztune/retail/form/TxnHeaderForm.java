@@ -41,6 +41,7 @@ public class TxnHeaderForm {
     private String txhdPrjCode;
     private Timestamp txhdTradingDate;
     private boolean imported;
+    private String txhdComment;
 
 
     /**
@@ -310,5 +311,13 @@ public class TxnHeaderForm {
 
     public void setImported(boolean imported) {
         this.imported = imported;
+    }
+
+    public String getTxhdComment() {
+        return txhdComment;
+    }
+
+    public void setTxhdComment(String txhdComment) {
+        this.txhdComment = txhdComment;
     }
 }

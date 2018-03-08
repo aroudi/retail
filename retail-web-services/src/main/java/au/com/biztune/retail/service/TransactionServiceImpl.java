@@ -2,6 +2,7 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.*;
 import au.com.biztune.retail.domain.*;
+import au.com.biztune.retail.form.ReversalDebtorPaymentForm;
 import au.com.biztune.retail.form.TxnDetailForm;
 import au.com.biztune.retail.form.TxnHeaderForm;
 import au.com.biztune.retail.form.TxnMediaForm;
@@ -54,6 +55,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
     private PaymentMediaDao paymentMediaDao;
+
     /**
      * submit a transaction and save it into database.
      * @param  txnHeaderForm txnHeaderForm
@@ -1214,6 +1216,165 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
+    /**
+     * reverse a debtor payment transaction..
+     * @param reversalDebtorPaymentForm reversalDebtorPaymentForm
+     * @param securityContext securityContext
+     * @return CommonResponse.
+     */
+    @Transactional
+    public CommonResponse reversalTxnAccPayment(ReversalDebtorPaymentForm reversalDebtorPaymentForm, SecurityContext securityContext) {
+        this.securityContext = securityContext;
+        final CommonResponse response = new CommonResponse();
+        try {
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
+            if (reversalDebtorPaymentForm == null || reversalDebtorPaymentForm.getTxnDebtorPaymentList() == null) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("reversal debtor payment or payment items are empty");
+                return response;
+            }
+            TxnHeader txnDebtorPayment = null;
+            final Timestamp currentDate = new Timestamp(new Date().getTime());
+            CustomerAccountDebt customerAccountDebt = null;
+            long txnDebtorPaymentId;
+            //for each transaction debtor payment
+            for (TxnDebtorPayment debtorPaymentTxn : reversalDebtorPaymentForm.getTxnDebtorPaymentList()) {
+                if (debtorPaymentTxn == null) {
+                    continue;
+                }
+                //retreive the debtor payment transaction
+                txnDebtorPayment = txnDao.getTxnHeaderPerTxhdId(debtorPaymentTxn.getId());
+                if (txnDebtorPayment == null) {
+                    logger.debug("Reversal Debtor Payment. couldn't find the debtor payment with id [{}]", debtorPaymentTxn.getId());
+                    continue;
+                }
+                //reverse the debtor payment transaction by negating its values and setting its txhdId to -1 (set as new transaction)
+                txnDebtorPaymentId = txnDebtorPayment.getId();
+                txnDebtorPayment.setParentId(txnDebtorPayment.getId());
+                txnDebtorPayment.setTxhdOrigTxnNr(txnDebtorPayment.getTxhdTxnNr());
+                txnDebtorPayment.setId(-1);
+                txnDebtorPayment.setOrgUnit(sessionState.getStore().getOrgUnit());
+                txnDebtorPayment.setStore(sessionState.getStore());
+                final ConfigCategory txnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_REVERSE_ACC_PAYMENT);
+                if (txnType != null) {
+                    txnDebtorPayment.setTxhdTxnType(txnType);
+                }
+                txnDebtorPayment.setOrgUnitOriginal(sessionState.getStore().getOrgUnit());
+                txnDebtorPayment.setTxhdTradingDate(currentDate);
+                txnDebtorPayment.setTxhdVoided(false);
+                txnDebtorPayment.setTxhdValueNett(-txnDebtorPayment.getTxhdValueNett());
+                txnDebtorPayment.setTxhdValueDue(-txnDebtorPayment.getTxhdValueDue());
+                txnDebtorPayment.setTxhdValRounding(-txnDebtorPayment.getTxhdValRounding());
+                final Principal principal = securityContext.getUserPrincipal();
+                AppUser appUser = null;
+                if (principal instanceof AppUser) {
+                    appUser = (AppUser) principal;
+                    txnDebtorPayment.setTxhdOperator(appUser.getId());
+                    txnDebtorPayment.setUser(appUser);
+                }
+                txnDebtorPayment.setTxhdComment(reversalDebtorPaymentForm.getComment());
+                //save it to database.
+                txnDao.insertTxnHeader(txnDebtorPayment);
+                txnDebtorPayment.setTxhdTxnNr(generateTxnNumber(txnDebtorPayment.getId(), IdBConstant.TXN_NUMBER_PREFIX));
+                txnDao.assigneTxnNumber(txnDebtorPayment);
+
+                //save txn media
+                final ConfigCategory mediaTypeRefund = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_REFUND);
+
+                double totalMediaRefunded = 0.00;
+                for (TxnMedia txnMedia : txnDebtorPayment.getTxnMedias()) {
+                    totalMediaRefunded = totalMediaRefunded + txnMedia.getTxmdAmountLocal();
+                    txnMedia.setTxmdType(mediaTypeRefund);
+                    txnMedia.setTxhdId(txnDebtorPayment.getId());
+                    txnMedia.setOrguId(sessionState.getOrgUnit().getId());
+                    txnMedia.setStoreId(sessionState.getStore().getId());
+                    txnMedia.setTxmdVoided(false);
+                    txnMedia.setNewAdded(true);
+                    txnMedia.setId(-1);
+                    txnMedia.setTxmdAmountLocal(-1 * txnMedia.getTxmdAmountLocal());
+                    txnDao.insertTxnMedia(txnMedia);
+                }
+
+                //refund the total amount paid to ACCOUNT media - we added this only for session media/totaller updates.
+                final ConfigCategory mediaTypeSale = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_SALE);
+                final PaymentMedia paymentMedia = paymentMediaDao.getPaymentMediaPerCode(IdBConstant.PAY_MEDIA_CODE_ACCOUNT);
+                final TxnMedia txnMedia = new TxnMedia();
+                if (paymentMedia != null) {
+                    txnMedia.setPaymentMedia(paymentMedia);
+                    txnMedia.setTxmdType(mediaTypeSale);
+                    txnMedia.setStoreId(sessionState.getStore().getId());
+                    txnMedia.setTxmdVoided(false);
+                    txnMedia.setNewAdded(true);
+                    txnMedia.setId(-1);
+                    txnMedia.setOrguId(sessionState.getOrgUnit().getId());
+                    txnMedia.setTxhdId(txnDebtorPayment.getId());
+                    txnMedia.setMedtId(paymentMedia.getMediaType().getId());
+                    txnMedia.setTxmdAmountLocal(totalMediaRefunded);
+                    txnDebtorPayment.addTxnMedia(txnMedia);
+                }
+
+                //update the status of transaction debtor payment to reversed.
+                final ConfigCategory txnStatusRefund = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_STATUS, IdBConstant.TXN_STATUS_REFUNDED);
+                if (txnStatusRefund != null) {
+                    txnDao.updateTxnHeaderStatusPerTxhdId(txnDebtorPaymentId, txnStatusRefund.getId());
+                }
+
+                //for each debtor payment payment create reversal payment and link to new transaction
+                for (TxnAccPayment txnAccPayment : debtorPaymentTxn.getLines()) {
+
+                    if (txnAccPayment == null) {
+                        continue;
+                    }
+                    //save new txn_acc_payment for each reversal payment
+                    txnAccPayment.setId(-1);
+                    txnAccPayment.setOrguId(sessionState.getStore().getOrgUnit().getId());
+                    txnAccPayment.setStoreId(sessionState.getStore().getId());
+                    txnAccPayment.setTapPaymentDate(currentDate);
+                    txnAccPayment.setTxhdId(txnDebtorPayment.getId());
+                    //reversal the amount
+                    txnAccPayment.setTapAmountPaid(-txnAccPayment.getTapAmountPaid());
+                    customerAccountDebtDao.insertTxnAccPaymentObject(txnAccPayment);
+
+                    //update the customerAccountDebt record per new payment
+                    customerAccountDebt = txnAccPayment.getCustomerAccountDebt();
+                    if (txnAccPayment.getCustomerAccountDebt() != null) {
+                        // adjust the customer debt balance
+                        customerAccountDebt.setBalance(customerAccountDebt.getBalance() - txnAccPayment.getTapAmountPaid());
+                        if (customerAccountDebt.getBalance() <= 0.00) {
+                            customerAccountDebt.setCadPaid(true);
+                        }
+                        //update the customer account debt amount
+                        customerAccountDebtDao.update(customerAccountDebt);
+                    }
+                }
+                //push event to session processor
+                cashSessionService.processSessionEvent(txnDebtorPayment, IdBConstant.SESSION_EVENT_TYPE_ACC_REFUND);
+            }
+            return response;
+
+        } catch (Exception e) {
+            logger.error("Exception in reversal debtor payment: ", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Error in reversal process. please see the log");
+            return response;
+        }
+    }
+    /**
+     * get txn account payments per customer id.
+     * @param customerId customerId
+     * @return List of TxnAccPayment for customer
+     */
+    public List<TxnDebtorPayment> getTxnAccPaymentsPerCustomerId(long customerId) {
+        try {
+            final ConfigCategory txnTypeAccPayment = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_ACCOUNT_PAYMENT);
+            //select all transaction which had not been refunded.
+            return customerAccountDebtDao.getDebtorPaymentTxnByCustomerIdAndType(customerId, txnTypeAccPayment.getId());
+
+        } catch (Exception e) {
+            logger.error("Exception in getting TxnAccPayments per customer id.", e);
+            return null;
+        }
+    }
     /**
      * search Sale Order and Quote per parameters.
      * @param searchForm searchForm

@@ -31,7 +31,7 @@ public class TotalerServiceImpl implements TotalerService {
      */
     public void extractTotalFiguresFromTxn(TxnHeader txnHeader) {
         try {
-            if (txnHeader == null || txnHeader.getTxnDetails() == null) {
+            if (txnHeader == null) {
                 logger.debug("Totaller : transaction is empty");
                 return;
             }
@@ -46,6 +46,9 @@ public class TotalerServiceImpl implements TotalerService {
 
     private void processTotalSale(TxnHeader txnHeader) {
         try {
+            if (txnHeader.getTxnDetails() == null) {
+                return;
+            }
             double totalSoldQty = 0.00;
             double totalItemsValue = 0.00;
             double totalProfitValue = 0.00;
@@ -151,6 +154,9 @@ public class TotalerServiceImpl implements TotalerService {
 
     private void processtotalMedia(TxnHeader txnHeader) {
         try {
+            if (txnHeader.getTxnMedias() == null) {
+                return;
+            }
             //extract media values used for this event
             final Map<PaymentMedia, Double[]> totalMediaVals = new HashMap<PaymentMedia, Double[]>();
             /**
