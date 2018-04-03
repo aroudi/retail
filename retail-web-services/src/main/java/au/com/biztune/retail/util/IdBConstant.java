@@ -635,4 +635,16 @@ public interface IdBConstant {
      * TYPE COUNTRY.
      */
     String TYPE_COUNTRY = "TYPE_COUNTRY";
+    /**
+     * PRODUCT GROUP LEVEL 1.
+     */
+    String PRGP_LEVEL_1 = "DEPARTMENT";
+    /**
+     * PRODUCT GROUP LEVEL 2.
+     */
+    String PRGP_LEVEL_2 = "CATEGORY_HEADING";
+    /**
+     * PRODUCT GROUP LEVEL 3.
+     */
+    String PRGP_LEVEL_3 = "CATEGORY_VALUE";
 }

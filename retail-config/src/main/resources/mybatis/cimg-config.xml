@@ -74,6 +74,13 @@
         <typeAlias type="au.com.biztune.retail.domain.PoSoLink" alias="PoSoLink" />
         <typeAlias type="au.com.biztune.retail.domain.StockReserve" alias="StockReserve" />
         <typeAlias type="au.com.biztune.retail.domain.TxnDebtorPayment" alias="TxnDebtorPayment" />
+        <typeAlias type="au.com.biztune.retail.domain.Department" alias="Department" />
+        <typeAlias type="au.com.biztune.retail.domain.CategoryHeading" alias="CategoryHeading" />
+        <typeAlias type="au.com.biztune.retail.domain.CategoryValue" alias="CategoryValue" />
+        <typeAlias type="au.com.biztune.retail.domain.ProdDeptCat" alias="ProdDeptCat" />
+        <typeAlias type="au.com.biztune.retail.domain.DeptCategoryVal" alias="DeptCategoryVal" />
+        <typeAlias type="au.com.biztune.retail.domain.DeptCategory" alias="DeptCategory" />
+        <typeAlias type="au.com.biztune.retail.domain.TreeViewNode" alias="TreeViewNode" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />
@@ -107,5 +114,6 @@
         <mapper resource="maps/TotalerMapper.xml" />
         <mapper resource="maps/AccountingMapper.xml" />
         <mapper resource="maps/PoSoLinkMapper.xml" />
+        <mapper resource="maps/ProductCategoryMapper.xml" />
     </mappers>
 </configuration>

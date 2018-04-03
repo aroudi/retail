@@ -1,0 +1,20 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Product Groups
+            </div>
+            <div class="panel-body">
+                <row>
+                    <tree nodes = 'basicTree'> </tree>
+                </row>
+                <div class="row">
+                    <button type="button" class="btn btn-success" ng-click="addNode('addDepartment')">Add Department</button>
+                    <button ng-show="addButtonVisible" type="button" class="btn btn-success" ng-click="addNode(updateCommand)">{{AddButtonTitle}}</button>
+                    <button ng-show="editButtonVisible" type="button" class="btn btn-success" >Edit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -163,4 +163,9 @@
         <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
         <property name="mapperInterface" value="au.com.biztune.retail.dao.PoSoLinkDao" />
     </bean>
+    <bean id="ProductCategoryDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.ProductCategoryDao" />
+    </bean>
+
 </beans>

@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.ProductCategoryDao">
+    <!-- result maps -->
+
+    <resultMap id="departmentTreeViewMap" type="TreeViewNode" >
+        <id column="DEPT_ID" property="id" />
+        <id column="DEPT_ID" property="primaryKey" />
+        <result column="DEPT_NAME" property="name" />
+        <result column="NODE_TYPE" property="nodeType" />
+        <collection property="children" javaType="ArrayList" column="DEPT_ID" ofType="TreeViewNode" select="getCategoryTreeViewListPerDeptId"/>
+    </resultMap>
+    <resultMap id="deptCategoryTreeViewMap" type="TreeViewNode" >
+        <id column="CATH_ID" property="id" />
+        <id column="DEPT_CAT_ID" property="primaryKey" />
+        <result column="DEPT_ID" property="parentNodeId" />
+        <result column="CATH_NAME" property="name" />
+        <result column="NODE_TYPE" property="nodeType" />
+        <result column="LEVEL" property="order" />
+        <collection property="children" javaType="ArrayList" column="DEPT_CAT_ID" ofType="TreeViewNode" select="getDeptCatValTreeViewListPerCatId"/>
+    </resultMap>
+    <resultMap id="DeptCatValTreeViewMap" type="TreeViewNode" >
+        <id column="CATV_ID" property="id" />
+        <id column="DEPT_CAT_VAL_ID" property="primaryKey" />
+        <result column="DEPT_CAT_ID" property="parentNodeId" />
+        <result column="CAT_VALUE" property="name" />
+        <result column="NODE_TYPE" property="nodeType" />
+    </resultMap>
+
+
+
+
+    <resultMap id="departmentMap" type="Department" >
+        <id column="DEPT_ID" property="id" />
+        <result column="DEPT_NAME" property="deptName" />
+        <result column="DEPT_CODE" property="deptCode" />
+        <result column="DEPT_DESC" property="deptDesc" />
+        <result column="ACTIVE" property="active" />
+        <collection property="categoryHeadingList" javaType="ArrayList" column="DEPT_ID" ofType="CategoryHeading" select="getCategoryListPerDeptId"/>
+    </resultMap>
+
+    <resultMap id="categoryHeadingMap" type="CategoryHeading" >
+        <id column="CATH_ID" property="id" />
+        <result column="CATH_NAME" property="cathName" />
+        <result column="CATH_CODE" property="cathCode" />
+        <result column="DEPT_DESC" property="cathDesc" />
+        <result column="ACTIVE" property="active" />
+        <collection property="valueList" javaType="ArrayList" column="CATH_ID" ofType="CategoryValue" select="getValueListPerCathId"/>
+    </resultMap>
+
+    <resultMap id="categoryValueMap" type="CategoryValue" >
+        <id column="CATV_ID" property="id" />
+        <result column="CATH_ID" property="cathId" />
+        <result column="CAT_VALUE" property="catValue" />
+        <result column="ACTIVE" property="active" />
+    </resultMap>
+
+    <resultMap id="deptCategoryMap" type="DeptCategory" >
+        <id column="DEPT_CAT_ID" property="id" />
+        <result column="DEPT_ID" property="deptId" />
+        <result column="CATH_ID" property="cathId" />
+        <result column="LEVEL" property="level" />
+        <result column="ACTIVE" property="active" />
+    </resultMap>
+
+    <resultMap id="deptCategoryValMap" type="DeptCategoryVal" >
+        <id column="DEPT_CAT_VAL_ID" property="id" />
+        <result column="DEPT_CAT_ID" property="deptCatId" />
+        <result column="DEPT_ID" property="deptId" />
+        <result column="CATH_ID" property="cathId" />
+        <result column="catvId" property="catvId" />
+    </resultMap>
+
+    <sql id="departmentColumns">
+        ${alias}.DEPT_ID,
+        ${alias}.DEPT_NAME,
+        ${alias}.DEPT_CODE,
+        ${alias}.ACTIVE,
+        ${alias}.DEPT_DESC
+    </sql>
+
+    <sql id="categoryHeadingColumns">
+        ${alias}.CATH_ID,
+        ${alias}.CATH_NAME,
+        ${alias}.CATH_CODE,
+        ${alias}.ACTIVE,
+        ${alias}.CATH_DESC
+    </sql>
+    <sql id="categoryValueColumns">
+        ${alias}.CATV_ID,
+        ${alias}.CATH_ID,
+        ${alias}.ACTIVE,
+        ${alias}.CAT_VALUE
+    </sql>
+
+    <sql id="deptCategoryColumns">
+        ${alias}.DEPT_CAT_ID,
+        ${alias}.DEPT_ID,
+        ${alias}.ACTIVE,
+        ${alias}.CATH_ID,
+        ${alias}.LEVEL
+    </sql>
+
+    <sql id="deptCategoryValueColumns">
+        ${alias}.DEPT_CAT_VAL_ID,
+        ${alias}.DEPT_CAT_ID,
+        ${alias}.DEPT_ID,
+        ${alias}.CATV_ID,
+        ${alias}.CATH_ID
+    </sql>
+
+    <sql id="prodDeptCatColumns">
+        ${alias}.ID,
+        ${alias}.ORGU_ID,
+        ${alias}.PROD_ID,
+        ${alias}.DEPT_ID,
+        ${alias}.CAT_ID,
+        ${alias}.LEVEL,
+        ${alias}.CAT_VAL_ID
+    </sql>
+
+    <!-- user management -->
+    <insert id="insertDepartment" parameterType="Department" useGeneratedKeys="true" keyProperty="id" keyColumn="DEPT_ID">
+        INSERT INTO DEPARTMENT(
+        DEPT_NAME,
+        DEPT_CODE,
+        DEPT_DESC
+        ) VALUES (
+        #{deptName}
+        <if test="deptCode != null">
+            ,#{deptCode}
+        </if>
+        <if test="deptCode == null">
+            ,null
+        </if>
+        <if test="deptDesc != null">
+            ,#{deptDesc}
+        </if>
+        <if test="deptDesc == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <update id="updateDepartmentById" parameterType="Department" >
+        UPDATE DEPARTMENT SET
+            DEPT_NAME = #{deptName}
+            <if test="deptCode != null">
+                ,DEPT_CODE = #{deptCode}
+            </if>
+            <if test="deptDesc != null">
+                ,DEPT_DESC = #{deptDesc}
+            </if>
+        WHERE DEPT_ID = #{id}
+    </update>
+
+
+    <insert id="insertCategoryHeading" parameterType="CategoryHeading" useGeneratedKeys="true" keyProperty="id" keyColumn="CATH_ID">
+        INSERT INTO CATEGORY_HEADING(
+        CATH_NAME,
+        CATH_CODE,
+        CATH_DESC
+        ) VALUES (
+        #{cathName}
+        <if test="cathCode != null">
+            ,#{cathCode}
+        </if>
+        <if test="cathCode == null">
+            ,null
+        </if>
+        <if test="cathDesc != null">
+            ,#{cathDesc}
+        </if>
+        <if test="cathDesc == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <update id="updateCategoryHeadingById" parameterType="CategoryHeading" >
+        UPDATE CATEGORY_HEADING SET
+        CATH_NAME = #{cathName}
+        <if test="cathCode != null">
+            ,CATH_CODE = #{cathCode}
+        </if>
+        <if test="cathDesc != null">
+            ,CATH_DESC = #{cathDesc}
+        </if>
+        WHERE CATH_ID = #{id}
+    </update>
+
+
+    <insert id="insertCategoryValue" parameterType="CategoryValue" useGeneratedKeys="true" keyProperty="id" keyColumn="CATV_ID">
+        INSERT INTO CATEGORY_VALUE(
+        CATH_ID,
+        CAT_VALUE
+        ) VALUES (
+        #{cathId},
+        #{catValue}
+        )
+    </insert>
+
+    <update id="updateCategoryValueById" parameterType="CategoryValue" >
+        UPDATE CATEGORY_VALUE SET
+        CAT_VALUE = #{catValue}
+        WHERE CATV_ID = #{id}
+    </update>
+
+    <insert id="insertDeptCategory" parameterType="DeptCategory" useGeneratedKeys="true" keyProperty="id" keyColumn="DEPT_CAT_ID">
+        INSERT INTO DEPT_CATEGORY(
+        DEPT_ID,
+        CATH_ID
+        ) VALUES (
+        #{deptId},
+        #{cathId}
+        )
+    </insert>
+
+    <insert id="insertDeptCategoryValue" parameterType="DeptCategoryVal" useGeneratedKeys="true" keyProperty="id" keyColumn="DEPT_CAT_VAL_ID">
+        INSERT INTO DEPT_CATEGORY_VALUE(
+        DEPT_CAT_ID,
+        DEPT_ID,
+        CATH_ID,
+        CATV_ID
+        ) VALUES (
+        #{deptCatId},
+        #{deptId},
+        #{cathId},
+        #{catvId}
+        )
+    </insert>
+
+    <insert id="insertProdDeptCategory" parameterType="ProdDeptCat" useGeneratedKeys="true" keyProperty="id" keyColumn="ID">
+        INSERT INTO DEPT_CATEGORY(
+        ORGU_ID,
+        PROD_ID,
+        DEPT_ID,
+        CAT_ID,
+        CAT_VAL_ID
+        ) VALUES (
+        #{orguId},
+        #{prodId},
+        #{deptId}
+        <if test="catId != null">
+            ,#{catId}
+        </if>
+        <if test="catId == null">
+            ,null
+        </if>
+        <if test="catValId != null">
+            ,#{catValId}
+        </if>
+        <if test="catValId == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <select id="getAllDepartmentListTreeView" resultMap="departmentTreeViewMap" >
+        SELECT
+        <include refid="departmentColumns"><property name="alias" value="dept"/></include>
+        ,'DEPARTMENT' NODE_TYPE
+        FROM
+        DEPARTMENT dept
+        WHERE dept.ACTIVE = 1
+    </select>
+
+    <select id="getDepartmentTreeViewById" resultMap="departmentTreeViewMap" >
+        SELECT
+        <include refid="departmentColumns"><property name="alias" value="dept"/></include>
+        ,'DEPARTMENT' NODE_TYPE
+        FROM
+        DEPARTMENT dept
+        WHERE dept.DEPT_ID = #{value}
+    </select>
+
+
+    <select id="getCategoryTreeViewListPerDeptId" resultMap="deptCategoryTreeViewMap" >
+        SELECT
+        <include refid="categoryHeadingColumns"><property name="alias" value="cath"/></include>
+        , deptc.DEPT_CAT_ID, deptc.DEPT_ID, 'CATEGORY_HEADING' NODE_TYPE
+        FROM
+        CATEGORY_HEADING cath INNER  JOIN DEPT_CATEGORY deptc on (cath.CATH_ID = deptc.CATH_ID)
+        WHERE deptc.DEPT_ID = #{value} and cath.ACTIVE = 1
+    </select>
+
+    <select id="getDeptCatValTreeViewListPerCatId" resultMap="DeptCatValTreeViewMap" >
+        SELECT
+        <include refid="categoryValueColumns"><property name="alias" value="catVal"/></include>,
+        deptCatVal.DEPT_CAT_VAL_ID, deptCatVal.DEPT_CAT_ID, 'CATEGORY_VALUE' NODE_TYPE
+        FROM
+        DEPT_CATEGORY_VALUE deptCatVal INNER JOIN  CATEGORY_VALUE catVal ON (deptCatVal.CATV_ID = catVal.CATV_ID)
+        WHERE deptCatVal.DEPT_CAT_ID = #{value} AND catVal.ACTIVE = 1
+    </select>
+
+    <select id="getCategoryListNotDefinedForDepartment" resultMap="deptCategoryTreeViewMap" >
+        SELECT
+        <include refid="categoryHeadingColumns"><property name="alias" value="cath"/></include>
+        FROM
+        CATEGORY_HEADING cath
+        WHERE cath.active = 1 and cath.cath_id not in (select cath_id from dept_category where dept_id = #{value})
+    </select>
+
+    <select id="getCatValListNotDefinedForDeptCat" resultMap="DeptCatValTreeViewMap" >
+        SELECT
+        <include refid="categoryValueColumns"><property name="alias" value="catVal"/></include>
+        FROM category_value catVal where catVal.active=1 and catVal.catv_id not in (select catv_id from dept_category_value where dept_cat_id = #{value})
+    </select>
+
+    <select id="getCategoryListPerDeptId" resultMap="categoryHeadingMap" >
+        SELECT
+        <include refid="categoryHeadingColumns"><property name="alias" value="cath"/></include>
+        FROM
+        CATEGORY_HEADING cath INNER  JOIN DEPT_CATEGORY deptc on (cath.CATH_ID = deptc.CATH_ID)
+        WHERE deptc.DEPT_ID = #{value} and cath.ACTIVE = 1
+    </select>
+
+    <select id="getCategoryHeadingPerCathId" resultMap="categoryHeadingMap" >
+        SELECT
+        <include refid="categoryHeadingColumns"><property name="alias" value="cath"/></include>
+        FROM
+        CATEGORY_HEADING cath WHERE cath.CATH_ID = #{value}
+    </select>
+
+    <select id="getCategoryValPerCatvId" resultMap="categoryValueMap" >
+        SELECT
+        <include refid="categoryValueColumns"><property name="alias" value="catv"/></include>
+        FROM
+        CATEGORY_VALUE catv
+        WHERE catv.CATV_ID = #{value}
+    </select>
+
+    <select id="getValueListPerCathId" resultMap="categoryValueMap" >
+        SELECT
+        <include refid="categoryValueColumns"><property name="alias" value="catv"/></include>
+        FROM
+        CATEGORY_VALUE catv
+        WHERE catv.CATH_ID = #{value} AND catv.ACTIVE = 1
+    </select>
+
+    <select id="getDeptCategoryValPerId" resultMap="deptCategoryValMap" >
+        SELECT
+        <include refid="deptCategoryValueColumns"><property name="alias" value="catv"/></include>
+        FROM
+        DEPT_CATEGORY_VALUE deptCatVal
+        WHERE deptCatVal.DEPT_CAT_VAL_ID = #{value}
+    </select>
+
+    <select id="getDeptCategoryPerId" resultMap="deptCategoryMap" >
+        SELECT
+        <include refid="deptCategoryColumns"><property name="alias" value="deptCat"/></include>
+        FROM
+        DEPT_CATEGORY deptCat
+        WHERE deptCat.DEPT_CAT_ID = #{value}
+    </select>
+
+    <delete id="deleteDeptCategoryById" >
+        DELETE
+        From DEPT_CATEGORY
+        WHERE
+        DEPT_CAT_ID = #{value}
+    </delete>
+
+    <delete id="deleteDeptCategoryByDeptId" >
+        DELETE
+        From DEPT_CATEGORY
+        WHERE
+        DEPT_ID = #{value}
+    </delete>
+
+    <delete id="deleteProdDeptCatById" >
+        DELETE
+        From PROD_DEPT_CAT
+        WHERE
+        ORGU_ID = #{param1}
+        AND ID = #{param2}
+    </delete>
+
+    <delete id="deleteProdDeptCatByCatId" >
+        DELETE
+        From PROD_DEPT_CAT
+        WHERE
+        ORGU_ID = #{param1}
+        AND CAT_ID = #{param2}
+    </delete>
+
+</mapper>

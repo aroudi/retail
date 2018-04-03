@@ -400,6 +400,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             access: "user",
             resolve: {importEntity: function(){return 'supplier'}}
         })
+        .state('dashboard.productGroupTreeView',{
+            url:'/productGroupTreeView',
+            controller: 'productGroupTreeCtrl',
+            templateUrl:'views/pages/productGroupTree.html',
+            access: "user"
+        })
     .state('dashboard.importCustomer',{
         url:'/importCustomer',
         controller: 'importCtrl',

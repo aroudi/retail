@@ -36,7 +36,8 @@ var cimgApp = angular
     'pdfjsViewer',
     'chart.js',
     'ui.grid.exporter',
-    'ui.select'
+    'ui.select',
+    'TreeWidget'
   ]);
 
 //SIT
@@ -195,7 +196,13 @@ var service_uri = {
     'INVOICE_OF_SO_URI' : 'saleOrder/getInvoiceOfSo/',
     'INVOICE_IMPORT_URI' : 'transaction/importInvoice',
     'REVERSE_DEBTOR_PAYMENT_URI' : 'transaction/reversDebtorPayment',
-    'CUSTOMER_DEBTOR_PAYMENT_URI' : 'transaction/getTxnDebtorPaymentPerCustomerId/'
+    'CUSTOMER_DEBTOR_PAYMENT_URI' : 'transaction/getTxnDebtorPaymentPerCustomerId/',
+    'PRGP_GET_ALL_TREEVIEW_URI' : 'productGroup/department/all/treeViewModel',
+    'PRGP_ADD_TREEVIEW_URI' : 'productGroup/add/treeViewNode',
+    'PRGP_UPDATE_TREEVIEW_URI' : 'productGroup/update/treeViewNode',
+    'PRGP_GET_CATLIST_NOT_IN_DEPT_URI' : 'productGroup/department/getCategoryNotAssignedToDept',
+    'PRGP_GET_CATVALLIST_NOT_IN_DEPTCAT_URI' : 'productGroup/department/getCategoryValNotAssignedToDeptCat'
+
 
 };
 
