@@ -164,4 +164,26 @@ public interface ProductCategoryDao {
      */
     CategoryValue getCategoryValPerCatvId(long catvId);
 
+    /**
+     * get department by name.
+     * @param deptName deptName
+     * @return Department
+     */
+    Department getDepartmentByName(String deptName);
+
+    /**
+     * get Category Heading by name.
+     * @param catHeading catHeading
+     * @return CategoryHeading
+     */
+    CategoryHeading getCategoryHeadingByName(String catHeading);
+
+    /**
+     * get Category Value by name.
+     * @param catValue catValue
+     * @return CategoryValue
+     */
+    CategoryValue getCategoryValueByName(String catValue);
+
+
 }

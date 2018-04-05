@@ -2,6 +2,7 @@
  * Created by arash on 14/08/2015.
  */
 cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $state, $timeout, baseDataService, SUCCESS, FAILURE, PRGP_ADD_TREEVIEW_URI, PRGP_UPDATE_TREEVIEW_URI, PRGP_GET_CATLIST_NOT_IN_DEPT_URI, PRGP_GET_CATVALLIST_NOT_IN_DEPTCAT_URI ) {
+    $scope.message = '';
     $scope.currentNodeSetVisible = false;
     $scope.currentNodeValueVisible = true;
     $scope.nodeSelectedFromList = false;
@@ -40,6 +41,18 @@ cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $stat
                 }
             });
         }
+        if (command === 'update') {
+            if (treeViewNode.nodeType === 'DEPARTMENT') {
+                $scope.nodeTitle = 'Department';
+            }
+            if (treeViewNode.nodeType === 'CATEGORY_HEADING') {
+                $scope.nodeTitle = 'Category Heading';
+            }
+            if (treeViewNode.nodeType === 'CATEGORY_VALUE') {
+                $scope.nodeTitle = 'Category Value';
+            }
+            $scope.nodeValue = treeViewNode.name;
+        }
     };
     $scope.submit = function () {
 
@@ -67,13 +80,35 @@ cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $stat
                 id : -1
             };
         }
-        baseDataService.addRow(newNode, PRGP_ADD_TREEVIEW_URI).then(function(response) {
-            if (response.data === undefined || response.data === null) {
-
-            } else {
-                $scope.confirm(response.data);
-            }
-        });
+        if (command === 'update') {
+            var newNode = treeViewNode;
+            newNode.name = $scope.nodeValue;
+        }
+        //ADD NEW NODE
+        if (newNode.id === -1) {
+            baseDataService.addRow(newNode, PRGP_ADD_TREEVIEW_URI).then(function(response) {
+                var res = response.data;
+                if (res === undefined || res === null) {
+                    $scope.message = 'Product Group update failed!!!. please refer to the logs';
+                } else if (res.id === -1) {
+                    $scope.message = res.name;
+                } else {
+                    $scope.confirm(response.data);
+                }
+            });
+        //UPDATE
+        } else {
+            baseDataService.addRow(newNode, PRGP_UPDATE_TREEVIEW_URI).then(function(response) {
+                var res = response.data;
+                if (res === undefined || res === null) {
+                    $scope.message = 'Product Group update failed!!!. please refer to the logs';
+                } else if (res.id === -1) {
+                    $scope.message = res.name;
+                } else {
+                    $scope.confirm(response.data);
+                }
+            });
+        }
 
     };
     $scope.cancel = function() {

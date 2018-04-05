@@ -41,6 +41,14 @@
         <collection property="categoryHeadingList" javaType="ArrayList" column="DEPT_ID" ofType="CategoryHeading" select="getCategoryListPerDeptId"/>
     </resultMap>
 
+    <resultMap id="departmentMapOnly" type="Department" >
+        <id column="DEPT_ID" property="id" />
+        <result column="DEPT_NAME" property="deptName" />
+        <result column="DEPT_CODE" property="deptCode" />
+        <result column="DEPT_DESC" property="deptDesc" />
+        <result column="ACTIVE" property="active" />
+    </resultMap>
+
     <resultMap id="categoryHeadingMap" type="CategoryHeading" >
         <id column="CATH_ID" property="id" />
         <result column="CATH_NAME" property="cathName" />
@@ -48,6 +56,14 @@
         <result column="DEPT_DESC" property="cathDesc" />
         <result column="ACTIVE" property="active" />
         <collection property="valueList" javaType="ArrayList" column="CATH_ID" ofType="CategoryValue" select="getValueListPerCathId"/>
+    </resultMap>
+
+    <resultMap id="categoryHeadingMapOnly" type="CategoryHeading" >
+        <id column="CATH_ID" property="id" />
+        <result column="CATH_NAME" property="cathName" />
+        <result column="CATH_CODE" property="cathCode" />
+        <result column="DEPT_DESC" property="cathDesc" />
+        <result column="ACTIVE" property="active" />
     </resultMap>
 
     <resultMap id="categoryValueMap" type="CategoryValue" >
@@ -354,6 +370,30 @@
         FROM
         DEPT_CATEGORY deptCat
         WHERE deptCat.DEPT_CAT_ID = #{value}
+    </select>
+
+    <select id="getDepartmentByName" resultMap="departmentMapOnly" >
+        SELECT
+        <include refid="departmentColumns"><property name="alias" value="dept"/></include>
+        FROM
+        DEPARTMENT dept
+        WHERE dept.DEPT_NAME = #{value}
+    </select>
+
+    <select id="getCategoryHeadingByName" resultMap="categoryHeadingMapOnly" >
+        SELECT
+        <include refid="categoryHeadingColumns"><property name="alias" value="cath"/></include>
+        FROM
+        CATEGORY_HEADING cath
+        WHERE cath.CATH_NAME = #{value}
+    </select>
+
+    <select id="getCategoryValueByName" resultMap="categoryValueMap" >
+        SELECT
+        <include refid="categoryValueColumns"><property name="alias" value="catv"/></include>
+        FROM
+        CATEGORY_VALUE catv
+        WHERE catv.CAT_VALUE = #{value}
     </select>
 
     <delete id="deleteDeptCategoryById" >

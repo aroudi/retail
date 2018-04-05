@@ -95,7 +95,15 @@ public class ProductGroupServiceImpl implements ProductGroupService {
      */
     private TreeViewNode insertDepartment(TreeViewNode treeViewNode) {
         try {
-            final Department department = new Department();
+            //check if deparment exist
+            Department department = productCategoryDao.getDepartmentByName(treeViewNode.getName());
+            if (department != null) {
+                final TreeViewNode response = new TreeViewNode();
+                treeViewNode.setId(-1);
+                treeViewNode.setName("Department is already defined");
+                return treeViewNode;
+            }
+            department = new Department();
             department.setDeptName(treeViewNode.getName());
             productCategoryDao.insertDepartment(department);
             treeViewNode.setId(department.getId());
@@ -117,6 +125,13 @@ public class ProductGroupServiceImpl implements ProductGroupService {
             CategoryHeading categoryHeading = null;
             categoryHeading = productCategoryDao.getCategoryHeadingPerCathId(treeViewNode.getId());
             if (categoryHeading == null) {
+                categoryHeading = productCategoryDao.getCategoryHeadingByName(treeViewNode.getName());
+                if (categoryHeading != null) {
+                    final TreeViewNode response = new TreeViewNode();
+                    treeViewNode.setId(-1);
+                    treeViewNode.setName("Category Heading is already defined");
+                    return treeViewNode;
+                }
                 categoryHeading = new CategoryHeading();
                 categoryHeading.setCathName(treeViewNode.getName());
                 productCategoryDao.insertCategoryHeading(categoryHeading);
@@ -152,6 +167,13 @@ public class ProductGroupServiceImpl implements ProductGroupService {
 
             categoryValue = productCategoryDao.getCategoryValPerCatvId(treeViewNode.getId());
             if (categoryValue == null) {
+                categoryValue = productCategoryDao.getCategoryValueByName(treeViewNode.getName());
+                if (categoryValue != null) {
+                    final TreeViewNode response = new TreeViewNode();
+                    treeViewNode.setId(-1);
+                    treeViewNode.setName("Category Value is already defined");
+                    return treeViewNode;
+                }
                 categoryValue = new CategoryValue();
                 categoryValue.setCathId(deptCategory.getCathId());
                 categoryValue.setCatValue(treeViewNode.getName());
@@ -175,7 +197,15 @@ public class ProductGroupServiceImpl implements ProductGroupService {
 
     private TreeViewNode updateDepartment(TreeViewNode treeViewNode) {
         try {
-            final Department department = new Department();
+            //check if deparment exist
+            Department department = productCategoryDao.getDepartmentByName(treeViewNode.getName());
+            if (department != null) {
+                final TreeViewNode response = new TreeViewNode();
+                treeViewNode.setId(-1);
+                treeViewNode.setName("Department is already defined");
+                return treeViewNode;
+            }
+            department = new Department();
             department.setId(treeViewNode.getId());
             department.setDeptName(treeViewNode.getName());
             productCategoryDao.updateDepartmentById(department);
@@ -188,7 +218,14 @@ public class ProductGroupServiceImpl implements ProductGroupService {
 
     private TreeViewNode updateCategoryHeading(TreeViewNode treeViewNode) {
         try {
-            final CategoryHeading categoryHeading = new CategoryHeading();
+            CategoryHeading categoryHeading = productCategoryDao.getCategoryHeadingByName(treeViewNode.getName());
+            if (categoryHeading != null) {
+                final TreeViewNode response = new TreeViewNode();
+                treeViewNode.setId(-1);
+                treeViewNode.setName("Category Heading is already defined");
+                return treeViewNode;
+            }
+            categoryHeading = new CategoryHeading();
             categoryHeading.setId(treeViewNode.getId());
             categoryHeading.setCathName(treeViewNode.getName());
             productCategoryDao.updateCategoryHeadingById(categoryHeading);
@@ -201,7 +238,14 @@ public class ProductGroupServiceImpl implements ProductGroupService {
 
     private TreeViewNode updateCategoryValue(TreeViewNode treeViewNode) {
         try {
-            final CategoryValue categoryValue = new CategoryValue();
+            CategoryValue categoryValue = productCategoryDao.getCategoryValueByName(treeViewNode.getName());
+            if (categoryValue != null) {
+                final TreeViewNode response = new TreeViewNode();
+                treeViewNode.setId(-1);
+                treeViewNode.setName("Category Value is already defined");
+                return treeViewNode;
+            }
+            categoryValue = new CategoryValue();
             categoryValue.setId(treeViewNode.getId());
             categoryValue.setCatValue(treeViewNode.getName());
             productCategoryDao.updateCategoryValueById(categoryValue);

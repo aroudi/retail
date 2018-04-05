@@ -27,6 +27,11 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="alert alert-warning" ng-show="message!='undefined' && message!=''">
+                                {{message}}
+                            </div>
+                        </div>
+                        <div class="row">
                             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                             <button type="button" class="btn btn-primary" ng-click="cancel()">Cancel</button>
                             <button type="button" class="btn btn-success" ng-click="submit()" ng-disabled="!mainForm.$valid">Submit</button>

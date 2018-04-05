@@ -8,6 +8,7 @@ cimgApp.controller('productGroupTreeCtrl', function($scope, baseDataService, ngD
     $scope.AddButtonTitle = '';
     $scope.updateCommand = '';
     $scope.$on('selection-changed', function(e, node) {
+        $scope.editButtonVisible = true;
         console.log('selection-changed called');
         $scope.selectedNode = node;
         if ($scope.selectedNode.nodeType === 'DEPARTMENT') {
@@ -48,6 +49,29 @@ cimgApp.controller('productGroupTreeCtrl', function($scope, baseDataService, ngD
                 $scope.selectedNode.children.push(result);
             }
             */
+            }, function(reason) {
+                console.log('Modal promise rejected. Reason:', reason);
+            }
+        );
+
+    }
+    $scope.editNode = function () {
+        ngDialog.openConfirm({
+            template:'views/pages/prgpUpdate.html',
+            controller:'prgpUpdateCtrl',
+            className: 'ngdialog-theme-default',
+            closeByDocument:false,
+            resolve: {treeViewNode: function(){return angular.copy($scope.selectedNode)}, command:function(){return 'update'}}
+        }).then (function (result){
+                //add the return node to the children of current node.
+                loadProductGroups();
+                /*
+                 if (newCommand === 'addDepartment' ) {
+                 $scope.basicTree.push(result);
+                 } else {
+                 $scope.selectedNode.children.push(result);
+                 }
+                 */
             }, function(reason) {
                 console.log('Modal promise rejected. Reason:', reason);
             }
