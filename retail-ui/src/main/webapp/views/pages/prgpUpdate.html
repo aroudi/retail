@@ -27,6 +27,12 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="form-group" ng-show="editMode">
+                                <label>apply change only to selected {{parentLevel}}:</label>
+                                <input type="checkbox" data-ng-model="updateOnlyForThisGroup">
+                            </div >
+                        </div>
+                        <div class="row">
                             <div class="alert alert-warning" ng-show="message!='undefined' && message!=''">
                                 {{message}}
                             </div>

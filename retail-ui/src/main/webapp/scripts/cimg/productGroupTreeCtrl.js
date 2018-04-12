@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productGroupTreeCtrl', function($scope, baseDataService, ngDialog, SUCCESS, FAILURE, PRGP_GET_ALL_TREEVIEW_URI) {
+cimgApp.controller('productGroupTreeCtrl', function($scope, baseDataService, ngDialog, SUCCESS, FAILURE, PRGP_GET_ALL_TREEVIEW_URI, PRGP_DELETE_TREEVIEW_URI) {
     //$scope.basicTree = [{ name: "Node 1", id:'1', children: [{ name: "Node 1.1", id:'1.1', children: [{ name: "Node 1.1.1" }, { name: "Node 1.1.2" }] }] },
       //  { name: "Node 2", id:'2',children: [{ name: "Node 2.1" }, { name: "Node 2.2" }] }]
     $scope.addButtonVisible = false;
@@ -77,5 +77,39 @@ cimgApp.controller('productGroupTreeCtrl', function($scope, baseDataService, ngD
             }
         );
 
+    };
+
+    $scope.deleteProductGroup = function () {
+        if ($scope.selectedNode === undefined) {
+            return;
+        }
+        baseDataService.displayMessage('yesNo','Warnning','Proceed with delete?').then(function(result){
+            if (result) {
+                if ($scope.selectedNode.nodeType === 'DEPARTMENT' && $scope.selectedNode.name.toLowerCase() ==='default' ) {
+                    baseDataService.displayMessage('info', 'Error','You can not delete DEFAULT department');
+                    return;
+                }
+                trimTreeViewNodeObject($scope.selectedNode);
+                baseDataService.addRow($scope.selectedNode, PRGP_DELETE_TREEVIEW_URI).then(function(response) {
+                    var res = response.data;
+                    if (res.status === -1) {
+                        baseDataService.displayMessage('info', 'Error','Not able to delete product group ' + res.message);
+                    } else{
+                        loadProductGroups();
+                    }
+                });
+            } else {
+                return;
+            }
+        });
+    };
+
+    function trimTreeViewNodeObject(treeViewNode) {
+        delete treeViewNode.parentId;
+        delete treeViewNode.nodeId;
+        delete treeViewNode.selected;
+        delete treeViewNode.expanded;
+        delete treeViewNode.children;
     }
+
 });

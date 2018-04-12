@@ -126,6 +126,12 @@ public interface ProductCategoryDao {
     void deleteDeptCategoryByDeptId (long deptId);
 
     /**
+     * delete department category by deptId.
+     * @param deptCatValId deptCatValId
+     */
+    void deleteDeptCategoryValById (long deptCatValId);
+
+    /**
      * delete Product Dept Category by id.
      * @param id id
      */
@@ -185,5 +191,97 @@ public interface ProductCategoryDao {
      */
     CategoryValue getCategoryValueByName(String catValue);
 
+    /**
+     * get Category Value by name.
+     * @param deptCatId deptCatId
+     * @param catValue catValue
+     * @return CategoryValue
+     */
+    CategoryValue getCategoryValueByDeptCatIdAndCatValue(long deptCatId, String catValue);
 
+    /**
+     * reassigne products to new categoryvalue where catval is changed.
+     * @param deptId departmentId
+     * @param catId category id
+     * @param oldCatValId old category value id
+     * @param newCatValId new category value id.
+     */
+    void changeCatValueOfProdDeptCat(long deptId, long catId, long oldCatValId, long newCatValId);
+
+    /**
+     * get department by name.
+     * @param deptName deptName
+     * @return TreeViewNode
+     */
+    TreeViewNode getDepartmentTreeViewByName (String deptName);
+
+    /**
+     * move products from department category value A to department category value B.
+     * @param deptIdA deptIdA
+     * @param catIdA catIdA
+     * @param catValIdA catValIdA
+     * @param deptIdB deptIdB
+     * @param catIdB catIdB
+     * @param catValIdB catValIdB
+     */
+    void moveProductsFromDeptCatValA2DeptCatValB(long deptIdA, long catIdA, long catValIdA, long deptIdB, long catIdB, long catValIdB);
+
+    /**
+     * move products from department category  A to department category  B.
+     * @param deptIdA deptIdA
+     * @param catIdA catIdA
+     * @param deptIdB deptIdB
+     * @param catIdB catIdB
+     */
+    void moveProductsFromDeptCatA2DeptCatB(long deptIdA, long catIdA, long deptIdB, long catIdB);
+
+    /**
+     * delete department category values by department id.
+     * @param deptId deptId
+     */
+    void deleteDeptCategoryValByDeptId(long deptId);
+
+    /**
+     * delete department by id.
+     * @param deptId deptId
+     */
+    void deleteDepartmentById(long deptId);
+
+    /**
+     * delete product department category by deptId.
+     * @param deptIdA deptIdA
+     * @param deptIdB deptIdB
+     */
+    void moveProductsFromDeptA2DeptB(long deptIdA, long deptIdB);
+
+    /**
+     * delete product from PROD_DEPT_CAT.
+     * @param orguId orguId
+     * @param deptId deptId
+     * @param catId catId
+     * @param catValId catValId
+     */
+    void deleteProdDeptCatByOrguIdAndDeptIdAndCatIdAndCatValId(long orguId, long deptId, long catId, long catValId);
+
+    /**
+     * get category heading in TreeViewMode by cathId.
+     * @param cathId category heading id
+     * @return CategoryHeading in treeviewmode.
+     */
+    TreeViewNode getCategoryTreeViewNodePerCathId(long cathId);
+
+    /**
+     * get category heading in TreeViewMode by cathId.
+     * @param cathId category heading id
+     * @return CategoryHeading in treeviewmode.
+     */
+    TreeViewNode getCategoryHeadingTreeViewNodePerCathId(long cathId);
+
+    /**
+     * delete product department category.
+     * @param orguId orguId
+     * @param deptId deptId
+     * @param catId catId
+     */
+    void deleteProdDeptCatByOrguIdAndDeptIdAndCatId(long orguId, long deptId, long catId);
 }

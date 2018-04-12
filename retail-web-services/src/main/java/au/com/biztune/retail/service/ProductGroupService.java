@@ -1,6 +1,7 @@
 package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.domain.TreeViewNode;
+import au.com.biztune.retail.response.CommonResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -44,4 +45,11 @@ public interface ProductGroupService {
      * @return list of category heading in TreeViewNode
      */
     List<TreeViewNode> getCatValListNotDefinedForDeptCat(TreeViewNode treeViewNode);
+
+    /**
+     * delete product group.
+     * @param treeViewNode treeViewNode
+     * @return Common Response
+     */
+    CommonResponse deleteProductGroup(TreeViewNode treeViewNode);
 }

@@ -647,4 +647,9 @@ public interface IdBConstant {
      * PRODUCT GROUP LEVEL 3.
      */
     String PRGP_LEVEL_3 = "CATEGORY_VALUE";
+
+    /**
+     * default department
+     */
+    String DEFAULT_DEPARTMENT = "Default";
 }

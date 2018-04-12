@@ -3,10 +3,12 @@
  */
 cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $state, $timeout, baseDataService, SUCCESS, FAILURE, PRGP_ADD_TREEVIEW_URI, PRGP_UPDATE_TREEVIEW_URI, PRGP_GET_CATLIST_NOT_IN_DEPT_URI, PRGP_GET_CATVALLIST_NOT_IN_DEPTCAT_URI ) {
     $scope.message = '';
+    $scope.editMode = false;
+    $scope.updateOnlyForThisGroup = true;
     $scope.currentNodeSetVisible = false;
     $scope.currentNodeValueVisible = true;
-    $scope.nodeSelectedFromList = false;
     $scope.nodeTitle = 'Department';
+    $scope.parentLevel = '';
     initPageData();
     function initPageData() {
         //remove un-necessary properties from object.
@@ -44,12 +46,16 @@ cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $stat
         if (command === 'update') {
             if (treeViewNode.nodeType === 'DEPARTMENT') {
                 $scope.nodeTitle = 'Department';
+                $scope.editMode = false;
             }
             if (treeViewNode.nodeType === 'CATEGORY_HEADING') {
-                $scope.nodeTitle = 'Category Heading';
+                $scope.editMode = false;
+                $scope.parentLevel = 'Department';
             }
             if (treeViewNode.nodeType === 'CATEGORY_VALUE') {
                 $scope.nodeTitle = 'Category Value';
+                $scope.editMode = true;
+                $scope.parentLevel = 'Category Heading';
             }
             $scope.nodeValue = treeViewNode.name;
         }
@@ -61,7 +67,7 @@ cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $stat
                 name: $scope.nodeValue,
                 parentNodeId: treeViewNode.id,
                 nodeType : 'CATEGORY_HEADING',
-                id : $scope.nodeSelectedFromList ? $scope.currentNode.id : -1
+                id : $scope.currentNode.id
             };
         }
         if (command === 'addCategoryValue') {
@@ -69,7 +75,7 @@ cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $stat
                 name: $scope.nodeValue,
                 parentNodeId: treeViewNode.primaryKey,
                 nodeType : 'CATEGORY_VALUE',
-                id : $scope.nodeSelectedFromList ? $scope.currentNode.id : -1
+                id : $scope.currentNode.id
             };
         }
         if (command === 'addDepartment') {
@@ -83,10 +89,11 @@ cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $stat
         if (command === 'update') {
             var newNode = treeViewNode;
             newNode.name = $scope.nodeValue;
+            newNode.order = $scope.updateOnlyForThisGroup ? -1 : 1;
         }
-        //ADD NEW NODE
-        if (newNode.id === -1) {
-            baseDataService.addRow(newNode, PRGP_ADD_TREEVIEW_URI).then(function(response) {
+        //UPDATE
+        if (command === 'update') {
+            baseDataService.addRow(newNode, PRGP_UPDATE_TREEVIEW_URI).then(function(response) {
                 var res = response.data;
                 if (res === undefined || res === null) {
                     $scope.message = 'Product Group update failed!!!. please refer to the logs';
@@ -96,9 +103,9 @@ cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $stat
                     $scope.confirm(response.data);
                 }
             });
-        //UPDATE
+        //ADD NEW NODE
         } else {
-            baseDataService.addRow(newNode, PRGP_UPDATE_TREEVIEW_URI).then(function(response) {
+            baseDataService.addRow(newNode, PRGP_ADD_TREEVIEW_URI).then(function(response) {
                 var res = response.data;
                 if (res === undefined || res === null) {
                     $scope.message = 'Product Group update failed!!!. please refer to the logs';
@@ -120,11 +127,9 @@ cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $stat
         if ($scope.currentNode.id === -1) {
             $scope.currentNodeValueVisible = true;
             $scope.nodeValue = '';
-            $scope.nodeSelectedFromList = false;
         } else {
             $scope.currentNodeValueVisible = false;
             $scope.nodeValue = $scope.currentNode.name;
-            $scope.nodeSelectedFromList = true;
         }
         console.log('$scope.nodeValue =' + $scope.nodeValue);
 

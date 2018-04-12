@@ -292,6 +292,14 @@
         WHERE dept.DEPT_ID = #{value}
     </select>
 
+    <select id="getDepartmentTreeViewByName" resultMap="departmentTreeViewMap" >
+        SELECT
+        <include refid="departmentColumns"><property name="alias" value="dept"/></include>
+        ,'DEPARTMENT' NODE_TYPE
+        FROM
+        DEPARTMENT dept
+        WHERE dept.DEPT_NAME = #{value}
+    </select>
 
     <select id="getCategoryTreeViewListPerDeptId" resultMap="deptCategoryTreeViewMap" >
         SELECT
@@ -300,6 +308,23 @@
         FROM
         CATEGORY_HEADING cath INNER  JOIN DEPT_CATEGORY deptc on (cath.CATH_ID = deptc.CATH_ID)
         WHERE deptc.DEPT_ID = #{value} and cath.ACTIVE = 1
+    </select>
+
+    <select id="getCategoryHeadingTreeViewNodePerCathId" resultMap="deptCategoryTreeViewMap" >
+        SELECT
+        <include refid="categoryHeadingColumns"><property name="alias" value="cath"/></include>
+        , 'CATEGORY_HEADING' NODE_TYPE
+        FROM
+        CATEGORY_HEADING cath WHERE cath.CATH_ID = #{value}
+    </select>
+
+    <select id="getCategoryTreeViewNodePerCathId" resultMap="deptCategoryTreeViewMap" >
+        SELECT
+        <include refid="categoryHeadingColumns"><property name="alias" value="cath"/></include>
+        , deptc.DEPT_CAT_ID, deptc.DEPT_ID, 'CATEGORY_HEADING' NODE_TYPE
+        FROM
+        CATEGORY_HEADING cath INNER  JOIN DEPT_CATEGORY deptc on (cath.CATH_ID = deptc.CATH_ID)
+        WHERE cath.CATH_ID = #{value}
     </select>
 
     <select id="getDeptCatValTreeViewListPerCatId" resultMap="DeptCatValTreeViewMap" >
@@ -358,7 +383,7 @@
 
     <select id="getDeptCategoryValPerId" resultMap="deptCategoryValMap" >
         SELECT
-        <include refid="deptCategoryValueColumns"><property name="alias" value="catv"/></include>
+        <include refid="deptCategoryValueColumns"><property name="alias" value="deptCatVal"/></include>
         FROM
         DEPT_CATEGORY_VALUE deptCatVal
         WHERE deptCatVal.DEPT_CAT_VAL_ID = #{value}
@@ -396,6 +421,21 @@
         WHERE catv.CAT_VALUE = #{value}
     </select>
 
+    <select id="getCategoryValueByDeptCatIdAndCatValue" resultMap="categoryValueMap" >
+        SELECT
+        <include refid="categoryValueColumns"><property name="alias" value="catv"/></include>
+        FROM
+        CATEGORY_VALUE catv INNER JOIN DEPT_CATEGORY_VALUE deptCatVal ON (catV.CATV_ID = deptCatVal.CATV_ID)
+        WHERE deptCatVal.DEPT_CAT_ID = #{param1} and catv.CAT_VALUE = #{param2}
+    </select>
+
+    <delete id="deleteDepartmentById" >
+        DELETE
+        From DEPARTMENT
+        WHERE
+        DEPT_ID = #{value}
+    </delete>
+
     <delete id="deleteDeptCategoryById" >
         DELETE
         From DEPT_CATEGORY
@@ -403,9 +443,22 @@
         DEPT_CAT_ID = #{value}
     </delete>
 
+    <delete id="deleteDeptCategoryValById" >
+        DELETE
+        From DEPT_CATEGORY_VALUE
+        WHERE
+        DEPT_CAT_VAL_ID = #{value}
+    </delete>
+
     <delete id="deleteDeptCategoryByDeptId" >
         DELETE
         From DEPT_CATEGORY
+        WHERE
+        DEPT_ID = #{value}
+    </delete>
+    <delete id="deleteDeptCategoryValByDeptId" >
+        DELETE
+        From DEPT_CATEGORY_VALUE
         WHERE
         DEPT_ID = #{value}
     </delete>
@@ -425,5 +478,53 @@
         ORGU_ID = #{param1}
         AND CAT_ID = #{param2}
     </delete>
+    <delete id="deleteProdDeptCatByOrguIdAndDeptIdAndCatIdAndCatValId" >
+        DELETE
+        From PROD_DEPT_CAT
+        WHERE
+        ORGU_ID = #{param1}
+        AND DEPT_ID = #{param2}
+        AND CAT_ID = #{param3}
+        AND CAT_VAL_ID = #{param4}
+    </delete>
+    <delete id="deleteProdDeptCatByOrguIdAndDeptIdAndCatId" >
+        DELETE
+        From PROD_DEPT_CAT
+        WHERE
+        ORGU_ID = #{param1}
+        AND DEPT_ID = #{param2}
+        AND CAT_ID = #{param3}
+    </delete>
+    <delete id="deleteProdDeptCatByDeptId" >
+        DELETE
+        From PROD_DEPT_CAT
+        WHERE
+        ORGU_ID = #{param1}
+        AND CAT_ID = #{param2}
+    </delete>
+    <update id="changeCatValueOfProdDeptCat">
+        UPDATE PROD_DEPT_CAT SET
+        CAT_VAL_ID = #{param4}
+        WHERE DEPT_ID = #{param1} and CAT_ID=#{param2} and CAT_VAL_ID = #{param3}
+    </update>
 
+    <update id="moveProductsFromDeptCatValA2DeptCatValB">
+        UPDATE PROD_DEPT_CAT SET
+        DEPT_ID = #{param4},
+        CAT_ID = #{param5},
+        CAT_VAL_ID = #{param6}
+        WHERE DEPT_ID = #{param1} and CAT_ID=#{param2} and CAT_VAL_ID = #{param3}
+    </update>
+    <update id="moveProductsFromDeptCatA2DeptCatB">
+        UPDATE PROD_DEPT_CAT SET
+        DEPT_ID = #{param3},
+        CAT_ID = #{param4}
+        WHERE DEPT_ID = #{param1} and CAT_ID=#{param2}
+    </update>
+
+    <update id="moveProductsFromDeptA2DeptB">
+        UPDATE PROD_DEPT_CAT SET
+        DEPT_ID = #{param2}
+        WHERE DEPT_ID = #{param1}
+    </update>
 </mapper>

@@ -1,6 +1,7 @@
 package au.com.biztune.retail.rest;
 
 import au.com.biztune.retail.domain.TreeViewNode;
+import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.ProductGroupService;
 import org.slf4j.Logger;
@@ -74,6 +75,20 @@ public class ProductGroupRest {
     @Produces(MediaType.APPLICATION_JSON)
     public TreeViewNode updateProductGroupTreeViewMode (TreeViewNode treeViewNode) {
         return productGroupService.updateTreeViewNode(treeViewNode);
+    }
+
+    /**
+     * update a product group node (department/category/value).
+     * @param treeViewNode treeViewNode
+     * @return CommonResponse
+     */
+    @Secured
+    @Path("/delete/treeViewNode")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse deleteProductGroupTreeViewMode (TreeViewNode treeViewNode) {
+        return productGroupService.deleteProductGroup(treeViewNode);
     }
 
     /**
