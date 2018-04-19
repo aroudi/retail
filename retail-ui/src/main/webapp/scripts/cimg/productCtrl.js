@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productCtrl', function($scope, $state, UserService, baseDataService, ngDialog,viewMode, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI, taxCodeSet, TAXLEGVARIANCE_ALL_URI, SUPPLIER_ALL_URI, PRODUCT_AUDIT_TRAIL_URI) {
+cimgApp.controller('productCtrl', function($scope, $state, UserService, baseDataService, ngDialog,viewMode, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI, taxCodeSet, TAXLEGVARIANCE_ALL_URI, SUPPLIER_ALL_URI, PRODUCT_AUDIT_TRAIL_URI, PRGP_GET_ALL_TREEVIEW_URI) {
     //set default data on the page
     $scope.taxLegVarianceSet = taxCodeSet.data;
     initPageData();
@@ -10,6 +10,9 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
         $scope.isViewMode = viewMode;
     }
     function initPageData() {
+        $scope.category1Label = 'Category1';
+        $scope.category2Label = 'Category2';
+        $scope.category3Label = 'Category3';
         if ( baseDataService.getIsPageNew()) {
             $scope.isNewPage = true;
             $scope.productForm = {};
@@ -62,7 +65,37 @@ cimgApp.controller('productCtrl', function($scope, $state, UserService, baseData
             $scope.productSupplier.supplier = baseDataService.populateSelectList($scope.productSupplier.supplier,$scope.supplierSet);
             //$scope.changeSupplier();
         });
+        baseDataService.getBaseData(PRGP_GET_ALL_TREEVIEW_URI).then(function(response){
+            $scope.departmentSet = response.data;
+            $scope.productForm.department = baseDataService.populateSelectList($scope.productForm.department,$scope.departmentSet);
+            $scope.changeDepartment();
+        });
 
+    }
+    $scope.changeDepartment = function() {
+        populateProductGroups();
+    }
+    function populateProductGroups() {
+        //populate category name
+        var newNode = { name: "<<N/A>>", id : -1 };
+        if ($scope.productForm.department.children[0] != undefined) {
+            $scope.category1Label = $scope.productForm.department.children[0].name;
+            $scope.category1Set = $scope.productForm.department.children[0].children;
+            $scope.category1Set.unshift(newNode);
+            $scope.productForm.category1 = baseDataService.populateSelectList(productForm.category1, $scope.category1Set);
+        }
+        if ($scope.productForm.department.children[1] != undefined) {
+            $scope.category2Label = $scope.productForm.department.children[1].name;
+            $scope.category2Set = $scope.productForm.department.children[1].children;
+            $scope.category2Set.unshift(newNode);
+            $scope.productForm.category2 = baseDataService.populateSelectList(productForm.category2,$scope.category2Set);
+        }
+        if ($scope.productForm.department.children[2] != undefined) {
+            $scope.category3Label = $scope.productForm.department.children[2].name;
+            $scope.category3Set = $scope.productForm.department.children[2].children;
+            $scope.category3Set.unshift(newNode);
+            $scope.productForm.category3 = baseDataService.populateSelectList(productForm.category3,$scope.category3Set);
+        }
     }
     //create new product
     $scope.createProduct = function () {

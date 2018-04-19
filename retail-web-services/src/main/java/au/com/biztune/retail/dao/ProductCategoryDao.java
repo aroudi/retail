@@ -284,4 +284,11 @@ public interface ProductCategoryDao {
      * @param catId catId
      */
     void deleteProdDeptCatByOrguIdAndDeptIdAndCatId(long orguId, long deptId, long catId);
+
+    /**
+     * delete product department category by orguId and prodId.
+     * @param orguId orguId
+     * @param prodId prodId
+     */
+    void deleteProdDeptCatByOrguIdAndProdId(long orguId, long prodId);
 }

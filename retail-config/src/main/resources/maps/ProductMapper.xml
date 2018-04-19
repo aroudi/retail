@@ -29,6 +29,7 @@
         <association resultMap="prodOrguLinkDetailMap" property="prodOrguLink" />
         <collection property="priceList" javaType="ArrayList" column="PROD_ID" ofType="Price" select="au.com.biztune.retail.dao.PriceDao.getAllProductPrice"/>
         <collection property="suppProdPriceList" javaType="ArrayList" column="PROD_ID" ofType="SuppProdPrice" select="au.com.biztune.retail.dao.SuppProdPriceDao.getAllSuppProdPricesByProdId"/>
+        <collection property="productGroups" javaType="ArrayList" column="PROD_ID" ofType="ProdDeptCat" select="au.com.biztune.retail.dao.ProductCategoryDao.getProdDeptCatByProdId"/>
     </resultMap>
 
     <resultMap id="prodOrguLinkDetailMap" type="ProdOrguLink" >

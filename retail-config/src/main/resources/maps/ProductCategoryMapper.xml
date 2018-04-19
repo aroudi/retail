@@ -29,9 +29,6 @@
         <result column="NODE_TYPE" property="nodeType" />
     </resultMap>
 
-
-
-
     <resultMap id="departmentMap" type="Department" >
         <id column="DEPT_ID" property="id" />
         <result column="DEPT_NAME" property="deptName" />
@@ -87,6 +84,16 @@
         <result column="DEPT_ID" property="deptId" />
         <result column="CATH_ID" property="cathId" />
         <result column="catvId" property="catvId" />
+    </resultMap>
+
+    <resultMap id="prodDeptCategoryMap" type="ProdDeptCat" >
+        <id column="ID" property="id" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="PROD_ID" property="prodId" />
+        <result column="DEPT_ID" property="deptId" />
+        <result column="CAT_ID" property="catId" />
+        <result column="LEVEL" property="level" />
+        <result column="CAT_VAL_ID" property="catValId" />
     </resultMap>
 
     <sql id="departmentColumns">
@@ -249,7 +256,7 @@
     </insert>
 
     <insert id="insertProdDeptCategory" parameterType="ProdDeptCat" useGeneratedKeys="true" keyProperty="id" keyColumn="ID">
-        INSERT INTO DEPT_CATEGORY(
+        INSERT INTO PROD_DEPT_CAT(
         ORGU_ID,
         PROD_ID,
         DEPT_ID,
@@ -429,6 +436,14 @@
         WHERE deptCatVal.DEPT_CAT_ID = #{param1} and catv.CAT_VALUE = #{param2}
     </select>
 
+    <select id="getProdDeptCatByProdId" resultMap="prodDeptCategoryMap" >
+        SELECT
+        <include refid="prodDeptCatColumns"><property name="alias" value="prdDeptCat"/></include>
+        FROM
+        PROD_DEPT_CAT prdDeptCat
+        WHERE prdDeptCat.PROD_ID = #{value}
+    </select>
+
     <delete id="deleteDepartmentById" >
         DELETE
         From DEPARTMENT
@@ -494,6 +509,13 @@
         ORGU_ID = #{param1}
         AND DEPT_ID = #{param2}
         AND CAT_ID = #{param3}
+    </delete>
+    <delete id="deleteProdDeptCatByOrguIdAndProdId" >
+        DELETE
+        From PROD_DEPT_CAT
+        WHERE
+        ORGU_ID = #{param1}
+        AND PROD_ID = #{param2}
     </delete>
     <delete id="deleteProdDeptCatByDeptId" >
         DELETE

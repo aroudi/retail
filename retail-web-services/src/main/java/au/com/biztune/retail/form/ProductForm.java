@@ -29,6 +29,7 @@ public class ProductForm {
     private double costPrice;
 
     private String prodLocation;
+    private List<ProdDeptCat> productGroups;
 
     public long getProdId() {
         return prodId;
@@ -188,6 +189,14 @@ public class ProductForm {
 
     public void setProdBarcode(String prodBarcode) {
         this.prodBarcode = prodBarcode;
+    }
+
+    public List<ProdDeptCat> getProductGroups() {
+        return productGroups;
+    }
+
+    public void setProductGroups(List<ProdDeptCat> productGroups) {
+        this.productGroups = productGroups;
     }
 }
 

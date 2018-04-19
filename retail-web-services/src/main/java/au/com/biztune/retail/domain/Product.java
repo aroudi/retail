@@ -34,6 +34,7 @@ public class Product {
     private Price sellPrice;
     private String prodLocation;
     private boolean deleted;
+    private List<ProdDeptCat> productGroups;
 
     public long getId() {
         return id;
@@ -249,5 +250,13 @@ public class Product {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public List<ProdDeptCat> getProductGroups() {
+        return productGroups;
+    }
+
+    public void setProductGroups(List<ProdDeptCat> productGroups) {
+        this.productGroups = productGroups;
     }
 }

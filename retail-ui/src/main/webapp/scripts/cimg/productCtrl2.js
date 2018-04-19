@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserService, baseDataService, ngDialog,viewMode, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI, taxCodeSet, PRODUCT_AUDIT_TRAIL_URI, PRODUCT_CHECK_EXISTENCE_URI) {
+cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserService, baseDataService, ngDialog,viewMode, SUCCESS, FAILURE, PRODUCT_ADD_URI, PRODUCT_STATUS_URI, PRODUCT_TYPE_URI, UNOM_ALL_URI, TAXRULE_ALL_URI, taxCodeSet, PRODUCT_AUDIT_TRAIL_URI, PRODUCT_CHECK_EXISTENCE_URI,PRGP_GET_ALL_TREEVIEW_URI) {
     //set default data on the page
     $scope.taxLegVarianceSet = taxCodeSet.data;
     initPageData();
@@ -10,6 +10,9 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
         $scope.isViewMode = viewMode;
     }
     function initPageData() {
+        $scope.category1Label = 'Category1';
+        $scope.category2Label = 'Category2';
+        $scope.category3Label = 'Category3';
         if ($stateParams.blankPage) {
             $scope.isNewPage = true;
             $scope.productForm = {};
@@ -18,6 +21,9 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
         } else {
             $scope.isNewPage = false;
             $scope.productForm = angular.copy(baseDataService.getRow());
+            if ($scope.productForm.productGroups != undefined) {
+                $scope.department = { name: " ", id : $scope.productForm.productGroups[0].id };
+            }
             //baseDataService.setRow({});
             //baseDataService.setIsPageNew(true);
         }
@@ -40,8 +46,49 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
             //$scope.suppUnitOfMeasure = baseDataService.populateSelectList($scope.suppUnitOfMeasure,$scope.unitOfMeasureSet);
             $scope.productForm.prceUnitOfMeasure = baseDataService.populateSelectList($scope.productForm.prceUnitOfMeasure,$scope.unitOfMeasureSet);
         });
+        baseDataService.getBaseData(PRGP_GET_ALL_TREEVIEW_URI).then(function(response){
+            $scope.departmentSet = response.data;
+            $scope.department = baseDataService.populateSelectList($scope.department,$scope.departmentSet);
+            var newNode = { name: "<<N/A>>", id : -1 };
+            for (i=0; i<$scope.department.length; i++) {
+                if ($scope.department.children[i].children != undefined) {
+                    $scope.department.children[i].children.unshift(newNode);
+                }
+            }
+            $scope.changeDepartment();
+        });
     }
-
+    $scope.changeDepartment = function() {
+        //populate category name
+        if ($scope.department.children[0] != undefined) {
+            $scope.category1Label = $scope.department.children[0].name;
+            $scope.category1Set = $scope.department.children[0].children;
+            $scope.category1 = { name: "<<N/A>>", id : getCategoryValueForDeptIdAndCatId($scope.department.id, $scope.department.children[0].id) };
+            $scope.category1 = baseDataService.populateSelectList($scope.category1, $scope.category1Set);
+        }
+        if ($scope.department.children[1] != undefined) {
+            $scope.category2Label = $scope.department.children[1].name;
+            $scope.category2Set = $scope.department.children[1].children;
+            $scope.category2 = { name: "<<N/A>>", id : getCategoryValueForDeptIdAndCatId($scope.department.id, $scope.department.children[1].id) };
+            $scope.category2 = baseDataService.populateSelectList($scope.category2,$scope.category2Set);
+        }
+        if ($scope.department.children[2] != undefined) {
+            $scope.category3Label = $scope.department.children[2].name;
+            $scope.category3Set = $scope.department.children[2].children;
+            $scope.category3 = { name: "<<N/A>>", id : getCategoryValueForDeptIdAndCatId($scope.department.id, $scope.department.children[2].id) };
+            $scope.category3 = baseDataService.populateSelectList($scope.category3,$scope.category3Set);
+        }
+    }
+    function getCategoryValueForDeptIdAndCatId(deptId, catId) {
+        if ($scope.productForm.productGroups != undefined) {
+            for (i=0; i<$scope.productForm.productGroups.length; i++) {
+                if ($scope.productForm.productGroups[i].deptId == deptId && $scope.productForm.productGroups[i].catId == catId) {
+                    return $scope.productForm.productGroups[i].catValId;
+                }
+            }
+        }
+        return -1;
+    }
     function initSupplierPriceGrid() {
         $scope.gridOptions = {
             enableFiltering: true,
@@ -390,9 +437,31 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
         });
     };
 
+    function buildProdDeptCat(inDeptId, inCatId, inCatValId) {
+        prodDeptCat = {
+            deptId: inDeptId,
+            catId : inCatId,
+            catValId: inCatValId
+        };
+        return prodDeptCat;
+    }
+
     function submitForm() {
         saveBulkPrices();
         $scope.productForm.suppProdPrices = $scope.gridOptions.data;
+        //update product groups
+        var productGroupList = [];
+        if ($scope.category1 != undefined) {
+            productGroupList.push(buildProdDeptCat($scope.department.id, $scope.department.children[0].id, $scope.category1.id ));
+        }
+        if ($scope.category2 != undefined) {
+            productGroupList.push(buildProdDeptCat($scope.department.id, $scope.department.children[1].id, $scope.category2.id ));
+        }
+        if ($scope.category3 != undefined) {
+            productGroupList.push(buildProdDeptCat($scope.department.id, $scope.department.children[2].id, $scope.category3.id ));
+        }
+        $scope.productForm.productGroups = productGroupList;
+
         var rowObject = $scope.productForm;
         baseDataService.addRow(rowObject, PRODUCT_ADD_URI).then(function(response) {
             addResponse = response.data;

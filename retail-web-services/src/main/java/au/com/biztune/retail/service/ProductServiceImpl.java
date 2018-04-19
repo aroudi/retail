@@ -74,6 +74,8 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private StockDao stockDao;
 
+    @Autowired
+    private ProductCategoryDao productCategoryDao;
     /**
      * add product and its related objects.
      * @param productForm productForm
@@ -103,6 +105,7 @@ public class ProductServiceImpl implements ProductService {
             createProuTxrlLink(productForm, product);
             createSuppProdPrice(productForm, product);
             createProductPrice(productForm, product);
+            createProductGroupLink(productForm);
             updateDataChangeIndicators();
             return response;
         } catch (Exception e) {
@@ -317,12 +320,28 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    private void createProductGroupLink(ProductForm productForm) {
+        try {
+            if (productForm.getProductGroups() != null && !productForm.getProductGroups().isEmpty()) {
+                for (ProdDeptCat prodDeptCat : productForm.getProductGroups()) {
+                    if (prodDeptCat.getDeptId() > 0 && prodDeptCat.getCatId() > 0 && prodDeptCat.getCatValId() > 0) {
+                        prodDeptCat.setOrguId(sessionState.getOrgUnit().getId());
+                        prodDeptCat.setProdId(productForm.getProdId());
+                        productCategoryDao.insertProdDeptCategory(prodDeptCat);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Exception in saving product group link", e);
+        }
+    }
     private void deleteProductRelatedObjects(ProductForm productForm) {
         priceDao.deleteProdPricePerProdId(productForm.getProdId());
         //ProductPurchaseItem might get used in PurchaseOrder and we can not delete it.
         //suppProdPriceDao.deleteSuppProdPricePerProdIdAndOrguId(productForm.getProdId(), sessionState.getOrgUnit().getId());
         productDao.deleteProdTaxLink(productForm.getProuId());
         productDao.deleteProdOrguLink(productForm.getProuId());
+        productCategoryDao.deleteProdDeptCatByOrguIdAndProdId(sessionState.getOrgUnit().getId(), productForm.getProdId());
     }
 
     /**
