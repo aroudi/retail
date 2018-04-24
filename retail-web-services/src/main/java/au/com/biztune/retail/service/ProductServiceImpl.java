@@ -101,6 +101,7 @@ public class ProductServiceImpl implements ProductService {
                 deleteProductRelatedObjects(productForm);
             }
             final ProdOrguLink prodOrguLink = createProdOrguLink(productForm, product);
+            productForm.setProdId(product.getId());
             product.setProdOrguLink(prodOrguLink);
             createProuTxrlLink(productForm, product);
             createSuppProdPrice(productForm, product);
@@ -177,6 +178,7 @@ public class ProductServiceImpl implements ProductService {
             productForm.setTaxRules(product.getProdOrguLink().getTaxRules());
             productForm.setSuppProdPrices(product.getSuppProdPriceList());
             productForm.setProdLocation(product.getProdLocation());
+            productForm.setProductGroups(product.getProductGroups());
 
             //we only DISPLAY SELL_PRICE TO THE USER
             if (product.getPriceList() != null && product.getPriceList().size() > 0) {

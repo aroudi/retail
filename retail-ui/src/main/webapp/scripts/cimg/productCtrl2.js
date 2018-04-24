@@ -21,8 +21,8 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
         } else {
             $scope.isNewPage = false;
             $scope.productForm = angular.copy(baseDataService.getRow());
-            if ($scope.productForm.productGroups != undefined) {
-                $scope.department = { name: " ", id : $scope.productForm.productGroups[0].id };
+            if ($scope.productForm.productGroups != undefined && $scope.productForm.productGroups.length > 0) {
+                $scope.department = { name: " ", id : $scope.productForm.productGroups[0].deptId };
             }
             //baseDataService.setRow({});
             //baseDataService.setIsPageNew(true);
@@ -48,13 +48,18 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
         });
         baseDataService.getBaseData(PRGP_GET_ALL_TREEVIEW_URI).then(function(response){
             $scope.departmentSet = response.data;
-            $scope.department = baseDataService.populateSelectList($scope.department,$scope.departmentSet);
             var newNode = { name: "<<N/A>>", id : -1 };
-            for (i=0; i<$scope.department.length; i++) {
-                if ($scope.department.children[i].children != undefined) {
-                    $scope.department.children[i].children.unshift(newNode);
+            for (j=0; j<$scope.departmentSet.length; j++) {
+                for (i = 0; i < $scope.departmentSet[j].children.length; i++) {
+                    if ($scope.departmentSet[j].children[i].children != undefined) {
+                        $scope.departmentSet[j].children[i].children.unshift(newNode);
+                    }
                 }
             }
+            if ($scope.department === undefined) {
+                $scope.department = $scope.departmentSet[0];
+            }
+            $scope.department = baseDataService.populateSelectList($scope.department,$scope.departmentSet);
             $scope.changeDepartment();
         });
     }
