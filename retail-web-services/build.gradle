@@ -73,7 +73,7 @@ dependencies {
     //compile group:'com.googlecode.totallylazy', name:'totallylazy', version:'1154'
     //compile group:'com.googlecode.utterlyidle', name:'utterlyidle', version:'742'
     //sql server
-    runtime group:'com.microsoft.sqlserver', name:'sqljdbc4', version: '4.0'
+    //runtime group:'com.microsoft.sqlserver', name:'sqljdbc4', version: '4.0'
     //jasper reports
     compile group:'com.lowagie', name:'itext', version: '2.1.7'
     compile group:'org.olap4j', name:'olap4j', version: '1.2.0'
