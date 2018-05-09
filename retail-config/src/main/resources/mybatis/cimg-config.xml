@@ -81,6 +81,9 @@
         <typeAlias type="au.com.biztune.retail.domain.DeptCategoryVal" alias="DeptCategoryVal" />
         <typeAlias type="au.com.biztune.retail.domain.DeptCategory" alias="DeptCategory" />
         <typeAlias type="au.com.biztune.retail.domain.TreeViewNode" alias="TreeViewNode" />
+        <typeAlias type="au.com.biztune.retail.domain.ReportTreeViewNode" alias="ReportTreeViewNode" />
+        <typeAlias type="au.com.biztune.retail.domain.ReportParam" alias="ReportParam" />
+        <typeAlias type="au.com.biztune.retail.domain.ReportParamVal" alias="ReportParamVal" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />
@@ -115,5 +118,6 @@
         <mapper resource="maps/AccountingMapper.xml" />
         <mapper resource="maps/PoSoLinkMapper.xml" />
         <mapper resource="maps/ProductCategoryMapper.xml" />
+        <mapper resource="maps/ReportingMapper.xml" />
     </mappers>
 </configuration>

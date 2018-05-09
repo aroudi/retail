@@ -412,6 +412,13 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
         templateUrl:'views/pages/importForm.html',
         access: "user",
         resolve: {importEntity: function(){return 'customer'}}
+    })
+    .state('dashboard.reporting',{
+        url:'/reporting',
+        controller: 'reportingCtrl',
+        templateUrl:'views/pages/reporting.html',
+        access: "user",
+        resolve: {importEntity: function(){return 'customer'}}
     });
     /**
      }]).run(function($rootScope, AccessChecker) {

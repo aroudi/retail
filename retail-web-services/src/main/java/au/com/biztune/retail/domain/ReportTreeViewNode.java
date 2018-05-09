@@ -10,6 +10,7 @@ public class ReportTreeViewNode {
     private long id;
     private long parentNodeId;
     private String name;
+    private String nodeType;
     private List<ReportTreeViewNode> children;
     private List<ReportParam> reportParamList;
 
@@ -51,5 +52,13 @@ public class ReportTreeViewNode {
 
     public void setReportParamList(List<ReportParam> reportParamList) {
         this.reportParamList = reportParamList;
+    }
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
     }
 }

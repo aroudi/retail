@@ -1,0 +1,152 @@
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Reports Index
+            </div>
+            <div class="panel-body">
+                <row>
+                    <tree nodes = 'reportTree'> </tree>
+                </row>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Reports Filters
+            </div>
+            <div class="panel-body">
+                <!-- date filter -->
+                <div class="row" ng-show="dateFilterEnabled">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            Date(s)
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>Date From:</label>
+                                    <input type="date" class="form-control" data-ng-model="reportFactor.dateFrom" >
+                                </div >
+                            </div >
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>Date To:</label>
+                                    <input type="date" class="form-control" data-ng-model="reportFactor.dateTo" >
+                                </div >
+                            </div >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- range filter -->
+                <div class="row" ng-show="rangeFilterEnabled">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            Range(s)
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>From:</label>
+                                    <input type="number" class="form-control" data-ng-model="reportFactor.rangeFrom" >
+                                </div >
+                            </div >
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>To:</label>
+                                    <input type="number" class="form-control" data-ng-model="reportFactor.rangeTo" >
+                                </div >
+                            </div >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- category filter -->
+                <div class="row" ng-show="categoryFilterEnabled">
+                    <button type="button" class="btn btn-success" ng-click="selectProductGroup()">Select Product Groups</button>
+                </div>
+
+                <!-- supplier filter -->
+                <div class="row" ng-show="supplierFilterEnabled">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            Suppliers
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Supplier</label>
+                                <select multiple class="form-control" data-ng-model="reportFactor.supplier"
+                                        ng-options="item.supplierName for item in supplierSet">
+                                </select>
+                            </div >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- customer filter -->
+                <div class="row" ng-show="customerFilterEnabled">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            Customers
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Customer</label>
+                                <select multiple class="form-control" data-ng-model="reportFactor.customer"
+                                        ng-options="item.companyName for item in customerSet">
+                                </select>
+                            </div >
+                        </div>
+                    </div>
+                </div>
+                <!-- group by filter -->
+                <div class="row" ng-show="groupByFilterEnabled">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            Group By
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Group By</label>
+                                <select multipleclass="form-control" data-ng-model="reportFactor.groupBy"
+                                        ng-options="item.repParamVal for item in groupBySet">
+                                </select>
+                            </div >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- sort by filter -->
+                <div class="row" ng-show="sortByFilterEnabled">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            Sort By
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>Primary</label>
+                                    <select multipleclass="form-control" data-ng-model="reportFactor.sortByPrimary"
+                                            ng-options="item.repParamVal for item in sortBySet">
+                                    </select>
+                                </div >
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>Secondary</label>
+                                    <select multipleclass="form-control" data-ng-model="reportFactor.sortBySecondary"
+                                            ng-options="item.repParamVal for item in sortBySet">
+                                    </select>
+                                </div >
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

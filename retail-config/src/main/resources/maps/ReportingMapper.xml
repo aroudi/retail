@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.ReportingDao">
+    <!-- result maps -->
+    <resultMap id="reportGroupMap" type="ReportTreeViewNode" >
+        <id column="REP_GRP_ID" property="id" />
+        <result column="REP_GRP_NAME" property="name" />
+        <result column="NODE_TYPE" property="nodeType" />
+        <result column="CATEGORY_ORDER" property="categoryOrder" />
+        <collection property="children" javaType="ArrayList" column="REP_GRP_ID" ofType="ReportTreeViewNode" select="getReportHeadingListPerRepGrpId"/>
+    </resultMap>
+
+    <resultMap id="reportHeadingMap" type="ReportTreeViewNode" >
+        <id column="REP_HEAD_ID" property="id" />
+        <result column="REP_HEAD_NAME" property="name" />
+        <result column="NODE_TYPE" property="nodeType" />
+        <collection property="reportParamList" javaType="ArrayList" column="REP_HEAD_ID" ofType="ReportParam" select="getReportParamListPerRepHeadId"/>
+    </resultMap>
+
+    <resultMap id="reportParamMap" type="ReportParam" >
+        <id column="REP_PARAM_ID" property="repParamId" />
+        <result column="REP_HEAD_ID" property="repHeadId" />
+        <result column="REP_PARAM_NAME" property="repParamName" />
+        <result column="TABLE_ALIAS" property="tableAlias" />
+        <collection property="reportParamValList" javaType="ArrayList" column="REP_PARAM_ID" ofType="ReportParamVal" select="getReportParamValListPerRepParamId"/>
+    </resultMap>
+
+    <resultMap id="reportParamValMap" type="ReportParamVal" >
+        <id column="REP_PAR_VAL_ID" property="repParamValId" />
+        <result column="REP_PARAM_ID" property="repParamId" />
+        <result column="REP_PARAM_VAL" property="repParamVal" />
+        <result column="DISPLAY_ORDER" property="displayOrder" />
+        <result column="TABLE_ALIAS" property="tableAlias" />
+    </resultMap>
+
+
+    <sql id="reportGroupColumns">
+        ${alias}.REP_GRP_ID,
+        ${alias}.REP_GRP_NAME,
+        ${alias}.DISPLAY_ORDER,
+        ${alias}.REP_GRP_TEXT
+    </sql>
+
+    <sql id="reportHeadingColumns">
+        ${alias}.REP_HEAD_ID,
+        ${alias}.REP_GRP_ID,
+        ${alias}.REP_HEAD_NAME,
+        ${alias}.DISPLAY_ORDER,
+        ${alias}.REP_HEAD_TEXT
+    </sql>
+
+    <sql id="reportParamColumns">
+        ${alias}.REP_PARAM_ID,
+        ${alias}.REP_HEAD_ID,
+        ${alias}.REP_PARAM_NAME,
+        ${alias}.TABLE_ALIAS
+    </sql>
+
+    <sql id="reportParamValColumns">
+        ${alias}.REP_PAR_VAL_ID,
+        ${alias}.REP_PARAM_ID,
+        ${alias}.REP_PARAM_VAL,
+        ${alias}.DISPLAY_ORDER,
+        ${alias}.TABLE_ALIAS
+    </sql>
+
+
+    <select id="getReportHeadingListPerRepGrpId" resultMap="reportHeadingMap" >
+        SELECT
+          <include refid="reportHeadingColumns"><property name="alias" value="repHead"/></include>,
+          'REPORT_HEADING' NODE_TYPE
+        FROM
+        REPORT_HEADING repHead
+          WHERE
+            repHead.REP_GRP_ID=#{value}
+        ORDER BY
+            repHead.DISPLAY_ORDER
+    </select>
+
+    <select id="getReportParamListPerRepHeadId" resultMap="reportParamMap" >
+        SELECT
+        <include refid="reportParamColumns"><property name="alias" value="repParam"/></include>
+        FROM
+        REPORT_PARAM repParam
+        WHERE
+        repParam.REP_HEAD_ID=#{value}
+    </select>
+
+    <select id="getReportParamValListPerRepParamId" resultMap="reportParamValMap" >
+        SELECT
+        <include refid="reportParamValColumns"><property name="alias" value="repParamVal"/></include>
+        FROM
+        REPORT_PARAM_VAL repParamVal
+        WHERE
+        repParamVal.REP_PARAM_ID=#{value}
+    </select>
+
+    <select id="getReportList" resultMap="reportGroupMap" >
+        SELECT
+        <include refid="reportGroupColumns"><property name="alias" value="repGrp"/></include>,
+        'REPORT_GROUP' NODE_TYPE
+        FROM
+          REPORT_GROUP repGrp
+    </select>
+</mapper>

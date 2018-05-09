@@ -202,7 +202,8 @@ var service_uri = {
     'PRGP_UPDATE_TREEVIEW_URI' : 'productGroup/update/treeViewNode',
     'PRGP_DELETE_TREEVIEW_URI' : 'productGroup/delete/treeViewNode',
     'PRGP_GET_CATLIST_NOT_IN_DEPT_URI' : 'productGroup/department/getCategoryNotAssignedToDept',
-    'PRGP_GET_CATVALLIST_NOT_IN_DEPTCAT_URI' : 'productGroup/department/getCategoryValNotAssignedToDeptCat'
+    'PRGP_GET_CATVALLIST_NOT_IN_DEPTCAT_URI' : 'productGroup/department/getCategoryValNotAssignedToDeptCat',
+    'REPORTING_GET_REPORT_LIST_URI' : 'reporting/getReportingList'
 
 
 };

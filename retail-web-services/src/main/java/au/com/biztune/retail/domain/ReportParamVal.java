@@ -5,6 +5,7 @@ public class ReportParamVal {
     private long repParamId;
     private String repParamVal;
     private int displayOrder;
+    private String tableAlias;
 
     public long getRepParamValId() {
         return repParamValId;
@@ -36,5 +37,13 @@ public class ReportParamVal {
 
     public void setDisplayOrder(int displayOrder) {
         this.displayOrder = displayOrder;
+    }
+
+    public String getTableAlias() {
+        return tableAlias;
+    }
+
+    public void setTableAlias(String tableAlias) {
+        this.tableAlias = tableAlias;
     }
 }
