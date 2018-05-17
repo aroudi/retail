@@ -84,6 +84,7 @@
         <typeAlias type="au.com.biztune.retail.domain.ReportTreeViewNode" alias="ReportTreeViewNode" />
         <typeAlias type="au.com.biztune.retail.domain.ReportParam" alias="ReportParam" />
         <typeAlias type="au.com.biztune.retail.domain.ReportParamVal" alias="ReportParamVal" />
+        <typeAlias type="au.com.biztune.retail.domain.RptSaleByMonthRow" alias="RptSaleByMonthRow" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />

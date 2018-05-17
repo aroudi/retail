@@ -2426,7 +2426,6 @@ INSERT INTO DEPARTMENT (DEPT_NAME, DEPT_CODE, DEPT_DESC) VALUES ('Default', 'Def
 GO
 
 ------------------------ reporting --------------------------
-
 CREATE TABLE REPORT_GROUP  (
      REP_GRP_ID DECIMAL(31,0) IDENTITY (1,1) NOT NULL,
      REP_GRP_NAME VARCHAR (200) NOT NULL,
@@ -2434,7 +2433,6 @@ CREATE TABLE REPORT_GROUP  (
      REP_GRP_TEXT VARCHAR (500)
    )
 go
-
 CREATE TABLE REPORT_HEADING  (
      REP_HEAD_ID DECIMAL(31,0) IDENTITY (1,1) NOT NULL,
      REP_GRP_ID DECIMAL(31,0) NOT NULL,
@@ -2443,7 +2441,6 @@ CREATE TABLE REPORT_HEADING  (
      REP_HEAD_TEXT VARCHAR (500)
    )
 go
-
 CREATE TABLE REPORT_PARAM  (
      REP_PARAM_ID DECIMAL(31,0) IDENTITY (1,1) NOT NULL,
      REP_HEAD_ID DECIMAL(31,0) NOT NULL,
@@ -2451,117 +2448,6 @@ CREATE TABLE REPORT_PARAM  (
      TABLE_ALIAS VARCHAR (100)
    )
 go
-
-CREATE TABLE REPORT_PARAM_VAL  (
-     REP_PAR_VAL_ID DECIMAL(31,0) IDENTITY (1,1) NOT NULL,
-     REP_PARAM_ID DECIMAL(31,0) NOT NULL,
-     REP_PARAM_VAL VARCHAR (200) NOT NULL,
-     TABLE_ALIAS VARCHAR (100),
-     DISPLAY_ORDER DECIMAL (5,0)
-   )
-go
-
-use [retail]
-go
-
-select * from PROD_DEPT_CAT
-
-SELECT prdDeptCat.ID, prdDeptCat.ORGU_ID, prdDeptCat.PROD_ID, prdDeptCat.DEPT_ID, prdDeptCat.CAT_ID, prdDeptCat.LEVEL, prdDeptCat.CAT_VAL_ID FROM PROD_DEPT_CAT prdDeptCat WHERE prdDeptCat.PROD_ID = 3
-
-
-select * from DEPARTMENT
-
-select * from CATEGORY_HEADING
-
-select * from CATEGORY_VALUE
-
-
-select * from PROD_DEPT_CAT
-
-
-select * from INVOICE_DETAIL
-
-select * from TXN_DETAIL
-select * from TXN_HEADER
-select * from PRODUCT
-
-select TXN_HEADER.TXHD_TRADING_DATE, TXN_DETAIL.* from TXN_HEADER inner join TXN_DETAIL on (TXN_HEADER.TXHD_ID = TXN_DETAIL.txhd_id)
-
-select supplier_id,supplier_name, prod_sku,txde_prod_id, DATEPART(YEAR, TXHD_TRADING_DATE) Year1, DATEPART(MONTH,TXHD_TRADING_DATE) Month1, SUM (TXDE_VALUE_NET)[TOTAL_SALE] FROM
-( select supplier_id,supplier_name,prod_sku,TXN_HEADER.TXHD_TRADING_DATE, TXN_DETAIL.* from TXN_HEADER inner join TXN_DETAIL on (TXN_HEADER.TXHD_ID = TXN_DETAIL.txhd_id)
-	inner join PRODUCT prod on (prod.PROD_ID = TXN_DETAIL.txde_prod_id)
-	inner join SUPP_PROD_PRICE spp on (spp.PROD_ID = prod.PROD_ID)
-	inner join SUPP_ORGU_LINK sol on (spp.SOL_ID = sol.SOL_ID)
-	inner join SUPPLIER supp on (supp.SUPPLIER_ID = sol.SUPP_ID) ) sales
-GROUP BY supplier_id,supplier_name,prod_sku,txde_prod_id, DATEPART(YEAR, TXHD_TRADING_DATE), DATEPART(MONTH,TXHD_TRADING_DATE)
-ORDER BY supplier_id,supplier_name,prod_sku,txde_prod_id, Year1, Month1
-
-
-
-
-select supplier_id,supplier_name, prod_sku,txde_prod_id, DATEPART(YEAR, TXHD_TRADING_DATE) Year1
- ,(select SUM(TXDE_VALUE_NET) from sales where DATEPART(MONTH,TXHD_TRADING_DATE) = 1)  Jan
- ,(select SUM(TXDE_VALUE_NET) from TXN_DETAIL where DATEPART(MONTH,TXHD_TRADING_DATE) = 2)  Feb
- ,(select SUM(TXDE_VALUE_NET) from TXN_DETAIL where DATEPART(MONTH,TXHD_TRADING_DATE) = 3)  March
- ,(select SUM(TXDE_VALUE_NET) from TXN_DETAIL where DATEPART(MONTH,TXHD_TRADING_DATE) = 4)  April
- ,(select SUM(TXDE_VALUE_NET) from TXN_DETAIL where DATEPART(MONTH,TXHD_TRADING_DATE) = 5)  May
- ,(select SUM(TXDE_VALUE_NET) from TXN_DETAIL where DATEPART(MONTH,TXHD_TRADING_DATE) = 6)  Jun
-
- --DATEPART(MONTH,TXHD_TRADING_DATE) Month1, SUM (TXDE_VALUE_NET)[TOTAL_SALE] FROM
- from
-( select supplier_id,supplier_name,prod_sku,TXN_HEADER.TXHD_TRADING_DATE, TXN_DETAIL.* from TXN_HEADER inner join TXN_DETAIL on (TXN_HEADER.TXHD_ID = TXN_DETAIL.txhd_id)
-	inner join PRODUCT prod on (prod.PROD_ID = TXN_DETAIL.txde_prod_id)
-	inner join SUPP_PROD_PRICE spp on (spp.PROD_ID = prod.PROD_ID)
-	inner join SUPP_ORGU_LINK sol on (spp.SOL_ID = sol.SOL_ID)
-	inner join SUPPLIER supp on (supp.SUPPLIER_ID = sol.SUPP_ID) ) sales
-GROUP BY supplier_id,supplier_name,prod_sku,txde_prod_id, DATEPART(YEAR, TXHD_TRADING_DATE), DATEPART(MONTH,TXHD_TRADING_DATE)
-ORDER BY supplier_id,supplier_name,prod_sku,txde_prod_id, Year1
-
-
-select supplier_id,supplier_name, prod_sku,txde_prod_id, DATEPART(YEAR, TXHD_TRADING_DATE) Year1, DATEPART(MONTH,TXHD_TRADING_DATE) Month1, SUM (TXDE_VALUE_NET)[TOTAL_SALE] FROM
-( select supplier_id,supplier_name,prod_sku,TXN_HEADER.TXHD_TRADING_DATE, TXN_DETAIL.* from TXN_HEADER inner join TXN_DETAIL on (TXN_HEADER.TXHD_ID = TXN_DETAIL.txhd_id)
-	inner join PRODUCT prod on (prod.PROD_ID = TXN_DETAIL.txde_prod_id)
-	inner join SUPP_PROD_PRICE spp on (spp.PROD_ID = prod.PROD_ID)
-	inner join SUPP_ORGU_LINK sol on (spp.SOL_ID = sol.SOL_ID)
-	inner join SUPPLIER supp on (supp.SUPPLIER_ID = sol.SUPP_ID) ) sales
-GROUP BY supplier_id,supplier_name,prod_sku,txde_prod_id, DATEPART(YEAR, TXHD_TRADING_DATE), DATEPART(MONTH,TXHD_TRADING_DATE)
-ORDER BY supplier_id,supplier_name,prod_sku,txde_prod_id, Year1, Month1
-
-
-select * from SUPP_PROD_PRICE
-
-select * from SUPP_ORGU_LINK
-select * from SUPPLIER
-
----------------------------------
-
-
-
-CREATE TABLE REPORT_GROUP  (
-     REP_GRP_ID DECIMAL(31,0) IDENTITY (1,1) NOT NULL,
-     REP_GRP_NAME VARCHAR (200) NOT NULL,
-     DISPLAY_ORDER DECIMAL (5,0),
-     REP_GRP_TEXT VARCHAR (500)
-   )
-go
-
-CREATE TABLE REPORT_HEADING  (
-     REP_HEAD_ID DECIMAL(31,0) IDENTITY (1,1) NOT NULL,
-     REP_GRP_ID DECIMAL(31,0) NOT NULL,
-     REP_HEAD_NAME VARCHAR (200) NOT NULL,
-     DISPLAY_ORDER DECIMAL (5,0),
-     REP_HEAD_TEXT VARCHAR (500)
-   )
-go
-
-CREATE TABLE REPORT_PARAM  (
-     REP_PARAM_ID DECIMAL(31,0) IDENTITY (1,1) NOT NULL,
-     REP_HEAD_ID DECIMAL(31,0) NOT NULL,
-     REP_PARAM_NAME VARCHAR (200) NOT NULL,
-     TABLE_ALIAS VARCHAR (100)
-   )
-go
-
 CREATE TABLE REPORT_PARAM_VAL  (
      REP_PAR_VAL_ID DECIMAL(31,0) IDENTITY (1,1) NOT NULL,
      REP_PARAM_ID DECIMAL(31,0) NOT NULL,

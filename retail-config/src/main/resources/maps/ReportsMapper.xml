@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.ReportsDao">
+    <!-- result maps -->
+    <resultMap id="rptSaleByMonthMap" type="RptSaleByMonthRow" >
+        <result column="REP_GRP_NAME" property="supplierId" />
+        <result column="NODE_TYPE" property="supplierName" />
+        <result column="CATEGORY_ORDER" property="prodSku" />
+        <result column="REP_GRP_NAME" property="prodBarcode" />
+        <result column="NODE_TYPE" property="prodName" />
+        <result column="CATEGORY_ORDER" property="prodRef" />
+        <result column="REP_GRP_NAME" property="client" />
+        <result column="NODE_TYPE" property="prodCost" />
+        <result column="CATEGORY_ORDER" property="profitMargin" />
+        <result column="REP_GRP_NAME" property="prodProfit" />
+        <result column="NODE_TYPE" property="taxPaid" />
+        <result column="CATEGORY_ORDER" property="prodPriceGross" />
+        <result column="REP_GRP_NAME" property="prodPriceNet" />
+        <result column="NODE_TYPE" property="invoiceDate" />
+        <result column="CATEGORY_ORDER" property="qtyInvoiced" />
+        <result column="REP_GRP_NAME" property="priceSold" />
+    </resultMap>
+    <select id="runRptSaleByMonthReport" resultMap="rptSaleByMonthMap" >
+        select supplier.SUPPLIER_ID,
+               supplier.SUPPLIER_NAME,
+               product.PROD_SKU,
+               product.PROD_BARCODE,
+               product.PROD_NAME,
+               product.REFERENCE PROD_REF,
+               CUSTOMER.Company_Name CLIENT,
+               txn_detail.TXDE_VALUE_LINE PROD_COST,
+               txn_detail.TXDE_PROFIT_MARGIN PROFIT_MARGIN,
+               txn_detail.TXDE_VALUE_PROFIT PROD_PROFIT,
+               txn_detail.TXDE_TAX TAX_PAID,
+               txn_detail.TXDE_VALUE_GROSS PROD_PRICE_GROSS,
+               txn_detail.TXDE_VALUE_NET PROD_PRICE_NET,
+               invoice.TXIV_TRADING_DATE INVOICE_DATE,
+               invoice_detail. TXID_QTY_INVOICED QTY_INVOICED,
+               INVOICE_DETAIL.TXID_PRICE_SOLD TOTAL_PRICE
+        from TXN_HEADER txn_header
+             inner join TXN_DETAIL txn_detail on (txn_header.TXHD_ID = txn_detail.TXHD_ID)
+             inner join Customer on (customer.CUSTOMER_ID = TXN_HEADER.CUSTOMER_ID)
+             inner join INVOICE on (INVOICE.TXHD_ID = TXN_HEADER.TXHD_ID)
+             inner join INVOICE_DETAIL on (INVOICE.TXIV_ID = INVOICE_DETAIL.TXID_ID)
+             inner join PRODUCT product on (txn_detail.TXDE_PROD_ID = product.PROD_ID)
+             inner join SUPP_PROD_PRICE supp_prod_price on (supp_prod_price.PROD_ID = product.PROD_ID and supp_prod_price.SPRC_PREFER_BUY = 1)
+             inner join SUPP_ORGU_LINK supp_orgu_link on (supp_prod_price.SOL_ID = supp_orgu_link.SOL_ID)
+             inner join SUPPLIER supplier on (supplier.SUPPLIER_ID = supp_orgu_link.SUPP_ID)
+        where txn_header.orgu_id = #{param1}
+        <if test="param2 != null">
+            AND
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                ${item.column} ${item.operator} #{item.value}
+            </foreach>
+        </if>
+    </select>
+</mapper>

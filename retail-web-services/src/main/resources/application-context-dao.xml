@@ -171,5 +171,9 @@
         <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
         <property name="mapperInterface" value="au.com.biztune.retail.dao.ReportingDao" />
     </bean>
+    <bean id="ReportsDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessioinFactory" />
+        <property name="mapperInterface" value="au.com.biztune.retail.dao.ReportsDao" />
+    </bean>
 
 </beans>

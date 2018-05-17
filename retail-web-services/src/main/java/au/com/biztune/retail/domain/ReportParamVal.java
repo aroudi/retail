@@ -1,5 +1,8 @@
 package au.com.biztune.retail.domain;
 
+/**
+ * created by arash on 10/05/2018
+ */
 public class ReportParamVal {
     private long repParamValId;
     private long repParamId;
