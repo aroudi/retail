@@ -14,7 +14,8 @@
 
     <resultMap id="reportHeadingMap" type="ReportTreeViewNode" >
         <id column="REP_HEAD_ID" property="id" />
-        <result column="REP_HEAD_NAME" property="name" />
+        <result column="REP_HEAD_TEXT" property="name" />
+        <result column="REP_HEAD_NAME" property="reportKey" />
         <result column="NODE_TYPE" property="nodeType" />
         <collection property="reportParamList" javaType="ArrayList" column="REP_HEAD_ID" ofType="ReportParam" select="getReportParamListPerRepHeadId"/>
     </resultMap>
@@ -30,6 +31,7 @@
     <resultMap id="reportParamValMap" type="ReportParamVal" >
         <id column="REP_PAR_VAL_ID" property="repParamValId" />
         <result column="REP_PARAM_ID" property="repParamId" />
+        <result column="REP_PARAM_KEY" property="repParamKey" />
         <result column="REP_PARAM_VAL" property="repParamVal" />
         <result column="DISPLAY_ORDER" property="displayOrder" />
         <result column="TABLE_ALIAS" property="tableAlias" />
@@ -61,6 +63,7 @@
     <sql id="reportParamValColumns">
         ${alias}.REP_PAR_VAL_ID,
         ${alias}.REP_PARAM_ID,
+        ${alias}.REP_PARAM_KEY,
         ${alias}.REP_PARAM_VAL,
         ${alias}.DISPLAY_ORDER,
         ${alias}.TABLE_ALIAS

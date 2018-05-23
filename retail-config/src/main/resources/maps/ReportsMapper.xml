@@ -53,8 +53,9 @@
             AND
             <foreach collection="param2" item="item" index="index"
                      open ="(" separator=" AND " close=")">
-                ${item.column} ${item.operator} #{item.value}
+                ${item.column} ${item.operator} ${item.value}
             </foreach>
         </if>
+
     </select>
 </mapper>

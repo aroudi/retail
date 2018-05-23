@@ -1,11 +1,12 @@
 package au.com.biztune.retail.domain;
 
 /**
- * created by arash on 10/05/2018
+ * created by arash on 10/05/2018.
  */
 public class ReportParamVal {
     private long repParamValId;
     private long repParamId;
+    private String repParamKey;
     private String repParamVal;
     private int displayOrder;
     private String tableAlias;
@@ -48,5 +49,17 @@ public class ReportParamVal {
 
     public void setTableAlias(String tableAlias) {
         this.tableAlias = tableAlias;
+    }
+
+    public String getRepParamKey() {
+        return repParamKey;
+    }
+
+    public void setRepParamKey(String repParamKey) {
+        this.repParamKey = repParamKey;
+    }
+    @Override
+    public String toString() {
+        return this.repParamVal;
     }
 }

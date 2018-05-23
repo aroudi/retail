@@ -2,6 +2,9 @@ package au.com.biztune.retail.domain;
 
 import java.sql.Timestamp;
 
+/**
+ * created by Arash Roudi 10/05/2018.
+ */
 public class RptSaleByMonthRow {
     private String supplierId;
     private String supplierName;

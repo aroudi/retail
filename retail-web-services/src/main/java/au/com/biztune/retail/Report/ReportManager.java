@@ -1,0 +1,133 @@
+package au.com.biztune.retail.report;
+
+import au.com.biztune.retail.dao.ReportsDao;
+import au.com.biztune.retail.domain.*;
+import au.com.biztune.retail.session.SessionState;
+import au.com.biztune.retail.util.IdBConstant;
+import au.com.biztune.retail.util.SearchClauseBuilder;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by arash on 21/05/2018.
+ */
+public class ReportManager {
+    private final Logger logger = LoggerFactory.getLogger(ReportManager.class);
+    @Autowired
+    private ReportsDao reportsDao;
+    private Resource reportPath;
+    private String rptSalesByMonth;
+    @Autowired
+    private SessionState sessionState;
+    /**
+     * Run Report.
+     * @param reportKey reportKey
+     * @param reportParamList reportParamList
+     * @param securityContext securityContext
+     * @return PDF as output stream.
+     */
+    public StreamingOutput runReport(String reportKey, List<ReportParam> reportParamList, SecurityContext securityContext) {
+        StreamingOutput streamingOutput = null;
+        try {
+            final Principal principal = securityContext.getUserPrincipal();
+            AppUser appUser = null;
+            if (principal instanceof AppUser) {
+                appUser = (AppUser) principal;
+            }
+            final String pathStr = reportPath.getURL().getPath();
+            final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            List<RptSaleByMonthRow> rowList;
+            String reportJrxmlName = null;
+            JRBeanCollectionDataSource beanColDataSource = null;
+            String outputFile;
+            switch (reportKey) {
+                case IdBConstant.REPORT_KEY_SALES_BY_MONTH :
+                    rowList = reportsDao.runRptSaleByMonthReport(sessionState.getOrgUnit().getId(),
+                            SearchClauseBuilder.buildReportingSearchWhereCluase(reportParamList));
+                            beanColDataSource = new JRBeanCollectionDataSource(rowList);
+                            reportJrxmlName = pathStr + "/" + rptSalesByMonth + ".jrxml";
+                             outputFile = pathStr + "/" + rptSalesByMonth + ".pdf";
+                    break;
+                default:
+                    break;
+            }
+
+            /* Compile the master and sub report */
+            final JasperReport jasperMasterReport = JasperCompileManager.compileReport(reportJrxmlName);
+            final Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put("SUBREPORT_DIR", pathStr + "/");
+            //parameters.put("REPORT_PARAMS", searchForm);
+            final JasperPrint jasperPrint = JasperFillManager.fillReport(jasperMasterReport, parameters, beanColDataSource);
+            final JRPdfExporter exporter = new JRPdfExporter();
+            exporter.setParameter(JRPdfExporterParameter.JASPER_PRINT, jasperPrint);
+            exporter.setParameter(JRPdfExporterParameter.OUTPUT_STREAM, byteArrayOutputStream);
+            exporter.exportReport();
+            //JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream);
+
+            streamingOutput = new StreamingOutput() {
+            @Override
+            public void write(OutputStream output) throws IOException, WebApplicationException {
+                final byte[] bytes = byteArrayOutputStream.toByteArray();
+                output.write(bytes);
+                logger.info("PDF content = " + bytes.toString());
+                logger.info("PDF length = " + bytes.length);
+                output.flush();
+            }
+            };
+            return streamingOutput;
+        } catch (Exception e) {
+            logger.error("Exception in exporting accounting journal as pdf: ", e);
+            return null;
+        }
+    }
+
+    public Resource getReportPath() {
+        return reportPath;
+    }
+    public void setReportPath(Resource reportPath) {
+        this.reportPath = reportPath;
+    }
+
+    public ReportsDao getReportsDao() {
+        return reportsDao;
+    }
+
+    public void setReportsDao(ReportsDao reportsDao) {
+        this.reportsDao = reportsDao;
+    }
+
+    public String getRptSalesByMonth() {
+        return rptSalesByMonth;
+    }
+
+    public void setRptSalesByMonth(String rptSalesByMonth) {
+        this.rptSalesByMonth = rptSalesByMonth;
+    }
+
+    public SessionState getSessionState() {
+        return sessionState;
+    }
+
+    public void setSessionState(SessionState sessionState) {
+        this.sessionState = sessionState;
+    }
+}

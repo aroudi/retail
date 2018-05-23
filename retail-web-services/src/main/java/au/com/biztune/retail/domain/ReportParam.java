@@ -3,7 +3,7 @@ package au.com.biztune.retail.domain;
 import java.util.List;
 
 /**
- * created by arash on 10/05/2018
+ * created by arash on 10/05/2018.
  */
 public class ReportParam {
     private long repParamId;

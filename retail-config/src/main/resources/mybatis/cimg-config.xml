@@ -120,5 +120,6 @@
         <mapper resource="maps/PoSoLinkMapper.xml" />
         <mapper resource="maps/ProductCategoryMapper.xml" />
         <mapper resource="maps/ReportingMapper.xml" />
+        <mapper resource="maps/ReportsMapper.xml" />
     </mappers>
 </configuration>

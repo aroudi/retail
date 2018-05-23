@@ -628,7 +628,7 @@ public interface IdBConstant {
     /**
      * CUSTOMER GRADE CODE
      */
-    String CUSTOMER_GRADE_D= "D ";
+    String CUSTOMER_GRADE_D= "D";
 
     String DEFAULT_PRODUCT_TAX_CODE = "GST";
     /**
@@ -652,4 +652,77 @@ public interface IdBConstant {
      * default department
      */
     String DEFAULT_DEPARTMENT = "Default";
+    /**
+     * Reports Param Date
+     */
+    String REPORTS_PARAM_DATE = "Date";
+    /**
+     * Reports Param Range
+     */
+    String REPORTS_PARAM_RANGE = "Range";
+    /**
+     * Reports Param Category
+     */
+    String REPORTS_PARAM_CATEGORY = "Category";
+    /**
+     * Reports Param Supplier
+     */
+    String REPORTS_PARAM_SUPPLIER = "Supplier";
+    /**
+     * Reports Param Customer
+     */
+    String REPORTS_PARAM_CUSTOMER = "Customer";
+    /**
+     * Reports Param Staff
+     */
+    String REPORTS_PARAM_STAFF = "Staff";
+    /**
+     * Reports Param GroupBy
+     */
+    String REPORTS_PARAM_GROUPBY = "GroupBy";
+    /**
+     * Reports Param SortBy
+     */
+    String REPORTS_PARAM_SORTBY = "SortBy";
+    /**
+     * Reports Param Value DateFrom
+     */
+    String REPORTS_PARAM_VAL_DATE_FROM = "DateFrom";
+    /**
+     * Reports Param Value DateTo
+     */
+    String REPORTS_PARAM_VAL_DATE_TO = "DateTo";
+    /**
+     * Reports Param Value RangeFrom
+     */
+    String REPORTS_PARAM_VAL_RANGE_FROM = "RangeFrom";
+    /**
+     * Reports Param Value RangeFrom
+     */
+    String REPORTS_PARAM_VAL_RANGE_TO = "RangeTo";
+
+    /**
+     * Report Key Sale By Month
+     */
+    String REPORT_KEY_SALES_BY_MONTH = "SALES_BY_MONTH";
+    /**
+     * Report Key SALES_BY_TAX_CODE
+     */
+    String REPORT_KEY_SALES_BY_TAX_CODE = "SALES_BY_TAX_CODE";
+    /**
+     * Report Key SALES_BY_TAX_CODE_SUMMARY
+     */
+    String REPORT_KEY_SALES_BY_TAX_CODE_SUMMARY = "SALES_BY_TAX_CODE_SUMMARY";
+    /**
+     * Report Key SALES_DAILY
+     */
+    String REPORT_KEY_SALES_DAILY = "SALES_DAILY";
+    /**
+     * Report Key SALES_PERIOD
+     */
+    String REPORT_KEY_SALES_PERIOD = "SALES_PERIOD";
+    /**
+     * Report Key SALES_PERIOD_AVG
+     */
+    String REPORT_KEY_SALES_PERIOD_AVG = "SALES_PERIOD_AVG";
 }

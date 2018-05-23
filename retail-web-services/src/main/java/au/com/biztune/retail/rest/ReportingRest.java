@@ -1,5 +1,6 @@
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.report.ReportManager;
 import au.com.biztune.retail.domain.ReportTreeViewNode;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.ReportingService;
@@ -9,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.util.List;
 
 /**
@@ -26,8 +24,11 @@ public class ReportingRest {
     @Context
     private UriInfo uriInfo;
     @Context
+    private SecurityContext securityContext;
+    @Context
     private Request request;
-
+    @Autowired
+    private ReportManager reportManager;
     @Autowired
     private ReportingService reportingService;
 
@@ -47,4 +48,20 @@ public class ReportingRest {
             return null;
         }
     }
+
+    /**
+     * run reports.
+     * @param reportTreeViewNode reportTreeViewNode
+     * @return PDF report.
+     */
+    @Secured
+    @Path("/runReport")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response runReport(ReportTreeViewNode reportTreeViewNode) {
+        final StreamingOutput streamingOutput = reportManager.runReport(reportTreeViewNode.getReportKey(), reportTreeViewNode.getReportParamList(), securityContext);
+        return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = report.pdf").build();
+    }
+
 }

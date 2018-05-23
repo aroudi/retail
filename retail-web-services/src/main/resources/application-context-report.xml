@@ -40,4 +40,8 @@
         <property name="reportLineFileName" value="customerStatementLine" />
         <property name="reportLineDetailFileName" value="customerStatementLinePayments" />
     </bean>
+    <bean id="ReportManager" class="au.com.biztune.retail.report.ReportManager">
+        <property name="reportPath" value="classpath:reports" />
+        <property name="rptSalesByMonth" value="saleByMonthRpt" />
+    </bean>
 </beans>

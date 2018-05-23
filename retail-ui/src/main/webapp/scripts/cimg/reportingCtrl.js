@@ -1,8 +1,9 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('reportingCtrl', function($scope, baseDataService, ngDialog, SUCCESS, FAILURE, REPORTING_GET_REPORT_LIST_URI, SUPPLIER_ALL_URI, CUSTOMER_ALL_URI) {
+cimgApp.controller('reportingCtrl', function($scope, baseDataService, ngDialog, SUCCESS, FAILURE, REPORTING_GET_REPORT_LIST_URI, SUPPLIER_ALL_URI, CUSTOMER_ALL_URI, REPORTING_RUN_REPORT_URI) {
 
+    $scope.reportFactor = {};
     $scope.selectedProductGroups = [];
     $scope.productGroupTreeOptions = {
         multipleSelect: true
@@ -103,5 +104,92 @@ cimgApp.controller('reportingCtrl', function($scope, baseDataService, ngDialog, 
                 console.log('Modal promise rejected. Reason:', reason);
             }
         );
+    }
+    function populateReportParams() {
+        var paramList = angular.copy($scope.selectedNode.reportParamList);
+        var reportNode = angular.copy($scope.selectedNode);
+        reportNode.children = [];
+        for (var i=0; i < paramList.length ; i++ ) {
+
+            switch (paramList[i].repParamName) {
+                case 'Date' :
+                    //check if date entered
+                    if ($scope.reportFactor.dateFrom != undefined) {
+                        setParamValByKey(paramList[i].reportParamValList, 'DateFrom', $scope.reportFactor.dateFrom);
+                    }
+                    if ($scope.reportFactor.dateTo != undefined) {
+                        setParamValByKey(paramList[i].reportParamValList, 'DateTo', $scope.reportFactor.dateTo);
+                    }
+                    break;
+                case 'Range' :
+                    //check if ranged entered
+                    if ($scope.reportFactor.rangeFrom != undefined) {
+                        setParamValByKey(paramList[i].reportParamValList, 'RangeFrom', $scope.reportFactor.rangeFrom);
+                    }
+                    if ($scope.reportFactor.rangeTo != undefined) {
+                        setParamValByKey(paramList[i].reportParamValList, 'RangeTo', $scope.reportFactor.rangeTo);
+                    }
+                    break;
+                case 'Category' :
+                    break;
+                case 'Supplier' :
+                    if ($scope.reportFactor.supplierList != undefined && $scope.reportFactor.supplierList.length > 0 ) {
+                        for (var j=0; j < $scope.reportFactor.supplierList.length ; j++ ) {
+                            var paramVal = {
+                                repParamVal : $scope.reportFactor.supplierList[j].id
+                            }
+                            paramList[i].reportParamValList.push(paramVal);
+                        }
+                    }
+                    break;
+                case 'Customer' :
+                    if ($scope.reportFactor.customerList != undefined && $scope.reportFactor.customerList.length > 0 ) {
+                        for (var j=0; j < $scope.reportFactor.customerList.length ; j++ ) {
+                            var paramVal = {
+                                repParamVal: $scope.reportFactor.customerList[j].id
+                            }
+                            paramList[i].reportParamValList.push(paramVal);
+                        }
+                    }
+                    break;
+                case 'Staff' :
+                    break;
+                case 'GroupBy' :
+                    if ($scope.reportFactor.groupBy != undefined) {
+                        paramList[i].reportParamValList.push($scope.reportFactor.groupBy)
+                    }
+                    break;
+                case 'SortBy' :
+                    if ($scope.reportFactor.sortByPrimary != undefined) {
+                        paramList[i].reportParamValList.push($scope.reportFactor.sortByPrimary)
+                    }
+                    if ($scope.reportFactor.sortBySecondary != undefined) {
+                        paramList[i].reportParamValList.push($scope.reportFactor.sortBySecondary)
+                    }
+                    break;
+            }
+        }
+        reportNode.reportParamList = paramList;
+        return reportNode;
+    }
+
+    function setParamValByKey(paramValList, key, value) {
+        if (paramValList == undefined || key == undefined || value == undefined) {
+            return;
+        }
+        for (var i=0; i < paramValList.length ; i++ ) {
+            if (paramValList[i].repParamKey == key) {
+                paramValList[i].repParamVal = value;
+            }
+        }
+    }
+    $scope.submitReport = function () {
+        if ($scope.selectedNode === undefined || $scope.selectedNode.nodeType==='REPORT_GROUP' || $scope.selectedNode.reportParamList===undefined) {
+            return;
+        }
+        var reportNode = populateReportParams();
+        var exportUrl = REPORTING_RUN_REPORT_URI;
+        trimTreeViewNodeObject(reportNode);
+        baseDataService.pdfViewerPostMethod(exportUrl, reportNode);
     }
 });

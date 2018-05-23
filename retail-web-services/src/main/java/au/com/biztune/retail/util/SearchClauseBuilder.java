@@ -1,8 +1,11 @@
 package au.com.biztune.retail.util;
 
 import au.com.biztune.retail.domain.GeneralSearchForm;
+import au.com.biztune.retail.domain.ReportParam;
+import au.com.biztune.retail.domain.ReportParamVal;
 import au.com.biztune.retail.form.BoqSearchForm;
 import au.com.biztune.retail.form.ProductSearchForm;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +24,7 @@ public class SearchClauseBuilder {
      * @param searchTable searchTable
      * @return
      */
-    final Logger logger = LoggerFactory.getLogger(SearchClauseBuilder.class);
+    final static Logger logger = LoggerFactory.getLogger(SearchClauseBuilder.class);
     public static List<SearchClause> buildSearchWhereCluase(GeneralSearchForm searchForm, String searchTable) {
         List<SearchClause> clauseList = null;
         SearchClause searchClause = null;
@@ -285,5 +288,115 @@ public class SearchClauseBuilder {
         }
         return clauseList;
     }
+    public static List<SearchClause> buildReportingSearchWhereCluase(List<ReportParam> reportParamList) {
+        logger.debug("buildReportingSearchWhereCluase called");
+        if (reportParamList == null || reportParamList.size() < 1) {
+            return null;
+        }
+        List<SearchClause> clauseList = new ArrayList<SearchClause>();
+        SearchClause searchClause = null;
 
+        ReportParamVal reportParamVal = null;
+        Timestamp dateFrom = null;
+        Timestamp dateTo = null;
+        for (ReportParam reportParam : reportParamList) {
+            switch (reportParam.getRepParamName()) {
+                case IdBConstant.REPORTS_PARAM_DATE :
+                    reportParamVal = getReportParamValByKey(reportParam.getReportParamValList(), IdBConstant.REPORTS_PARAM_VAL_DATE_FROM);
+                    if (reportParamVal != null) {
+                        dateFrom = DateUtil.stringToDate(reportParamVal.getRepParamVal(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
+                        if (dateFrom != null) {
+                            searchClause = new SearchClause(reportParamVal.getTableAlias(), " >= ", dateFrom);
+                            clauseList.add(searchClause);
+                        }
+                    }
+                    reportParamVal = getReportParamValByKey(reportParam.getReportParamValList(), IdBConstant.REPORTS_PARAM_VAL_DATE_TO);
+                    if (reportParamVal != null) {
+                        dateTo = DateUtil.stringToDate(reportParamVal.getRepParamVal(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
+                        if (dateTo != null) {
+                            //maximise the hour for dateTo
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(dateTo);
+                            cal.set(Calendar.HOUR, 24);
+                            cal.set(Calendar.MINUTE, 0);
+                            cal.set(Calendar.SECOND, 0);
+                            dateTo = new Timestamp(cal.getTime().getTime());
+                            searchClause = new SearchClause(reportParamVal.getTableAlias(), " <= ", dateTo);
+                            clauseList.add(searchClause);
+                        }
+                    }
+                    break;
+                case (IdBConstant.REPORTS_PARAM_RANGE) :
+                    reportParamVal = getReportParamValByKey(reportParam.getReportParamValList(), IdBConstant.REPORTS_PARAM_VAL_RANGE_FROM);
+                    if (reportParamVal != null) {
+                        searchClause = new SearchClause(reportParamVal.getTableAlias(), " >= ", reportParamVal.getRepParamVal());
+                        clauseList.add(searchClause);
+                    }
+                    reportParamVal = getReportParamValByKey(reportParam.getReportParamValList(), IdBConstant.REPORTS_PARAM_VAL_RANGE_TO);
+                    if (reportParamVal != null) {
+                        searchClause = new SearchClause(reportParamVal.getTableAlias(), " <= ", reportParamVal.getRepParamVal());
+                        clauseList.add(searchClause);
+                    }
+                    break;
+                case (IdBConstant.REPORTS_PARAM_SUPPLIER) :
+                    if (reportParam.getReportParamValList() != null && reportParam.getReportParamValList().size() > 0) {
+                        final String commaSeparatedList = convertListToCommaSeparatedString(reportParam.getReportParamValList());
+                        logger.debug("commaSeparatedList = " + commaSeparatedList);
+                        searchClause = new SearchClause(reportParam.getTableAlias(), " in ", commaSeparatedList);
+                        clauseList.add(searchClause);
+                    }
+                    break;
+                case (IdBConstant.REPORTS_PARAM_CUSTOMER) :
+                    if (reportParam.getReportParamValList() != null && reportParam.getReportParamValList().size() > 0) {
+                        searchClause = new SearchClause(reportParam.getTableAlias(), " in ", convertListToCommaSeparatedString(reportParam.getReportParamValList()));
+                        clauseList.add(searchClause);
+                    }
+                    break;
+                case (IdBConstant.REPORTS_PARAM_STAFF) :
+                    if (reportParam.getReportParamValList() != null && reportParam.getReportParamValList().size() > 0) {
+                        searchClause = new SearchClause(reportParam.getTableAlias(), " in ", convertListToCommaSeparatedString(reportParam.getReportParamValList()));
+                        clauseList.add(searchClause);
+                    }
+                    break;
+                case (IdBConstant.REPORTS_PARAM_CATEGORY) :
+                    if (reportParam.getReportParamValList() != null && reportParam.getReportParamValList().size() > 0) {
+                        final String commaSeparatedList = convertListToCommaSeparatedString(reportParam.getReportParamValList());
+                        searchClause = new SearchClause(reportParam.getTableAlias(), " in ", commaSeparatedList);
+                        clauseList.add(searchClause);
+                    }
+                    break;
+            }
+        }
+        return clauseList;
+    }
+
+    private static String convertListToCommaSeparatedString (List<ReportParamVal> paramValList) {
+        try {
+            if (paramValList == null || paramValList.size() < 1) {
+                return null;
+            }
+            StringBuilder result = new StringBuilder("( ");
+            for (ReportParamVal reportParamVal : paramValList) {
+                result.append(reportParamVal.getRepParamVal());
+                result.append(", ");
+            }
+            result.append(paramValList.get(0));
+            result.append(" )");
+            return result.toString();
+        } catch (Exception e) {
+            logger.error("Exception in converting list to comma separated string", e);
+            return null;
+        }
+    }
+    private static ReportParamVal getReportParamValByKey(List<ReportParamVal> reportParamValList, String key) {
+        if (reportParamValList == null) {
+            return null;
+        }
+        for (ReportParamVal reportParamVal : reportParamValList) {
+            if (reportParamVal.getRepParamKey().equals(key)) {
+                return reportParamVal;
+            }
+        }
+        return null;
+    }
 }
