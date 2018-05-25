@@ -5,22 +5,22 @@
 <mapper namespace="au.com.biztune.retail.dao.ReportsDao">
     <!-- result maps -->
     <resultMap id="rptSaleByMonthMap" type="RptSaleByMonthRow" >
-        <result column="REP_GRP_NAME" property="supplierId" />
-        <result column="NODE_TYPE" property="supplierName" />
-        <result column="CATEGORY_ORDER" property="prodSku" />
-        <result column="REP_GRP_NAME" property="prodBarcode" />
-        <result column="NODE_TYPE" property="prodName" />
-        <result column="CATEGORY_ORDER" property="prodRef" />
-        <result column="REP_GRP_NAME" property="client" />
-        <result column="NODE_TYPE" property="prodCost" />
-        <result column="CATEGORY_ORDER" property="profitMargin" />
-        <result column="REP_GRP_NAME" property="prodProfit" />
-        <result column="NODE_TYPE" property="taxPaid" />
-        <result column="CATEGORY_ORDER" property="prodPriceGross" />
-        <result column="REP_GRP_NAME" property="prodPriceNet" />
-        <result column="NODE_TYPE" property="invoiceDate" />
-        <result column="CATEGORY_ORDER" property="qtyInvoiced" />
-        <result column="REP_GRP_NAME" property="priceSold" />
+        <result column="SUPPLIER_ID" property="supplierId" />
+        <result column="SUPPLIER_NAME" property="supplierName" />
+        <result column="PROD_SKU" property="prodSku" />
+        <result column="PROD_BARCODE" property="prodBarcode" />
+        <result column="PROD_NAME" property="prodName" />
+        <result column="PROD_REF" property="prodRef" />
+        <result column="CLIENT" property="client" />
+        <result column="PROD_COST" property="prodCost" />
+        <result column="PROFIT_MARGIN" property="profitMargin" />
+        <result column="PROD_PROFIT" property="prodProfit" />
+        <result column="TAX_PAID" property="taxPaid" />
+        <result column="PROD_PRICE_GROSS" property="prodPriceGross" />
+        <result column="PROD_PRICE_NET" property="prodPriceNet" />
+        <result column="INVOICE_DATE" property="invoiceDate" />
+        <result column="QTY_INVOICED" property="qtyInvoiced" />
+        <result column="TOTAL_PRICE" property="priceSold" />
     </resultMap>
     <select id="runRptSaleByMonthReport" resultMap="rptSaleByMonthMap" >
         select supplier.SUPPLIER_ID,

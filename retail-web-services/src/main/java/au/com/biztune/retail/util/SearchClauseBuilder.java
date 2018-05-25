@@ -288,6 +288,12 @@ public class SearchClauseBuilder {
         }
         return clauseList;
     }
+
+    /**
+     * build report search clause.
+     * @param reportParamList reportParamList
+     * @return
+     */
     public static List<SearchClause> buildReportingSearchWhereCluase(List<ReportParam> reportParamList) {
         logger.debug("buildReportingSearchWhereCluase called");
         if (reportParamList == null || reportParamList.size() < 1) {
@@ -295,7 +301,6 @@ public class SearchClauseBuilder {
         }
         List<SearchClause> clauseList = new ArrayList<SearchClause>();
         SearchClause searchClause = null;
-
         ReportParamVal reportParamVal = null;
         Timestamp dateFrom = null;
         Timestamp dateTo = null;
@@ -306,7 +311,7 @@ public class SearchClauseBuilder {
                     if (reportParamVal != null) {
                         dateFrom = DateUtil.stringToDate(reportParamVal.getRepParamVal(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
                         if (dateFrom != null) {
-                            searchClause = new SearchClause(reportParamVal.getTableAlias(), " >= ", dateFrom);
+                            searchClause = new SearchClause(reportParamVal.getTableAlias(), " >= ", dateFrom, IdBConstant.REPORTS_PARAM_VAL_DATE_FROM);
                             clauseList.add(searchClause);
                         }
                     }
@@ -321,7 +326,7 @@ public class SearchClauseBuilder {
                             cal.set(Calendar.MINUTE, 0);
                             cal.set(Calendar.SECOND, 0);
                             dateTo = new Timestamp(cal.getTime().getTime());
-                            searchClause = new SearchClause(reportParamVal.getTableAlias(), " <= ", dateTo);
+                            searchClause = new SearchClause(reportParamVal.getTableAlias(), " <= ", dateTo, IdBConstant.REPORTS_PARAM_VAL_DATE_TO);
                             clauseList.add(searchClause);
                         }
                     }
@@ -329,12 +334,12 @@ public class SearchClauseBuilder {
                 case (IdBConstant.REPORTS_PARAM_RANGE) :
                     reportParamVal = getReportParamValByKey(reportParam.getReportParamValList(), IdBConstant.REPORTS_PARAM_VAL_RANGE_FROM);
                     if (reportParamVal != null) {
-                        searchClause = new SearchClause(reportParamVal.getTableAlias(), " >= ", reportParamVal.getRepParamVal());
+                        searchClause = new SearchClause(reportParamVal.getTableAlias(), " >= ", reportParamVal.getRepParamVal(), IdBConstant.REPORTS_PARAM_VAL_RANGE_FROM);
                         clauseList.add(searchClause);
                     }
                     reportParamVal = getReportParamValByKey(reportParam.getReportParamValList(), IdBConstant.REPORTS_PARAM_VAL_RANGE_TO);
                     if (reportParamVal != null) {
-                        searchClause = new SearchClause(reportParamVal.getTableAlias(), " <= ", reportParamVal.getRepParamVal());
+                        searchClause = new SearchClause(reportParamVal.getTableAlias(), " <= ", reportParamVal.getRepParamVal(), IdBConstant.REPORTS_PARAM_VAL_RANGE_TO);
                         clauseList.add(searchClause);
                     }
                     break;

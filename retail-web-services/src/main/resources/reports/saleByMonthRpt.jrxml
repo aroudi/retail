@@ -1,11 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="purchaseOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fb6cb0-42cb-4b57-b65e-d1b9440732e6">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report5" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="64c4d4cc-3188-45c3-804c-2974d61d72fa">
     <property name="ireport.zoom" value="1.0"/>
     <property name="ireport.x" value="0"/>
     <property name="ireport.y" value="0"/>
     <style name="Crosstab Data Text" hAlign="Center"/>
+    <style name="table">
+        <box>
+            <pen lineWidth="1.0" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <subDataset name="Table Dataset 1" uuid="2fe10c89-40b3-488b-8e5c-2ce011c0347b"/>
+    <parameter name="DateFrom" class="java.sql.Timestamp" isForPrompting="false"/>
+    <parameter name="DateTo" class="java.sql.Timestamp" isForPrompting="false"/>
     <parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-        <defaultValueExpression><![CDATA["E:\\projects\\IReport\\"]]></defaultValueExpression>
+        <defaultValueExpression><![CDATA["D:\\projects\\IReport\\"]]></defaultValueExpression>
     </parameter>
     <field name="supplierName" class="java.lang.String"/>
     <field name="prodSku" class="java.lang.String"/>
@@ -15,10 +38,86 @@
     <background>
         <band splitType="Stretch"/>
     </background>
+    <pageHeader>
+        <band height="173">
+            <staticText>
+                <reportElement x="7" y="37" width="222" height="17" uuid="1e61a94e-b100-4cb9-9f11-faed16e3e682"/>
+                <textElement>
+                    <font fontName="Arial"/>
+                </textElement>
+                <text><![CDATA[Phone: +61 2  9747 0088     Fax: +61 2 9747 4488]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="7" y="54" width="179" height="15" uuid="625ea0a7-eafa-480d-9ec1-e9f062377d7e"/>
+                <textElement>
+                    <font fontName="Arial" isBold="false"/>
+                </textElement>
+                <text><![CDATA[ABN : 92 084 941 266]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="7" y="22" width="217" height="15" uuid="87b59f92-26a3-42ea-a7a4-49864dbcbf0f"/>
+                <textElement>
+                    <font fontName="Arial"/>
+                </textElement>
+                <text><![CDATA[32 Spencer St, Five Dock NSW 2046 AUSTRALIA]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="7" y="5" width="203" height="15" uuid="42230c5f-f6a7-4d1d-b9bb-880e47e36c82"/>
+                <textElement>
+                    <font fontName="Arial" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[JOMON ARCHITECTURAL HARDWARE PTY LTD]]></text>
+            </staticText>
+            <image>
+                <reportElement x="630" y="4" width="170" height="65" uuid="ef96ce95-ee89-4b00-98d3-cadb9c8f5f87"/>
+                <imageExpression><![CDATA[$P{SUBREPORT_DIR} + "logo.png"]]></imageExpression>
+            </image>
+            <staticText>
+                <reportElement x="287" y="73" width="203" height="18" uuid="89eaa5bc-fcee-4688-b222-59f710cff7a7"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Arial" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Sale By Month]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="5" y="112" width="103" height="18" uuid="ffed5b53-7da8-48bf-9a66-ad61538ae04e"/>
+                <textElement>
+                    <font fontName="Arial" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Report Period]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="110" y="110" width="100" height="20" uuid="3aef9a6d-0615-4232-8fec-8499ef94f9ee"/>
+                <textFieldExpression><![CDATA[$P{DateFrom}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="218" y="110" width="22" height="20" uuid="9000f85b-a70b-4d7f-8023-b0b6d19a19b2"/>
+                <text><![CDATA[to]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="246" y="110" width="100" height="20" uuid="01e8f945-edad-4488-8995-653d3b103221"/>
+                <textFieldExpression><![CDATA[$P{DateTo}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
     <summary>
-        <band height="42" splitType="Stretch">
+        <band height="170" splitType="Stretch">
             <crosstab>
-                <reportElement x="0" y="0" width="555" height="42" uuid="0adc8413-94dc-4bf8-a3e7-974022cb35dd"/>
+                <reportElement x="0" y="6" width="800" height="134" uuid="0adc8413-94dc-4bf8-a3e7-974022cb35dd"/>
+                <crosstabHeaderCell>
+                    <cellContents>
+                        <staticText>
+                            <reportElement style="Crosstab Data Text" x="0" y="0" width="70" height="30" uuid="877685d3-b29a-4632-81a6-8eeb39c69548"/>
+                            <textElement verticalAlignment="Middle"/>
+                            <text><![CDATA[Supplier]]></text>
+                        </staticText>
+                        <staticText>
+                            <reportElement style="Crosstab Data Text" x="70" y="0" width="239" height="30" uuid="3225cada-bfbc-42dd-871e-421b41e0d671"/>
+                            <textElement verticalAlignment="Middle"/>
+                            <text><![CDATA[Product]]></text>
+                        </staticText>
+                    </cellContents>
+                </crosstabHeaderCell>
                 <rowGroup name="supplierName" width="70" totalPosition="End">
                     <bucket class="java.lang.String">
                         <bucketExpression><![CDATA[$F{supplierName}]]></bucketExpression>
@@ -42,22 +141,22 @@
                             <staticText>
                                 <reportElement x="0" y="0" width="140" height="25" forecolor="#FFFFFF" uuid="c8f5c981-9885-4f2b-b48c-cbba715a4290"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <text><![CDATA[Total supplierName]]></text>
+                                <text><![CDATA[Total]]></text>
                             </staticText>
                         </cellContents>
                     </crosstabTotalRowHeader>
                 </rowGroup>
-                <rowGroup name="prodSku" width="70" totalPosition="End">
+                <rowGroup name="prodSku" width="130" totalPosition="End">
                     <bucket class="java.lang.String">
                         <bucketExpression><![CDATA[$F{prodSku}]]></bucketExpression>
                     </bucket>
                     <crosstabRowHeader>
-                        <cellContents backcolor="#F0F8FF" mode="Opaque">
+                        <cellContents backcolor="#CCCCCC" mode="Opaque">
                             <box>
                                 <pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
                             </box>
                             <textField>
-                                <reportElement style="Crosstab Data Text" x="0" y="0" width="70" height="25" uuid="2f0d0f79-33d8-4bc9-ad0c-b5be89649398"/>
+                                <reportElement style="Crosstab Data Text" x="0" y="0" width="129" height="25" uuid="2f0d0f79-33d8-4bc9-ad0c-b5be89649398"/>
                                 <textFieldExpression><![CDATA[$V{prodSku}]]></textFieldExpression>
                             </textField>
                         </cellContents>
@@ -75,14 +174,14 @@
                         </cellContents>
                     </crosstabTotalRowHeader>
                 </rowGroup>
-                <rowGroup name="prodName" width="100" totalPosition="End">
+                <rowGroup name="prodName" width="109" totalPosition="End">
                     <bucket class="java.lang.String">
                         <bucketExpression><![CDATA[$F{prodName}]]></bucketExpression>
                     </bucket>
                     <crosstabRowHeader>
-                        <cellContents>
+                        <cellContents backcolor="#CCCCCC">
                             <textField>
-                                <reportElement style="Crosstab Data Text" x="0" y="0" width="100" height="25" uuid="2a9f8001-7baf-4403-956f-d1783df34824"/>
+                                <reportElement style="Crosstab Data Text" x="0" y="0" width="109" height="25" uuid="2a9f8001-7baf-4403-956f-d1783df34824"/>
                                 <textFieldExpression><![CDATA[$V{prodName}]]></textFieldExpression>
                             </textField>
                         </cellContents>
@@ -101,7 +200,7 @@
                                 <pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
                             </box>
                             <textField>
-                                <reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="30" uuid="4aa3039a-8555-435d-b012-f314b37aec15"/>
+                                <reportElement style="Crosstab Data Text" x="0" y="0" width="74" height="30" uuid="4aa3039a-8555-435d-b012-f314b37aec15"/>
                                 <textFieldExpression><![CDATA[$V{invoiceDate}]]></textFieldExpression>
                             </textField>
                         </cellContents>
@@ -112,9 +211,9 @@
                                 <pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
                             </box>
                             <staticText>
-                                <reportElement x="0" y="0" width="50" height="30" uuid="b01cb80d-52bf-473d-9b86-e776ba1332a6"/>
+                                <reportElement x="0" y="0" width="92" height="30" uuid="b01cb80d-52bf-473d-9b86-e776ba1332a6"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <text><![CDATA[Total invoiceDate]]></text>
+                                <text><![CDATA[Total]]></text>
                             </staticText>
                         </cellContents>
                     </crosstabTotalColumnHeader>
@@ -122,76 +221,76 @@
                 <measure name="TXDE_VALUE_NETMeasure" class="java.math.BigDecimal" calculation="Sum">
                     <measureExpression><![CDATA[$F{priceSold}]]></measureExpression>
                 </measure>
-                <crosstabCell width="50" height="25">
-                    <cellContents>
+                <crosstabCell width="74" height="25">
+                    <cellContents backcolor="#CCCCCC">
                         <box>
                             <pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
                         </box>
-                        <textField>
-                            <reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="149ca399-2426-48ec-9435-80d18e967bb4"/>
+                        <textField pattern="¤ #,##0.00">
+                            <reportElement style="Crosstab Data Text" x="0" y="0" width="74" height="25" uuid="149ca399-2426-48ec-9435-80d18e967bb4"/>
                             <textFieldExpression><![CDATA[$V{TXDE_VALUE_NETMeasure}]]></textFieldExpression>
                         </textField>
                     </cellContents>
                 </crosstabCell>
-                <crosstabCell height="25" rowTotalGroup="supplierName">
+                <crosstabCell width="74" height="25" rowTotalGroup="supplierName">
                     <cellContents backcolor="#005FB3" mode="Opaque">
                         <box>
                             <pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
                         </box>
-                        <textField>
-                            <reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="43b604fe-cae4-44ee-91ba-b38f1a8c227d"/>
+                        <textField pattern="¤ #,##0.00">
+                            <reportElement style="Crosstab Data Text" x="0" y="0" width="74" height="25" forecolor="#FFFFFF" uuid="43b604fe-cae4-44ee-91ba-b38f1a8c227d"/>
                             <textFieldExpression><![CDATA[$V{TXDE_VALUE_NETMeasure}]]></textFieldExpression>
                         </textField>
                     </cellContents>
                 </crosstabCell>
-                <crosstabCell width="50" columnTotalGroup="invoiceDate">
-                    <cellContents backcolor="#BFE1FF" mode="Opaque">
+                <crosstabCell width="92" height="25" columnTotalGroup="invoiceDate">
+                    <cellContents backcolor="#CCCCCC" mode="Opaque">
                         <box>
                             <pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
                         </box>
-                        <textField>
-                            <reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="4829ccb0-fcb9-43dd-b9e1-bf8799b1a86e"/>
+                        <textField pattern="¤ #,##0.00">
+                            <reportElement style="Crosstab Data Text" x="0" y="0" width="92" height="25" uuid="4829ccb0-fcb9-43dd-b9e1-bf8799b1a86e"/>
                             <textFieldExpression><![CDATA[$V{TXDE_VALUE_NETMeasure}]]></textFieldExpression>
                         </textField>
                     </cellContents>
                 </crosstabCell>
-                <crosstabCell rowTotalGroup="supplierName" columnTotalGroup="invoiceDate">
+                <crosstabCell width="92" rowTotalGroup="supplierName" columnTotalGroup="invoiceDate">
                     <cellContents backcolor="#005FB3" mode="Opaque">
                         <box>
                             <pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
                         </box>
-                        <textField>
-                            <reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF" uuid="24f1fb64-c948-4784-8f7f-39bb2f82c534"/>
+                        <textField pattern="¤ #,##0.00">
+                            <reportElement style="Crosstab Data Text" x="0" y="0" width="92" height="25" forecolor="#FFFFFF" uuid="24f1fb64-c948-4784-8f7f-39bb2f82c534"/>
                             <textFieldExpression><![CDATA[$V{TXDE_VALUE_NETMeasure}]]></textFieldExpression>
                         </textField>
                     </cellContents>
                 </crosstabCell>
-                <crosstabCell height="25" rowTotalGroup="prodSku">
+                <crosstabCell width="74" height="25" rowTotalGroup="prodSku">
                     <cellContents backcolor="#BFE1FF" mode="Opaque">
                         <box>
                             <pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
                         </box>
-                        <textField>
-                            <reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="2faad7f9-7fcb-442f-95a4-6cc5b8915165"/>
+                        <textField pattern="¤ #,##0.00">
+                            <reportElement style="Crosstab Data Text" x="0" y="0" width="74" height="25" uuid="2faad7f9-7fcb-442f-95a4-6cc5b8915165"/>
                             <textFieldExpression><![CDATA[$V{TXDE_VALUE_NETMeasure}]]></textFieldExpression>
                         </textField>
                     </cellContents>
                 </crosstabCell>
-                <crosstabCell rowTotalGroup="prodSku" columnTotalGroup="invoiceDate">
+                <crosstabCell width="92" height="25" rowTotalGroup="prodSku" columnTotalGroup="invoiceDate">
                     <cellContents backcolor="#BFE1FF" mode="Opaque">
                         <box>
                             <pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
                         </box>
-                        <textField>
-                            <reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="c89a57f9-29e1-4a99-9347-82937b4879c8"/>
+                        <textField pattern="¤ #,##0.00">
+                            <reportElement style="Crosstab Data Text" x="0" y="0" width="92" height="25" uuid="c89a57f9-29e1-4a99-9347-82937b4879c8"/>
                             <textFieldExpression><![CDATA[$V{TXDE_VALUE_NETMeasure}]]></textFieldExpression>
                         </textField>
                     </cellContents>
                 </crosstabCell>
-                <crosstabCell rowTotalGroup="prodName">
+                <crosstabCell width="74" height="0" rowTotalGroup="prodName">
                     <cellContents/>
                 </crosstabCell>
-                <crosstabCell rowTotalGroup="prodName" columnTotalGroup="invoiceDate">
+                <crosstabCell width="92" height="0" rowTotalGroup="prodName" columnTotalGroup="invoiceDate">
                     <cellContents/>
                 </crosstabCell>
             </crosstab>

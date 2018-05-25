@@ -4,6 +4,7 @@ import au.com.biztune.retail.dao.ReportsDao;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.IdBConstant;
+import au.com.biztune.retail.util.SearchClause;
 import au.com.biztune.retail.util.SearchClauseBuilder;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -53,16 +54,22 @@ public class ReportManager {
             if (principal instanceof AppUser) {
                 appUser = (AppUser) principal;
             }
+            List<SearchClause> searchClauseList = null;
             final String pathStr = reportPath.getURL().getPath();
             final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            List<RptSaleByMonthRow> rowList;
+            List<RptSaleByMonthRow> rowList = null;
             String reportJrxmlName = null;
             JRBeanCollectionDataSource beanColDataSource = null;
-            String outputFile;
+            String outputFile = null;
+            final Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put("SUBREPORT_DIR", pathStr + "/");
             switch (reportKey) {
                 case IdBConstant.REPORT_KEY_SALES_BY_MONTH :
+                    //fetch searchClause list from report params.
+                    searchClauseList = SearchClauseBuilder.buildReportingSearchWhereCluase(reportParamList);
+                    populateReportParams(parameters, searchClauseList);
                     rowList = reportsDao.runRptSaleByMonthReport(sessionState.getOrgUnit().getId(),
-                            SearchClauseBuilder.buildReportingSearchWhereCluase(reportParamList));
+                            searchClauseList);
                             beanColDataSource = new JRBeanCollectionDataSource(rowList);
                             reportJrxmlName = pathStr + "/" + rptSalesByMonth + ".jrxml";
                              outputFile = pathStr + "/" + rptSalesByMonth + ".pdf";
@@ -73,8 +80,6 @@ public class ReportManager {
 
             /* Compile the master and sub report */
             final JasperReport jasperMasterReport = JasperCompileManager.compileReport(reportJrxmlName);
-            final Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put("SUBREPORT_DIR", pathStr + "/");
             //parameters.put("REPORT_PARAMS", searchForm);
             final JasperPrint jasperPrint = JasperFillManager.fillReport(jasperMasterReport, parameters, beanColDataSource);
             final JRPdfExporter exporter = new JRPdfExporter();
@@ -99,7 +104,19 @@ public class ReportManager {
             return null;
         }
     }
-
+    /**
+     * populate search parameters out from search clause list.
+     * @param reportParams report params sending to jasper.
+     * @param searchClauseList search clause of reports.
+     */
+    private void populateReportParams(Map<String, Object> reportParams, List<SearchClause> searchClauseList) {
+        if (searchClauseList == null || searchClauseList.size() < 1 || reportParams == null) {
+            return;
+        }
+        for (SearchClause searchClause : searchClauseList) {
+            reportParams.put(searchClause.getParamName(), searchClause.getValue());
+        }
+    }
     public Resource getReportPath() {
         return reportPath;
     }
