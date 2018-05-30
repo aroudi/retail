@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 /**
  * created by Arash Roudi 10/05/2018.
  */
-public class RptSaleByMonthRow {
+public class ReportSaleRow {
     private String supplierId;
     private String supplierName;
     private String prodSku;
@@ -22,6 +22,12 @@ public class RptSaleByMonthRow {
     private Timestamp invoiceDate;
     private double qtyInvoiced;
     private double priceSold;
+    private double totalExTax;
+    private double totalIncTax;
+    private String taxDesc;
+    private String taxCode;
+    private String txivTxnNr;
+    private double taxRate;
 
     public String getSupplierId() {
         return supplierId;
@@ -149,5 +155,53 @@ public class RptSaleByMonthRow {
 
     public void setPriceSold(double priceSold) {
         this.priceSold = priceSold;
+    }
+
+    public double getTotalExTax() {
+        return totalExTax;
+    }
+
+    public void setTotalExTax(double totalExTax) {
+        this.totalExTax = totalExTax;
+    }
+
+    public double getTotalIncTax() {
+        return totalIncTax;
+    }
+
+    public void setTotalIncTax(double totalIncTax) {
+        this.totalIncTax = totalIncTax;
+    }
+
+    public String getTaxDesc() {
+        return taxDesc;
+    }
+
+    public void setTaxDesc(String taxDesc) {
+        this.taxDesc = taxDesc;
+    }
+
+    public String getTaxCode() {
+        return taxCode;
+    }
+
+    public void setTaxCode(String taxCode) {
+        this.taxCode = taxCode;
+    }
+
+    public String getTxivTxnNr() {
+        return txivTxnNr;
+    }
+
+    public void setTxivTxnNr(String txivTxnNr) {
+        this.txivTxnNr = txivTxnNr;
+    }
+
+    public double getTaxRate() {
+        return taxRate;
+    }
+
+    public void setTaxRate(double taxRate) {
+        this.taxRate = taxRate;
     }
 }

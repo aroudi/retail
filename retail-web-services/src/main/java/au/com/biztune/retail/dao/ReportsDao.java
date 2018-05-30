@@ -1,7 +1,6 @@
 package au.com.biztune.retail.dao;
 
-import au.com.biztune.retail.domain.RptSaleByMonthRow;
-
+import au.com.biztune.retail.domain.ReportSaleRow;
 import java.util.List;
 
 /**
@@ -14,5 +13,12 @@ public interface ReportsDao {
      * @param clauseList ClauseList
      * @return report data.
      */
-    List<RptSaleByMonthRow> runRptSaleByMonthReport(long orguId, List clauseList);
+    List<ReportSaleRow> runRptSaleByMonthReport(long orguId, List clauseList);
+    /**
+     * get SaleByTaxCodes reports data.
+     * @param orguId organisationId
+     * @param clauseList ClauseList
+     * @return report data.
+     */
+    List<ReportSaleRow> runRptSaleByTaxCodesReport(long orguId, List clauseList);
 }

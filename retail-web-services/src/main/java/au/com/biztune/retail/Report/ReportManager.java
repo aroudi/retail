@@ -37,6 +37,7 @@ public class ReportManager {
     private ReportsDao reportsDao;
     private Resource reportPath;
     private String rptSalesByMonth;
+    private String rptSalesByTaxCodes;
     @Autowired
     private SessionState sessionState;
     /**
@@ -57,7 +58,7 @@ public class ReportManager {
             List<SearchClause> searchClauseList = null;
             final String pathStr = reportPath.getURL().getPath();
             final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            List<RptSaleByMonthRow> rowList = null;
+            List<ReportSaleRow> rowList = null;
             String reportJrxmlName = null;
             JRBeanCollectionDataSource beanColDataSource = null;
             String outputFile = null;
@@ -73,6 +74,16 @@ public class ReportManager {
                             beanColDataSource = new JRBeanCollectionDataSource(rowList);
                             reportJrxmlName = pathStr + "/" + rptSalesByMonth + ".jrxml";
                              outputFile = pathStr + "/" + rptSalesByMonth + ".pdf";
+                    break;
+                case IdBConstant.REPORT_KEY_SALES_BY_TAX_CODE :
+                    //fetch searchClause list from report params.
+                    searchClauseList = SearchClauseBuilder.buildReportingSearchWhereCluase(reportParamList);
+                    populateReportParams(parameters, searchClauseList);
+                    rowList = reportsDao.runRptSaleByTaxCodesReport(sessionState.getOrgUnit().getId(),
+                            searchClauseList);
+                    beanColDataSource = new JRBeanCollectionDataSource(rowList);
+                    reportJrxmlName = pathStr + "/" + rptSalesByTaxCodes + ".jrxml";
+                    outputFile = pathStr + "/" + rptSalesByTaxCodes + ".pdf";
                     break;
                 default:
                     break;
@@ -114,7 +125,7 @@ public class ReportManager {
             return;
         }
         for (SearchClause searchClause : searchClauseList) {
-            reportParams.put(searchClause.getParamName(), searchClause.getValue());
+            reportParams.put(searchClause.getParamName(), searchClause.getParamVal());
         }
     }
     public Resource getReportPath() {
@@ -146,5 +157,13 @@ public class ReportManager {
 
     public void setSessionState(SessionState sessionState) {
         this.sessionState = sessionState;
+    }
+
+    public String getRptSalesByTaxCodes() {
+        return rptSalesByTaxCodes;
+    }
+
+    public void setRptSalesByTaxCodes(String rptSalesByTaxCodes) {
+        this.rptSalesByTaxCodes = rptSalesByTaxCodes;
     }
 }

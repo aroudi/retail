@@ -295,7 +295,6 @@ public class SearchClauseBuilder {
      * @return
      */
     public static List<SearchClause> buildReportingSearchWhereCluase(List<ReportParam> reportParamList) {
-        logger.debug("buildReportingSearchWhereCluase called");
         if (reportParamList == null || reportParamList.size() < 1) {
             return null;
         }
@@ -311,7 +310,8 @@ public class SearchClauseBuilder {
                     if (reportParamVal != null) {
                         dateFrom = DateUtil.stringToDate(reportParamVal.getRepParamVal(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
                         if (dateFrom != null) {
-                            searchClause = new SearchClause(reportParamVal.getTableAlias(), " >= ", dateFrom, IdBConstant.REPORTS_PARAM_VAL_DATE_FROM);
+                            searchClause = new SearchClause(reportParamVal.getTableAlias(), " >= ",
+                                    dateFrom, IdBConstant.REPORTS_PARAM_VAL_DATE_FROM);
                             clauseList.add(searchClause);
                         }
                     }
@@ -320,7 +320,7 @@ public class SearchClauseBuilder {
                         dateTo = DateUtil.stringToDate(reportParamVal.getRepParamVal(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
                         if (dateTo != null) {
                             //maximise the hour for dateTo
-                            Calendar cal = Calendar.getInstance();
+                            final Calendar cal = Calendar.getInstance();
                             cal.setTime(dateTo);
                             cal.set(Calendar.HOUR, 24);
                             cal.set(Calendar.MINUTE, 0);

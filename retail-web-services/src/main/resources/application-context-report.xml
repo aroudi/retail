@@ -43,5 +43,6 @@
     <bean id="ReportManager" class="au.com.biztune.retail.report.ReportManager">
         <property name="reportPath" value="classpath:reports" />
         <property name="rptSalesByMonth" value="saleByMonthRpt" />
+        <property name="rptSalesByTaxCodes" value="saleByTaxCodesRpt" />
     </bean>
 </beans>

@@ -4,41 +4,47 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="au.com.biztune.retail.dao.ReportsDao">
     <!-- result maps -->
-    <resultMap id="rptSaleByMonthMap" type="RptSaleByMonthRow" >
-        <result column="SUPPLIER_ID" property="supplierId" />
-        <result column="SUPPLIER_NAME" property="supplierName" />
-        <result column="PROD_SKU" property="prodSku" />
-        <result column="PROD_BARCODE" property="prodBarcode" />
-        <result column="PROD_NAME" property="prodName" />
-        <result column="PROD_REF" property="prodRef" />
-        <result column="CLIENT" property="client" />
-        <result column="PROD_COST" property="prodCost" />
-        <result column="PROFIT_MARGIN" property="profitMargin" />
-        <result column="PROD_PROFIT" property="prodProfit" />
-        <result column="TAX_PAID" property="taxPaid" />
-        <result column="PROD_PRICE_GROSS" property="prodPriceGross" />
-        <result column="PROD_PRICE_NET" property="prodPriceNet" />
-        <result column="INVOICE_DATE" property="invoiceDate" />
-        <result column="QTY_INVOICED" property="qtyInvoiced" />
-        <result column="TOTAL_PRICE" property="priceSold" />
+    <resultMap id="reportSaleMap" type="ReportSaleRow" >
+        <result column="supplierId" property="supplierId" />
+        <result column="supplierName" property="supplierName" />
+        <result column="prodSku" property="prodSku" />
+        <result column="prodBarcode" property="prodBarcode" />
+        <result column="prodName" property="prodName" />
+        <result column="prodRef" property="prodRef" />
+        <result column="client" property="client" />
+        <result column="prodCost" property="prodCost" />
+        <result column="profitMargin" property="profitMargin" />
+        <result column="prodProfit" property="prodProfit" />
+        <result column="taxPaid" property="taxPaid" />
+        <result column="prodPriceGross" property="prodPriceGross" />
+        <result column="prodPriceNet" property="prodPriceNet" />
+        <result column="invoiceDate" property="invoiceDate" />
+        <result column="qtyInvoiced" property="qtyInvoiced" />
+        <result column="priceSold" property="priceSold" />
+        <result column="totalExTax" property="totalExTax" />
+        <result column="totalIncTax" property="totalIncTax" />
+        <result column="taxRate" property="taxRate" />
+        <result column="taxDesc" property="taxDesc" />
+        <result column="taxCode" property="taxCode" />
+        <result column="txivTxnNr" property="txivTxnNr" />
     </resultMap>
-    <select id="runRptSaleByMonthReport" resultMap="rptSaleByMonthMap" >
-        select supplier.SUPPLIER_ID,
-               supplier.SUPPLIER_NAME,
-               product.PROD_SKU,
-               product.PROD_BARCODE,
-               product.PROD_NAME,
-               product.REFERENCE PROD_REF,
-               CUSTOMER.Company_Name CLIENT,
-               txn_detail.TXDE_VALUE_LINE PROD_COST,
-               txn_detail.TXDE_PROFIT_MARGIN PROFIT_MARGIN,
-               txn_detail.TXDE_VALUE_PROFIT PROD_PROFIT,
-               txn_detail.TXDE_TAX TAX_PAID,
-               txn_detail.TXDE_VALUE_GROSS PROD_PRICE_GROSS,
-               txn_detail.TXDE_VALUE_NET PROD_PRICE_NET,
-               invoice.TXIV_TRADING_DATE INVOICE_DATE,
-               invoice_detail. TXID_QTY_INVOICED QTY_INVOICED,
-               INVOICE_DETAIL.TXID_PRICE_SOLD TOTAL_PRICE
+    <select id="runRptSaleByMonthReport" resultMap="reportSaleMap" >
+        select supplier.SUPPLIER_ID supplierId,
+               supplier.SUPPLIER_NAME supplierName,
+               product.PROD_SKU prodSku,
+               product.PROD_BARCODE prodBarcode,
+               product.PROD_NAME prodName,
+               product.REFERENCE prodRef,
+               CUSTOMER.Company_Name client,
+               txn_detail.TXDE_VALUE_LINE prodCost,
+               txn_detail.TXDE_PROFIT_MARGIN profitMargin,
+               txn_detail.TXDE_VALUE_PROFIT prodProfit,
+               txn_detail.TXDE_TAX taxPaid,
+               txn_detail.TXDE_VALUE_GROSS prodPriceGross,
+               txn_detail.TXDE_VALUE_NET prodPriceNet,
+               invoice.TXIV_TRADING_DATE invoiceDate,
+               invoice_detail.TXID_QTY_INVOICED qtyInvoiced,
+               INVOICE_DETAIL.TXID_PRICE_SOLD priceSold
         from TXN_HEADER txn_header
              inner join TXN_DETAIL txn_detail on (txn_header.TXHD_ID = txn_detail.TXHD_ID)
              inner join Customer on (customer.CUSTOMER_ID = TXN_HEADER.CUSTOMER_ID)
@@ -53,9 +59,52 @@
             AND
             <foreach collection="param2" item="item" index="index"
                      open ="(" separator=" AND " close=")">
-                ${item.column} ${item.operator} ${item.value}
+                    ${item.column} ${item.operator} ${item.value}
             </foreach>
         </if>
 
+    </select>
+
+    <select id="runRptSaleByTaxCodesReport" resultMap="reportSaleMap" >
+        select
+            TAX_RULE.TXRL_DESC taxDesc,
+            TAX_RULE.TXRL_CODE taxCode,
+            INVOICE.TXIV_TXN_NR txivTxnNr,
+            CUSTOMER.Company_Name client,
+            product.PROD_SKU prodSku,
+            product.PROD_BARCODE prodBarcode,
+            product.PROD_NAME prodName,
+            product.REFERENCE prodRef,
+            txn_detail.TXDE_VALUE_LINE prodCost,
+            txn_detail.TXDE_PROFIT_MARGIN profitMargin,
+            txn_detail.TXDE_VALUE_PROFIT prodProfit,
+            txn_detail.TXDE_VALUE_GROSS prodPriceGross,
+            txn_detail.TXDE_VALUE_NET prodPriceNet,
+            invoice.TXIV_TRADING_DATE invoiceDate,
+            invoice_detail.TXID_QTY_INVOICED qtyInvoiced,
+            TAX_LEG_VARIANCE.TXLV_RATE taxRate,
+            TXID_QTY_INVOICED*txn_detail.TXDE_VALUE_GROSS totalExTax,
+            TXID_QTY_INVOICED*(txn_detail.TXDE_VALUE_GROSS + TAX_LEG_VARIANCE.TXLV_RATE*txn_detail.TXDE_VALUE_GROSS) totalIncTax,
+            TAX_LEG_VARIANCE.TXLV_RATE*TXID_QTY_INVOICED*txn_detail.TXDE_VALUE_GROSS taxPaid
+
+        from INVOICE_DETAIL
+            inner join TXN_DETAIL txn_detail on (INVOICE_DETAIL.TXDE_ID = txn_detail.TXDE_ID)
+            inner join TXN_HEADER on (txn_header.TXHD_ID = txn_detail.TXHD_ID)
+            inner join INVOICE on (INVOICE.TXIV_ID = INVOICE_DETAIL.TXIV_ID)
+            inner join PRODUCT product on (txn_detail.TXDE_PROD_ID = product.PROD_ID)
+            inner join PROD_ORGU_LINK prod_orgu_link on (prod_orgu_link.PROD_ID = product.PROD_ID)
+            inner join PROU_TXRL_LINK prou_txrl_link on (prou_txrl_link.PROU_ID = prod_orgu_link.PROU_ID)
+            inner join TAX_RULE tax_rule on (prou_txrl_link.TXRL_ID = tax_rule.TXRL_ID)
+            inner join TAX_LEG_VARIANCE on (tax_rule.TXRL_ID = TAX_LEG_VARIANCE.TXRL_ID)
+            left outer join Customer on (customer.CUSTOMER_ID = TXN_HEADER.CUSTOMER_ID)
+        where txn_header.orgu_id = #{param1}
+        <if test="param2 != null">
+            AND
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                ${item.column} ${item.operator} ${item.value}
+            </foreach>
+        </if>
+        ORDER BY TAX_RULE.TXRL_DESC
     </select>
 </mapper>

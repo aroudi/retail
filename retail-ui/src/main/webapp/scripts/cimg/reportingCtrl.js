@@ -11,6 +11,8 @@ cimgApp.controller('reportingCtrl', function($scope, baseDataService, ngDialog, 
 
     $scope.$on('selection-changed', function(e, node) {
         $scope.selectedNode = node;
+        //for some reports we need to set the default dates:
+        populateDates();
         enableFilters();
     });
 
@@ -191,5 +193,16 @@ cimgApp.controller('reportingCtrl', function($scope, baseDataService, ngDialog, 
         var exportUrl = REPORTING_RUN_REPORT_URI;
         trimTreeViewNodeObject(reportNode);
         baseDataService.pdfViewerPostMethod(exportUrl, reportNode);
+    }
+    function populateDates() {
+        if ($scope.selectedNode == undefined ) {
+            return;
+        }
+        if ($scope.selectedNode.reportKey === 'SALES_BY_MONTH') {
+            $scope.reportFactor.dateTo = new Date();
+            var dateFrom = new Date();
+            dateFrom.setFullYear($scope.reportFactor.dateTo.getUTCFullYear() - 1, $scope.reportFactor.dateTo.getUTCMonth(), 1);
+            $scope.reportFactor.dateFrom = dateFrom;
+        }
     }
 });
