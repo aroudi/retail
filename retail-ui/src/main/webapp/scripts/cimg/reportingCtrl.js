@@ -157,11 +157,13 @@ cimgApp.controller('reportingCtrl', function($scope, baseDataService, ngDialog, 
                 case 'Staff' :
                     break;
                 case 'GroupBy' :
+                    paramList[i].reportParamValList = [];
                     if ($scope.reportFactor.groupBy != undefined) {
                         paramList[i].reportParamValList.push($scope.reportFactor.groupBy)
                     }
                     break;
                 case 'SortBy' :
+                    paramList[i].reportParamValList = [];
                     if ($scope.reportFactor.sortByPrimary != undefined) {
                         paramList[i].reportParamValList.push($scope.reportFactor.sortByPrimary)
                     }

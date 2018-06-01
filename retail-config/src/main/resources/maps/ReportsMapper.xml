@@ -27,6 +27,7 @@
         <result column="taxDesc" property="taxDesc" />
         <result column="taxCode" property="taxCode" />
         <result column="txivTxnNr" property="txivTxnNr" />
+        <result column="operator" property="operator" />
     </resultMap>
     <select id="runRptSaleByMonthReport" resultMap="reportSaleMap" >
         select supplier.SUPPLIER_ID supplierId,
@@ -64,7 +65,6 @@
         </if>
 
     </select>
-
     <select id="runRptSaleByTaxCodesReport" resultMap="reportSaleMap" >
         select
             TAX_RULE.TXRL_DESC taxDesc,
@@ -107,4 +107,76 @@
         </if>
         ORDER BY TAX_RULE.TXRL_DESC
     </select>
+    <select id="runRptSaleByTaxCodesSummary" resultMap="reportSaleMap" >
+        select
+            TAX_RULE.TXRL_DESC taxDesc,
+            TAX_RULE.TXRL_CODE taxCode,
+            SUM(txn_detail.TXDE_VALUE_LINE) prodCost,
+            SUM(txn_detail.TXDE_PROFIT_MARGIN) profitMargin,
+            SUM(txn_detail.TXDE_VALUE_PROFIT) prodProfit,
+            SUM(txn_detail.TXDE_VALUE_GROSS) prodPriceGross,
+            SUM(txn_detail.TXDE_VALUE_NET) prodPriceNet,
+            SUM(invoice_detail.TXID_QTY_INVOICED) qtyInvoiced,
+            SUM(TXID_QTY_INVOICED*txn_detail.TXDE_VALUE_GROSS) totalExTax,
+            SUM(TXID_QTY_INVOICED*(txn_detail.TXDE_VALUE_GROSS + TAX_LEG_VARIANCE.TXLV_RATE*txn_detail.TXDE_VALUE_GROSS)) totalIncTax,
+            SUM(TAX_LEG_VARIANCE.TXLV_RATE*TXID_QTY_INVOICED*txn_detail.TXDE_VALUE_GROSS) taxPaid
+        from INVOICE_DETAIL
+            inner join TXN_DETAIL txn_detail on (INVOICE_DETAIL.TXDE_ID = txn_detail.TXDE_ID)
+            inner join INVOICE on (INVOICE.TXIV_ID = INVOICE_DETAIL.TXIV_ID)
+            inner join PRODUCT product on (txn_detail.TXDE_PROD_ID = product.PROD_ID)
+            inner join PROD_ORGU_LINK prod_orgu_link on (prod_orgu_link.PROD_ID = product.PROD_ID)
+            inner join PROU_TXRL_LINK prou_txrl_link on (prou_txrl_link.PROU_ID = prod_orgu_link.PROU_ID)
+            inner join TAX_RULE tax_rule on (prou_txrl_link.TXRL_ID = tax_rule.TXRL_ID)
+            inner join TAX_LEG_VARIANCE on (tax_rule.TXRL_ID = TAX_LEG_VARIANCE.TXRL_ID)
+        where INVOICE.orgu_id = #{param1}
+        <if test="param2 != null">
+            AND
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                ${item.column} ${item.operator} ${item.value}
+            </foreach>
+        </if>
+        GROUP BY TAX_RULE.TXRL_DESC, TAX_RULE.TXRL_CODE ORDER BY TAX_RULE.TXRL_DESC
+    </select>
+
+    <select id="runRptSalesDailyReport" resultMap="reportSaleMap" >
+        select
+            INVOICE.TXIV_TXN_NR txivTxnNr,
+            CUSTOMER.Company_Name client,
+            APP_USER.USR_FIRST_NAME + ' ' + APP_USER.USR_SUR_NAME operator,
+            product.PROD_SKU prodSku,
+            product.PROD_BARCODE prodBarcode,
+            product.PROD_NAME prodName,
+            product.REFERENCE prodRef,
+            txn_detail.TXDE_VALUE_LINE prodCost,
+            txn_detail.TXDE_PROFIT_MARGIN profitMargin,
+            txn_detail.TXDE_VALUE_PROFIT prodProfit,
+            txn_detail.TXDE_VALUE_GROSS prodPriceGross,
+            txn_detail.TXDE_VALUE_NET prodPriceNet,
+            invoice_detail.TXID_QTY_INVOICED qtyInvoiced,
+            INVOICE_DETAIL.TXID_PRICE_SOLD totalIncTax
+
+        from INVOICE_DETAIL
+            inner join TXN_DETAIL txn_detail on (INVOICE_DETAIL.TXDE_ID = txn_detail.TXDE_ID)
+            inner join INVOICE on (INVOICE.TXIV_ID = INVOICE_DETAIL.TXIV_ID)
+            inner join PRODUCT product on (txn_detail.TXDE_PROD_ID = product.PROD_ID)
+            inner join APP_USER on (APP_USER.USR_ID = INVOICE.TXIV_OPERATOR)
+            left outer join Customer on (customer.CUSTOMER_ID = INVOICE.CUSTOMER_ID)
+        where INVOICE.orgu_id = #{param1}
+        <if test="param2 != null">
+            AND
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                ${item.column} ${item.operator} ${item.value}
+            </foreach>
+        </if>
+        <if test="param3 != null">
+            ORDER BY
+            <foreach collection="param3" item="item" index="index"
+                     open =" " separator="," close=" ">
+                ${item.value}
+            </foreach>
+        </if>
+    </select>
+
 </mapper>

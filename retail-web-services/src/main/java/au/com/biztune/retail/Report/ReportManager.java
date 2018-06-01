@@ -38,6 +38,8 @@ public class ReportManager {
     private Resource reportPath;
     private String rptSalesByMonth;
     private String rptSalesByTaxCodes;
+    private String rptSalesByTaxCodesSummary;
+    private String rptSalesdaily;
     @Autowired
     private SessionState sessionState;
     /**
@@ -64,11 +66,11 @@ public class ReportManager {
             String outputFile = null;
             final Map<String, Object> parameters = new HashMap<String, Object>();
             parameters.put("SUBREPORT_DIR", pathStr + "/");
+            //fetch searchClause list from report params.
+            searchClauseList = SearchClauseBuilder.buildReportingSearchWhereCluase(reportParamList);
+            populateReportParams(parameters, searchClauseList);
             switch (reportKey) {
                 case IdBConstant.REPORT_KEY_SALES_BY_MONTH :
-                    //fetch searchClause list from report params.
-                    searchClauseList = SearchClauseBuilder.buildReportingSearchWhereCluase(reportParamList);
-                    populateReportParams(parameters, searchClauseList);
                     rowList = reportsDao.runRptSaleByMonthReport(sessionState.getOrgUnit().getId(),
                             searchClauseList);
                             beanColDataSource = new JRBeanCollectionDataSource(rowList);
@@ -76,14 +78,29 @@ public class ReportManager {
                              outputFile = pathStr + "/" + rptSalesByMonth + ".pdf";
                     break;
                 case IdBConstant.REPORT_KEY_SALES_BY_TAX_CODE :
-                    //fetch searchClause list from report params.
-                    searchClauseList = SearchClauseBuilder.buildReportingSearchWhereCluase(reportParamList);
-                    populateReportParams(parameters, searchClauseList);
                     rowList = reportsDao.runRptSaleByTaxCodesReport(sessionState.getOrgUnit().getId(),
                             searchClauseList);
                     beanColDataSource = new JRBeanCollectionDataSource(rowList);
                     reportJrxmlName = pathStr + "/" + rptSalesByTaxCodes + ".jrxml";
                     outputFile = pathStr + "/" + rptSalesByTaxCodes + ".pdf";
+                    break;
+                case IdBConstant.REPORT_KEY_SALES_BY_TAX_CODE_SUMMARY :
+                    rowList = reportsDao.runRptSaleByTaxCodesSummary(sessionState.getOrgUnit().getId(),
+                            searchClauseList);
+                    beanColDataSource = new JRBeanCollectionDataSource(rowList);
+                    reportJrxmlName = pathStr + "/" + rptSalesByTaxCodesSummary + ".jrxml";
+                    outputFile = pathStr + "/" + rptSalesByTaxCodesSummary + ".pdf";
+                    break;
+                case IdBConstant.REPORT_KEY_SALES_DAILY :
+                    final List<SearchClause> additionalSearchClauseList = SearchClauseBuilder.buildReportingSearchAdditionalClauseList(reportParamList, IdBConstant.REPORTS_PARAM_GROUPBY);
+                    //add new parameter for GroupBy
+                    populateReportParams(parameters, additionalSearchClauseList);
+
+                    rowList = reportsDao.runRptSalesDailyReport(sessionState.getOrgUnit().getId(),
+                            searchClauseList, additionalSearchClauseList);
+                    beanColDataSource = new JRBeanCollectionDataSource(rowList);
+                    reportJrxmlName = pathStr + "/" + rptSalesdaily + ".jrxml";
+                    outputFile = pathStr + "/" + rptSalesdaily + ".pdf";
                     break;
                 default:
                     break;
@@ -121,7 +138,7 @@ public class ReportManager {
      * @param searchClauseList search clause of reports.
      */
     private void populateReportParams(Map<String, Object> reportParams, List<SearchClause> searchClauseList) {
-        if (searchClauseList == null || searchClauseList.size() < 1 || reportParams == null) {
+        if (searchClauseList == null || reportParams == null) {
             return;
         }
         for (SearchClause searchClause : searchClauseList) {
@@ -165,5 +182,21 @@ public class ReportManager {
 
     public void setRptSalesByTaxCodes(String rptSalesByTaxCodes) {
         this.rptSalesByTaxCodes = rptSalesByTaxCodes;
+    }
+
+    public String getRptSalesByTaxCodesSummary() {
+        return rptSalesByTaxCodesSummary;
+    }
+
+    public void setRptSalesByTaxCodesSummary(String rptSalesByTaxCodesSummary) {
+        this.rptSalesByTaxCodesSummary = rptSalesByTaxCodesSummary;
+    }
+
+    public String getRptSalesdaily() {
+        return rptSalesdaily;
+    }
+
+    public void setRptSalesdaily(String rptSalesdaily) {
+        this.rptSalesdaily = rptSalesdaily;
     }
 }

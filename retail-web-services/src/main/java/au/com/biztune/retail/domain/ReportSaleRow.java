@@ -28,9 +28,17 @@ public class ReportSaleRow {
     private String taxCode;
     private String txivTxnNr;
     private double taxRate;
-
+    private String operator;
     public String getSupplierId() {
         return supplierId;
+    }
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
     }
 
     public void setSupplierId(String supplierId) {
@@ -204,4 +212,5 @@ public class ReportSaleRow {
     public void setTaxRate(double taxRate) {
         this.taxRate = taxRate;
     }
+
 }

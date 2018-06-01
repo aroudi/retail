@@ -20,11 +20,13 @@ import java.util.List;
 public class SearchClauseBuilder {
     /**
      * build search clause.
+     *
      * @param searchForm searchForm
      * @param searchTable searchTable
      * @return
      */
     final static Logger logger = LoggerFactory.getLogger(SearchClauseBuilder.class);
+
     public static List<SearchClause> buildSearchWhereCluase(GeneralSearchForm searchForm, String searchTable) {
         List<SearchClause> clauseList = null;
         SearchClause searchClause = null;
@@ -291,6 +293,7 @@ public class SearchClauseBuilder {
 
     /**
      * build report search clause.
+     *
      * @param reportParamList reportParamList
      * @return
      */
@@ -305,7 +308,7 @@ public class SearchClauseBuilder {
         Timestamp dateTo = null;
         for (ReportParam reportParam : reportParamList) {
             switch (reportParam.getRepParamName()) {
-                case IdBConstant.REPORTS_PARAM_DATE :
+                case IdBConstant.REPORTS_PARAM_DATE:
                     reportParamVal = getReportParamValByKey(reportParam.getReportParamValList(), IdBConstant.REPORTS_PARAM_VAL_DATE_FROM);
                     if (reportParamVal != null) {
                         dateFrom = DateUtil.stringToDate(reportParamVal.getRepParamVal(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
@@ -331,7 +334,7 @@ public class SearchClauseBuilder {
                         }
                     }
                     break;
-                case (IdBConstant.REPORTS_PARAM_RANGE) :
+                case (IdBConstant.REPORTS_PARAM_RANGE):
                     reportParamVal = getReportParamValByKey(reportParam.getReportParamValList(), IdBConstant.REPORTS_PARAM_VAL_RANGE_FROM);
                     if (reportParamVal != null) {
                         searchClause = new SearchClause(reportParamVal.getTableAlias(), " >= ", reportParamVal.getRepParamVal(), IdBConstant.REPORTS_PARAM_VAL_RANGE_FROM);
@@ -343,7 +346,7 @@ public class SearchClauseBuilder {
                         clauseList.add(searchClause);
                     }
                     break;
-                case (IdBConstant.REPORTS_PARAM_SUPPLIER) :
+                case (IdBConstant.REPORTS_PARAM_SUPPLIER):
                     if (reportParam.getReportParamValList() != null && reportParam.getReportParamValList().size() > 0) {
                         final String commaSeparatedList = convertListToCommaSeparatedString(reportParam.getReportParamValList());
                         logger.debug("commaSeparatedList = " + commaSeparatedList);
@@ -351,19 +354,19 @@ public class SearchClauseBuilder {
                         clauseList.add(searchClause);
                     }
                     break;
-                case (IdBConstant.REPORTS_PARAM_CUSTOMER) :
+                case (IdBConstant.REPORTS_PARAM_CUSTOMER):
                     if (reportParam.getReportParamValList() != null && reportParam.getReportParamValList().size() > 0) {
                         searchClause = new SearchClause(reportParam.getTableAlias(), " in ", convertListToCommaSeparatedString(reportParam.getReportParamValList()));
                         clauseList.add(searchClause);
                     }
                     break;
-                case (IdBConstant.REPORTS_PARAM_STAFF) :
+                case (IdBConstant.REPORTS_PARAM_STAFF):
                     if (reportParam.getReportParamValList() != null && reportParam.getReportParamValList().size() > 0) {
                         searchClause = new SearchClause(reportParam.getTableAlias(), " in ", convertListToCommaSeparatedString(reportParam.getReportParamValList()));
                         clauseList.add(searchClause);
                     }
                     break;
-                case (IdBConstant.REPORTS_PARAM_CATEGORY) :
+                case (IdBConstant.REPORTS_PARAM_CATEGORY):
                     if (reportParam.getReportParamValList() != null && reportParam.getReportParamValList().size() > 0) {
                         final String commaSeparatedList = convertListToCommaSeparatedString(reportParam.getReportParamValList());
                         searchClause = new SearchClause(reportParam.getTableAlias(), " in ", commaSeparatedList);
@@ -372,7 +375,29 @@ public class SearchClauseBuilder {
                     break;
             }
         }
-        return clauseList;
+        return clauseList.size() > 0 ? clauseList : null;
+    }
+
+    /**
+     * get report group by/sort by list.
+     * @param reportParamList reportParamList
+     * @param paramKey reportParamList
+     * @return list of group by list.
+     */
+    public static List<SearchClause> buildReportingSearchAdditionalClauseList(List<ReportParam> reportParamList, String paramKey) {
+        if (reportParamList == null || reportParamList.size() < 1) {
+            return null;
+        }
+        final List<SearchClause> searchClauseList = new ArrayList<SearchClause>();
+
+        for (ReportParam reportParam : reportParamList) {
+            if (reportParam.getRepParamName().equals(paramKey)) {
+                    for (ReportParamVal reportParamVal : reportParam.getReportParamValList()) {
+                        searchClauseList.add(new SearchClause(null, null, reportParamVal.getTableAlias(), reportParam.getRepParamName()));
+                    }
+            }
+        }
+        return searchClauseList.size() < 1 ? null : searchClauseList;
     }
 
     private static String convertListToCommaSeparatedString (List<ReportParamVal> paramValList) {
