@@ -28,11 +28,18 @@ cimgApp.controller('productGroupTreeCtrl', function($scope, baseDataService, ngD
     function loadProductGroups() {
         baseDataService.getBaseData(PRGP_GET_ALL_TREEVIEW_URI).then(function(response){
             //var data = angular.copy(response.data);
-            $scope.basicTree = response.data;
+            $scope.productGroupTree = response.data;
         });
     }
 
     $scope.addNode = function (newCommand) {
+        //dont allow to add more than 3 categories
+        if (newCommand === 'addCategoryHeading') {
+            if ($scope.selectedNode.children.length ===3) {
+                baseDataService.displayMessage('info', 'Warning','you are not allowed to create more than 3 category heading');
+                return;
+            }
+        }
         ngDialog.openConfirm({
             template:'views/pages/prgpUpdate.html',
             controller:'prgpUpdateCtrl',
@@ -44,7 +51,7 @@ cimgApp.controller('productGroupTreeCtrl', function($scope, baseDataService, ngD
             loadProductGroups();
             /*
             if (newCommand === 'addDepartment' ) {
-                $scope.basicTree.push(result);
+                $scope.productGroupTree.push(result);
             } else {
                 $scope.selectedNode.children.push(result);
             }
@@ -67,7 +74,7 @@ cimgApp.controller('productGroupTreeCtrl', function($scope, baseDataService, ngD
                 loadProductGroups();
                 /*
                  if (newCommand === 'addDepartment' ) {
-                 $scope.basicTree.push(result);
+                 $scope.productGroupTree.push(result);
                  } else {
                  $scope.selectedNode.children.push(result);
                  }

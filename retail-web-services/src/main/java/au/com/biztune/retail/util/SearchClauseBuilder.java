@@ -393,7 +393,10 @@ public class SearchClauseBuilder {
         for (ReportParam reportParam : reportParamList) {
             if (reportParam.getRepParamName().equals(paramKey)) {
                     for (ReportParamVal reportParamVal : reportParam.getReportParamValList()) {
-                        searchClauseList.add(new SearchClause(null, null, reportParamVal.getTableAlias(), reportParam.getRepParamName()));
+                        if (reportParamVal.getRepParamVal().equals("None")) {
+                            continue;
+                        }
+                        searchClauseList.add(new SearchClause(null, null, reportParamVal.getTableAlias(), reportParam.getRepParamName(), reportParamVal.getRepParamVal()));
                     }
             }
         }

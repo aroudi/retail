@@ -18,6 +18,13 @@ public class SearchClause {
         this.value = value;
     }
 
+    /**
+     * build search clause.
+     * @param column column name used in search.
+     * @param operator operator used in search.
+     * @param value parameter value used in search.
+     * @param paramName param name used in report.
+     */
     public SearchClause(String column, String operator, Object value, String paramName) {
         this.column = column;
         this.operator = operator;
@@ -29,6 +36,25 @@ public class SearchClause {
             this.paramVal = value;
         }
         this.paramName = paramName;
+    }
+    /**
+     * build search clause.
+     * @param column column name used in search.
+     * @param operator operator used in search.
+     * @param value parameter value used in search.
+     * @param paramName param name used in report.
+     * @param paramVal param value used in report.
+     */
+    public SearchClause(String column, String operator, Object value, String paramName, String paramVal) {
+        this.column = column;
+        this.operator = operator;
+        if (value instanceof Timestamp) {
+            this.value = "\'" + value.toString() + "\'";
+        } else {
+            this.value = value;
+        }
+        this.paramName = paramName;
+        this.paramVal = paramVal;
     }
 
     public void setColumn(String column) {

@@ -1,0 +1,18 @@
+<div class="panel panel-info">
+    <div class="panel-heading">
+        Product Groups
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <tree nodes = 'productGroupTree' options='productGroupTreeOptions'> </tree>
+        </div>
+        <div class="row">
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            <button type="button" class="btn btn-success" ng-click="addNode('addDepartment')">Add Department</button>
+            <button ng-show="addButtonVisible" type="button" class="btn btn-success" ng-click="addNode(updateCommand)">{{AddButtonTitle}}</button>
+            <button ng-show="editButtonVisible" type="button" class="btn btn-success" ng-click="editNode()">Edit</button>
+            <button ng-show="editButtonVisible" type="button" class="btn btn-success" ng-click="deleteProductGroup()">Delete</button>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        </div>
+    </div>
+</div>

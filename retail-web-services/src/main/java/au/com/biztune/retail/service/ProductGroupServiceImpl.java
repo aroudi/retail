@@ -143,10 +143,12 @@ public class ProductGroupServiceImpl implements ProductGroupService {
             final DeptCategory deptCategory = new DeptCategory();
             deptCategory.setCathId(categoryHeading.getId());
             deptCategory.setDeptId(treeViewNode.getParentNodeId());
+            deptCategory.setCathTypeConst(treeViewNode.getCategoryType());
             productCategoryDao.insertDeptCategory(deptCategory);
             treeViewNode.setId(categoryHeading.getId());
             treeViewNode.setPrimaryKey(deptCategory.getId());
             treeViewNode.setNodeType(IdBConstant.PRGP_LEVEL_2);
+            treeViewNode.setCategoryType(deptCategory.getCathTypeConst());
             return treeViewNode;
         } catch (Exception e) {
             logger.error("Error in saving treeViewNode department", e);
@@ -162,7 +164,7 @@ public class ProductGroupServiceImpl implements ProductGroupService {
     private TreeViewNode insertCategoryValue(TreeViewNode treeViewNode) {
         try {
             CategoryValue categoryValue = null;
-            TreeViewNode response = null;
+            final TreeViewNode response = new TreeViewNode();
             final DeptCategory deptCategory = productCategoryDao.getDeptCategoryPerId(treeViewNode.getParentNodeId());
             if (deptCategory == null) {
                 logger.warn("not able to find the deptartment category with id [{}]", treeViewNode.getParentNodeId());
@@ -173,7 +175,6 @@ public class ProductGroupServiceImpl implements ProductGroupService {
             if (categoryValue == null) {
                 categoryValue = productCategoryDao.getCategoryValueByName(treeViewNode.getName());
                 if (categoryValue != null) {
-                    response = new TreeViewNode();
                     response.setId(-1);
                     response.setName("Category Value is already defined");
                     return response;
@@ -298,6 +299,23 @@ public class ProductGroupServiceImpl implements ProductGroupService {
             return null;
         }
     }
+    /**
+     * get category Type list not defined for specific department.
+     * @param treeViewNode node passed for department.
+     * @return list of category Type heading in TreeViewNode
+     */
+    public List<ConfigCategory> getCategoryTypeListNotAssignedToDepartment(TreeViewNode treeViewNode) {
+        try {
+            if (treeViewNode == null) {
+                return null;
+            }
+            return productCategoryDao.getCategoryTypeListNotDefinedForDepartment(treeViewNode.getId());
+        } catch (Exception e) {
+            logger.error("Error in getting Category Type list", e);
+            return null;
+        }
+    }
+
     /**
      * get category list not defined for specific department.
      * @param treeViewNode DepartmentCategory Node.

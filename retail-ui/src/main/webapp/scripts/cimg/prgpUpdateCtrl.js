@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $state, $timeout, baseDataService, SUCCESS, FAILURE, PRGP_ADD_TREEVIEW_URI, PRGP_UPDATE_TREEVIEW_URI, PRGP_GET_CATLIST_NOT_IN_DEPT_URI, PRGP_GET_CATVALLIST_NOT_IN_DEPTCAT_URI ) {
+cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $state, $timeout, baseDataService, SUCCESS, FAILURE, PRGP_ADD_TREEVIEW_URI, PRGP_UPDATE_TREEVIEW_URI, PRGP_GET_CATLIST_NOT_IN_DEPT_URI, PRGP_GET_CAT_TYPE_LIST_NOT_IN_DEPTCAT_URI, PRGP_GET_CATVALLIST_NOT_IN_DEPTCAT_URI ) {
     $scope.message = '';
     $scope.editMode = false;
     $scope.updateOnlyForThisGroup = true;
@@ -9,6 +9,7 @@ cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $stat
     $scope.currentNodeValueVisible = true;
     $scope.nodeTitle = 'Department';
     $scope.parentLevel = '';
+    $scope.currentNode = {id : -1};
     initPageData();
     function initPageData() {
         //remove un-necessary properties from object.
@@ -26,6 +27,10 @@ cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $stat
                     $scope.currentNode = baseDataService.populateSelectList($scope.currentNode,$scope.currentNodeSet);
                     //$scope.nodeValue = $scope.currentNode.name;
                 }
+            });
+            baseDataService.addRow(treeViewNode, PRGP_GET_CAT_TYPE_LIST_NOT_IN_DEPTCAT_URI).then(function(response) {
+                $scope.configCategorySet = response.data;
+                $scope.categoryType = baseDataService.populateSelectList($scope.categoryType,$scope.configCategorySet);
             });
         }
 
@@ -67,6 +72,7 @@ cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $stat
                 name: $scope.nodeValue,
                 parentNodeId: treeViewNode.id,
                 nodeType : 'CATEGORY_HEADING',
+                categoryType : $scope.categoryType.categoryCode,
                 id : $scope.currentNode.id
             };
         }

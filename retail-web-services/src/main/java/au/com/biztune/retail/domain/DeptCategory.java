@@ -6,6 +6,7 @@ package au.com.biztune.retail.domain;
 public class DeptCategory {
     private long id;
     private long deptId;
+    private String cathTypeConst;
     private boolean active;
     private long cathId;
     private int level;
@@ -48,5 +49,13 @@ public class DeptCategory {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getCathTypeConst() {
+        return cathTypeConst;
+    }
+
+    public void setCathTypeConst(String cathTypeConst) {
+        this.cathTypeConst = cathTypeConst;
     }
 }

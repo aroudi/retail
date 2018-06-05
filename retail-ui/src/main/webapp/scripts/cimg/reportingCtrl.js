@@ -96,7 +96,7 @@ cimgApp.controller('reportingCtrl', function($scope, baseDataService, ngDialog, 
     }
     $scope.selectProductGroup = function () {
         ngDialog.openConfirm({
-            template:'views/pages/ProductGroupTree.html',
+            template:'views/pages/productGroup.html',
             controller:'productGroupsCtrl',
             className: 'ngdialog-theme-default',
             closeByDocument:false

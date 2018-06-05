@@ -1,5 +1,6 @@
 package au.com.biztune.retail.rest;
 
+import au.com.biztune.retail.domain.ConfigCategory;
 import au.com.biztune.retail.domain.TreeViewNode;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.security.Secured;
@@ -124,6 +125,24 @@ public class ProductGroupRest {
             return productGroupService.getCatValListNotDefinedForDeptCat(treeViewNode);
         } catch (Exception e) {
             logger.error ("Error in retrieving category value List(tree view format) :", e);
+            return null;
+        }
+    }
+    /**
+     * Returns list of category value not assigned to a department category in tree view format.
+     * @param treeViewNode treeViewNode for department category
+     * @return list of category value
+     */
+    @Secured
+    @Path("/department/getCategoryTypeNotAssignedToDeptCat")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ConfigCategory> getCategoryTypeListNotAssignedToDeptCat(TreeViewNode treeViewNode) {
+        try {
+            return productGroupService.getCategoryTypeListNotAssignedToDepartment(treeViewNode);
+        } catch (Exception e) {
+            logger.error ("Error in retrieving category Type List(tree view format) :", e);
             return null;
         }
     }

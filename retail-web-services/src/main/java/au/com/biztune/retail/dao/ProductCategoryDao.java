@@ -149,6 +149,13 @@ public interface ProductCategoryDao {
      * @return list of category not defined for department.
      */
     List<TreeViewNode> getCategoryListNotDefinedForDepartment(long deptId);
+
+    /**
+     * get category heading type not assigned to department.
+     * @param deptId  department id.
+     * @return list of category not defined for department.
+     */
+    List<ConfigCategory> getCategoryTypeListNotDefinedForDepartment(long deptId);
     /**
      * get category value list not assigned to a department category.
      * @param deptCatId department category id.

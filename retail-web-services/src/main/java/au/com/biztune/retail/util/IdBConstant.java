@@ -487,6 +487,16 @@ public interface IdBConstant {
     String STOCK_CONDITION_DAMAGED = "STOCK_CONDITION_DAMAGED";
     String STOCK_CONDITION_FAULTY = "STOCK_CONDITION_FAULTY";
 
+    /**
+     * PRODUCT CATEGORY TYPE.
+     */
+    String TYPE_PRODUCT_CATEGORY = "PROD_CAT_TYPE";
+    /**
+     * PRODUCT CATEGORY TYPES.
+     */
+    String PRODUCT_CATEGORY_1 = "PROD_CAT_1";
+    String PRODUCT_CATEGORY_2 = "PROD_CAT_2";
+    String PRODUCT_CATEGORY_3 = "PROD_CAT_3";
 
     /**
      * CLIENT STATUS.
@@ -701,6 +711,10 @@ public interface IdBConstant {
      */
     String REPORTS_PARAM_VAL_RANGE_TO = "RangeTo";
 
+    /**
+     * Reports Param Value None
+     */
+    String REPORTS_PARAM_VAL_NONE = "None";
     /**
      * Report Key Sale By Month
      */

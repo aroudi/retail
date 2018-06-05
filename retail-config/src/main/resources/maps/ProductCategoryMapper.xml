@@ -17,6 +17,7 @@
         <id column="DEPT_CAT_ID" property="primaryKey" />
         <result column="DEPT_ID" property="parentNodeId" />
         <result column="CATH_NAME" property="name" />
+        <result column="CATH_TYPE_CONST" property="categoryType" />
         <result column="NODE_TYPE" property="nodeType" />
         <result column="LEVEL" property="order" />
         <collection property="children" javaType="ArrayList" column="DEPT_CAT_ID" ofType="TreeViewNode" select="getDeptCatValTreeViewListPerCatId"/>
@@ -58,6 +59,7 @@
     <resultMap id="categoryHeadingMapOnly" type="CategoryHeading" >
         <id column="CATH_ID" property="id" />
         <result column="CATH_NAME" property="cathName" />
+        <result column="CATH_TYPE_CONST" property="categoryType" />
         <result column="CATH_CODE" property="cathCode" />
         <result column="DEPT_DESC" property="cathDesc" />
         <result column="ACTIVE" property="active" />
@@ -73,6 +75,7 @@
     <resultMap id="deptCategoryMap" type="DeptCategory" >
         <id column="DEPT_CAT_ID" property="id" />
         <result column="DEPT_ID" property="deptId" />
+        <result column="CATH_TYPE_CONST" property="cathTypeConst" />
         <result column="CATH_ID" property="cathId" />
         <result column="LEVEL" property="level" />
         <result column="ACTIVE" property="active" />
@@ -121,6 +124,7 @@
     <sql id="deptCategoryColumns">
         ${alias}.DEPT_CAT_ID,
         ${alias}.DEPT_ID,
+        ${alias}.CATH_TYPE_CONST,
         ${alias}.ACTIVE,
         ${alias}.CATH_ID,
         ${alias}.LEVEL
@@ -234,10 +238,12 @@
     <insert id="insertDeptCategory" parameterType="DeptCategory" useGeneratedKeys="true" keyProperty="id" keyColumn="DEPT_CAT_ID">
         INSERT INTO DEPT_CATEGORY(
         DEPT_ID,
-        CATH_ID
+        CATH_ID,
+        CATH_TYPE_CONST
         ) VALUES (
         #{deptId},
-        #{cathId}
+        #{cathId},
+        #{cathTypeConst}
         )
     </insert>
 
@@ -311,7 +317,7 @@
     <select id="getCategoryTreeViewListPerDeptId" resultMap="deptCategoryTreeViewMap" >
         SELECT
         <include refid="categoryHeadingColumns"><property name="alias" value="cath"/></include>
-        , deptc.DEPT_CAT_ID, deptc.DEPT_ID, 'CATEGORY_HEADING' NODE_TYPE
+        , deptc.DEPT_CAT_ID,deptc.CATH_TYPE_CONST, deptc.DEPT_ID, 'CATEGORY_HEADING' NODE_TYPE
         FROM
         CATEGORY_HEADING cath INNER  JOIN DEPT_CATEGORY deptc on (cath.CATH_ID = deptc.CATH_ID)
         WHERE deptc.DEPT_ID = #{value} and cath.ACTIVE = 1
@@ -328,7 +334,7 @@
     <select id="getCategoryTreeViewNodePerCathId" resultMap="deptCategoryTreeViewMap" >
         SELECT
         <include refid="categoryHeadingColumns"><property name="alias" value="cath"/></include>
-        , deptc.DEPT_CAT_ID, deptc.DEPT_ID, 'CATEGORY_HEADING' NODE_TYPE
+        , deptc.DEPT_CAT_ID, deptc.DEPT_ID,deptc.CATH_TYPE_CONST, 'CATEGORY_HEADING' NODE_TYPE
         FROM
         CATEGORY_HEADING cath INNER  JOIN DEPT_CATEGORY deptc on (cath.CATH_ID = deptc.CATH_ID)
         WHERE cath.CATH_ID = #{value}
@@ -349,6 +355,21 @@
         FROM
         CATEGORY_HEADING cath
         WHERE cath.active = 1 and cath.cath_id not in (select cath_id from dept_category where dept_id = #{value})
+    </select>
+
+    <select id="getCategoryTypeListNotDefinedForDepartment" resultMap="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryMap" >
+        SELECT
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="cat"/></include>
+        FROM
+          CONFIG_CATEGORY cat inner join CONFIG_TYPE type on (cat.CONFIG_TYPE_ID=type.CONFIG_TYPE_ID and type.CONFIG_CODE = 'PROD_CAT_TYPE')
+        WHERE
+          CATEGORY_CODE not in (
+                                      select CATH_TYPE_CONST
+                                      from
+                                          DEPT_CATEGORY
+                                        where
+                                          DEPT_ID = #{value} and CATH_TYPE_CONST IS NOT NULL
+                               )
     </select>
 
     <select id="getCatValListNotDefinedForDeptCat" resultMap="DeptCatValTreeViewMap" >

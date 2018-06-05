@@ -1,5 +1,6 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.domain.ConfigCategory;
 import au.com.biztune.retail.domain.TreeViewNode;
 import au.com.biztune.retail.response.CommonResponse;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,4 +53,10 @@ public interface ProductGroupService {
      * @return Common Response
      */
     CommonResponse deleteProductGroup(TreeViewNode treeViewNode);
+    /**
+     * get category Type list not defined for specific department.
+     * @param treeViewNode node passed for department.
+     * @return list of category Type heading in TreeViewNode
+     */
+    List<ConfigCategory> getCategoryTypeListNotAssignedToDepartment(TreeViewNode treeViewNode);
 }

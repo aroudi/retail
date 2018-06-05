@@ -14,6 +14,7 @@ public class TreeViewNode {
     private String nodeType;
     private long parentNodeId;
     private int order;
+    private String categoryType;
     private List<TreeViewNode> children;
 
     public long getId() {
@@ -70,5 +71,13 @@ public class TreeViewNode {
 
     public void setParentNodeId(long parentNodeId) {
         this.parentNodeId = parentNodeId;
+    }
+
+    public String getCategoryType() {
+        return categoryType;
+    }
+
+    public void setCategoryType(String categoryType) {
+        this.categoryType = categoryType;
     }
 }
