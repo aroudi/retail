@@ -133,6 +133,14 @@ cimgApp.controller('reportingCtrl', function($scope, baseDataService, ngDialog, 
                     }
                     break;
                 case 'Category' :
+                    if ($scope.selectedProductGroups != undefined && $scope.selectedProductGroups.length > 0 ) {
+                        for (var j=0; j < $scope.selectedProductGroups.length ; j++ ) {
+                            var paramVal = {
+                                repParamVal : $scope.selectedProductGroups[j].id
+                            }
+                            paramList[i].reportParamValList.push(paramVal);
+                        }
+                    }
                     break;
                 case 'Supplier' :
                     if ($scope.reportFactor.supplierList != undefined && $scope.reportFactor.supplierList.length > 0 ) {

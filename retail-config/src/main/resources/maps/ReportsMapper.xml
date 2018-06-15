@@ -28,6 +28,12 @@
         <result column="taxCode" property="taxCode" />
         <result column="txivTxnNr" property="txivTxnNr" />
         <result column="operator" property="operator" />
+        <result column="deptName" property="deptName" />
+        <result column="prodCat1" property="prodCat1" />
+        <result column="prodCat2" property="prodCat2" />
+        <result column="prodCat3" property="prodCat3" />
+        <result column="qtyAvailable" property="qtyAvailable" />
+        <result column="stockValue" property="stockValue" />
     </resultMap>
     <select id="runRptSaleByMonthReport" resultMap="reportSaleMap" >
         select supplier.SUPPLIER_ID supplierId,
@@ -177,6 +183,182 @@
                 ${item.value}
             </foreach>
         </if>
+    </select>
+    <select id="runRptSalesPeriodReport" resultMap="reportSaleMap" >
+
+        SELECT * ,
+        PROD_CAT_1 prodCat1,
+        PROD_CAT_2 prodCat2,
+        PROD_CAT_3 prodCat3
+        FROM
+        (
+            SELECT
+                prodSku,
+                prodBarcode,
+                prodName,
+                prodRef,
+                prodCost,
+                profitMargin,
+                prodProfit,
+                prodPriceGross,
+                prodPriceNet,
+                qtyInvoiced,
+                totalIncTax,
+                deptName,
+                [CATH_TYPE_CONST],
+                [CAT_VALUE]
+            FROM
+            (
+                        select
+                            product.PROD_SKU prodSku,
+                            product.PROD_BARCODE prodBarcode,
+                            product.PROD_NAME prodName,
+                            product.REFERENCE prodRef,
+                            PRODUCT_GROUP.DEPT_NAME deptName,
+                            PRODUCT_GROUP.CATH_TYPE_CONST,
+                            PRODUCT_GROUP.CATH_NAME,
+                            PRODUCT_GROUP.CAT_VALUE,
+                            txn_detail.TXDE_VALUE_LINE prodCost,
+                            txn_detail.TXDE_PROFIT_MARGIN profitMargin,
+                            txn_detail.TXDE_VALUE_PROFIT prodProfit,
+                            txn_detail.TXDE_VALUE_GROSS prodPriceGross,
+                            txn_detail.TXDE_VALUE_NET prodPriceNet,
+                            invoice_detail.TXID_QTY_INVOICED qtyInvoiced,
+                            INVOICE_DETAIL.TXID_PRICE_SOLD totalIncTax,
+                            PRODUCT_GROUP.CAT_VAL_ID
+
+                        from INVOICE_DETAIL
+                            inner join TXN_DETAIL txn_detail on (INVOICE_DETAIL.TXDE_ID = txn_detail.TXDE_ID)
+                            inner join INVOICE on (INVOICE.TXIV_ID = INVOICE_DETAIL.TXIV_ID)
+                            inner join PRODUCT product on (txn_detail.TXDE_PROD_ID = product.PROD_ID)
+                            left outer join
+                                (
+                                        select
+                                            prod_id,
+                                            DEPARTMENT.DEPT_NAME,
+                                            DEPT_CATEGORY.CATH_TYPE_CONST,
+                                            CATEGORY_HEADING.CATH_NAME,
+                                            CATEGORY_VALUE.CAT_VALUE,
+                                            PROD_DEPT_CAT.CAT_VAL_ID
+
+                                        from
+                                            PROD_DEPT_CAT inner join DEPT_CATEGORY on (PROD_DEPT_CAT.DEPT_ID = DEPT_CATEGORY.DEPT_ID AND PROD_DEPT_CAT.CAT_ID = DEPT_CATEGORY.CATH_ID )
+                                            INNER JOIN CATEGORY_VALUE ON (PROD_DEPT_CAT.CAT_VAL_ID = CATEGORY_VALUE.CATV_ID)
+                                            INNER JOIN CATEGORY_HEADING on (PROD_DEPT_CAT.CAT_ID = CATEGORY_HEADING.CATH_ID)
+                                            INNER JOIN DEPARTMENT ON (PROD_DEPT_CAT.DEPT_ID = DEPARTMENT.DEPT_ID)
+
+                                ) PRODUCT_GROUP on (PRODUCT.PROD_ID = PRODUCT_GROUP.PROD_ID)
+                        WHERE INVOICE.ORGU_ID = #{param1}
+                            <if test="param2 != null">
+                                AND
+                                <foreach collection="param2" item="item" index="index"
+                                         open ="(" separator=" AND " close=")">
+                                    ${item.column} ${item.operator} ${item.value}
+                                </foreach>
+                            </if>
+            ) QUERY1
+
+        ) AS SourceTable	  PIVOT ( MAX ([CAT_VALUE]) FOR [CATH_TYPE_CONST] IN ([PROD_CAT_1],[PROD_CAT_2],[PROD_CAT_3])) AS PivotTable
+        <if test="param3 != null">
+            ORDER BY
+            <foreach collection="param3" item="item" index="index"
+                     open =" " separator="," close=" ">
+                ${item.value}
+            </foreach>
+        </if>
+    </select>
+    <select id="runRptWhatIsSelling" resultMap="reportSaleMap" >
+    SELECT * ,
+    PROD_CAT_1 prodCat1,
+    PROD_CAT_2 prodCat2,
+    PROD_CAT_3 prodCat3
+    FROM
+    (
+            SELECT
+                prodSku,
+                prodBarcode,
+                prodName,
+                prodRef,
+                supplierId,
+                supplierName,
+                prodCost,
+                qtyAvailable,
+                stockValue,
+                prodPriceGross,
+                qtyInvoiced,
+                deptName,
+                [CATH_TYPE_CONST],
+                [CAT_VALUE]
+            FROM
+            (
+
+				select
+					product.PROD_SKU prodSku,
+					product.PROD_BARCODE prodBarcode,
+					product.PROD_NAME prodName,
+					product.REFERENCE prodRef,
+					PRODUCT_GROUP.DEPT_NAME deptName,
+					PRODUCT_GROUP.CATH_TYPE_CONST,
+					PRODUCT_GROUP.CATH_NAME,
+					PRODUCT_GROUP.CAT_VALUE,
+					supplier.SUPPLIER_ID supplierId,
+					supplier.SUPPLIER_NAME supplierName,
+					STOCK.STCK_QTY qtyAvailable,
+					costPrice.PRCE_PRICE prodCost,
+					costPrice.PRCE_PRICE * STOCK.STCK_QTY stockValue,
+					INVOICE_DETAIL.TXID_QTY_INVOICED qtyInvoiced,
+					sellPrice.PRCE_PRICE prodPriceGross,
+                    PRODUCT_GROUP.CAT_VAL_ID
+
+				from PRODUCT
+					 inner join SUPP_PROD_PRICE supp_prod_price on (supp_prod_price.PROD_ID = product.PROD_ID and supp_prod_price.SPRC_PREFER_BUY = 1)
+					 inner join SUPP_ORGU_LINK supp_orgu_link on (supp_prod_price.SOL_ID = supp_orgu_link.SOL_ID)
+					 inner join SUPPLIER supplier on (supplier.SUPPLIER_ID = supp_orgu_link.SUPP_ID)
+					 left outer join STOCK on (	stock.PROD_ID = PRODUCT.PROD_ID)
+                    INNER JOIN CONFIG_CATEGORY cc1 on (stock.STCK_COND = cc1.category_id and cc1.CATEGORY_CODE = 'STOCK_CONDITION_PRISTINE')
+                    INNER JOIN CONFIG_CATEGORY cc2 on (stock.STCK_CAT = cc2.category_id AND cc2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE')
+					inner join PRICE costPrice ON (PRODUCT.PROD_ID = costPrice.PROD_ID)
+					inner join PRICE_CODE costPriceCode ON (costPriceCode.PRCC_ID = costPrice.PRCC_ID AND costPriceCode.PRCC_CODE = 'COST_PRICE')
+					inner join PRICE sellPrice ON (PRODUCT.PROD_ID = sellPrice.PROD_ID)
+					inner join PRICE_CODE sellPriceCode ON (sellPriceCode.PRCC_ID = sellPrice.PRCC_ID AND sellPriceCode.PRCC_CODE = 'SELL_PRICE')
+
+					left outer join TXN_DETAIL on (txn_detail.TXDE_PROD_ID = product.PROD_ID)
+					inner join INVOICE_DETAIL  on (INVOICE_DETAIL.TXDE_ID = txn_detail.TXDE_ID)
+					inner join INVOICE on (INVOICE.TXIV_ID = INVOICE_DETAIL.TXIV_ID)
+					left outer join
+						(
+								select
+									prod_id,
+									DEPARTMENT.DEPT_NAME,
+									DEPT_CATEGORY.CATH_TYPE_CONST,
+									CATEGORY_HEADING.CATH_NAME,
+									CATEGORY_VALUE.CAT_VALUE,
+                                    PROD_DEPT_CAT.CAT_VAL_ID
+        from
+									PROD_DEPT_CAT inner join DEPT_CATEGORY on (PROD_DEPT_CAT.DEPT_ID = DEPT_CATEGORY.DEPT_ID AND PROD_DEPT_CAT.CAT_ID = DEPT_CATEGORY.CATH_ID )
+									INNER JOIN CATEGORY_VALUE ON (PROD_DEPT_CAT.CAT_VAL_ID = CATEGORY_VALUE.CATV_ID)
+									INNER JOIN CATEGORY_HEADING on (PROD_DEPT_CAT.CAT_ID = CATEGORY_HEADING.CATH_ID)
+									INNER JOIN DEPARTMENT ON (PROD_DEPT_CAT.DEPT_ID = DEPARTMENT.DEPT_ID)
+
+						) PRODUCT_GROUP on (PRODUCT.PROD_ID = PRODUCT_GROUP.PROD_ID)
+                        WHERE INVOICE.ORGU_ID = #{param1}
+                        <if test="param2 != null">
+                            AND
+                            <foreach collection="param2" item="item" index="index"
+                                     open ="(" separator=" AND " close=")">
+                                ${item.column} ${item.operator} ${item.value}
+                            </foreach>
+                        </if>
+           ) QUERY1
+        ) AS SourceTable	  PIVOT ( MAX ([CAT_VALUE]) FOR [CATH_TYPE_CONST] IN ([PROD_CAT_1],[PROD_CAT_2],[PROD_CAT_3])) AS PivotTable
+            <if test="param3 != null">
+                ORDER BY
+                <foreach collection="param3" item="item" index="index"
+                         open =" " separator="," close=" ">
+                    ${item.value}
+                </foreach>
+            </if>
+
     </select>
 
 </mapper>

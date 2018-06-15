@@ -40,6 +40,8 @@ public class ReportManager {
     private String rptSalesByTaxCodes;
     private String rptSalesByTaxCodesSummary;
     private String rptSalesdaily;
+    private String rptSalesPeriod;
+    private String rptWhatIsSelling;
     @Autowired
     private SessionState sessionState;
     /**
@@ -65,6 +67,7 @@ public class ReportManager {
             JRBeanCollectionDataSource beanColDataSource = null;
             String outputFile = null;
             final Map<String, Object> parameters = new HashMap<String, Object>();
+            List<SearchClause> additionalSearchClauseList = null;
             parameters.put("SUBREPORT_DIR", pathStr + "/");
             //fetch searchClause list from report params.
             searchClauseList = SearchClauseBuilder.buildReportingSearchWhereCluase(reportParamList);
@@ -92,7 +95,7 @@ public class ReportManager {
                     outputFile = pathStr + "/" + rptSalesByTaxCodesSummary + ".pdf";
                     break;
                 case IdBConstant.REPORT_KEY_SALES_DAILY :
-                    final List<SearchClause> additionalSearchClauseList = SearchClauseBuilder.buildReportingSearchAdditionalClauseList(reportParamList, IdBConstant.REPORTS_PARAM_GROUPBY);
+                    additionalSearchClauseList = SearchClauseBuilder.buildReportingSearchAdditionalClauseList(reportParamList, IdBConstant.REPORTS_PARAM_GROUPBY);
                     //add new parameter for GroupBy
                     populateReportParams(parameters, additionalSearchClauseList);
 
@@ -101,6 +104,28 @@ public class ReportManager {
                     beanColDataSource = new JRBeanCollectionDataSource(rowList);
                     reportJrxmlName = pathStr + "/" + rptSalesdaily + ".jrxml";
                     outputFile = pathStr + "/" + rptSalesdaily + ".pdf";
+                    break;
+                case IdBConstant.REPORT_KEY_SALES_PERIOD :
+                    additionalSearchClauseList = SearchClauseBuilder.buildReportingSearchAdditionalClauseList(reportParamList, IdBConstant.REPORTS_PARAM_GROUPBY);
+                    //add new parameter for GroupBy
+                    populateReportParams(parameters, additionalSearchClauseList);
+
+                    rowList = reportsDao.runRptSalesPeriodReport(sessionState.getOrgUnit().getId(),
+                            searchClauseList, additionalSearchClauseList);
+                    beanColDataSource = new JRBeanCollectionDataSource(rowList);
+                    reportJrxmlName = pathStr + "/" + rptSalesPeriod + ".jrxml";
+                    outputFile = pathStr + "/" + rptSalesPeriod + ".pdf";
+                    break;
+                case IdBConstant.REPORT_KEY_WHAT_IS_SELLING :
+                    additionalSearchClauseList = SearchClauseBuilder.buildReportingSearchAdditionalClauseList(reportParamList, IdBConstant.REPORTS_PARAM_GROUPBY);
+                    //add new parameter for GroupBy
+                    populateReportParams(parameters, additionalSearchClauseList);
+
+                    rowList = reportsDao.runRptWhatIsSelling(sessionState.getOrgUnit().getId(),
+                            searchClauseList, additionalSearchClauseList);
+                    beanColDataSource = new JRBeanCollectionDataSource(rowList);
+                    reportJrxmlName = pathStr + "/" + rptWhatIsSelling + ".jrxml";
+                    outputFile = pathStr + "/" + rptWhatIsSelling + ".pdf";
                     break;
                 default:
                     break;
@@ -198,5 +223,21 @@ public class ReportManager {
 
     public void setRptSalesdaily(String rptSalesdaily) {
         this.rptSalesdaily = rptSalesdaily;
+    }
+
+    public String getRptSalesPeriod() {
+        return rptSalesPeriod;
+    }
+
+    public void setRptSalesPeriod(String rptSalesPeriod) {
+        this.rptSalesPeriod = rptSalesPeriod;
+    }
+
+    public String getRptWhatIsSelling() {
+        return rptWhatIsSelling;
+    }
+
+    public void setRptWhatIsSelling(String rptWhatIsSelling) {
+        this.rptWhatIsSelling = rptWhatIsSelling;
     }
 }

@@ -29,11 +29,29 @@ public interface ReportsDao {
      */
     List<ReportSaleRow> runRptSaleByTaxCodesSummary(long orguId, List clauseList);
     /**
-     * get SaleByTaxCodes summary reports data.
+     * get SaleDaily reports data.
      * @param orguId organisationId
      * @param clauseList ClauseList
      * @param orderByList orderByList
      * @return report data.
      */
     List<ReportSaleRow> runRptSalesDailyReport(long orguId, List clauseList, List orderByList);
-}
+
+    /**
+     * get SalePeriod reports data.
+     * @param orguId organisationId
+     * @param clauseList ClauseList
+     * @param orderByList orderByList
+     * @return report data.
+     */
+    List<ReportSaleRow> runRptSalesPeriodReport(long orguId, List clauseList, List orderByList);
+
+    /**
+     * get 'what is selling' reports data.
+     * @param orguId organisationId
+     * @param clauseList ClauseList
+     * @param orderByList orderByList
+     * @return report data.
+     */
+    List<ReportSaleRow> runRptWhatIsSelling(long orguId, List clauseList, List orderByList);
+ }

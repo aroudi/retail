@@ -29,6 +29,12 @@ public class ReportSaleRow {
     private String txivTxnNr;
     private double taxRate;
     private String operator;
+    private String deptName;
+    private String prodCat1;
+    private String prodCat2;
+    private String prodCat3;
+    private double qtyAvailable;
+    private double stockValue;
     public String getSupplierId() {
         return supplierId;
     }
@@ -213,4 +219,51 @@ public class ReportSaleRow {
         this.taxRate = taxRate;
     }
 
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
+    }
+
+    public String getProdCat1() {
+        return prodCat1;
+    }
+
+    public void setProdCat1(String prodCat1) {
+        this.prodCat1 = prodCat1;
+    }
+
+    public String getProdCat2() {
+        return prodCat2;
+    }
+
+    public void setProdCat2(String prodCat2) {
+        this.prodCat2 = prodCat2;
+    }
+
+    public String getProdCat3() {
+        return prodCat3;
+    }
+
+    public void setProdCat3(String prodCat3) {
+        this.prodCat3 = prodCat3;
+    }
+
+    public double getQtyAvailable() {
+        return qtyAvailable;
+    }
+
+    public void setQtyAvailable(double qtyAvailable) {
+        this.qtyAvailable = qtyAvailable;
+    }
+
+    public double getStockValue() {
+        return stockValue;
+    }
+
+    public void setStockValue(double stockValue) {
+        this.stockValue = stockValue;
+    }
 }

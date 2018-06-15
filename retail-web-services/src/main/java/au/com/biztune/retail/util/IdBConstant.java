@@ -739,4 +739,8 @@ public interface IdBConstant {
      * Report Key SALES_PERIOD_AVG
      */
     String REPORT_KEY_SALES_PERIOD_AVG = "SALES_PERIOD_AVG";
+    /**
+     * Report Key WHAT_IS_SELLING
+     */
+    String REPORT_KEY_WHAT_IS_SELLING = "WHAT_IS_SELLING";
 }

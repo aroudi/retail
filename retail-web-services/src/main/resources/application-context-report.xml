@@ -46,5 +46,7 @@
         <property name="rptSalesByTaxCodes" value="saleByTaxCodesRpt" />
         <property name="rptSalesByTaxCodesSummary" value="saleByTaxCodesSummaryRpt" />
         <property name="rptSalesdaily" value="salesDailyRpt" />
+        <property name="rptSalesPeriod" value="salesPeriodRpt" />
+        <property name="rptWhatIsSelling" value="whatIsSellingRpt" />
     </bean>
 </beans>
