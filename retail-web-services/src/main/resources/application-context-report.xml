@@ -48,5 +48,7 @@
         <property name="rptSalesdaily" value="salesDailyRpt" />
         <property name="rptSalesPeriod" value="salesPeriodRpt" />
         <property name="rptWhatIsSelling" value="whatIsSellingRpt" />
+        <property name="rptAccountSale" value="accountSaleRpt" />
+        <property name="rptProfitByProduct" value="profitByProductRpt" />
     </bean>
 </beans>

@@ -1,5 +1,4 @@
 package au.com.biztune.retail.report;
-
 import au.com.biztune.retail.dao.ReportsDao;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.session.SessionState;
@@ -36,12 +35,14 @@ public class ReportManager {
     @Autowired
     private ReportsDao reportsDao;
     private Resource reportPath;
+    private String rptAccountSale;
     private String rptSalesByMonth;
     private String rptSalesByTaxCodes;
     private String rptSalesByTaxCodesSummary;
     private String rptSalesdaily;
     private String rptSalesPeriod;
     private String rptWhatIsSelling;
+    private String rptProfitByProduct;
     @Autowired
     private SessionState sessionState;
     /**
@@ -73,12 +74,19 @@ public class ReportManager {
             searchClauseList = SearchClauseBuilder.buildReportingSearchWhereCluase(reportParamList);
             populateReportParams(parameters, searchClauseList);
             switch (reportKey) {
+                case IdBConstant.REPORT_KEY_ACCOUNT_SALES :
+                    rowList = reportsDao.runRptAccountSaleReport(sessionState.getOrgUnit().getId(),
+                            searchClauseList);
+                            beanColDataSource = new JRBeanCollectionDataSource(rowList);
+                            reportJrxmlName = pathStr + "/" + rptAccountSale + ".jrxml";
+                             outputFile = pathStr + "/" + rptAccountSale + ".pdf";
+                    break;
                 case IdBConstant.REPORT_KEY_SALES_BY_MONTH :
                     rowList = reportsDao.runRptSaleByMonthReport(sessionState.getOrgUnit().getId(),
                             searchClauseList);
-                            beanColDataSource = new JRBeanCollectionDataSource(rowList);
-                            reportJrxmlName = pathStr + "/" + rptSalesByMonth + ".jrxml";
-                             outputFile = pathStr + "/" + rptSalesByMonth + ".pdf";
+                    beanColDataSource = new JRBeanCollectionDataSource(rowList);
+                    reportJrxmlName = pathStr + "/" + rptSalesByMonth + ".jrxml";
+                    outputFile = pathStr + "/" + rptSalesByMonth + ".pdf";
                     break;
                 case IdBConstant.REPORT_KEY_SALES_BY_TAX_CODE :
                     rowList = reportsDao.runRptSaleByTaxCodesReport(sessionState.getOrgUnit().getId(),
@@ -126,6 +134,17 @@ public class ReportManager {
                     beanColDataSource = new JRBeanCollectionDataSource(rowList);
                     reportJrxmlName = pathStr + "/" + rptWhatIsSelling + ".jrxml";
                     outputFile = pathStr + "/" + rptWhatIsSelling + ".pdf";
+                    break;
+                case IdBConstant.REPORT_KEY_PROFIT_BY_PRODUCT :
+                    additionalSearchClauseList = SearchClauseBuilder.buildReportingSearchAdditionalClauseList(reportParamList, IdBConstant.REPORTS_PARAM_GROUPBY);
+                    //add new parameter for GroupBy
+                    populateReportParams(parameters, additionalSearchClauseList);
+
+                    rowList = reportsDao.runRptProfitByProduct(sessionState.getOrgUnit().getId(),
+                            searchClauseList, additionalSearchClauseList);
+                    beanColDataSource = new JRBeanCollectionDataSource(rowList);
+                    reportJrxmlName = pathStr + "/" + rptProfitByProduct + ".jrxml";
+                    outputFile = pathStr + "/" + rptProfitByProduct + ".pdf";
                     break;
                 default:
                     break;
@@ -239,5 +258,21 @@ public class ReportManager {
 
     public void setRptWhatIsSelling(String rptWhatIsSelling) {
         this.rptWhatIsSelling = rptWhatIsSelling;
+    }
+
+    public String getRptAccountSale() {
+        return rptAccountSale;
+    }
+
+    public void setRptAccountSale(String rptAccountSale) {
+        this.rptAccountSale = rptAccountSale;
+    }
+
+    public String getRptProfitByProduct() {
+        return rptProfitByProduct;
+    }
+
+    public void setRptProfitByProduct(String rptProfitByProduct) {
+        this.rptProfitByProduct = rptProfitByProduct;
     }
 }

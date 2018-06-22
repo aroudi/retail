@@ -35,6 +35,11 @@ public class ReportSaleRow {
     private String prodCat3;
     private double qtyAvailable;
     private double stockValue;
+    private double rrp;
+    private double expectedTotalExTax;
+    private double expectedProfit;
+    private double actualProfit;
+
     public String getSupplierId() {
         return supplierId;
     }
@@ -265,5 +270,37 @@ public class ReportSaleRow {
 
     public void setStockValue(double stockValue) {
         this.stockValue = stockValue;
+    }
+
+    public double getRrp() {
+        return rrp;
+    }
+
+    public void setRrp(double rrp) {
+        this.rrp = rrp;
+    }
+
+    public double getExpectedTotalExTax() {
+        return expectedTotalExTax;
+    }
+
+    public void setExpectedTotalExTax(double expectedTotalExTax) {
+        this.expectedTotalExTax = expectedTotalExTax;
+    }
+
+    public double getExpectedProfit() {
+        return expectedProfit;
+    }
+
+    public void setExpectedProfit(double expectedProfit) {
+        this.expectedProfit = expectedProfit;
+    }
+
+    public double getActualProfit() {
+        return actualProfit;
+    }
+
+    public void setActualProfit(double actualProfit) {
+        this.actualProfit = actualProfit;
     }
 }

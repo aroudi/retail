@@ -620,7 +620,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         if (newAdded == true) {
             txnDetail.txdeValueGross =  calculateSalePrice(txnDetail.product);//txnDetail.txdeValueProfit*1 + txnDetail.txdeValueLine*1;
         }
-        txnDetail.txdeProfitMargin = ((txnDetail.txdeValueGross - txnDetail.txdeValueLine)*1)/100; //getProfitMargin();
+        txnDetail.txdeProfitMargin = ((txnDetail.txdeValueGross - txnDetail.txdeValueLine)*1)/txnDetail.txdeValueGross; //getProfitMargin();
         txnDetail.txdeValueProfit = txnDetail.txdeValueGross*1 - txnDetail.txdeValueLine*1; //txnDetail.txdeValueLine*txnDetail.txdeProfitMargin;
 
         txnDetail.txdeValueNet =  (txnDetail.txdeValueGross * txnDetail.txdeTax)*1 + txnDetail.txdeValueGross*1;

@@ -716,6 +716,10 @@ public interface IdBConstant {
      */
     String REPORTS_PARAM_VAL_NONE = "None";
     /**
+     * Report Key ACCOUNT SALE.
+     */
+    String REPORT_KEY_ACCOUNT_SALES = "ACCOUNT_SALES";
+    /**
      * Report Key Sale By Month
      */
     String REPORT_KEY_SALES_BY_MONTH = "SALES_BY_MONTH";
@@ -743,4 +747,8 @@ public interface IdBConstant {
      * Report Key WHAT_IS_SELLING
      */
     String REPORT_KEY_WHAT_IS_SELLING = "WHAT_IS_SELLING";
+    /**
+     * Report Key PROFIT BY PRODUCT
+     */
+    String REPORT_KEY_PROFIT_BY_PRODUCT = "PROFIT_BY_PRODUCT";
 }
