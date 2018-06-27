@@ -347,7 +347,7 @@ public class SearchClauseBuilder {
                     }
                     break;
                 case (IdBConstant.REPORTS_PARAM_SUPPLIER):
-                    if (reportParam.getReportParamValList() != null && reportParam.getReportParamValList().size() > 0) {
+                    if (!checkParamValListIsEmpty(reportParam.getReportParamValList())) {
                         final String commaSeparatedList = convertListToCommaSeparatedString(reportParam.getReportParamValList());
                         logger.debug("commaSeparatedList = " + commaSeparatedList);
                         searchClause = new SearchClause(reportParam.getTableAlias(), " in ", commaSeparatedList);
@@ -355,19 +355,19 @@ public class SearchClauseBuilder {
                     }
                     break;
                 case (IdBConstant.REPORTS_PARAM_CUSTOMER):
-                    if (reportParam.getReportParamValList() != null && reportParam.getReportParamValList().size() > 0) {
+                    if (!checkParamValListIsEmpty(reportParam.getReportParamValList())) {
                         searchClause = new SearchClause(reportParam.getTableAlias(), " in ", convertListToCommaSeparatedString(reportParam.getReportParamValList()));
                         clauseList.add(searchClause);
                     }
                     break;
                 case (IdBConstant.REPORTS_PARAM_STAFF):
-                    if (reportParam.getReportParamValList() != null && reportParam.getReportParamValList().size() > 0) {
+                    if (!checkParamValListIsEmpty(reportParam.getReportParamValList())) {
                         searchClause = new SearchClause(reportParam.getTableAlias(), " in ", convertListToCommaSeparatedString(reportParam.getReportParamValList()));
                         clauseList.add(searchClause);
                     }
                     break;
                 case (IdBConstant.REPORTS_PARAM_CATEGORY):
-                    if (reportParam.getReportParamValList() != null && reportParam.getReportParamValList().size() > 0) {
+                    if (!checkParamValListIsEmpty(reportParam.getReportParamValList())) {
                         final String commaSeparatedList = convertListToCommaSeparatedString(reportParam.getReportParamValList());
                         searchClause = new SearchClause(reportParam.getTableAlias(), " in ", commaSeparatedList);
                         clauseList.add(searchClause);
@@ -402,7 +402,26 @@ public class SearchClauseBuilder {
         }
         return searchClauseList.size() < 1 ? null : searchClauseList;
     }
+    private static boolean checkParamValListIsEmpty(List<ReportParamVal> paramValList) {
+        try {
+            if (paramValList == null || paramValList.size() < 1) {
+                return true;
+            }
+            for (ReportParamVal reportParamVal : paramValList) {
+                if (!reportParamVal.getRepParamVal().isEmpty()
+                        && reportParamVal.getRepParamVal() != null
+                        && !reportParamVal.getRepParamVal().trim().isEmpty())
+                {
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            logger.error("Exception in converting list to comma separated string", e);
+            return true;
+        }
 
+    }
     private static String convertListToCommaSeparatedString (List<ReportParamVal> paramValList) {
         try {
             if (paramValList == null || paramValList.size() < 1) {
@@ -410,10 +429,15 @@ public class SearchClauseBuilder {
             }
             StringBuilder result = new StringBuilder("( ");
             for (ReportParamVal reportParamVal : paramValList) {
-                result.append(reportParamVal.getRepParamVal());
-                result.append(", ");
+                if (!reportParamVal.getRepParamVal().isEmpty()
+                        && reportParamVal.getRepParamVal() != null
+                        && !reportParamVal.getRepParamVal().trim().isEmpty())
+                {
+                    result.append(reportParamVal.getRepParamVal());
+                    result.append(", ");
+                }
             }
-            result.append(paramValList.get(0));
+            result.append("-1");
             result.append(" )");
             return result.toString();
         } catch (Exception e) {

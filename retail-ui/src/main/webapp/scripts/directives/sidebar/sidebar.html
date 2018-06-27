@@ -12,9 +12,31 @@
             </li>
             -->
             <li ng-class="{active: collapseVar==1}">{{dropDown}}
-                <a href="" ng-click="check(1)"><i class="fa fa-group fa-fw"></i> Customer<span
+                <a href="" ng-click="check(1)"><i class="fa fa-shopping-cart fa-fw"></i> Sales<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=1">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.createSaleTransaction({txnType:'quote', blankPage:'true'})">Quote</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.createSaleTransaction({txnType:'txnSale', blankPage:'true'})">Sale Order</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.createInvoice({txnType:'txnInvoice', blankPage:'true'})">Invoice</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.listSaleTransaction">Sale Order/Quote List</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.listInvoice">Invoice List</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li ng-class="{active: collapseVar==2}">{{dropDown}}
+                <a href="" ng-click="check(2)"><i class="fa fa-group fa-fw"></i> Customer<span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=2">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.createCustomer({blankPage:'true'})">Create Customer</a>
                     </li>
@@ -34,10 +56,10 @@
                 <!-- /.nav-second-level -->
             </li>
 
-            <li ng-class="{active: collapseVar==2}">{{dropDown}}
-                <a href="" ng-click="check(2)"><i class="fa fa-group fa-fw"></i> Supplier<span
+            <li ng-class="{active: collapseVar==3}">{{dropDown}}
+                <a href="" ng-click="check(3)"><i class="fa fa-group fa-fw"></i> Supplier<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=2">
+                <ul class="nav nav-second-level" collapse="collapseVar!=3">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.createSupplier({blankPage:'true'})">Create Supplier</a>
                     </li>
@@ -53,10 +75,10 @@
                 <!-- /.nav-second-level -->
             </li>
 
-            <li ng-class="{active: collapseVar==3}">{{dropDown}}
-                <a href="" ng-click="check(3)"><i class="fa fa-cubes fa-fw"></i> Product<span
+            <li ng-class="{active: collapseVar==4}">{{dropDown}}
+                <a href="" ng-click="check(4)"><i class="fa fa-cubes fa-fw"></i> Product<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=3">
+                <ul class="nav nav-second-level" collapse="collapseVar!=4">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.createProduct({blankPage:'true'})">New Product</a>
                     </li>
@@ -71,13 +93,16 @@
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.productPriceChangeBulk">Change Price</a>
                     </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.productGroupTreeView">Product Groups</a>
+                    </li>
                 </ul>
                 <!-- /.nav-second-level -->
             </li>
-            <li ng-class="{active: collapseVar==4}">{{dropDown}}
-                <a href="" ng-click="check(4)"><i class="fa fa-list fa-fw"></i> Bill Of Quantity<span
+            <li ng-class="{active: collapseVar==5}">{{dropDown}}
+                <a href="" ng-click="check(5)"><i class="fa fa-list fa-fw"></i> Bill Of Quantity<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=4">
+                <ul class="nav nav-second-level" collapse="collapseVar!=5">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.uploadFile">Import BOQ</a>
                     </li>
@@ -111,42 +136,16 @@
                     </li>
                 </ul>
             </li>
+
             <li ng-class="{active: collapseVar==8}">{{dropDown}}
-                <a href="" ng-click="check(8)"><i class="fa fa-shopping-cart fa-fw"></i> Sales<span
+                <a href="" ng-click="check(8)"><i class="fa fa-calendar-o fa-fw"></i> Reconciliation<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=8">
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.createSaleTransaction({txnType:'quote', blankPage:'true'})">Quote</a>
-                    </li>
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.createSaleTransaction({txnType:'txnSale', blankPage:'true'})">Sale Order</a>
-                    </li>
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.createInvoice({txnType:'txnInvoice', blankPage:'true'})">Invoice</a>
-                    </li>
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.listSaleTransaction">Sale Order/Quote List</a>
-                    </li>
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.listInvoice">Invoice List</a>
-                    </li>
-                </ul>
-            </li>
-
-            <li ng-class="{active: collapseVar==9}">{{dropDown}}
-                <a href="" ng-click="check(9)"><i class="fa fa-calendar-o fa-fw"></i> Reconciliation<span
-                        class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=9">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.listCurrentCashSession">Session List</a>
                     </li>
                 </ul>
-                <ul class="nav nav-second-level" collapse="collapseVar!=9">
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.saleSummaryReport">Sale Summary report</a>
-                    </li>
-                </ul>
-                <ul class="nav nav-second-level" collapse="collapseVar!=9">
+                <ul class="nav nav-second-level" collapse="collapseVar!=8">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.cashupReport">Cash Up Reports</a>
                     </li>
@@ -154,10 +153,10 @@
             </li>
 
 
-            <li ng-class="{active: collapseVar==10}">{{dropDown}}
-                <a href="" ng-click="check(10)"><i class="fa fa-money fa-fw"></i> Debtor Payments<span
+            <li ng-class="{active: collapseVar==9}">{{dropDown}}
+                <a href="" ng-click="check(9)"><i class="fa fa-money fa-fw"></i> Debtor Payments<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=10">
+                <ul class="nav nav-second-level" collapse="collapseVar!=9">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.debtorPayment"><i class="fa fa-money fa-fw"></i> Debtor Payment</a>
                     </li>
@@ -169,10 +168,10 @@
 
 
 
-            <li ng-class="{active: collapseVar==11}">{{dropDown}}
-                <a href="" ng-click="check(11)"><i class="fa fa-dollar fa-fw"></i> Accounting<span
+            <li ng-class="{active: collapseVar==10}">{{dropDown}}
+                <a href="" ng-click="check(10)"><i class="fa fa-dollar fa-fw"></i> Accounting<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=11">
+                <ul class="nav nav-second-level" collapse="collapseVar!=10">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.updateAccountCodes">Accounting Chart</a>
                     </li>
@@ -189,10 +188,10 @@
             </li>
 
 
-            <li ng-class="{active: collapseVar==12}">{{dropDown}}
-                <a href="" ng-click="check(12)"><i class="fa fa-users fa-fw"></i> User Management<span
+            <li ng-class="{active: collapseVar==11}">{{dropDown}}
+                <a href="" ng-click="check(11)"><i class="fa fa-users fa-fw"></i> User Management<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=12">
+                <ul class="nav nav-second-level" collapse="collapseVar!=11">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.addUser({blankPage:'true'})">Create User</a>
                     </li>
@@ -210,19 +209,19 @@
                     </li>
                 </ul>
             </li>
-            <li ng-class="{active: collapseVar==13}">{{dropDown}}
-                <a href="" ng-click="check(13)"><i class="fa fa-wrench fa-fw"></i> Configuration<span
+            <li ng-class="{active: collapseVar==12}">{{dropDown}}
+                <a href="" ng-click="check(12)"><i class="fa fa-wrench fa-fw"></i> Configuration<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=13">
+                <ul class="nav nav-second-level" collapse="collapseVar!=12">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.updatePricingGradeList">Pricing Grades</a>
                     </li>
                 </ul>
             </li>
-            <li ng-class="{active: collapseVar==14}">{{dropDown}}
-                <a href="" ng-click="check(14)"><i class="fa fa-database fa-fw"></i> Import<span
+            <li ng-class="{active: collapseVar==13}">{{dropDown}}
+                <a href="" ng-click="check(13)"><i class="fa fa-database fa-fw"></i> Import<span
                         class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=14">
+                <ul class="nav nav-second-level" collapse="collapseVar!=13">
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.importCustomer">Import Customer from MYOB</a>
                     </li>
@@ -241,6 +240,19 @@
                     </li-->
                 </ul>
             </li>
+            <li ng-class="{active: collapseVar==14}">{{dropDown}}
+                <a href="" ng-click="check(14)"><i class="fa fa-bar-chart fa-fw"></i> Reports<span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=14">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.saleSummaryReport">Sale Summary report</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.reporting">Reporting</a>
+                    </li>
+                </ul>
+            </li>
+
             <li ui-sref-active="active">
                 <a ui-sref="dashboard.openDraftPageList"><i class="fa fa-clipboard fa-fw"></i> Draft Pages</a>
             </li>

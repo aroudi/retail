@@ -1221,8 +1221,8 @@
         <include refid="txnDetailColumns"><property name="alias" value="txde"/></include>,
         sol.SUPP_ID, txhd.TXHD_PRJ_CODE
         FROM
-        TXN_DETAIL txde INNER JOIN SUPP_PROD_PRICE spp on(spp.PROD_ID = txde.TXDE_PROD_ID and spp.sprc_prefer_buy = 1)
-          INNER JOIN SUPP_ORGU_LINK sol on (sol.SOL_ID = spp.SOL_ID)
+        TXN_DETAIL txde LEFT OUTER JOIN SUPP_PROD_PRICE spp on(spp.PROD_ID = txde.TXDE_PROD_ID and spp.sprc_prefer_buy = 1)
+          LEFT OUTER JOIN SUPP_ORGU_LINK sol on (sol.SOL_ID = spp.SOL_ID)
           INNER JOIN TXN_HEADER  txhd on (txde.txhd_id = txhd.txhd_id)
         WHERE
         txde.TXHD_ID in

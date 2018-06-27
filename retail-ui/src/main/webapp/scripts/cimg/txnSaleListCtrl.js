@@ -278,24 +278,24 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
             className: 'ngdialog-theme-default',
             closeByDocument:false,
             resolve: {saleOrderList: function(){return $scope.backOrderList}}
-        }).then (function (purchaseOrderList){
+        }).then (function (soToPoResponse){
                 ngDialog.openConfirm({
                     template:'views/pages/soToPoResult.html',
                     controller:'soToPoResultCtrl',
                     className: 'ngdialog-theme-default',
                     closeByDocument:false,
-                    resolve: {purchaseOrderList: function(){return purchaseOrderList}}
-                }).then (function (purchaseOrderList2){
-                    }, function(reason) {
-                        for (var i = 0; i < $scope.backOrderList.length; i++) {
-                            var arrIndex = baseDataService.getArrIndexOf($scope.gridOptions.data, $scope.backOrderList[i]);
-                            if ( arrIndex>= 0) {
-                                $scope.gridOptions.data[arrIndex].status = $scope.txnStatusOnOrder;
-                                $scope.gridOptions.data[arrIndex].createPurchaseOrder = false;
-                            }
+                    resolve: {soToPoResponse: function(){return soToPoResponse}}
+                }).then (function (result){
+                    for (var i = 0; i < $scope.backOrderList.length; i++) {
+                        var arrIndex = baseDataService.getArrIndexOf($scope.gridOptions.data, $scope.backOrderList[i]);
+                        if ( arrIndex>= 0) {
+                            $scope.gridOptions.data[arrIndex].status = $scope.txnStatusOnOrder;
+                            $scope.gridOptions.data[arrIndex].createPurchaseOrder = false;
                         }
-                        $scope.backOrderList = [];
-                        console.log('Modal promise rejected. Reason:', reason);
+                    }
+                    $scope.backOrderList = [];
+                    console.log('Modal promise rejected. Reason:', reason);
+                    }, function(reason) {
                     }
                 );
 

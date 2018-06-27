@@ -2,6 +2,7 @@ package au.com.biztune.retail.service;
 
 import au.com.biztune.retail.dao.*;
 import au.com.biztune.retail.domain.*;
+import au.com.biztune.retail.response.PoFromSoResponse;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.IdBConstant;
 import org.slf4j.Logger;
@@ -50,12 +51,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
      * create purcahse order from sale order.
      * @param txhdIdList txhd id list.
      * @param securityContext securityContext
-     * @return List of created purchase orders
+     * @return Response object containing List of created purchase orders
      */
     @Transactional
-    public List<PurchaseOrderHeader> createPurchaseOrderFromSaleOrder(List<Long> txhdIdList, SecurityContext securityContext) {
+    public PoFromSoResponse createPurchaseOrderFromSaleOrder(List<Long> txhdIdList, SecurityContext securityContext) {
+        final PoFromSoResponse response = new PoFromSoResponse();
         try {
-
+            boolean productWithNoSupplier = false;
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
             this.securityContext = securityContext;
             AppUser appUser;
             //set user
@@ -71,6 +74,24 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             final List<TxnDetail> txnDetailList = txnDao.getTxnDetailsOfMultipleTxnId(txhdIdList)
                     .stream()
                     .filter(c -> (c.getStatus() == null) || (c.getStatus().getCategoryCode().equals(IdBConstant.SO_STATUS_OUTSTANDING))).collect(Collectors.toList());
+            //check for all products to see if they have been assigned a supplier
+            for (TxnDetail txnDetail : txnDetailList) {
+                if (txnDetail == null) {
+                    continue;
+                }
+                logger.debug("supplier id for product" + txnDetail.getTxdeProdName() + " is :" + txnDetail.getSupplierId());
+                if (txnDetail.getSupplierId() <= 0) {
+                    productWithNoSupplier = true;
+                    response.addMessage("Product Name [" + txnDetail.getTxdeProdName()
+                            + "] in Sale Order [" + txnDetail.getTxhdId() + "]"
+                            + " does'nt have a 'Prefered buy' supplier");
+                }
+            }
+            if (productWithNoSupplier) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("check the message list");
+                return response;
+            }
             //group all txn details per supplier id.
             final Map<Long, List<TxnDetail>> supplierTxnDetailMap = txnDetailList
                     .stream()
@@ -118,13 +139,16 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             });
             //now change the status of Sale Order merged
             final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SO_STATUS, IdBConstant.SO_STATUS_ON_ORDER);
-            txhdIdList.forEach(txhdId -> {
+                txhdIdList.forEach(txhdId -> {
                 txnDao.updateTxnHeaderStatusPerTxhdId(txhdId, status.getId());
             });
-            return result;
+            response.setPurchaseOrderHeaderList(result);
+            return response;
         } catch (Exception e) {
             logger.error("Exception in converting sale order to purchase order:", e);
-            return null;
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.addMessage(e.getMessage());
+            return response;
         }
     }
 

@@ -1,7 +1,19 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('soToPoResultCtrl', function($scope,purchaseOrderList, $state, $timeout, uiGridConstants) {
+cimgApp.controller('soToPoResultCtrl', function($scope,soToPoResponse, $state, $timeout, uiGridConstants, SUCCESS, FAILURE) {
+    $scope.errorListGrid = {
+        enableFiltering: true,
+        enableSelectAll:false,
+        enableRowSelection:true,
+        showGridFooter: true,
+        showColumnFooter: true,
+        enableColumnResizing: true,
+        enableSorting:true,
+        columnDefs: [
+            {field:'message', displayName:'Message'}
+        ]
+    };
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -35,10 +47,26 @@ cimgApp.controller('soToPoResultCtrl', function($scope,purchaseOrderList, $state
     };
     initPageData();
     function initPageData() {
-       $scope.gridOptions.data = purchaseOrderList;
+        $scope.displayErrorGrid = false;
+       if (soToPoResponse.status == FAILURE) {
+           $scope.displayErrorGrid = true;
+           var responseList=[];
+           soToPoResponse.messageList.forEach(function (entry) {
+               var row = [];
+               row.message = entry;
+               responseList.push(row)
+           });
+           $scope.errorListGrid.data = responseList;
+       } else {
+           $scope.displayErrorGrid = false;
+           $scope.gridOptions.data = soToPoResponse.purchaseOrderHeaderList;
+       }
     };
     $scope.cancel = function() {
-        //$scope.$destroy();
-        $scope.closeThisDialog('button');
+        if (!$scope.displayErrorGrid) {
+            $scope.confirm(true);
+        } else {
+            $scope.closeThisDialog('button');
+        }
     };
 });

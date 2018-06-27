@@ -1,7 +1,7 @@
 package au.com.biztune.retail.rest;
 
-import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.domain.TxnHeader;
+import au.com.biztune.retail.response.PoFromSoResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.SaleOrderService;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class SaleOrderRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public List<PurchaseOrderHeader> createPurchaesOrderFromSaleOrder (List<Long> txhdIdList) {
+    public PoFromSoResponse createPurchaesOrderFromSaleOrder (List<Long> txhdIdList) {
         return saleOrderService.createPurchaseOrderFromSaleOrder(txhdIdList, securityContext);
     }
 
