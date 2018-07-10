@@ -156,8 +156,9 @@ public interface ProductService {
     /**
      * update product cost base for default supplier.
      * @param prodId prodId
+     * @param rrp rrp
      */
-    void updateProductCostBaseDefaultSupplier(long prodId);
+    void updateProductCostBaseDefaultSupplier(long prodId, double rrp);
 
     /**
      * delete a product logically. set the deleted flag to true and add 'DELETED + TIMESTAMP' to some fields.

@@ -751,4 +751,8 @@ public interface IdBConstant {
      * Report Key PROFIT BY PRODUCT
      */
     String REPORT_KEY_PROFIT_BY_PRODUCT = "PROFIT_BY_PRODUCT";
+    /**
+     * Report Key WHAT_IS_ON_ORDER
+     */
+    String REPORT_KEY_WHAT_IS_ON_ORDER = "WHAT_IS_ON_ORDER";
 }

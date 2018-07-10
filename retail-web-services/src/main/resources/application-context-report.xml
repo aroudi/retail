@@ -50,5 +50,6 @@
         <property name="rptWhatIsSelling" value="whatIsSellingRpt" />
         <property name="rptAccountSale" value="accountSaleRpt" />
         <property name="rptProfitByProduct" value="profitByProductRpt" />
+        <property name="rptWhatIsOnOrder" value="whatIsOnOrderRpt" />
     </bean>
 </beans>

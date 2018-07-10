@@ -70,4 +70,12 @@ public interface ReportsDao {
      * @return report data.
      */
     List<ReportSaleRow> runRptProfitByProduct(long orguId, List clauseList, List orderByList);
+    /**
+     * get 'What is on order' reports data.
+     * @param orguId organisationId
+     * @param clauseList ClauseList
+     * @param orderByList orderByList
+     * @return report data.
+     */
+    List<ReportSaleRow> runRptWhatIsOnOrder(long orguId, List clauseList, List orderByList);
  }

@@ -43,6 +43,7 @@ public class ReportManager {
     private String rptSalesPeriod;
     private String rptWhatIsSelling;
     private String rptProfitByProduct;
+    private String rptWhatIsOnOrder;
     @Autowired
     private SessionState sessionState;
     /**
@@ -145,6 +146,17 @@ public class ReportManager {
                     beanColDataSource = new JRBeanCollectionDataSource(rowList);
                     reportJrxmlName = pathStr + "/" + rptProfitByProduct + ".jrxml";
                     outputFile = pathStr + "/" + rptProfitByProduct + ".pdf";
+                    break;
+                case IdBConstant.REPORT_KEY_WHAT_IS_ON_ORDER :
+                    additionalSearchClauseList = SearchClauseBuilder.buildReportingSearchAdditionalClauseList(reportParamList, IdBConstant.REPORTS_PARAM_GROUPBY);
+                    //add new parameter for GroupBy
+                    populateReportParams(parameters, additionalSearchClauseList);
+
+                    rowList = reportsDao.runRptWhatIsOnOrder(sessionState.getOrgUnit().getId(),
+                            searchClauseList, additionalSearchClauseList);
+                    beanColDataSource = new JRBeanCollectionDataSource(rowList);
+                    reportJrxmlName = pathStr + "/" + rptWhatIsOnOrder + ".jrxml";
+                    outputFile = pathStr + "/" + rptWhatIsOnOrder + ".pdf";
                     break;
                 default:
                     break;
@@ -274,5 +286,13 @@ public class ReportManager {
 
     public void setRptProfitByProduct(String rptProfitByProduct) {
         this.rptProfitByProduct = rptProfitByProduct;
+    }
+
+    public String getRptWhatIsOnOrder() {
+        return rptWhatIsOnOrder;
+    }
+
+    public void setRptWhatIsOnOrder(String rptWhatIsOnOrder) {
+        this.rptWhatIsOnOrder = rptWhatIsOnOrder;
     }
 }

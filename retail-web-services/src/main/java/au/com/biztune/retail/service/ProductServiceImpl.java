@@ -560,7 +560,7 @@ public class ProductServiceImpl implements ProductService {
                     suppProdPriceDao.updateValues(suppProdPrice);
                 }
                 //update product cost to default supplier cost.
-                updateProductCostBaseDefaultSupplier(product.getId());
+                updateProductCostBaseDefaultSupplier(product.getId(), price);
 
             } else {
                 //insert product
@@ -746,7 +746,7 @@ public class ProductServiceImpl implements ProductService {
                         , suppProdPrice.getPrice(), suppProdPrice.getBulkPrice());
                 priceDao.updatePricePerProdIdAndPrccId(suppProdPrice.getProdId(), priceCode.getId(), suppProdPrice.getRrp());
                 //update product cost base default supplier
-                updateProductCostBaseDefaultSupplier(suppProdPrice.getProdId());
+                updateProductCostBaseDefaultSupplier(suppProdPrice.getProdId(), suppProdPrice.getRrp());
             }
             return response;
         } catch (Exception e) {
@@ -792,15 +792,21 @@ public class ProductServiceImpl implements ProductService {
     /**
      * update product cost base for default supplier.
      * @param prodId prodId
+     * @param rrp rrp
      */
-    public void updateProductCostBaseDefaultSupplier(long prodId) {
+    public void updateProductCostBaseDefaultSupplier(long prodId, double rrp) {
         //update product cost to default supplier cost.
         final List<SuppProdPrice> defaultSpps = suppProdPriceDao.getDefaultSuppliersPerOrguIdAndProdId(sessionState.getOrgUnit().getId(), prodId);
         if (defaultSpps != null && defaultSpps.size() > 0) {
             final Price productCost = priceDao.getProductCostPricePerProdId(prodId);
             if (productCost != null) {
-                productCost.setPrcePrice(defaultSpps.get(0).getPrice());
+                productCost.setPrcePrice(defaultSpps.get(0).getCostBeforeTax());
                 priceDao.updatePricePerProdIdAndPrccId(prodId, productCost.getPriceCode().getId(), productCost.getPrcePrice());
+            }
+            final Price productRrp = priceDao.getProductSellPricePerProdId(prodId);
+            if (productRrp != null) {
+                productRrp.setPrcePrice(rrp);
+                priceDao.updatePricePerProdIdAndPrccId(prodId, productRrp.getPriceCode().getId(), productRrp.getPrcePrice());
             }
         }
     }

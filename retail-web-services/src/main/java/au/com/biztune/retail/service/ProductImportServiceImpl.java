@@ -171,7 +171,7 @@ public class ProductImportServiceImpl {
                 suppProdPriceDao.updateProductCostsPerSolIdAndProdId(StringUtil.strToLong(csvRow[1]), StringUtil.strToLong(csvRow[2])
                         , StringUtil.strToDouble(csvRow[6]), StringUtil.strToDouble(csvRow[10]));
                 priceDao.updatePricePerProdIdAndPrccId(StringUtil.strToLong(csvRow[2]), priceCode.getId(), StringUtil.strToDouble(csvRow[8]));
-                productService.updateProductCostBaseDefaultSupplier(StringUtil.strToLong(csvRow[2]));
+                productService.updateProductCostBaseDefaultSupplier(StringUtil.strToLong(csvRow[2]), StringUtil.strToDouble(csvRow[8]));
 
             }
             commonResponse.addMessage("product price imported successfully");
