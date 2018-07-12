@@ -504,4 +504,111 @@
             </foreach>
         </if>
     </select>
+
+    <select id="runRptWhatIsOnOrder" resultMap="reportSaleMap" >
+
+    SELECT * ,
+    PROD_CAT_1 prodCat1,
+    PROD_CAT_2 prodCat2,
+    PROD_CAT_3 prodCat3
+    FROM
+    (
+            SELECT
+				createdBy,
+                supplierId,
+                supplierName,
+                prodSku,
+                prodBarcode,
+                prodName,
+                prodRef,
+                pohNumber,
+                pohConfirmDate,
+                pohStatus,
+                catalogueNo,
+                partNo,
+                polUnitCost,
+                polValueTax,
+                polValueGross,
+                polQtyOrdered,
+                polQtyReceived,
+                polStatus,
+                polValueOrdered,
+                pohExpDelivery,
+                deptName,
+                [CATH_TYPE_CONST],
+                [CAT_VALUE]
+            FROM
+            (
+
+				select
+					APP_USER.USR_FIRST_NAME + ' ' + APP_USER.USR_SUR_NAME createdBy,
+					supplier.SUPPLIER_ID supplierId,
+					supplier.SUPPLIER_NAME supplierName,
+					product.PROD_SKU prodSku,
+					product.PROD_BARCODE prodBarcode,
+					product.PROD_NAME prodName,
+					product.REFERENCE prodRef,
+					PURCHASE_ORDER_HEADER.POH_ORDER_NUMBER pohNumber,
+					PURCHASE_ORDER_HEADER.POH_CONFIRM_DATE pohConfirmDate,
+					PURCHASE_ORDER_HEADER.POH_EXP_DELIVERY pohExpDelivery,
+					pohStatus.DESCRIPTION pohStatus,
+					SUPP_PROD_PRICE.CATALOGUE_NO catalogueNo,
+					SUPP_PROD_PRICE.PART_NO partNo,
+					PURCHASE_LINE.POL_UNIT_COST polUnitCost,
+					PURCHASE_LINE.POL_VALUE_TAX polValueTax,
+					PURCHASE_LINE.POL_VALUE_GROSS polValueGross,
+					PURCHASE_LINE.POL_QTY_ORDERED polQtyOrdered,
+					PURCHASE_LINE.POL_QTY_RECEIVED polQtyReceived,
+					polStatus.DESCRIPTION polStatus,
+					PURCHASE_LINE.POL_VALUE_ORDERED polValueOrdered,
+					PRODUCT_GROUP.DEPT_NAME deptName,
+					PRODUCT_GROUP.CATH_TYPE_CONST,
+					PRODUCT_GROUP.CATH_NAME,
+					PRODUCT_GROUP.CAT_VALUE,
+                    PRODUCT_GROUP.CAT_VAL_ID
+
+				from PURCHASE_LINE
+					 INNER JOIN PURCHASE_ORDER_HEADER ON (PURCHASE_ORDER_HEADER.POH_ID = PURCHASE_LINE.POH_ID)
+					 INNER JOIN PRODUCT ON (PRODUCT.PROD_ID = PURCHASE_LINE.POL_PROD_ID)
+					 INNER JOIN SUPP_PROD_PRICE ON (SUPP_PROD_PRICE.SPRC_ID = PURCHASE_LINE.SPRC_ID)
+					 INNER JOIN SUPPLIER ON (SUPPLIER.SUPPLIER_ID = PURCHASE_LINE.POL_SUPP_ID)
+					 INNER JOIN APP_USER ON (APP_USER.USR_ID = PURCHASE_ORDER_HEADER.POH_LAST_MODIFIED_BY)
+					 LEFT OUTER JOIN CONFIG_CATEGORY pohStatus on (pohStatus.CATEGORY_ID = PURCHASE_ORDER_HEADER.POH_STATUS and pohStatus.CATEGORY_CODE in ('POH_STATUS_CONFIRMED', 'POH_STATUS_PARTIAL_REC'))
+					 left outer join CONFIG_CATEGORY polStatus on (polStatus.CATEGORY_ID = PURCHASE_LINE.POL_STATUS and polStatus.CATEGORY_CODE in ('POH_STATUS_CONFIRMED', 'POH_STATUS_PARTIAL_REC'))
+	 				 left outer join
+						(
+								select
+									prod_id,
+									DEPARTMENT.DEPT_NAME,
+									DEPT_CATEGORY.CATH_TYPE_CONST,
+									CATEGORY_HEADING.CATH_NAME,
+									CATEGORY_VALUE.CAT_VALUE,
+                                    PROD_DEPT_CAT.CAT_VAL_ID
+        from
+									PROD_DEPT_CAT inner join DEPT_CATEGORY on (PROD_DEPT_CAT.DEPT_ID = DEPT_CATEGORY.DEPT_ID AND PROD_DEPT_CAT.CAT_ID = DEPT_CATEGORY.CATH_ID )
+									INNER JOIN CATEGORY_VALUE ON (PROD_DEPT_CAT.CAT_VAL_ID = CATEGORY_VALUE.CATV_ID)
+									INNER JOIN CATEGORY_HEADING on (PROD_DEPT_CAT.CAT_ID = CATEGORY_HEADING.CATH_ID)
+									INNER JOIN DEPARTMENT ON (PROD_DEPT_CAT.DEPT_ID = DEPARTMENT.DEPT_ID)
+
+						) PRODUCT_GROUP on (PRODUCT.PROD_ID = PRODUCT_GROUP.PROD_ID)
+                        WHERE PURCHASE_ORDER_HEADER.ORGU_ID = #{param1}
+                            <if test="param2 != null">
+                                AND
+                                <foreach collection="param2" item="item" index="index"
+                                         open ="(" separator=" AND " close=")">
+                                    ${item.column} ${item.operator} ${item.value}
+                                </foreach>
+                            </if>
+
+           ) QUERY1
+        ) AS SourceTable	  PIVOT ( MAX ([CAT_VALUE]) FOR [CATH_TYPE_CONST] IN ([PROD_CAT_1],[PROD_CAT_2],[PROD_CAT_3])) AS PivotTable
+            <if test="param3 != null">
+                ORDER BY
+                <foreach collection="param3" item="item" index="index"
+                         open =" " separator="," close=" ">
+                    ${item.value}
+                </foreach>
+            </if>
+    </select>
+
 </mapper>

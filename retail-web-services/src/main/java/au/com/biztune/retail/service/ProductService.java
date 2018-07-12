@@ -79,6 +79,7 @@ public interface ProductService {
      * @param cost cost
      * @param price price
      * @param bulkPrice bulkPrice
+     * @param overWriteProduct overWriteProduct
      * @return Product
      */
     Product addProduct(String prodSku
@@ -94,7 +95,8 @@ public interface ProductService {
             , UnitOfMeasure unitOfMeasure
             , double cost
             , double price
-            , double bulkPrice);
+            , double bulkPrice
+            , boolean overWriteProduct);
     /**
      * get product object per sku.
      * @param prodId prodId

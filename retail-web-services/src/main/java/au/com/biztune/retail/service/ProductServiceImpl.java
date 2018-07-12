@@ -493,6 +493,7 @@ public class ProductServiceImpl implements ProductService {
      * @param cost cost
      * @param price price
      * @param bulkPrice bulkPrice
+     * @param overWriteProduct overWriteProduct
      * @return Product
      */
     public Product addProduct(String prodSku
@@ -508,7 +509,8 @@ public class ProductServiceImpl implements ProductService {
             , UnitOfMeasure unitOfMeasure
             , double cost
             , double price
-            , double bulkPrice)
+            , double bulkPrice
+            , boolean overWriteProduct)
     {
         try {
             final Timestamp currentTime = new Timestamp(new Date().getTime());
@@ -519,49 +521,52 @@ public class ProductServiceImpl implements ProductService {
             Product product = null;
             if (checkIfProductExistsPerSkuAndReference(prodSku, reference)) {
                 product = getProductPerSkuAndRef(prodSku, reference);
-                //check if this product is already assigned to the supplier
-                SuppProdPrice suppProdPrice = suppProdPriceDao.checkIfSupplierProductExistsPerOrguIdAndProdIdAndSuppId(
-                        sessionState.getOrgUnit().getId(), product.getId(), supplier.getId());
-                if (suppProdPrice == null) {
-                    //get supplier legal tender
-                    final LegalTender legalTender = legalTenderDao.getLegalTenderByCode(IdBConstant.LEGAL_TENDER_AU);
-                    suppProdPrice = new SuppProdPrice();
-                    suppProdPrice.setSolId(supplier.getSuppOrguLink().getId());
-                    suppProdPrice.setCatalogueNo(catalogueNo);
-                    suppProdPrice.setUnitOfMeasure(unitOfMeasure);
-                    suppProdPrice.setUnitOfMeasureContent(unitOfMeasure);
-                    suppProdPrice.setUnomQty(1);
-                    suppProdPrice.setLegalTender(legalTender);
-                    suppProdPrice.setSprcCreated(currentTime);
-                    suppProdPrice.setSprcModified(currentTime);
-                    suppProdPrice.setProdId(product.getId());
-                    suppProdPrice.setSprcPrefferBuy(true);
-                    //insert product tax rule
-                    TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(taxName);
-                    if (taxLegVariance == null) {
-                        taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
+                //check if we need to overWrite the current product. the overWrite flag is True for ImportProduct from Doors3
+                // but it is false for import BOQ.
+                if (overWriteProduct) {
+                    //check if this product is already assigned to the supplier
+                    SuppProdPrice suppProdPrice = suppProdPriceDao.checkIfSupplierProductExistsPerOrguIdAndProdIdAndSuppId(
+                            sessionState.getOrgUnit().getId(), product.getId(), supplier.getId());
+                    if (suppProdPrice == null) {
+                        //get supplier legal tender
+                        final LegalTender legalTender = legalTenderDao.getLegalTenderByCode(IdBConstant.LEGAL_TENDER_AU);
+                        suppProdPrice = new SuppProdPrice();
+                        suppProdPrice.setSolId(supplier.getSuppOrguLink().getId());
+                        suppProdPrice.setCatalogueNo(catalogueNo);
+                        suppProdPrice.setUnitOfMeasure(unitOfMeasure);
+                        suppProdPrice.setUnitOfMeasureContent(unitOfMeasure);
+                        suppProdPrice.setUnomQty(1);
+                        suppProdPrice.setLegalTender(legalTender);
+                        suppProdPrice.setSprcCreated(currentTime);
+                        suppProdPrice.setSprcModified(currentTime);
+                        suppProdPrice.setProdId(product.getId());
+                        suppProdPrice.setSprcPrefferBuy(true);
+                        //insert product tax rule
+                        TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(taxName);
+                        if (taxLegVariance == null) {
+                            taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
+                        }
+                        suppProdPrice.setTaxLegVariance(taxLegVariance);
+                        suppProdPrice.setCostBeforeTax(cost);
+                        if (taxLegVariance != null) {
+                            suppProdPrice.setPrice(cost + cost * taxLegVariance.getTxlvRate());
+                        }
+                        suppProdPriceDao.insert(suppProdPrice);
+                    } else {
+                        suppProdPrice.setCostBeforeTax(cost);
+                        TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(taxName);
+                        if (taxLegVariance == null) {
+                            taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
+                        }
+                        suppProdPrice.setTaxLegVariance(taxLegVariance);
+                        if (suppProdPrice.getTaxLegVariance() != null) {
+                            suppProdPrice.setPrice(cost + cost * suppProdPrice.getTaxLegVariance().getTxlvRate());
+                        }
+                        suppProdPriceDao.updateValues(suppProdPrice);
                     }
-                    suppProdPrice.setTaxLegVariance(taxLegVariance);
-                    suppProdPrice.setCostBeforeTax(cost);
-                    if (taxLegVariance != null) {
-                        suppProdPrice.setPrice(cost + cost * taxLegVariance.getTxlvRate());
-                    }
-                    suppProdPriceDao.insert(suppProdPrice);
-                } else {
-                    suppProdPrice.setCostBeforeTax(cost);
-                    TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(taxName);
-                    if (taxLegVariance == null) {
-                        taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
-                    }
-                    suppProdPrice.setTaxLegVariance(taxLegVariance);
-                    if (suppProdPrice.getTaxLegVariance() != null) {
-                        suppProdPrice.setPrice(cost + cost * suppProdPrice.getTaxLegVariance().getTxlvRate());
-                    }
-                    suppProdPriceDao.updateValues(suppProdPrice);
+                    //update product cost to default supplier cost.
+                    updateProductCostBaseDefaultSupplier(product.getId(), price);
                 }
-                //update product cost to default supplier cost.
-                updateProductCostBaseDefaultSupplier(product.getId(), price);
-
             } else {
                 //insert product
                 product = new Product();

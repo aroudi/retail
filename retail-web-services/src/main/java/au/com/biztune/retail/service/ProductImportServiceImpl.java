@@ -70,7 +70,8 @@ public class ProductImportServiceImpl {
                     continue;
                 }
                 importProductWhole(csvRow[1], csvRow[2], csvRow[3], csvRow[4], csvRow[5], csvRow[6], csvRow[7]
-                        , csvRow[11], csvRow[14], csvRow[16], StringUtil.strToDouble(csvRow[19]), StringUtil.strToDouble(csvRow[21]), StringUtil.strToDouble(csvRow[20]));
+                        , csvRow[11], csvRow[14], csvRow[16], StringUtil.strToDouble(csvRow[19]), StringUtil.strToDouble(csvRow[21]),
+                        StringUtil.strToDouble(csvRow[20]), true);
             }
             commonResponse.addMessage("Product list imported successfully");
             return commonResponse;
@@ -102,6 +103,7 @@ public class ProductImportServiceImpl {
      * @param cost cost
      * @param price price
      * @param bulkPrice bulkPrice
+     * @param overWriteProduct overWriteProduct
      * @return ImportedProductResult
      */
     public ImportProductResult importProductWhole(String brand
@@ -116,7 +118,8 @@ public class ProductImportServiceImpl {
             , String taxCode
             , double cost
             , double price
-            , double bulkPrice)
+            , double bulkPrice
+            , boolean overWriteProduct)
     {
         try {
             final ImportProductResult importProductResult = new ImportProductResult();
@@ -124,7 +127,7 @@ public class ProductImportServiceImpl {
             final Supplier supplier = supplierService.addSupplier(supplierCode, supplierName, 0, 0, 0, 0.00, 0, "", 0.00, "");
             final Product product = productService.addProduct(catalogueNo, catalogueNo, description, reference
                     , taxCode, brand, prodType, prodType, supplier, catalogueNo, unitOfMeasure1, cost, price
-            , bulkPrice);
+            , bulkPrice, overWriteProduct);
             importProductResult.setImportedProduct(product);
             importProductResult.setImportedSupplier(supplier);
             importProductResult.setUnitOfMeasure(unitOfMeasure1);

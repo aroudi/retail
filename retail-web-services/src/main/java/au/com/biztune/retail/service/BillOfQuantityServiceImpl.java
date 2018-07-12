@@ -163,7 +163,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                     importedProduct.getReference(), importedProduct.getDescription(),
                     null, importedProduct.getSupplier(), null, importedProduct.getUnit(),
                     importedProduct.getTaxName(), importedProduct.getCost() == null ? 0.00 : importedProduct.getCost(),
-                    importedProduct.getSellPrice() == null ? 0.00 : importedProduct.getSellPrice(), 0);
+                    importedProduct.getSellPrice() == null ? 0.00 : importedProduct.getSellPrice(), 0, false);
             ///////////////////////////
             final BoqDetail boqDetail = new BoqDetail();
             boqDetail.setBillOfQuantity(billOfQuantity);
