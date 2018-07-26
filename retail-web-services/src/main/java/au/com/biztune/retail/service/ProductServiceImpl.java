@@ -748,7 +748,7 @@ public class ProductServiceImpl implements ProductService {
                 }
                 //update product costs.
                 suppProdPriceDao.updateProductCostsPerSolIdAndProdId(suppProdPrice.getSolId(), suppProdPrice.getProdId()
-                        , suppProdPrice.getPrice(), suppProdPrice.getBulkPrice());
+                        , suppProdPrice.getCostBeforeTax(), suppProdPrice.getBulkPrice());
                 priceDao.updatePricePerProdIdAndPrccId(suppProdPrice.getProdId(), priceCode.getId(), suppProdPrice.getRrp());
                 //update product cost base default supplier
                 updateProductCostBaseDefaultSupplier(suppProdPrice.getProdId(), suppProdPrice.getRrp());

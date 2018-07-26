@@ -1,7 +1,7 @@
 /**
  * Created by arash on 05/10/2017.
  */
-cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, importEntity, fileUploadService,singleFileUploadService,baseDataService, SUCCESS, FAILURE, INVOICE_IMPORT_URI, SUPPLIER_IMPORT_CSV_URI, CUSTOMER_IMPORT_CSV_URI, PRODUCT_PRICE_UPDATE_BULK, PRODUCT_UPLOAD_CSV_URI) {
+cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, importEntity, fileUploadService,singleFileUploadService,baseDataService, SUCCESS, FAILURE, INVOICE_IMPORT_URI, SUPPLIER_IMPORT_CSV_URI, CUSTOMER_IMPORT_CSV_URI, PRODUCT_UPLOAD_CSV_URI, PRODUCT_PRICE_IMPORT_CSV) {
     $scope.importEntity = importEntity;
     $scope.gridOptions = {
         enableFiltering: true,
@@ -49,7 +49,7 @@ cimgApp.controller('importCtrl', function($scope, uiGridConstants, $state, impor
         case 'productPrice' :
             $scope.title = "Import Product Price From CSV";
             $scope.fileName ='Import Product Price(csv)';
-            importUrl = PRODUCT_PRICE_UPDATE_BULK;
+            importUrl = PRODUCT_PRICE_IMPORT_CSV;
             break;
     }
     $scope.gridOptions.enableRowSelection = true;

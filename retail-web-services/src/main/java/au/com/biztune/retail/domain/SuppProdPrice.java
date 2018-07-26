@@ -333,4 +333,5 @@ public class SuppProdPrice {
     public void setProductDeleted(boolean productDeleted) {
         this.productDeleted = productDeleted;
     }
+
 }

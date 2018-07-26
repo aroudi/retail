@@ -25,7 +25,7 @@ cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeo
                     return row.entity.partNo
                 }
             },
-            {field:'price', displayName:'Cost',enableFiltering:false,enableCellEdit:false, cellFilter: 'currency', width:'7%'},
+            {field:'costBeforeTax', displayName:'Cost',enableFiltering:false,enableCellEdit:false, cellFilter: 'currency', width:'7%'},
             {field:'newPrice', displayName:'New Cost',enableFiltering:false,enableCellEdit:true, cellFilter: 'currency', width:'8%',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
@@ -133,7 +133,7 @@ cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeo
             return;
         }
         for (i=0; i<priceList.length; i++) {
-            priceList[i].newPrice = priceList[i].price;
+            priceList[i].newPrice = priceList[i].costBeforeTax;
             priceList[i].newRrp = priceList[i].rrp;
             priceList[i].newBulkPrice = priceList[i].bulkPrice;
             priceList[i].changed = false;
@@ -145,7 +145,7 @@ cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeo
             return;
         }
         for (i=0; i<priceList.length; i++) {
-            priceList[i].price = priceList[i].newPrice;
+            priceList[i].costBeforeTax = priceList[i].newPrice;
             priceList[i].rrp = priceList[i].newRrp;
             priceList[i].bulkPrice = priceList[i].newBulkPrice;
 
@@ -164,7 +164,7 @@ cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeo
         var filteredRows = $scope.gridApi.core.getVisibleRows($scope.gridApi.grid);
         for (i=0; i<filteredRows.length; i++) {
             if ($scope.changeCost) {
-                filteredRows[i].entity.newPrice = filteredRows[i].entity.price + (filteredRows[i].entity.price * $scope.percentage)/100;
+                filteredRows[i].entity.newPrice = filteredRows[i].entity.costBeforeTax + (filteredRows[i].entity.costBeforeTax * $scope.percentage)/100;
                 filteredRows[i].entity.changed = true;
                 filteredRows[i].entity.percentage = $scope.percentage;
             }
