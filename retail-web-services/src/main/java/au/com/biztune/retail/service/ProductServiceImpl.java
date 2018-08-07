@@ -541,6 +541,7 @@ public class ProductServiceImpl implements ProductService {
                         suppProdPrice.setSprcModified(currentTime);
                         suppProdPrice.setProdId(product.getId());
                         suppProdPrice.setSprcPrefferBuy(true);
+                        suppProdPrice.setPrice(price);
                         //insert product tax rule
                         TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(taxName);
                         if (taxLegVariance == null) {
@@ -548,20 +549,15 @@ public class ProductServiceImpl implements ProductService {
                         }
                         suppProdPrice.setTaxLegVariance(taxLegVariance);
                         suppProdPrice.setCostBeforeTax(cost);
-                        if (taxLegVariance != null) {
-                            suppProdPrice.setPrice(cost + cost * taxLegVariance.getTxlvRate());
-                        }
                         suppProdPriceDao.insert(suppProdPrice);
                     } else {
                         suppProdPrice.setCostBeforeTax(cost);
+                        suppProdPrice.setPrice(price);
                         TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(taxName);
                         if (taxLegVariance == null) {
                             taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
                         }
                         suppProdPrice.setTaxLegVariance(taxLegVariance);
-                        if (suppProdPrice.getTaxLegVariance() != null) {
-                            suppProdPrice.setPrice(cost + cost * suppProdPrice.getTaxLegVariance().getTxlvRate());
-                        }
                         suppProdPriceDao.updateValues(suppProdPrice);
                     }
                     //update product cost to default supplier cost.
@@ -618,15 +614,13 @@ public class ProductServiceImpl implements ProductService {
                 suppProdPrice.setProdId(product.getId());
                 suppProdPrice.setSprcPrefferBuy(true);
                 suppProdPrice.setBulkPrice(bulkPrice);
+                suppProdPrice.setPrice(price);
                 //insert product tax rule
                 TaxLegVariance taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(taxName);
                 if (taxLegVariance == null) {
                     taxLegVariance = taxRuleDao.getTaxLegVarianceByCode(IdBConstant.DEFAULT_PRODUCT_TAX_CODE);
                 }
                 suppProdPrice.setTaxLegVariance(taxLegVariance);
-                if (suppProdPrice.getTaxLegVariance() != null) {
-                    suppProdPrice.setPrice(cost + cost * suppProdPrice.getTaxLegVariance().getTxlvRate());
-                }
                 suppProdPriceDao.insert(suppProdPrice);
 
                 //import product price
@@ -748,7 +742,7 @@ public class ProductServiceImpl implements ProductService {
                 }
                 //update product costs.
                 suppProdPriceDao.updateProductCostsPerSolIdAndProdId(suppProdPrice.getSolId(), suppProdPrice.getProdId()
-                        , suppProdPrice.getCostBeforeTax(), suppProdPrice.getBulkPrice());
+                        , suppProdPrice.getCostBeforeTax(), suppProdPrice.getRrp(), suppProdPrice.getBulkPrice());
                 priceDao.updatePricePerProdIdAndPrccId(suppProdPrice.getProdId(), priceCode.getId(), suppProdPrice.getRrp());
                 //update product cost base default supplier
                 updateProductCostBaseDefaultSupplier(suppProdPrice.getProdId(), suppProdPrice.getRrp());

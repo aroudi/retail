@@ -140,7 +140,7 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
                     //cellTemplate:'<select class="form-control" data-ng-model="row.entity.taxLegVariance"  ng-options="tax.txlvDesc for tax in grid.appScope.taxLegVarianceSet" > </select>'
                 },
                 {field:'costBeforeTax', displayName:'cost(ex tax)',enableCellEdit:true, cellFilter: 'currency', width:'10%', enableFiltering:false},
-                {field:'price', displayName:'cost(inc tax)',enableCellEdit:true, cellFilter: 'currency', width:'10%', enableFiltering:false},
+                {field:'price', displayName:'RRP',enableCellEdit:true, cellFilter: 'currency', width:'10%', enableFiltering:false},
                 {name:'Action',enableCellEdit:false,sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Remove" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-show="row.entity.id < 0" ng-click="grid.appScope.removeSuppProdPrice(row)"></i></a>&nbsp;<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-show="row.entity.id > 0" ng-click="grid.appScope.editSuppProdPrice(row)"></i></a>', width:'10%' }
 
             ]
@@ -537,7 +537,8 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
             }
             $scope.productForm.prceUnitOfMeasure = baseDataService.populateSelectList(row.unitOfMeasure,$scope.unitOfMeasureSet);
             $scope.productForm.prceUnomQty = row.unomQty;
-            $scope.productForm.costPrice = row.price;
+            $scope.productForm.costPrice = row.costBeforeTax;
+            $scope.productForm.prcePrice = row.price;
         }
         //set the product cost and other items per default supplier
         //$scope.productForm.prceUnitOfMeasure = row.unitOfMeasure;

@@ -589,7 +589,8 @@
     <update id="updateProductCostsPerSolIdAndProdId">
         UPDATE SUPP_PROD_PRICE SET
         COST_BEFORE_TAX =#{param3},
-        BULK_PRICE =#{param4}
+        PRICE =#{param4},
+        BULK_PRICE =#{param5}
         WHERE SOL_ID = #{param1} and PROD_ID = #{param2}
     </update>
 

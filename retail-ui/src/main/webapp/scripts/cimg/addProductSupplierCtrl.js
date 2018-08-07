@@ -59,6 +59,6 @@ cimgApp.controller('addProductSupplierCtrl', function($scope, baseDataService,ng
     $scope.calculatePriceAfterTax = function() {
         console.log('called');
         $scope.productSupplier.suppBulkPrice = $scope.productSupplier.bulkPriceBeforeTax*1 + $scope.productSupplier.taxLegVariance.txlvRate * $scope.productSupplier.bulkPriceBeforeTax;
-        $scope.productSupplier.suppPrice = $scope.productSupplier.costBeforeTax*1 + $scope.productSupplier.taxLegVariance.txlvRate * $scope.productSupplier.costBeforeTax
+        //$scope.productSupplier.suppPrice = $scope.productSupplier.costBeforeTax*1 + $scope.productSupplier.taxLegVariance.txlvRate * $scope.productSupplier.costBeforeTax
     }
 });
