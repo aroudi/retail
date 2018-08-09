@@ -163,17 +163,21 @@ public class ProductImportServiceImpl {
             if (iterator.hasNext()) {
                 iterator.next();
             }
-            //get pricecode for sell-price
+            //get o for sell-price
             final PriceCode priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.SELL_PRICE_CODE);
             while (iterator.hasNext()) {
                 csvRow = iterator.next();
                 if (csvRow == null) {
                     continue;
                 }
+                //check if the price has being changed.
+                if (csvRow[5].equals(csvRow[6]) && csvRow[7].equals(csvRow[8]) && csvRow[9].equals(csvRow[10])) {
+                    continue;
+                }
                 //update product costs.
                 suppProdPriceDao.updateProductCostsPerSolIdAndProdId(StringUtil.strToLong(csvRow[1]), StringUtil.strToLong(csvRow[2])
                         , StringUtil.strToDouble(csvRow[6]), StringUtil.strToDouble(csvRow[8]), StringUtil.strToDouble(csvRow[10]));
-                priceDao.updatePricePerProdIdAndPrccId(StringUtil.strToLong(csvRow[2]), priceCode.getId(), StringUtil.strToDouble(csvRow[8]));
+                //priceDao.updatePricePerProdIdAndPrccId(StringUtil.strToLong(csvRow[2]), priceCode.getId(), StringUtil.strToDouble(csvRow[8]));
                 productService.updateProductCostBaseDefaultSupplier(StringUtil.strToLong(csvRow[2]), StringUtil.strToDouble(csvRow[8]));
 
             }
