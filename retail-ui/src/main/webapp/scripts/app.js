@@ -39,27 +39,7 @@ var cimgApp = angular
     'ui.select',
     'TreeWidget'
   ]);
-
-//SIT
-/*
 var config_data = {
-    'SERVER' : 'pos.jomon.com.au',
-    'PORT'   : '8080',
-    'WEBAPP' :'retail-web-services'
-}
-*/
-//SIT-9090
-/*
-var config_data = {
-    'SERVER' : 'pos.jomon.com.au',
-    'PORT'   : '9090',
-    'WEBAPP' :'retail-web-services'
-}
-*/
-//DEV
-var config_data = {
-    'SERVER' : 'localhost',
-    'PORT'   : '8082',
     'WEBAPP' :'retail-web-services'
 }
 var service_uri = {
@@ -206,8 +186,6 @@ var service_uri = {
     'PRGP_GET_CAT_TYPE_LIST_NOT_IN_DEPTCAT_URI' : 'productGroup/department/getCategoryTypeNotAssignedToDeptCat',
     'REPORTING_GET_REPORT_LIST_URI' : 'reporting/getReportingList',
     'REPORTING_RUN_REPORT_URI' : 'reporting/runReport'
-
-
 };
 
 var response_status = {
@@ -254,7 +232,6 @@ var type_constant = {
     'TXN_STATUS_OUTSTANDING' : 'categories/SO_STATUS/SO_STATUS_OUTSTANDING',
     'SO_STATUS_URI' : 'categories/SO_STATUS',
     'COUNTRY_LIST_URI' : 'categories/TYPE_COUNTRY'
-
 }
 
 angular.forEach(config_data, function(key, value) {
@@ -274,8 +251,8 @@ angular.forEach(type_constant, function(key, value) {
 });
 
 
-cimgApp.service('configService', function ($http, UserService, SERVER,PORT,WEBAPP) {
-    var address = 'http://' + SERVER+':'+ PORT +'/' +WEBAPP + '/rest/';
+cimgApp.service('configService', function ($window,$http, UserService,WEBAPP) {
+    var address = window.location.origin +'/' +WEBAPP + '/rest/';
 
 
     return {

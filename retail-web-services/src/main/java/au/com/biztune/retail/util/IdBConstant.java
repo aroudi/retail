@@ -755,4 +755,8 @@ public interface IdBConstant {
      * Report Key WHAT_IS_ON_ORDER
      */
     String REPORT_KEY_WHAT_IS_ON_ORDER = "WHAT_IS_ON_ORDER";
+    /**
+     * Report Key PRICE_BY_GRADE
+     */
+    String REPORT_KEY_PRICE_BY_GRADE = "PRICE_BY_GRADE";
 }

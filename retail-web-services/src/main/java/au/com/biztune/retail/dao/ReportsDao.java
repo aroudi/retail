@@ -78,4 +78,13 @@ public interface ReportsDao {
      * @return report data.
      */
     List<ReportSaleRow> runRptWhatIsOnOrder(long orguId, List clauseList, List orderByList);
+
+    /**
+     * get 'Price By Grade' reports data.
+     * @param orguId organisationId
+     * @param clauseList ClauseList
+     * @param orderByList orderByList
+     * @return report data.
+     */
+    List<ReportSaleRow> runRptPriceByGrade(long orguId, List clauseList, List orderByList);
  }

@@ -45,7 +45,7 @@
         <variableExpression><![CDATA[$F{totalIncTax}]]></variableExpression>
     </variable>
     <group name="TAX">
-        <groupExpression><![CDATA[]]></groupExpression>
+        <groupExpression><![CDATA[$F{client}]]></groupExpression>
         <groupHeader>
             <band height="23">
                 <textField>

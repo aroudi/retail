@@ -39,6 +39,17 @@ public class ReportSaleRow {
     private double expectedTotalExTax;
     private double expectedProfit;
     private double actualProfit;
+    private double rrpGp;
+    private double defaultGrade;
+    private double aGrade;
+    private double bGrade;
+    private double cGrade;
+    private double dGrade;
+    private double defaultGradeGp;
+    private double aGradeGp;
+    private double bGradeGp;
+    private double cGradeGp;
+    private double dGradeGp;
 
     public String getSupplierId() {
         return supplierId;
@@ -302,5 +313,93 @@ public class ReportSaleRow {
 
     public void setActualProfit(double actualProfit) {
         this.actualProfit = actualProfit;
+    }
+
+    public double getRrpGp() {
+        return rrpGp;
+    }
+
+    public void setRrpGp(double rrpGp) {
+        this.rrpGp = rrpGp;
+    }
+
+    public double getDefaultGrade() {
+        return defaultGrade;
+    }
+
+    public void setDefaultGrade(double defaultGrade) {
+        this.defaultGrade = defaultGrade;
+    }
+
+    public double getaGrade() {
+        return aGrade;
+    }
+
+    public void setaGrade(double aGrade) {
+        this.aGrade = aGrade;
+    }
+
+    public double getbGrade() {
+        return bGrade;
+    }
+
+    public void setbGrade(double bGrade) {
+        this.bGrade = bGrade;
+    }
+
+    public double getcGrade() {
+        return cGrade;
+    }
+
+    public void setcGrade(double cGrade) {
+        this.cGrade = cGrade;
+    }
+
+    public double getdGrade() {
+        return dGrade;
+    }
+
+    public void setdGrade(double dGrade) {
+        this.dGrade = dGrade;
+    }
+
+    public double getDefaultGradeGp() {
+        return defaultGradeGp;
+    }
+
+    public void setDefaultGradeGp(double defaultGradeGp) {
+        this.defaultGradeGp = defaultGradeGp;
+    }
+
+    public double getaGradeGp() {
+        return aGradeGp;
+    }
+
+    public void setaGradeGp(double aGradeGp) {
+        this.aGradeGp = aGradeGp;
+    }
+
+    public double getbGradeGp() {
+        return bGradeGp;
+    }
+
+    public void setbGradeGp(double bGradeGp) {
+        this.bGradeGp = bGradeGp;
+    }
+
+    public double getcGradeGp() {
+        return cGradeGp;
+    }
+
+    public void setcGradeGp(double cGradeGp) {
+        this.cGradeGp = cGradeGp;
+    }
+
+    public double getdGradeGp() {
+        return dGradeGp;
+    }
+
+    public void setdGradeGp(double dGradeGp) {
+        this.dGradeGp = dGradeGp;
     }
 }

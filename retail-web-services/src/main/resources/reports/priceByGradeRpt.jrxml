@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="55379ca5-4396-4444-968e-91e3d84b80ae">
+	<property name="ireport.zoom" value="2.593742460100003"/>
+	<property name="ireport.x" value="7"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\projects\\IReport\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="GroupBy" class="java.lang.String"/>
+	<field name="prodSku" class="java.lang.String"/>
+	<field name="prodBarcode" class="java.lang.String"/>
+	<field name="prodName" class="java.lang.String"/>
+	<field name="prodRef" class="java.lang.String"/>
+	<field name="supplierName" class="java.lang.String"/>
+	<field name="prodCost" class="java.lang.Double"/>
+	<field name="rrp" class="java.lang.Double"/>
+	<field name="rrpGp" class="java.lang.Double"/>
+	<field name="qtyAvailable" class="java.lang.Double"/>
+	<field name="deptName" class="java.lang.String"/>
+	<field name="prodCat1" class="java.lang.String"/>
+	<field name="prodCat2" class="java.lang.String"/>
+	<field name="prodCat3" class="java.lang.String"/>
+	<field name="defaultGrade" class="java.lang.Double"/>
+	<field name="aGrade" class="java.lang.Double"/>
+	<field name="bGrade" class="java.lang.Double"/>
+	<field name="cGrade" class="java.lang.Double"/>
+	<field name="dGrade" class="java.lang.Double"/>
+	<field name="defaultGradeGp" class="java.lang.Double"/>
+	<field name="aGradeGp" class="java.lang.Double"/>
+	<field name="bGradeGp" class="java.lang.Double"/>
+	<field name="cGradeGp" class="java.lang.Double"/>
+	<field name="dGradeGp" class="java.lang.Double"/>
+	<group name="TAX">
+		<groupExpression><![CDATA[("Supplier".equals($P{GroupBy})) ? $F{supplierName} : ( ("Category 1".equals($P{GroupBy})) ? $F{prodCat1} : (("Category 2".equals($P{GroupBy})) ? $F{prodCat2} : $F{prodCat3} ) )]]></groupExpression>
+		<groupHeader>
+			<band height="23">
+				<textField isBlankWhenNull="true">
+					<reportElement x="8" y="4" width="600" height="19" uuid="60d01f07-29f8-46f2-858d-558e0e17307d"/>
+					<textElement>
+						<font fontName="Arial" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[("Supplier".equals($P{GroupBy})) ? $F{supplierName} : ( ("Category 1".equals($P{GroupBy})) ? $F{prodCat1} : (("Category 2".equals($P{GroupBy})) ? $F{prodCat2} : $F{prodCat3} ) )]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="1"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="155" splitType="Stretch">
+			<staticText>
+				<reportElement x="7" y="10" width="203" height="15" uuid="f8428307-e95f-4e17-b4b4-68c1782c42a3"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JOMON ARCHITECTURAL HARDWARE PTY LTD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="57" width="179" height="15" uuid="8703ce78-aaa3-4df5-9b4e-a12d9590f8d3"/>
+				<textElement>
+					<font fontName="Arial" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ABN : 92 084 941 266]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="25" width="217" height="15" uuid="de2aaacf-602b-40ac-8159-af5cb65a8e45"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[32 Spencer St, Five Dock NSW 2046 AUSTRALIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="40" width="222" height="17" uuid="2ef041a5-44f5-4f76-b8de-28ab26602458"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Phone: +61 2  9747 0088     Fax: +61 2 9747 4488]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="292" y="70" width="203" height="18" uuid="2e420e7e-7e3e-42a3-b476-f4caa2f38860"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Prices By Grades]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="127" width="103" height="18" uuid="a69fc56c-c412-4906-af2b-5a2f6f8e1f4d"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Group By:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="113" y="127" width="83" height="18" uuid="86fa0235-9f09-4b0b-8fee-1755805bb6e6"/>
+				<textFieldExpression><![CDATA[$P{GroupBy}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="42" splitType="Stretch">
+			<staticText>
+				<reportElement x="125" y="22" width="45" height="20" uuid="8d133396-a897-47c2-90fa-906e77fda737"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Qty]]></text>
+			</staticText>
+			<line>
+				<reportElement x="6" y="36" width="791" height="1" uuid="d62688a5-5cc7-4b5e-b126-04202c450b43"/>
+			</line>
+			<staticText>
+				<reportElement x="8" y="22" width="62" height="20" uuid="58643352-18ea-467e-bb34-25494014021e"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SKU]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="189" y="22" width="32" height="20" uuid="ea216d45-61b1-4377-865c-61b62cdc9697"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cost $]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="244" y="22" width="32" height="20" uuid="382213ea-a345-411e-9a8d-fa90d2dd6732"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RRP $]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="288" y="22" width="28" height="20" uuid="ba6296f0-968b-4ccc-8c3a-b51374d9d5bd"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GP%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="335" y="22" width="38" height="20" uuid="c242ac65-0e37-43cf-9744-63131f46ee11"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Default]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="423" y="22" width="35" height="20" uuid="4f56d653-b5a1-4382-a7cd-d7ae8be2038c"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grd A]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="517" y="22" width="29" height="20" uuid="b075f3e5-bc51-45bb-9180-251a2ec15dc8"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grd B]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="382" y="22" width="32" height="20" uuid="b1473b29-f61e-4dbd-b643-6df6e0690f46"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GP%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="468" y="22" width="27" height="20" uuid="a850b632-31d5-4c0a-a13f-21e503f7a366"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GP%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="558" y="22" width="32" height="20" uuid="a0f1bff8-8b4e-4c79-927c-7d454c7ee28c"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GP%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="605" y="22" width="29" height="20" uuid="62d39f09-9460-4e4c-9f57-511c52f1e8b2"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grd C]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="649" y="22" width="32" height="20" uuid="9711ca74-9c1f-482e-aa6b-f10668036551"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GP%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="713" y="22" width="29" height="20" uuid="6310eb38-48db-4109-83f9-489a3d657008"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grd D]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="761" y="22" width="28" height="20" uuid="1d596c54-6f59-46a3-a8e9-8843ca9b04a7"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GP%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="501" y="7" width="119" height="12" uuid="48d361e9-3085-4aa0-8b6a-b81390d324b0"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Price / Customer Grades]]></text>
+			</staticText>
+			<line>
+				<reportElement x="634" y="14" width="163" height="1" uuid="dcf57cf0-dd40-402b-97d1-27ff4575cc69"/>
+			</line>
+			<line>
+				<reportElement x="335" y="14" width="151" height="1" uuid="6e29bd13-eadd-4247-bccd-1155f7f8bf64"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="8" y="0" width="105" height="20" uuid="cb75c551-f0ab-4492-9930-82d262222416"/>
+				<textFieldExpression><![CDATA[$F{prodSku}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="125" y="1" width="61" height="20" uuid="95c27440-270e-475e-84b2-5586523d94a1"/>
+				<textFieldExpression><![CDATA[$F{qtyAvailable}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="189" y="0" width="46" height="20" uuid="124b6833-2116-4574-a7f7-e208898a05c8"/>
+				<textFieldExpression><![CDATA[$F{prodCost}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="244" y="0" width="44" height="20" uuid="64c751f0-5076-466b-a920-10097298baf5"/>
+				<textFieldExpression><![CDATA[$F{rrp}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="288" y="1" width="39" height="20" uuid="ee0ea7f5-89db-4627-ab76-54173968ee67"/>
+				<textFieldExpression><![CDATA[$F{rrpGp}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="335" y="0" width="47" height="20" uuid="ae7c3109-ca00-4c57-b79e-08e92103653d"/>
+				<textFieldExpression><![CDATA[$F{defaultGrade}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="382" y="0" width="45" height="20" uuid="02340115-f0e9-40c2-9fe4-eda448684cb6"/>
+				<textFieldExpression><![CDATA[$F{defaultGradeGp}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="423" y="0" width="45" height="20" uuid="f28d19fe-ad80-4585-8d51-71f5d6601027"/>
+				<textFieldExpression><![CDATA[$F{aGrade}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="468" y="1" width="45" height="20" uuid="f26b84c7-8d9a-4266-b003-b22d6f589cbe"/>
+				<textFieldExpression><![CDATA[$F{aGradeGp}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="517" y="1" width="36" height="20" uuid="fafe0853-4644-4b5f-98db-53233cb7e02d"/>
+				<textFieldExpression><![CDATA[$F{bGrade}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="558" y="0" width="47" height="20" uuid="13d8767c-4903-4ab3-889a-b4f0637beb89"/>
+				<textFieldExpression><![CDATA[$F{bGradeGp}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="605" y="0" width="39" height="20" uuid="e72f3e35-f080-4107-b8f3-3f2a90bb991f"/>
+				<textFieldExpression><![CDATA[$F{cGrade}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="649" y="1" width="46" height="20" uuid="72ecfe89-ccef-4b6e-9931-8a51f559bf00"/>
+				<textFieldExpression><![CDATA[$F{cGradeGp}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="713" y="0" width="40" height="20" uuid="630ed32f-d1cc-42d5-bc37-0778af4fb9af"/>
+				<textFieldExpression><![CDATA[$F{dGrade}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="761" y="1" width="36" height="20" uuid="fdd2de40-4f6f-4318-8e54-4eb7a1b35c31"/>
+				<textFieldExpression><![CDATA[$F{dGradeGp}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="3" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -65,7 +65,7 @@
         <variableExpression><![CDATA[$F{expectedProfit}]]></variableExpression>
     </variable>
     <group name="TAX">
-        <groupExpression><![CDATA[]]></groupExpression>
+        <groupExpression><![CDATA[("Department".equals($P{GroupBy})) ? $F{deptName} : ( ("Category 1".equals($P{GroupBy})) ? $F{prodCat1} : (("Category 2".equals($P{GroupBy})) ? $F{prodCat2} : ( ("Category 3".equals($P{GroupBy})) ? $F{prodCat3} : ( $F{supplierName} ) )  ) )]]></groupExpression>
         <groupHeader>
             <band height="18">
                 <textField isBlankWhenNull="true">

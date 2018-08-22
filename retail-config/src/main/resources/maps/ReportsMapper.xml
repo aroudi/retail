@@ -610,5 +610,204 @@
                 </foreach>
             </if>
     </select>
+    <select id="runRptPriceByGrade" resultMap="reportSaleMap" >
+        SELECT * ,
+        PROD_CAT_1 prodCat1,
+        PROD_CAT_2 prodCat2,
+        PROD_CAT_3 prodCat3,
+        defaultGradeGp =
+            CASE defaultGrade
+            WHEN 0 THEN 0
+            ELSE (defaultGrade - prodCost)*100/defaultGrade
+            END,
+        aGradeGp =
+            CASE aGrade
+            WHEN 0 THEN 0
+            ELSE (aGrade - prodCost)*100/aGrade
+            END,
+        bGradeGp =
+            CASE bGrade
+            WHEN 0 THEN 0
+            ELSE (bGrade - prodCost)*100/bGrade
+            END,
+        cGradeGp =
+            CASE cGrade
+            WHEN 0 THEN 0
+            ELSE (cGrade - prodCost)*100/cGrade
+            END,
+        dGradeGp =
+            CASE dGrade
+            WHEN 0 THEN 0
+            ELSE (dGrade - prodCost)*100/dGrade
+            END
+
+        FROM
+        (
+        SELECT
+            prodSku,
+            prodBarcode,
+            prodName,
+            prodRef,
+            supplierId,
+            supplierName,
+            prodCost,
+            rrp,
+            rrpGp =
+            CASE rrp
+            WHEN 0 THEN 0
+            ELSE (rrp - prodCost)*100/rrp
+            END,
+            qtyAvailable,
+            deptName,
+            [CATH_TYPE_CONST],
+            [CAT_VALUE],
+            Default_GRADE,
+            A_GRADE,
+            B_GRADE,
+            C_GRADE,
+            D_GRADE,
+            Default_GRADE_RATE,
+            A_GRADE_RATE,
+            B_GRADE_RATE,
+            C_GRADE_RATE,
+            D_GRADE_RATE,
+            defaultGrade =
+                CASE Default_GRADE
+                WHEN 'Cost + %' THEN prodCost + Default_GRADE_RATE*prodCost
+                WHEN 'Cost + $' THEN prodCost + Default_GRADE_RATE
+                WHEN 'Fixed $' THEN Default_GRADE_RATE
+                WHEN 'RRP - %' THEN rrp - rrp*Default_GRADE_RATE
+                WHEN 'RRP - $' THEN rrp - Default_GRADE_RATE
+                ELSE 0
+                END,
+            aGrade =
+                CASE A_GRADE
+                WHEN 'Cost + %' THEN prodCost + A_GRADE_RATE*prodCost
+                WHEN 'Cost + $' THEN prodCost + A_GRADE_RATE
+                WHEN 'Fixed $' THEN A_GRADE_RATE
+                WHEN 'RRP - %' THEN rrp - rrp*A_GRADE_RATE
+                WHEN 'RRP - $' THEN rrp - A_GRADE_RATE
+                ELSE 0
+                END,
+            bGrade =
+                CASE B_GRADE
+                WHEN 'Cost + %' THEN prodCost + B_GRADE_RATE*prodCost
+                WHEN 'Cost + $' THEN prodCost + B_GRADE_RATE
+                WHEN 'Fixed $' THEN B_GRADE_RATE
+                WHEN 'RRP - %' THEN rrp - rrp*B_GRADE_RATE
+                WHEN 'RRP - $' THEN rrp - B_GRADE_RATE
+                ELSE 0
+                END,
+            cGrade =
+                CASE C_GRADE
+                WHEN 'Cost + %' THEN prodCost + C_GRADE_RATE*prodCost
+                WHEN 'Cost + $' THEN prodCost + C_GRADE_RATE
+                WHEN 'Fixed $' THEN C_GRADE_RATE
+                WHEN 'RRP - %' THEN rrp - rrp*C_GRADE_RATE
+                WHEN 'RRP - $' THEN rrp - C_GRADE_RATE
+                ELSE 0
+                END,
+            dGrade =
+                CASE D_GRADE
+                WHEN 'Cost + %' THEN prodCost + D_GRADE_RATE*prodCost
+                WHEN 'Cost + $' THEN prodCost + D_GRADE_RATE
+                WHEN 'Fixed $' THEN D_GRADE_RATE
+                WHEN 'RRP - %' THEN rrp - rrp*D_GRADE_RATE
+                WHEN 'RRP - $' THEN rrp - D_GRADE_RATE
+                ELSE 0
+                END
+
+        FROM
+        (
+        select
+            product.PROD_SKU prodSku,
+            product.PROD_BARCODE prodBarcode,
+            product.PROD_NAME prodName,
+            product.REFERENCE prodRef,
+            supp_prod_price.COST_BEFORE_TAX prodCost,
+            supp_prod_price.PRICE rrp,
+            PRODUCT_GROUP.DEPT_NAME deptName,
+            PRODUCT_GROUP.CATH_TYPE_CONST,
+            PRODUCT_GROUP.CATH_NAME,
+            PRODUCT_GROUP.CAT_VALUE,
+            supplier.SUPPLIER_ID supplierId,
+            supplier.SUPPLIER_NAME supplierName,
+            STOCK.STCK_QTY qtyAvailable,
+            PRODUCT_GROUP.CAT_VAL_ID,
+            GRADE_RATE.*,
+            GRADE_FORMULA.*
+
+        from PRODUCT
+        inner join SUPP_PROD_PRICE supp_prod_price on (supp_prod_price.PROD_ID = product.PROD_ID and supp_prod_price.SPRC_PREFER_BUY = 1)
+        inner join SUPP_ORGU_LINK supp_orgu_link on (supp_prod_price.SOL_ID = supp_orgu_link.SOL_ID)
+        inner join SUPPLIER supplier on (supplier.SUPPLIER_ID = supp_orgu_link.SUPP_ID)
+        left outer join STOCK on (	stock.PROD_ID = PRODUCT.PROD_ID)
+        LEFT OUTER JOIN CONFIG_CATEGORY cc1 on (stock.STCK_COND = cc1.category_id and cc1.CATEGORY_CODE = 'STOCK_CONDITION_PRISTINE')
+        LEFT OUTER JOIN CONFIG_CATEGORY cc2 on (stock.STCK_CAT = cc2.category_id AND cc2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE')
+        left outer join
+        (
+        select
+        prod_id,
+        DEPARTMENT.DEPT_NAME,
+        DEPT_CATEGORY.CATH_TYPE_CONST,
+        CATEGORY_HEADING.CATH_NAME,
+        CATEGORY_VALUE.CAT_VALUE,
+        PROD_DEPT_CAT.CAT_VAL_ID
+        from
+        PROD_DEPT_CAT inner join DEPT_CATEGORY on (PROD_DEPT_CAT.DEPT_ID = DEPT_CATEGORY.DEPT_ID AND PROD_DEPT_CAT.CAT_ID = DEPT_CATEGORY.CATH_ID )
+        INNER JOIN CATEGORY_VALUE ON (PROD_DEPT_CAT.CAT_VAL_ID = CATEGORY_VALUE.CATV_ID)
+        INNER JOIN CATEGORY_HEADING on (PROD_DEPT_CAT.CAT_ID = CATEGORY_HEADING.CATH_ID)
+        INNER JOIN DEPARTMENT ON (PROD_DEPT_CAT.DEPT_ID = DEPARTMENT.DEPT_ID)
+
+        ) PRODUCT_GROUP on (PRODUCT.PROD_ID = PRODUCT_GROUP.PROD_ID)
+        ,
+        (select Default_GRADE_RATE, A_GRADE_RATE, B_GRADE_RATE, C_GRADE_RATE, D_GRADE_RATE
+
+        from
+        (
+        select GRADE_CODE + '_GRADE_RATE' GRADE_CODE, RATE
+        FROM CUSTOMER_GRADE
+        ) grade
+
+        pivot
+        (
+        max(rate)
+        for GRADE_CODE in (A_GRADE_RATE,B_GRADE_RATE,C_GRADE_RATE,D_GRADE_RATE,Default_GRADE_RATE)
+        )piv
+        ) GRADE_RATE,
+
+        (
+        select Default_GRADE, A_GRADE, B_GRADE, C_GRADE, D_GRADE
+
+        from
+        (
+        select GRADE_CODE + '_GRADE' GRADE_CODE, DESCRIPTION
+        FROM CUSTOMER_GRADE
+        ) grade
+
+        pivot
+        (
+        max(DESCRIPTION)
+        for GRADE_CODE in (A_GRADE,B_GRADE,C_GRADE,D_GRADE,Default_GRADE)
+        )piv
+        ) GRADE_FORMULA
+        where SUPP_ORGU_LINK.ORGU_ID = #{param1}
+        <if test="param2 != null">
+            AND
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                ${item.column} ${item.operator} ${item.value}
+            </foreach>
+        </if>
+        ) QUERY1
+        ) AS SourceTable	  PIVOT ( MAX ([CAT_VALUE]) FOR [CATH_TYPE_CONST] IN ([PROD_CAT_1],[PROD_CAT_2],[PROD_CAT_3])) AS PivotTable
+        <if test="param3 != null">
+            ORDER BY
+            <foreach collection="param3" item="item" index="index"
+                     open =" " separator="," close=" ">
+                ${item.value}
+            </foreach>
+        </if>
+    </select>
 
 </mapper>

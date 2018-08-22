@@ -44,6 +44,7 @@ public class ReportManager {
     private String rptWhatIsSelling;
     private String rptProfitByProduct;
     private String rptWhatIsOnOrder;
+    private String rptPriceByGrade;
     @Autowired
     private SessionState sessionState;
     /**
@@ -147,16 +148,16 @@ public class ReportManager {
                     reportJrxmlName = pathStr + "/" + rptProfitByProduct + ".jrxml";
                     outputFile = pathStr + "/" + rptProfitByProduct + ".pdf";
                     break;
-                case IdBConstant.REPORT_KEY_WHAT_IS_ON_ORDER :
+                case IdBConstant.REPORT_KEY_PRICE_BY_GRADE:
                     additionalSearchClauseList = SearchClauseBuilder.buildReportingSearchAdditionalClauseList(reportParamList, IdBConstant.REPORTS_PARAM_GROUPBY);
                     //add new parameter for GroupBy
                     populateReportParams(parameters, additionalSearchClauseList);
 
-                    rowList = reportsDao.runRptWhatIsOnOrder(sessionState.getOrgUnit().getId(),
+                    rowList = reportsDao.runRptPriceByGrade(sessionState.getOrgUnit().getId(),
                             searchClauseList, additionalSearchClauseList);
                     beanColDataSource = new JRBeanCollectionDataSource(rowList);
-                    reportJrxmlName = pathStr + "/" + rptWhatIsOnOrder + ".jrxml";
-                    outputFile = pathStr + "/" + rptWhatIsOnOrder + ".pdf";
+                    reportJrxmlName = pathStr + "/" + rptPriceByGrade + ".jrxml";
+                    outputFile = pathStr + "/" + rptPriceByGrade + ".pdf";
                     break;
                 default:
                     break;
@@ -294,5 +295,13 @@ public class ReportManager {
 
     public void setRptWhatIsOnOrder(String rptWhatIsOnOrder) {
         this.rptWhatIsOnOrder = rptWhatIsOnOrder;
+    }
+
+    public String getRptPriceByGrade() {
+        return rptPriceByGrade;
+    }
+
+    public void setRptPriceByGrade(String rptPriceByGrade) {
+        this.rptPriceByGrade = rptPriceByGrade;
     }
 }
