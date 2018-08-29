@@ -759,4 +759,8 @@ public interface IdBConstant {
      * Report Key PRICE_BY_GRADE
      */
     String REPORT_KEY_PRICE_BY_GRADE = "PRICE_BY_GRADE";
+    /**
+     * Report Key GOODS_RECEIVED
+     */
+    String REPORT_KEY_GOODS_RECEIVED = "GOODS_RECEIVED";
 }

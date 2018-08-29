@@ -85,6 +85,7 @@
         <typeAlias type="au.com.biztune.retail.domain.ReportParam" alias="ReportParam" />
         <typeAlias type="au.com.biztune.retail.domain.ReportParamVal" alias="ReportParamVal" />
         <typeAlias type="au.com.biztune.retail.domain.ReportSaleRow" alias="ReportSaleRow" />
+        <typeAlias type="au.com.biztune.retail.domain.ReportGoodReceivedRow" alias="ReportGoodReceivedRow" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />

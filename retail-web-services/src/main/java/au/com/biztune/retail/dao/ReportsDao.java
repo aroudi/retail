@@ -1,5 +1,6 @@
 package au.com.biztune.retail.dao;
 
+import au.com.biztune.retail.domain.ReportGoodReceivedRow;
 import au.com.biztune.retail.domain.ReportSaleRow;
 import java.util.List;
 
@@ -87,4 +88,12 @@ public interface ReportsDao {
      * @return report data.
      */
     List<ReportSaleRow> runRptPriceByGrade(long orguId, List clauseList, List orderByList);
+
+    /**
+     * get 'Goods Received' reports data.
+     * @param orguId organisationId
+     * @param clauseList ClauseList
+     * @return report data.
+     */
+    List<ReportGoodReceivedRow> runRptGoodsReceived(long orguId, List clauseList);
  }

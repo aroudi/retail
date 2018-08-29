@@ -45,6 +45,7 @@ public class ReportManager {
     private String rptProfitByProduct;
     private String rptWhatIsOnOrder;
     private String rptPriceByGrade;
+    private String rptGoodsReceived;
     @Autowired
     private SessionState sessionState;
     /**
@@ -160,6 +161,13 @@ public class ReportManager {
                     outputFile = pathStr + "/" + rptPriceByGrade + ".pdf";
                     break;
                 default:
+                    break;
+                case IdBConstant.REPORT_KEY_GOODS_RECEIVED :
+                    List <ReportGoodReceivedRow> rowList1 = reportsDao.runRptGoodsReceived(sessionState.getOrgUnit().getId(),
+                            searchClauseList);
+                    beanColDataSource = new JRBeanCollectionDataSource(rowList1);
+                    reportJrxmlName = pathStr + "/" + rptGoodsReceived + ".jrxml";
+                    outputFile = pathStr + "/" + rptGoodsReceived + ".pdf";
                     break;
             }
 
@@ -303,5 +311,13 @@ public class ReportManager {
 
     public void setRptPriceByGrade(String rptPriceByGrade) {
         this.rptPriceByGrade = rptPriceByGrade;
+    }
+
+    public String getRptGoodsReceived() {
+        return rptGoodsReceived;
+    }
+
+    public void setRptGoodsReceived(String rptGoodsReceived) {
+        this.rptGoodsReceived = rptGoodsReceived;
     }
 }

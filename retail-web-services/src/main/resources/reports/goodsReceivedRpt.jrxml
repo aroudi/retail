@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="55379ca5-4396-4444-968e-91e3d84b80ae">
+	<property name="ireport.zoom" value="2.853116706110004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\projects\\IReport\\"]]></defaultValueExpression>
+	</parameter>
+	<!--queryString language="SQL">
+		<![CDATA[select
+	DELIVERY_NOTE_HEADER.DELN_ID delnId,
+	DELIVERY_NOTE_HEADER.DELN_NOTE_NUMBER delnNoteNo,
+	SUPPLIER.SUPPLIER_NAME supplierName,
+	DELIVERY_NOTE_HEADER.DELN_CREATED_DATE delnCreatedDate,
+	DELIVERY_NOTE_HEADER.DELN_DELIVERY_DATE delnDeliveryDate,
+	DELIVERY_NOTE_HEADER.DELN_VALUE_GROSS delnValueGross,
+	DELIVERY_NOTE_HEADER.DELN_VALUE_NETT delnValueNett,
+	DELIVERY_NOTE_HEADER.DELN_STATUS delnStatus,
+	DELIVERY_NOTE_HEADER.FREIGHT_TAX_CODE freightTaxCode,
+	DELIVERY_NOTE_HEADER.FREIGHT_TAX freightTax,
+	DELIVERY_NOTE_HEADER.FREIGHT_AMOUNT freightAmount,
+	DELIVERY_NOTE_HEADER.DELN_SURCHARGE delnSurcharge,
+	spp.CATALOGUE_NO catalogueNo,
+	spp.PART_NO partNo,
+	DELIVERY_NOTE_LINE.DLNL_UNIT_COST dlnlUnitCost,
+	DELIVERY_NOTE_LINE.DLNL_QTY dlnlQty,
+	tlv.TXLV_CODE taxCode,
+	DELIVERY_NOTE_LINE.DLNL_VALUE_TAX dlnlValueTax,
+	DELIVERY_NOTE_LINE.DLNL_VALUE_GROSS dlnlValueGross,
+	DELIVERY_NOTE_LINE.TOTAL_COST totalCost
+ from  DELIVERY_NOTE_HEADER
+	   inner join DELIVERY_NOTE_LINE  on (DELIVERY_NOTE_HEADER.DELN_ID = DELIVERY_NOTE_LINE.DELN_ID)
+	   inner join CONFIG_CATEGORY cc on (DELIVERY_NOTE_HEADER.DELN_STATUS = cc.CATEGORY_ID and cc.CATEGORY_CODE = 'DLV_NOTE_STATUS_COMPLETE')
+	   inner join SUPPLIER SUPPLIER on (DELIVERY_NOTE_HEADER.SUPPLIER_ID = SUPPLIER.SUPPLIER_ID)
+	   inner join SUPP_PROD_PRICE spp on (DELIVERY_NOTE_LINE.SPRC_ID = spp.SPRC_ID)
+	   inner join PRODUCT prd on (spp.PROD_ID = prd.PROD_ID)
+	   inner join TAX_LEG_VARIANCE tlv on (DELIVERY_NOTE_LINE.TXLV_ID = tlv.TXLV_ID)
+	   order by supplierName, delnId]]>
+	</queryString!-->
+	<field name="delnId" class="java.lang.Long"/>
+	<field name="delnNoteNo" class="java.lang.String"/>
+	<field name="supplierName" class="java.lang.String"/>
+	<field name="delnCreatedDate" class="java.sql.Timestamp"/>
+	<field name="delnDeliveryDate" class="java.sql.Timestamp"/>
+	<field name="delnValueGross" class="java.lang.Double"/>
+	<field name="delnValueNett" class="java.lang.Double"/>
+	<field name="freightTaxCode" class="java.lang.String"/>
+	<field name="freightTax" class="java.lang.Double"/>
+	<field name="freightAmount" class="java.lang.Double"/>
+	<field name="delnSurcharge" class="java.lang.Double"/>
+	<field name="catalogueNo" class="java.lang.String"/>
+	<field name="partNo" class="java.lang.String"/>
+	<field name="dlnlUnitCost" class="java.lang.Double"/>
+	<field name="dlnlQty" class="java.lang.Double"/>
+	<field name="taxCode" class="java.lang.String"/>
+	<field name="dlnlValueTax" class="java.lang.Double"/>
+	<field name="dlnlValueGross" class="java.lang.Double"/>
+	<field name="totalCost" class="java.lang.Double"/>
+	<variable name="totalFreight" class="java.lang.Double" resetType="Group" resetGroup="TAX">
+		<variableExpression><![CDATA[$F{freightAmount} + $F{freightTax} ]]></variableExpression>
+	</variable>
+	<variable name="exTaxTotalLine" class="java.lang.Double" resetType="Group" resetGroup="TAX" incrementType="Group" incrementGroup="TAX" calculation="Sum">
+		<variableExpression><![CDATA[$F{delnValueGross}]]></variableExpression>
+	</variable>
+	<variable name="exTaxTotalInv" class="java.lang.Double" resetType="Group" resetGroup="TAX">
+		<variableExpression><![CDATA[$V{exTaxTotalLine} + $F{freightAmount}]]></variableExpression>
+	</variable>
+	<variable name="incTaxTotalLine" class="java.lang.Double" resetType="Group" resetGroup="TAX" incrementType="Group" incrementGroup="TAX" calculation="Sum">
+		<variableExpression><![CDATA[$F{delnValueNett}]]></variableExpression>
+	</variable>
+	<variable name="incTaxTotalInv" class="java.lang.Double" resetType="Group" resetGroup="TAX">
+		<variableExpression><![CDATA[$V{incTaxTotalLine} + $V{totalFreight}]]></variableExpression>
+	</variable>
+	<variable name="taxTotalInv" class="java.lang.Double" resetType="Group" resetGroup="TAX">
+		<variableExpression><![CDATA[$V{taxTotalLine} + $F{freightTax} ]]></variableExpression>
+	</variable>
+	<variable name="taxTotalLine" class="java.lang.Double" resetType="Group" resetGroup="TAX" calculation="Sum">
+		<variableExpression><![CDATA[$F{dlnlValueTax}]]></variableExpression>
+	</variable>
+	<group name="TAX">
+		<groupExpression><![CDATA[$F{delnNoteNo}]]></groupExpression>
+		<groupHeader>
+			<band height="47">
+				<textField isBlankWhenNull="true">
+					<reportElement x="8" y="4" width="369" height="19" uuid="60d01f07-29f8-46f2-858d-558e0e17307d"/>
+					<textElement>
+						<font fontName="Arial" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{supplierName}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement x="326" y="24" width="91" height="20" uuid="9976272c-45bb-40ac-9469-c2b875c3edd3"/>
+					<textFieldExpression><![CDATA[$F{delnCreatedDate}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement x="246" y="24" width="80" height="20" uuid="8038bd4c-e879-431f-b3c5-17d0340b0575"/>
+					<textFieldExpression><![CDATA[$F{delnDeliveryDate}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="551" y="24" width="73" height="20" uuid="c490ffe4-8097-4ead-8722-31d553be8ecd"/>
+					<textFieldExpression><![CDATA[$F{freightTaxCode}]]></textFieldExpression>
+				</textField>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="697" y="25" width="55" height="19" uuid="22f67b06-eb63-412f-953c-688f3b30c004"/>
+					<textFieldExpression><![CDATA[$F{freightTax}]]></textFieldExpression>
+				</textField>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="627" y="24" width="64" height="20" uuid="d5908b45-5786-46d9-a8c5-a28c931dc923"/>
+					<textFieldExpression><![CDATA[$F{freightAmount}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="6" y="24" width="218" height="20" uuid="e7fb5396-174b-4b2b-93b3-2d1d3197d3bd"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{delnNoteNo}]]></textFieldExpression>
+				</textField>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="753" y="24" width="49" height="20" uuid="24489240-44a7-4c8c-b8e8-e85afcb38639"/>
+					<textFieldExpression><![CDATA[$V{totalFreight}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="33">
+				<staticText>
+					<reportElement x="525" y="6" width="69" height="20" uuid="bf4025e3-1acf-4f2e-9488-5d6c2319ef34"/>
+					<textElement>
+						<font fontName="Arial" size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Invoice Totals]]></text>
+				</staticText>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="627" y="6" width="67" height="20" uuid="243e5ab5-3d7f-4816-8ff1-a328acf11802"/>
+					<textFieldExpression><![CDATA[$V{exTaxTotalInv}]]></textFieldExpression>
+				</textField>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="755" y="6" width="47" height="20" uuid="47a05b88-9352-47c6-acf2-6039417ef211"/>
+					<textFieldExpression><![CDATA[$V{incTaxTotalInv}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="697" y="6" width="52" height="20" uuid="da998be6-a15c-46db-9653-def2e5109b76"/>
+					<textFieldExpression><![CDATA[$V{taxTotalInv}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="136" splitType="Stretch">
+			<staticText>
+				<reportElement x="7" y="10" width="203" height="15" uuid="f8428307-e95f-4e17-b4b4-68c1782c42a3"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JOMON ARCHITECTURAL HARDWARE PTY LTD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="57" width="179" height="15" uuid="8703ce78-aaa3-4df5-9b4e-a12d9590f8d3"/>
+				<textElement>
+					<font fontName="Arial" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ABN : 92 084 941 266]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="25" width="217" height="15" uuid="de2aaacf-602b-40ac-8159-af5cb65a8e45"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[32 Spencer St, Five Dock NSW 2046 AUSTRALIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="40" width="222" height="17" uuid="2ef041a5-44f5-4f76-b8de-28ab26602458"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Phone: +61 2  9747 0088     Fax: +61 2 9747 4488]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="292" y="70" width="203" height="18" uuid="2e420e7e-7e3e-42a3-b476-f4caa2f38860"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Goods Received]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="108" width="103" height="18" uuid="a69fc56c-c412-4906-af2b-5a2f6f8e1f4d"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Report Period:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="43" splitType="Stretch">
+			<staticText>
+				<reportElement x="125" y="22" width="45" height="20" uuid="8d133396-a897-47c2-90fa-906e77fda737"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Goods Id]]></text>
+			</staticText>
+			<line>
+				<reportElement x="6" y="36" width="791" height="1" uuid="d62688a5-5cc7-4b5e-b126-04202c450b43"/>
+			</line>
+			<staticText>
+				<reportElement x="8" y="22" width="62" height="20" uuid="58643352-18ea-467e-bb34-25494014021e"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Inv. No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="245" y="22" width="54" height="20" uuid="ea216d45-61b1-4377-865c-61b62cdc9697"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Inv. Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="325" y="22" width="52" height="20" uuid="382213ea-a345-411e-9a8d-fa90d2dd6732"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rec. Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="416" y="22" width="28" height="20" uuid="ba6296f0-968b-4ccc-8c3a-b51374d9d5bd"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cost $]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="487" y="22" width="38" height="20" uuid="c242ac65-0e37-43cf-9744-63131f46ee11"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qty]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="627" y="22" width="35" height="20" uuid="4f56d653-b5a1-4382-a7cd-d7ae8be2038c"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total $]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="753" y="22" width="36" height="20" uuid="b075f3e5-bc51-45bb-9180-251a2ec15dc8"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total $]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="549" y="22" width="32" height="20" uuid="b1473b29-f61e-4dbd-b643-6df6e0690f46"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="691" y="22" width="27" height="20" uuid="a850b632-31d5-4c0a-a13f-21e503f7a366"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="418" y="11" width="28" height="20" uuid="c5607fad-9f5f-41bf-a3be-ce62e6626f9e"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Unit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="551" y="11" width="28" height="20" uuid="faf9121b-dc3b-4bff-882b-faf7f09b4830"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tax]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="624" y="11" width="45" height="20" uuid="290aae81-0c9a-47e7-a0b1-c74d6fc171b3"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[(ex Tax)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="694" y="11" width="28" height="20" uuid="a9dfd550-7126-474d-be35-f216b5520e01"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tax]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="749" y="11" width="45" height="20" uuid="87510a53-d6f6-4cdc-b130-1c659b5e83c7"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[(inc Tax)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="27" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="70" y="7" width="175" height="20" uuid="2cd8b883-4143-4be4-88e2-43613e76e2dc"/>
+				<textFieldExpression><![CDATA[$F{catalogueNo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement x="418" y="7" width="61" height="20" uuid="21758ce7-9b3f-42e2-bec6-57eb11576963"/>
+				<textFieldExpression><![CDATA[$F{dlnlUnitCost}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00">
+				<reportElement x="487" y="7" width="59" height="20" uuid="b679b62c-a3f8-40da-a9c8-377c9f3f29bc"/>
+				<textFieldExpression><![CDATA[$F{dlnlQty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="551" y="7" width="73" height="20" uuid="ffc81adc-18ad-4756-aa60-c3cecd7a6e41"/>
+				<textFieldExpression><![CDATA[$F{taxCode}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement x="627" y="7" width="64" height="20" uuid="ec9d6ead-af16-4736-9f6b-d54cfc7704dd"/>
+				<textFieldExpression><![CDATA[$F{dlnlValueGross}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement x="697" y="7" width="52" height="20" uuid="53a5585c-b612-4814-bd0d-13a590fb80db"/>
+				<textFieldExpression><![CDATA[$F{dlnlValueTax}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement x="753" y="7" width="49" height="20" uuid="3c1a9a62-bed4-4eaa-b214-2b3e5add982f"/>
+				<textFieldExpression><![CDATA[$F{totalCost}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="27" splitType="Stretch"/>
+	</summary>
+</jasperReport>

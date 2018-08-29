@@ -35,6 +35,27 @@
         <result column="qtyAvailable" property="qtyAvailable" />
         <result column="stockValue" property="stockValue" />
     </resultMap>
+    <resultMap id="reportGoodsReceivedMap" type="ReportGoodReceivedRow" >
+        <result column="delnId" property="delnId" />
+        <result column="delnNoteNo" property="delnNoteNo" />
+        <result column="supplierName" property="supplierName" />
+        <result column="delnCreatedDate" property="delnCreatedDate" />
+        <result column="delnDeliveryDate" property="delnDeliveryDate" />
+        <result column="delnValueGross" property="delnValueGross" />
+        <result column="delnValueNett" property="delnValueNett" />
+        <result column="freightTaxCode" property="freightTaxCode" />
+        <result column="freightTax" property="freightTax" />
+        <result column="freightAmount" property="freightAmount" />
+        <result column="delnSurcharge" property="delnSurcharge" />
+        <result column="catalogueNo" property="catalogueNo" />
+        <result column="partNo" property="partNo" />
+        <result column="dlnlUnitCost" property="dlnlUnitCost" />
+        <result column="dlnlQty" property="dlnlQty" />
+        <result column="taxCode" property="taxCode" />
+        <result column="dlnlValueTax" property="dlnlValueTax" />
+        <result column="dlnlValueGross" property="dlnlValueGross" />
+        <result column="totalCost" property="totalCost" />
+    </resultMap>
     <select id="runRptSaleByMonthReport" resultMap="reportSaleMap" >
         select supplier.SUPPLIER_ID supplierId,
                supplier.SUPPLIER_NAME supplierName,
@@ -809,5 +830,44 @@
             </foreach>
         </if>
     </select>
-
+    <select id="runRptGoodsReceived" resultMap="reportGoodsReceivedMap" >
+select
+	DELIVERY_NOTE_HEADER.DELN_ID delnId,
+	DELIVERY_NOTE_HEADER.DELN_NOTE_NUMBER delnNoteNo,
+	SUPPLIER.SUPPLIER_NAME supplierName,
+	DELIVERY_NOTE_HEADER.DELN_CREATED_DATE delnCreatedDate,
+	DELIVERY_NOTE_HEADER.DELN_DELIVERY_DATE delnDeliveryDate,
+	DELIVERY_NOTE_HEADER.DELN_VALUE_GROSS delnValueGross,
+	DELIVERY_NOTE_HEADER.DELN_VALUE_NETT delnValueNett,
+	DELIVERY_NOTE_HEADER.DELN_STATUS delnStatus,
+	DELIVERY_NOTE_HEADER.FREIGHT_TAX_CODE freightTaxCode,
+	DELIVERY_NOTE_HEADER.FREIGHT_TAX freightTax,
+	DELIVERY_NOTE_HEADER.FREIGHT_AMOUNT freightAmount,
+	DELIVERY_NOTE_HEADER.DELN_SURCHARGE delnSurcharge,
+	spp.CATALOGUE_NO catalogueNo,
+	spp.PART_NO partNo,
+	DELIVERY_NOTE_LINE.DLNL_UNIT_COST dlnlUnitCost,
+	DELIVERY_NOTE_LINE.DLNL_QTY dlnlQty,
+	tlv.TXLV_CODE taxCode,
+	DELIVERY_NOTE_LINE.DLNL_VALUE_TAX dlnlValueTax,
+	DELIVERY_NOTE_LINE.DLNL_VALUE_GROSS dlnlValueGross,
+	DELIVERY_NOTE_LINE.TOTAL_COST totalCost
+	--DELIVERY_NOTE_LINE.
+ from  DELIVERY_NOTE_HEADER
+	   inner join DELIVERY_NOTE_LINE  on (DELIVERY_NOTE_HEADER.DELN_ID = DELIVERY_NOTE_LINE.DELN_ID)
+	   inner join CONFIG_CATEGORY cc on (DELIVERY_NOTE_HEADER.DELN_STATUS = cc.CATEGORY_ID and cc.CATEGORY_CODE = 'DLV_NOTE_STATUS_COMPLETE')
+	   inner join SUPPLIER SUPPLIER on (DELIVERY_NOTE_HEADER.SUPPLIER_ID = SUPPLIER.SUPPLIER_ID)
+	   inner join SUPP_PROD_PRICE spp on (DELIVERY_NOTE_LINE.SPRC_ID = spp.SPRC_ID)
+	   inner join PRODUCT prd on (spp.PROD_ID = prd.PROD_ID)
+	   inner join TAX_LEG_VARIANCE tlv on (DELIVERY_NOTE_LINE.TXLV_ID = tlv.TXLV_ID)
+        where DELIVERY_NOTE_HEADER.ORGU_ID = #{param1}
+        <if test="param2 != null">
+            AND
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                ${item.column} ${item.operator} ${item.value}
+            </foreach>
+        </if>
+	   order by supplierName, delnId
+    </select>
 </mapper>
