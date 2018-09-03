@@ -46,6 +46,7 @@ public class ReportManager {
     private String rptWhatIsOnOrder;
     private String rptPriceByGrade;
     private String rptGoodsReceived;
+    private String rptWhatIsInStock;
     @Autowired
     private SessionState sessionState;
     /**
@@ -168,6 +169,28 @@ public class ReportManager {
                     beanColDataSource = new JRBeanCollectionDataSource(rowList1);
                     reportJrxmlName = pathStr + "/" + rptGoodsReceived + ".jrxml";
                     outputFile = pathStr + "/" + rptGoodsReceived + ".pdf";
+                    break;
+                case IdBConstant.REPORT_KEY_WHAT_IS_IN_STOCK :
+                    additionalSearchClauseList = SearchClauseBuilder.buildReportingSearchAdditionalClauseList(reportParamList, IdBConstant.REPORTS_PARAM_GROUPBY);
+                    //add new parameter for GroupBy
+                    populateReportParams(parameters, additionalSearchClauseList);
+
+                    rowList = reportsDao.runRptWhatIsInStock(sessionState.getOrgUnit().getId(),
+                            searchClauseList, additionalSearchClauseList);
+                    beanColDataSource = new JRBeanCollectionDataSource(rowList);
+                    reportJrxmlName = pathStr + "/" + rptWhatIsInStock + ".jrxml";
+                    outputFile = pathStr + "/" + rptWhatIsInStock + ".pdf";
+                    break;
+                case IdBConstant.REPORT_KEY_WHAT_IS_ON_ORDER :
+                    additionalSearchClauseList = SearchClauseBuilder.buildReportingSearchAdditionalClauseList(reportParamList, IdBConstant.REPORTS_PARAM_GROUPBY);
+                    //add new parameter for GroupBy
+                    populateReportParams(parameters, additionalSearchClauseList);
+
+                    rowList = reportsDao.runRptWhatIsOnOrder(sessionState.getOrgUnit().getId(),
+                            searchClauseList, additionalSearchClauseList);
+                    beanColDataSource = new JRBeanCollectionDataSource(rowList);
+                    reportJrxmlName = pathStr + "/" + rptWhatIsOnOrder + ".jrxml";
+                    outputFile = pathStr + "/" + rptWhatIsOnOrder + ".pdf";
                     break;
             }
 
@@ -319,5 +342,13 @@ public class ReportManager {
 
     public void setRptGoodsReceived(String rptGoodsReceived) {
         this.rptGoodsReceived = rptGoodsReceived;
+    }
+
+    public String getRptWhatIsInStock() {
+        return rptWhatIsInStock;
+    }
+
+    public void setRptWhatIsInStock(String rptWhatIsInStock) {
+        this.rptWhatIsInStock = rptWhatIsInStock;
     }
 }

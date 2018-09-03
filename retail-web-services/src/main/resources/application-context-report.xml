@@ -53,5 +53,6 @@
         <property name="rptWhatIsOnOrder" value="whatIsOnOrderRpt" />
         <property name="rptPriceByGrade" value="priceByGradeRpt" />
         <property name="rptGoodsReceived" value="goodsReceivedRpt" />
+        <property name="rptWhatIsInStock" value="whatIsInStockRpt" />
     </bean>
 </beans>

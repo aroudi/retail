@@ -763,4 +763,8 @@ public interface IdBConstant {
      * Report Key GOODS_RECEIVED
      */
     String REPORT_KEY_GOODS_RECEIVED = "GOODS_RECEIVED";
+    /**
+     * Report Key WHAT_IS_IN_STOCK
+     */
+    String REPORT_KEY_WHAT_IS_IN_STOCK = "WHAT_IS_IN_STOCK";
 }

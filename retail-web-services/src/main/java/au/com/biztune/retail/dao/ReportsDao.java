@@ -78,15 +78,6 @@ public interface ReportsDao {
      * @param orderByList orderByList
      * @return report data.
      */
-    List<ReportSaleRow> runRptWhatIsOnOrder(long orguId, List clauseList, List orderByList);
-
-    /**
-     * get 'Price By Grade' reports data.
-     * @param orguId organisationId
-     * @param clauseList ClauseList
-     * @param orderByList orderByList
-     * @return report data.
-     */
     List<ReportSaleRow> runRptPriceByGrade(long orguId, List clauseList, List orderByList);
 
     /**
@@ -96,4 +87,23 @@ public interface ReportsDao {
      * @return report data.
      */
     List<ReportGoodReceivedRow> runRptGoodsReceived(long orguId, List clauseList);
+
+    /**
+     * get 'What is on stock' reports data.
+     * @param orguId organisationId
+     * @param clauseList ClauseList
+     * @param orderByList orderByList
+     * @return report data.
+     */
+    List<ReportSaleRow> runRptWhatIsInStock(long orguId, List clauseList, List orderByList);
+
+    /**
+     * get 'What is On Order' reports data.
+     * @param orguId organisationId
+     * @param clauseList ClauseList
+     * @param orderByList orderByList
+     * @return report data.
+     */
+    List<ReportSaleRow> runRptWhatIsOnOrder(long orguId, List clauseList, List orderByList);
+
  }

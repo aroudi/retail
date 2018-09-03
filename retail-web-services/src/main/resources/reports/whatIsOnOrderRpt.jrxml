@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="55379ca5-4396-4444-968e-91e3d84b80ae">
+	<property name="ireport.zoom" value="1.3310000000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="DateFrom" class="java.sql.Timestamp" isForPrompting="false"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\projects\\IReport\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DateTo" class="java.sql.Timestamp" isForPrompting="false"/>
+	<parameter name="GroupBy" class="java.lang.String"/>
+	<!--queryString language="SQL">
+		<![CDATA[SELECT * ,
+    PROD_CAT_1 prodCat1,
+    PROD_CAT_2 prodCat2,
+    PROD_CAT_3 prodCat3
+    FROM
+    (
+            SELECT
+                prodSku,
+                prodBarcode,
+                prodName,
+                prodRef,
+                catalogueNo,
+                partNo,
+                supplierId,
+                supplierName,
+                expectedDate,
+                orderDate,
+                orderNo,
+                orderedBy,
+                qtyOnOrder,
+                qtyBackOrder,
+                qtyTotal,
+                taxCode,
+                totalExTax,
+                totalIncTax,
+                prodCost,
+                deptName,
+                [CATH_TYPE_CONST],
+                [CAT_VALUE]
+            FROM
+            (
+
+				select
+					product.PROD_SKU prodSku,
+					product.PROD_BARCODE prodBarcode,
+					product.PROD_NAME prodName,
+					product.REFERENCE prodRef,
+					supp_prod_price.CATALOGUE_NO catalogueNo,
+					supp_prod_price.PART_NO partNo,
+					PURCHASE_ORDER_HEADER.POH_EXP_DELIVERY expectedDate,
+					PURCHASE_ORDER_HEADER.POH_CREATED_DATE orderDate,
+					PURCHASE_ORDER_HEADER.POH_ORDER_NUMBER orderNo,
+					APP_USER.USR_FIRST_NAME + ' ' + APP_USER.USR_SUR_NAME orderedBy,
+					PURCHASE_LINE.POL_UNIT_COST prodCost,
+					qtyOnOrder =
+						CASE PURCHASE_LINE.POL_QTY_RECEIVED
+							WHEN 0 THEN PURCHASE_LINE.POL_QTY_ORDERED
+							ELSE 0
+						END,
+					qtyBackOrder =
+						CASE PURCHASE_LINE.POL_QTY_RECEIVED
+							WHEN 0 THEN 0
+							ELSE PURCHASE_LINE.POL_QTY_ORDERED - PURCHASE_LINE.POL_QTY_RECEIVED
+						END,
+					qtyTotal =
+						CASE PURCHASE_LINE.POL_QTY_RECEIVED
+							WHEN PURCHASE_LINE.POL_QTY_ORDERED THEN 0
+							ELSE PURCHASE_LINE.POL_QTY_ORDERED
+						END,
+					TAX_LEG_VARIANCE.TXLV_CODE taxCode,
+					PURCHASE_LINE.POL_VALUE_GROSS totalExTax,
+					PURCHASE_LINE.POL_VALUE_ORDERED totalIncTax,
+					PRODUCT_GROUP.DEPT_NAME deptName,
+					PRODUCT_GROUP.CATH_TYPE_CONST,
+					PRODUCT_GROUP.CATH_NAME,
+					PRODUCT_GROUP.CAT_VALUE,
+					supplier.SUPPLIER_ID supplierId,
+					supplier.SUPPLIER_NAME supplierName,
+                    PRODUCT_GROUP.CAT_VAL_ID
+
+				from PURCHASE_ORDER_HEADER
+					 inner join PURCHASE_LINE ON (PURCHASE_ORDER_HEADER.POH_ID = PURCHASE_LINE.POH_ID)
+					 inner join PRODUCT on (PURCHASE_LINE.POL_PROD_ID = PRODUCT.PROD_ID)
+					 inner join SUPP_PROD_PRICE supp_prod_price on (supp_prod_price.PROD_ID = product.PROD_ID and supp_prod_price.SPRC_PREFER_BUY = 1)
+					 inner join SUPPLIER supplier on (PURCHASE_ORDER_HEADER.SUPPLIER_ID = SUPPLIER.SUPPLIER_ID)
+					 inner join CONFIG_CATEGORY ON (CONFIG_CATEGORY.CATEGORY_ID = PURCHASE_ORDER_HEADER.POH_STATUS AND CONFIG_CATEGORY.CATEGORY_CODE IN ('POH_STATUS_CONFIRMED','POH_STATUS_PARTIAL_REC'))
+					 left outer join TAX_LEG_VARIANCE ON (PURCHASE_LINE.TXLV_ID = TAX_LEG_VARIANCE.TXRL_ID)
+					 left outer join APP_USER on (APP_USER.USR_ID = PURCHASE_ORDER_HEADER.POH_LAST_MODIFIED_BY)
+					left outer join
+						(
+								select
+									prod_id,
+									DEPARTMENT.DEPT_NAME,
+									DEPT_CATEGORY.CATH_TYPE_CONST,
+									CATEGORY_HEADING.CATH_NAME,
+									CATEGORY_VALUE.CAT_VALUE,
+                                    PROD_DEPT_CAT.CAT_VAL_ID
+        from
+									PROD_DEPT_CAT inner join DEPT_CATEGORY on (PROD_DEPT_CAT.DEPT_ID = DEPT_CATEGORY.DEPT_ID AND PROD_DEPT_CAT.CAT_ID = DEPT_CATEGORY.CATH_ID )
+									INNER JOIN CATEGORY_VALUE ON (PROD_DEPT_CAT.CAT_VAL_ID = CATEGORY_VALUE.CATV_ID)
+									INNER JOIN CATEGORY_HEADING on (PROD_DEPT_CAT.CAT_ID = CATEGORY_HEADING.CATH_ID)
+									INNER JOIN DEPARTMENT ON (PROD_DEPT_CAT.DEPT_ID = DEPARTMENT.DEPT_ID)
+
+						) PRODUCT_GROUP on (PRODUCT.PROD_ID = PRODUCT_GROUP.PROD_ID)
+                        WHERE PURCHASE_ORDER_HEADER.ORGU_ID = 1
+           ) QUERY1 where qtyTotal > 0
+        ) AS SourceTable	  PIVOT ( MAX ([CAT_VALUE]) FOR [CATH_TYPE_CONST] IN ([PROD_CAT_1],[PROD_CAT_2],[PROD_CAT_3])) AS PivotTable]]>
+	</queryString-->
+	<field name="prodSku" class="java.lang.String"/>
+	<field name="prodBarcode" class="java.lang.String"/>
+	<field name="prodName" class="java.lang.String"/>
+	<field name="prodRef" class="java.lang.String"/>
+	<field name="catalogueNo" class="java.lang.String"/>
+	<field name="partNo" class="java.lang.String"/>
+	<field name="supplierName" class="java.lang.String"/>
+	<field name="expectedDate" class="java.sql.Timestamp"/>
+	<field name="orderDate" class="java.sql.Timestamp"/>
+	<field name="orderNo" class="java.lang.String"/>
+	<field name="orderedBy" class="java.lang.String"/>
+	<field name="qtyOnOrder" class="java.lang.Double"/>
+	<field name="qtyBackOrder" class="java.lang.Double"/>
+	<field name="qtyTotal" class="java.lang.Double"/>
+	<field name="taxCode" class="java.lang.String"/>
+	<field name="totalExTax" class="java.lang.Double"/>
+	<field name="totalIncTax" class="java.lang.Double"/>
+	<field name="prodCost" class="java.lang.Double"/>
+	<field name="deptName" class="java.lang.String"/>
+	<field name="prodCat1" class="java.lang.String"/>
+	<field name="prodCat2" class="java.lang.String"/>
+	<field name="prodCat3" class="java.lang.String"/>
+	<variable name="groupTotalOnOrder" class="java.lang.Double" resetType="Group" resetGroup="TAX" calculation="Sum">
+		<variableExpression><![CDATA[$F{qtyOnOrder}]]></variableExpression>
+	</variable>
+	<variable name="groupQtyBOrder" class="java.lang.Double" resetType="Group" resetGroup="TAX" calculation="Sum">
+		<variableExpression><![CDATA[$F{qtyBackOrder}]]></variableExpression>
+	</variable>
+	<variable name="groupQtyTotal" class="java.lang.Double" resetType="Group" resetGroup="TAX" calculation="Sum">
+		<variableExpression><![CDATA[$F{qtyTotal}]]></variableExpression>
+	</variable>
+	<variable name="reportQtyOnOrder" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{qtyOnOrder}]]></variableExpression>
+	</variable>
+	<variable name="reportQtyBOrder" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{qtyBackOrder}]]></variableExpression>
+	</variable>
+	<variable name="reportQtyTotal" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{qtyTotal}]]></variableExpression>
+	</variable>
+	<variable name="groupTotalValue" class="java.lang.Double" resetType="Group" resetGroup="TAX" calculation="Sum">
+		<variableExpression><![CDATA[$F{totalExTax}]]></variableExpression>
+	</variable>
+	<variable name="reportTotalValue" class="java.lang.Double" resetType="Group" resetGroup="TAX" calculation="Sum">
+		<variableExpression><![CDATA[$F{totalExTax}]]></variableExpression>
+	</variable>
+	<group name="TAX">
+		<groupExpression><![CDATA[("Department".equals($P{GroupBy})) ? $F{deptName} : ( ("Category 1".equals($P{GroupBy})) ? $F{prodCat1} : (("Category 2".equals($P{GroupBy})) ? $F{prodCat2} : (("Category 3".equals($P{GroupBy})) ? $F{prodCat3} : $F{supplierName}))  )]]></groupExpression>
+		<groupHeader>
+			<band height="23">
+				<textField isBlankWhenNull="true">
+					<reportElement x="8" y="4" width="414" height="19" uuid="60d01f07-29f8-46f2-858d-558e0e17307d"/>
+					<textElement>
+						<font fontName="Arial" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[("Department".equals($P{GroupBy})) ? $F{deptName} : ( ("Category 1".equals($P{GroupBy})) ? $F{prodCat1} : (("Category 2".equals($P{GroupBy})) ? $F{prodCat2} : (("Category 3".equals($P{GroupBy})) ? $F{prodCat3} : $F{supplierName}))  )]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="36">
+				<line>
+					<reportElement x="519" y="3" width="259" height="1" uuid="19ec1dd1-74dd-4fa4-b44a-4986f9d21102"/>
+				</line>
+				<line>
+					<reportElement x="538" y="33" width="259" height="1" uuid="b08e38ed-bbeb-495c-a693-7e187c569b82"/>
+				</line>
+				<staticText>
+					<reportElement x="403" y="8" width="100" height="20" uuid="003bd784-1187-474f-be54-369c70d5bd36"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Group Total]]></text>
+				</staticText>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="557" y="7" width="63" height="20" uuid="c2ebae54-fe5c-4e3e-8a6d-67b4f13a8719"/>
+					<textFieldExpression><![CDATA[$V{groupTotalOnOrder}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="616" y="7" width="42" height="20" uuid="d341db48-7c1f-4722-ac6a-6765d33963c8"/>
+					<textFieldExpression><![CDATA[$V{groupQtyBOrder}]]></textFieldExpression>
+				</textField>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="728" y="7" width="69" height="20" uuid="1f491690-5384-4211-b743-15b74f8bc9e8"/>
+					<textFieldExpression><![CDATA[$V{groupTotalValue}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="668" y="7" width="58" height="20" uuid="c016116a-9d0a-4c9d-8477-2852094150b6"/>
+					<textFieldExpression><![CDATA[$V{groupQtyTotal}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="150" splitType="Stretch">
+			<staticText>
+				<reportElement x="7" y="10" width="203" height="15" uuid="f8428307-e95f-4e17-b4b4-68c1782c42a3"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JOMON ARCHITECTURAL HARDWARE PTY LTD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="57" width="179" height="15" uuid="8703ce78-aaa3-4df5-9b4e-a12d9590f8d3"/>
+				<textElement>
+					<font fontName="Arial" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ABN : 92 084 941 266]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="25" width="217" height="15" uuid="de2aaacf-602b-40ac-8159-af5cb65a8e45"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[32 Spencer St, Five Dock NSW 2046 AUSTRALIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="40" width="222" height="17" uuid="2ef041a5-44f5-4f76-b8de-28ab26602458"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Phone: +61 2  9747 0088     Fax: +61 2 9747 4488]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="292" y="70" width="203" height="18" uuid="2e420e7e-7e3e-42a3-b476-f4caa2f38860"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[What's On Order]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="8" y="100" width="103" height="18" uuid="15bf8369-a76f-41f0-8884-f9c76d83d20e"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Expected Date:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="132" width="103" height="18" uuid="a69fc56c-c412-4906-af2b-5a2f6f8e1f4d"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Group By:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="113" y="132" width="83" height="18" uuid="86fa0235-9f09-4b0b-8fee-1755805bb6e6"/>
+				<textFieldExpression><![CDATA[$P{GroupBy}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="209" y="100" width="22" height="20" uuid="28db8326-f38a-4370-8a10-7f1bbaeefce4"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[To]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="124" y="100" width="72" height="20" uuid="9fa20394-b2e1-4219-84eb-9c0e1ea01c96"/>
+				<textFieldExpression><![CDATA[$P{DateFrom}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="245" y="100" width="79" height="20" uuid="4bd10053-5674-4ebe-8254-2951e0a5b4f0"/>
+				<textFieldExpression><![CDATA[$P{DateTo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="357" y="13" width="45" height="13" uuid="a0ac230c-bab5-4706-afc0-4812e373fc84"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Staff]]></text>
+			</staticText>
+			<line>
+				<reportElement x="6" y="26" width="791" height="1" uuid="d62688a5-5cc7-4b5e-b126-04202c450b43"/>
+			</line>
+			<staticText>
+				<reportElement x="8" y="13" width="62" height="20" uuid="58643352-18ea-467e-bb34-25494014021e"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="441" y="14" width="49" height="13" uuid="c242ac65-0e37-43cf-9744-63131f46ee11"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Unit Cost]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="441" y="2" width="60" height="13" uuid="29743f41-a077-463c-9354-e6533799f171"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[(Ex Tax)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="303" y="14" width="45" height="13" uuid="4f56d653-b5a1-4382-a7cd-d7ae8be2038c"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Order No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="616" y="12" width="42" height="20" uuid="b075f3e5-bc51-45bb-9180-251a2ec15dc8"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[B Order]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="668" y="12" width="33" height="20" uuid="35052c73-8ae0-4056-b2a8-f3157d79fd03"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="203" y="2" width="60" height="13" uuid="2f4d40f6-83e9-4e58-888d-53db0a1e4860"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Date Order]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="167" y="14" width="49" height="13" uuid="38d5e708-5316-4592-8dcc-605a94028293"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Placed]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="238" y="15" width="49" height="13" uuid="8324adb1-b7cb-4542-8475-cd55f4a49c43"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Expected]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="506" y="14" width="44" height="20" uuid="f2a21c56-5b1f-4966-af46-a659b82258ed"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="506" y="4" width="51" height="18" uuid="b9ec4016-241b-44d1-bc0e-7f246e8a7553"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tax]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="557" y="14" width="44" height="17" uuid="f5880d14-90d1-41f7-9cff-f77d61adce76"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[On Order]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="557" y="4" width="51" height="18" uuid="7962dd48-e2c3-4830-b5ad-5a64fbd3fdb7"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Currently]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="728" y="12" width="33" height="20" uuid="d8c2e685-b769-4bd8-b644-2c79822a7fc2"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Value]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="8" y="0" width="146" height="20" uuid="cb75c551-f0ab-4492-9930-82d262222416"/>
+				<textFieldExpression><![CDATA[$F{prodSku}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="167" y="0" width="71" height="20" uuid="6c5a8dcd-bf5a-4d17-b44c-663bf1df4b94"/>
+				<textFieldExpression><![CDATA[$F{orderDate}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="238" y="1" width="65" height="20" uuid="16eee86f-6d71-4adf-bf46-1d15bf506a94"/>
+				<textFieldExpression><![CDATA[$F{expectedDate}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="303" y="0" width="62" height="20" uuid="b5937a95-744c-4153-840d-56520e28318a"/>
+				<textFieldExpression><![CDATA[$F{orderNo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="360" y="0" width="81" height="20" uuid="bbb5ce61-1375-4f4b-bbed-62e00a979e4e"/>
+				<textFieldExpression><![CDATA[$F{orderedBy}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement x="441" y="0" width="65" height="20" uuid="7327aca7-8c46-4f6c-aada-77d33c3da242"/>
+				<textFieldExpression><![CDATA[$F{prodCost}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="506" y="0" width="44" height="20" uuid="5ed05f09-1ae9-454d-9966-baccf2175686"/>
+				<textFieldExpression><![CDATA[$F{taxCode}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="557" y="0" width="64" height="20" uuid="34f8d8de-a68b-4c21-a304-eb591c209a4d"/>
+				<textFieldExpression><![CDATA[$F{qtyOnOrder}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="616" y="0" width="44" height="20" uuid="6efa7bde-5b0a-4e9d-91c2-149427d5ea19"/>
+				<textFieldExpression><![CDATA[$F{qtyBackOrder}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="668" y="0" width="58" height="20" uuid="9e956436-0adc-4b81-89ab-986f423035c8"/>
+				<textFieldExpression><![CDATA[$F{qtyTotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement x="728" y="0" width="69" height="20" uuid="e3e80b3e-1fc4-44cf-84de-17841980f9bf"/>
+				<textFieldExpression><![CDATA[$F{totalExTax}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch">
+			<line>
+				<reportElement x="538" y="11" width="259" height="1" uuid="47c4df39-9519-4951-aab2-771c292f35ea"/>
+			</line>
+			<staticText>
+				<reportElement x="412" y="13" width="90" height="20" uuid="b22c9dce-9a84-49c1-98e1-0f5501b06785"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Report Totals]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="557" y="13" width="56" height="20" uuid="9445d854-be94-4410-9c85-b69b6e1309b9"/>
+				<textFieldExpression><![CDATA[$V{reportQtyOnOrder}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="616" y="13" width="42" height="20" uuid="8bf14fbc-9681-4060-9b06-db3b4b97dee3"/>
+				<textFieldExpression><![CDATA[$V{reportQtyBOrder}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="668" y="13" width="58" height="20" uuid="0155aa8e-a565-4395-96e3-784fc53312ce"/>
+				<textFieldExpression><![CDATA[$V{reportQtyTotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement x="728" y="13" width="69" height="20" uuid="3e4c5720-3f3a-4bbf-af39-d6397ea0f095"/>
+				<textFieldExpression><![CDATA[$V{reportTotalValue}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

@@ -12,7 +12,16 @@ public class ReportSaleRow {
     private String prodBarcode;
     private String prodName;
     private String prodRef;
+    private String catalogueNo;
+    private String partNo;
+    private java.sql.Timestamp expectedDate;
+    private java.sql.Timestamp orderDate;
     private String client;
+    private String orderNo;
+    private String orderedBy;
+    private double qtyOnOrder;
+    private double qtyBackOrder;
+    private double qtyTotal;
     private double prodCost;
     private double profitMargin;
     private double prodProfit;
@@ -401,5 +410,77 @@ public class ReportSaleRow {
 
     public void setdGradeGp(double dGradeGp) {
         this.dGradeGp = dGradeGp;
+    }
+
+    public String getCatalogueNo() {
+        return catalogueNo;
+    }
+
+    public void setCatalogueNo(String catalogueNo) {
+        this.catalogueNo = catalogueNo;
+    }
+
+    public String getPartNo() {
+        return partNo;
+    }
+
+    public void setPartNo(String partNo) {
+        this.partNo = partNo;
+    }
+
+    public Timestamp getExpectedDate() {
+        return expectedDate;
+    }
+
+    public void setExpectedDate(Timestamp expectedDate) {
+        this.expectedDate = expectedDate;
+    }
+
+    public Timestamp getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Timestamp orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public String getOrderedBy() {
+        return orderedBy;
+    }
+
+    public void setOrderedBy(String orderedBy) {
+        this.orderedBy = orderedBy;
+    }
+
+    public double getQtyOnOrder() {
+        return qtyOnOrder;
+    }
+
+    public void setQtyOnOrder(double qtyOnOrder) {
+        this.qtyOnOrder = qtyOnOrder;
+    }
+
+    public double getQtyBackOrder() {
+        return qtyBackOrder;
+    }
+
+    public void setQtyBackOrder(double qtyBackOrder) {
+        this.qtyBackOrder = qtyBackOrder;
+    }
+
+    public double getQtyTotal() {
+        return qtyTotal;
+    }
+
+    public void setQtyTotal(double qtyTotal) {
+        this.qtyTotal = qtyTotal;
     }
 }

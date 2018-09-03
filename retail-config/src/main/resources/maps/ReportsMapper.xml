@@ -526,7 +526,7 @@
         </if>
     </select>
 
-    <select id="runRptWhatIsOnOrder" resultMap="reportSaleMap" >
+    <!--select id="runRptWhatIsOnOrder" resultMap="reportSaleMap" >
 
     SELECT * ,
     PROD_CAT_1 prodCat1,
@@ -630,7 +630,7 @@
                     ${item.value}
                 </foreach>
             </if>
-    </select>
+    </select-->
     <select id="runRptPriceByGrade" resultMap="reportSaleMap" >
         SELECT * ,
         PROD_CAT_1 prodCat1,
@@ -869,5 +869,200 @@ select
             </foreach>
         </if>
 	   order by supplierName, delnId
+    </select>
+
+    <select id="runRptWhatIsOnOrder" resultMap="reportSaleMap" >
+        SELECT * ,
+        PROD_CAT_1 prodCat1,
+        PROD_CAT_2 prodCat2,
+        PROD_CAT_3 prodCat3
+        FROM
+        (
+        SELECT
+        prodSku,
+        prodBarcode,
+        prodName,
+        prodRef,
+        catalogueNo,
+        partNo,
+        supplierId,
+        supplierName,
+        expectedDate,
+        orderDate,
+        orderNo,
+        orderedBy,
+        qtyOnOrder,
+        qtyBackOrder,
+        qtyTotal,
+        taxCode,
+        totalExTax,
+        totalIncTax,
+        prodCost,
+        deptName,
+        [CATH_TYPE_CONST],
+        [CAT_VALUE]
+        FROM
+        (
+
+        select
+        product.PROD_SKU prodSku,
+        product.PROD_BARCODE prodBarcode,
+        product.PROD_NAME prodName,
+        product.REFERENCE prodRef,
+        supp_prod_price.CATALOGUE_NO catalogueNo,
+        supp_prod_price.PART_NO partNo,
+        PURCHASE_ORDER_HEADER.POH_EXP_DELIVERY expectedDate,
+        PURCHASE_ORDER_HEADER.POH_CREATED_DATE orderDate,
+        PURCHASE_ORDER_HEADER.POH_ORDER_NUMBER orderNo,
+        APP_USER.USR_FIRST_NAME + ' ' + APP_USER.USR_SUR_NAME orderedBy,
+        PURCHASE_LINE.POL_UNIT_COST prodCost,
+        qtyOnOrder =
+        CASE PURCHASE_LINE.POL_QTY_RECEIVED
+        WHEN 0 THEN PURCHASE_LINE.POL_QTY_ORDERED
+        ELSE 0
+        END,
+        qtyBackOrder =
+        CASE PURCHASE_LINE.POL_QTY_RECEIVED
+        WHEN 0 THEN 0
+        ELSE PURCHASE_LINE.POL_QTY_ORDERED - PURCHASE_LINE.POL_QTY_RECEIVED
+        END,
+        qtyTotal =
+        CASE PURCHASE_LINE.POL_QTY_RECEIVED
+        WHEN PURCHASE_LINE.POL_QTY_ORDERED THEN 0
+        ELSE PURCHASE_LINE.POL_QTY_ORDERED
+        END,
+        TAX_LEG_VARIANCE.TXLV_CODE taxCode,
+        PURCHASE_LINE.POL_VALUE_GROSS totalExTax,
+        PURCHASE_LINE.POL_VALUE_ORDERED totalIncTax,
+        PRODUCT_GROUP.DEPT_NAME deptName,
+        PRODUCT_GROUP.CATH_TYPE_CONST,
+        PRODUCT_GROUP.CATH_NAME,
+        PRODUCT_GROUP.CAT_VALUE,
+        supplier.SUPPLIER_ID supplierId,
+        supplier.SUPPLIER_NAME supplierName,
+        PRODUCT_GROUP.CAT_VAL_ID
+
+        from PURCHASE_ORDER_HEADER
+        inner join PURCHASE_LINE ON (PURCHASE_ORDER_HEADER.POH_ID = PURCHASE_LINE.POH_ID)
+        inner join PRODUCT on (PURCHASE_LINE.POL_PROD_ID = PRODUCT.PROD_ID)
+        inner join SUPP_PROD_PRICE supp_prod_price on (supp_prod_price.PROD_ID = product.PROD_ID and supp_prod_price.SPRC_PREFER_BUY = 1)
+        inner join SUPPLIER supplier on (PURCHASE_ORDER_HEADER.SUPPLIER_ID = SUPPLIER.SUPPLIER_ID)
+        inner join CONFIG_CATEGORY ON (CONFIG_CATEGORY.CATEGORY_ID = PURCHASE_ORDER_HEADER.POH_STATUS AND CONFIG_CATEGORY.CATEGORY_CODE IN ('POH_STATUS_CONFIRMED','POH_STATUS_PARTIAL_REC'))
+        left outer join TAX_LEG_VARIANCE ON (PURCHASE_LINE.TXLV_ID = TAX_LEG_VARIANCE.TXRL_ID)
+        left outer join APP_USER on (APP_USER.USR_ID = PURCHASE_ORDER_HEADER.POH_LAST_MODIFIED_BY)
+        left outer join
+        (
+        select
+        prod_id,
+        DEPARTMENT.DEPT_NAME,
+        DEPT_CATEGORY.CATH_TYPE_CONST,
+        CATEGORY_HEADING.CATH_NAME,
+        CATEGORY_VALUE.CAT_VALUE,
+        PROD_DEPT_CAT.CAT_VAL_ID
+        from
+        PROD_DEPT_CAT inner join DEPT_CATEGORY on (PROD_DEPT_CAT.DEPT_ID = DEPT_CATEGORY.DEPT_ID AND PROD_DEPT_CAT.CAT_ID = DEPT_CATEGORY.CATH_ID )
+        INNER JOIN CATEGORY_VALUE ON (PROD_DEPT_CAT.CAT_VAL_ID = CATEGORY_VALUE.CATV_ID)
+        INNER JOIN CATEGORY_HEADING on (PROD_DEPT_CAT.CAT_ID = CATEGORY_HEADING.CATH_ID)
+        INNER JOIN DEPARTMENT ON (PROD_DEPT_CAT.DEPT_ID = DEPARTMENT.DEPT_ID)
+
+        ) PRODUCT_GROUP on (PRODUCT.PROD_ID = PRODUCT_GROUP.PROD_ID)
+        WHERE PURCHASE_ORDER_HEADER.ORGU_ID = 1
+        <if test="param2 != null">
+            AND
+            <foreach collection="param2" item="item" index="index"
+                     open ="(" separator=" AND " close=")">
+                ${item.column} ${item.operator} ${item.value}
+            </foreach>
+        </if>
+        ) QUERY1 where qtyTotal > 0
+        ) AS SourceTable	  PIVOT ( MAX ([CAT_VALUE]) FOR [CATH_TYPE_CONST] IN ([PROD_CAT_1],[PROD_CAT_2],[PROD_CAT_3])) AS PivotTable
+        <if test="param3 != null">
+            ORDER BY
+            <foreach collection="param3" item="item" index="index"
+                     open =" " separator="," close=" ">
+                ${item.value}
+            </foreach>
+        </if>
+
+    </select>
+    <select id="runRptWhatIsInStock" resultMap="reportSaleMap" >
+    SELECT * ,
+    PROD_CAT_1 prodCat1,
+    PROD_CAT_2 prodCat2,
+    PROD_CAT_3 prodCat3
+    FROM
+    (
+    SELECT
+    prodSku,
+    prodBarcode,
+    prodName,
+    prodRef,
+    supplierId,
+    supplierName,
+    prodCost,
+    qtyAvailable,
+    stockValue,
+    deptName,
+    [CATH_TYPE_CONST],
+    [CAT_VALUE]
+    FROM
+    (
+
+    select
+    product.PROD_SKU prodSku,
+    product.PROD_BARCODE prodBarcode,
+    product.PROD_NAME prodName,
+    product.REFERENCE prodRef,
+    PRODUCT_GROUP.DEPT_NAME deptName,
+    PRODUCT_GROUP.CATH_TYPE_CONST,
+    PRODUCT_GROUP.CATH_NAME,
+    PRODUCT_GROUP.CAT_VALUE,
+    supplier.SUPPLIER_ID supplierId,
+    supplier.SUPPLIER_NAME supplierName,
+    STOCK.STCK_QTY qtyAvailable,
+    supp_prod_price.COST_BEFORE_TAX prodCost,
+    supp_prod_price.COST_BEFORE_TAX * STOCK.STCK_QTY stockValue,
+    PRODUCT_GROUP.CAT_VAL_ID
+
+    from PRODUCT
+    inner join SUPP_PROD_PRICE supp_prod_price on (supp_prod_price.PROD_ID = product.PROD_ID and supp_prod_price.SPRC_PREFER_BUY = 1)
+    inner join SUPP_ORGU_LINK supp_orgu_link on (supp_prod_price.SOL_ID = supp_orgu_link.SOL_ID)
+    inner join SUPPLIER supplier on (supplier.SUPPLIER_ID = supp_orgu_link.SUPP_ID)
+    left outer join STOCK on (	stock.PROD_ID = PRODUCT.PROD_ID)
+    INNER JOIN CONFIG_CATEGORY cc1 on (stock.STCK_COND = cc1.category_id and cc1.CATEGORY_CODE = 'STOCK_CONDITION_PRISTINE')
+    INNER JOIN CONFIG_CATEGORY cc2 on (stock.STCK_CAT = cc2.category_id AND cc2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE')
+    left outer join
+    (
+    select
+    prod_id,
+    DEPARTMENT.DEPT_NAME,
+    DEPT_CATEGORY.CATH_TYPE_CONST,
+    CATEGORY_HEADING.CATH_NAME,
+    CATEGORY_VALUE.CAT_VALUE,
+    PROD_DEPT_CAT.CAT_VAL_ID
+    from
+    PROD_DEPT_CAT inner join DEPT_CATEGORY on (PROD_DEPT_CAT.DEPT_ID = DEPT_CATEGORY.DEPT_ID AND PROD_DEPT_CAT.CAT_ID = DEPT_CATEGORY.CATH_ID )
+    INNER JOIN CATEGORY_VALUE ON (PROD_DEPT_CAT.CAT_VAL_ID = CATEGORY_VALUE.CATV_ID)
+    INNER JOIN CATEGORY_HEADING on (PROD_DEPT_CAT.CAT_ID = CATEGORY_HEADING.CATH_ID)
+    INNER JOIN DEPARTMENT ON (PROD_DEPT_CAT.DEPT_ID = DEPARTMENT.DEPT_ID)
+
+    ) PRODUCT_GROUP on (PRODUCT.PROD_ID = PRODUCT_GROUP.PROD_ID)
+    WHERE SUPP_ORGU_LINK.ORGU_ID = 1
+    <if test="param2 != null">
+        AND
+        <foreach collection="param2" item="item" index="index"
+                 open ="(" separator=" AND " close=")">
+            ${item.column} ${item.operator} ${item.value}
+        </foreach>
+    </if>
+    ) QUERY1
+    ) AS SourceTable	  PIVOT ( MAX ([CAT_VALUE]) FOR [CATH_TYPE_CONST] IN ([PROD_CAT_1],[PROD_CAT_2],[PROD_CAT_3])) AS PivotTable
+    <if test="param3 != null">
+        ORDER BY
+        <foreach collection="param3" item="item" index="index"
+                 open =" " separator="," close=" ">
+            ${item.value}
+        </foreach>
+    </if>
     </select>
 </mapper>
