@@ -54,5 +54,6 @@
         <property name="rptPriceByGrade" value="priceByGradeRpt" />
         <property name="rptGoodsReceived" value="goodsReceivedRpt" />
         <property name="rptWhatIsInStock" value="whatIsInStockRpt" />
+        <property name="rptSupplierList" value="supplierListRpt" />
     </bean>
 </beans>

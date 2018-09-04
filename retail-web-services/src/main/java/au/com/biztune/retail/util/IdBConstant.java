@@ -767,4 +767,8 @@ public interface IdBConstant {
      * Report Key WHAT_IS_IN_STOCK
      */
     String REPORT_KEY_WHAT_IS_IN_STOCK = "WHAT_IS_IN_STOCK";
+    /**
+     * Report Key SUPPILER_LIST
+     */
+    String REPORT_KEY_SUPPLIER_LIST = "SUPPLIER_LIST";
 }

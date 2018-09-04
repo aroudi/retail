@@ -1,5 +1,6 @@
 package au.com.biztune.retail.report;
 import au.com.biztune.retail.dao.ReportsDao;
+import au.com.biztune.retail.dao.SupplierDao;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.IdBConstant;
@@ -34,6 +35,8 @@ public class ReportManager {
     private final Logger logger = LoggerFactory.getLogger(ReportManager.class);
     @Autowired
     private ReportsDao reportsDao;
+    @Autowired
+    private SupplierDao supplierDao;
     private Resource reportPath;
     private String rptAccountSale;
     private String rptSalesByMonth;
@@ -47,6 +50,7 @@ public class ReportManager {
     private String rptPriceByGrade;
     private String rptGoodsReceived;
     private String rptWhatIsInStock;
+    private String rptSupplierList;
     @Autowired
     private SessionState sessionState;
     /**
@@ -191,6 +195,12 @@ public class ReportManager {
                     beanColDataSource = new JRBeanCollectionDataSource(rowList);
                     reportJrxmlName = pathStr + "/" + rptWhatIsOnOrder + ".jrxml";
                     outputFile = pathStr + "/" + rptWhatIsOnOrder + ".pdf";
+                    break;
+                case IdBConstant.REPORT_KEY_SUPPLIER_LIST :
+                    final List<Supplier> supplierList = supplierDao.getAllSuppliersByOrgUnitId(sessionState.getOrgUnit().getId());
+                    beanColDataSource = new JRBeanCollectionDataSource(supplierList);
+                    reportJrxmlName = pathStr + "/" + rptSupplierList + ".jrxml";
+                    outputFile = pathStr + "/" + rptSupplierList + ".pdf";
                     break;
             }
 
@@ -350,5 +360,13 @@ public class ReportManager {
 
     public void setRptWhatIsInStock(String rptWhatIsInStock) {
         this.rptWhatIsInStock = rptWhatIsInStock;
+    }
+
+    public String getRptSupplierList() {
+        return rptSupplierList;
+    }
+
+    public void setRptSupplierList(String rptSupplierList) {
+        this.rptSupplierList = rptSupplierList;
     }
 }
