@@ -51,6 +51,7 @@ public class ReportManager {
     private String rptGoodsReceived;
     private String rptWhatIsInStock;
     private String rptSupplierList;
+    private String rptDebtor;
     @Autowired
     private SessionState sessionState;
     /**
@@ -201,6 +202,12 @@ public class ReportManager {
                     beanColDataSource = new JRBeanCollectionDataSource(supplierList);
                     reportJrxmlName = pathStr + "/" + rptSupplierList + ".jrxml";
                     outputFile = pathStr + "/" + rptSupplierList + ".pdf";
+                    break;
+                case IdBConstant.REPORT_KEY_DEBTOR :
+                    final List<ReportDebtorRow> debtorList = reportsDao.runRptDebtor(sessionState.getOrgUnit().getId(), searchClauseList);
+                    beanColDataSource = new JRBeanCollectionDataSource(debtorList);
+                    reportJrxmlName = pathStr + "/" + rptDebtor + ".jrxml";
+                    outputFile = pathStr + "/" + rptDebtor + ".pdf";
                     break;
             }
 
@@ -368,5 +375,13 @@ public class ReportManager {
 
     public void setRptSupplierList(String rptSupplierList) {
         this.rptSupplierList = rptSupplierList;
+    }
+
+    public String getRptDebtor() {
+        return rptDebtor;
+    }
+
+    public void setRptDebtor(String rptDebtor) {
+        this.rptDebtor = rptDebtor;
     }
 }

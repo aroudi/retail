@@ -1,5 +1,6 @@
 package au.com.biztune.retail.dao;
 
+import au.com.biztune.retail.domain.ReportDebtorRow;
 import au.com.biztune.retail.domain.ReportGoodReceivedRow;
 import au.com.biztune.retail.domain.ReportSaleRow;
 import java.util.List;
@@ -106,4 +107,11 @@ public interface ReportsDao {
      */
     List<ReportSaleRow> runRptWhatIsOnOrder(long orguId, List clauseList, List orderByList);
 
+    /**
+     * get 'Debtor' report data.
+     * @param orguId orguId
+     * @param clauseList clauseList
+     * @return 0report data
+     */
+    List<ReportDebtorRow> runRptDebtor(long orguId, List clauseList);
  }

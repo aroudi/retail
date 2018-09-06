@@ -771,4 +771,8 @@ public interface IdBConstant {
      * Report Key SUPPILER_LIST
      */
     String REPORT_KEY_SUPPLIER_LIST = "SUPPLIER_LIST";
+    /**
+     * Report Key REPORT_KEY_DEBTOR
+     */
+    String REPORT_KEY_DEBTOR = "DEBTORS";
 }
