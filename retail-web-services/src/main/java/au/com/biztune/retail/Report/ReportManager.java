@@ -1,4 +1,5 @@
 package au.com.biztune.retail.report;
+import au.com.biztune.retail.dao.CustomerDao;
 import au.com.biztune.retail.dao.ReportsDao;
 import au.com.biztune.retail.dao.SupplierDao;
 import au.com.biztune.retail.domain.*;
@@ -37,6 +38,8 @@ public class ReportManager {
     private ReportsDao reportsDao;
     @Autowired
     private SupplierDao supplierDao;
+    @Autowired
+    private CustomerDao customerDao;
     private Resource reportPath;
     private String rptAccountSale;
     private String rptSalesByMonth;
@@ -51,6 +54,7 @@ public class ReportManager {
     private String rptGoodsReceived;
     private String rptWhatIsInStock;
     private String rptSupplierList;
+    private String rptCustomerList;
     private String rptDebtor;
     @Autowired
     private SessionState sessionState;
@@ -202,6 +206,12 @@ public class ReportManager {
                     beanColDataSource = new JRBeanCollectionDataSource(supplierList);
                     reportJrxmlName = pathStr + "/" + rptSupplierList + ".jrxml";
                     outputFile = pathStr + "/" + rptSupplierList + ".pdf";
+                    break;
+                case IdBConstant.REPORT_KEY_CUSTOMER_LIST :
+                    final List<Customer> customerList = customerDao.getAllCustomers();
+                    beanColDataSource = new JRBeanCollectionDataSource(customerList);
+                    reportJrxmlName = pathStr + "/" + rptCustomerList + ".jrxml";
+                    outputFile = pathStr + "/" + rptCustomerList + ".pdf";
                     break;
                 case IdBConstant.REPORT_KEY_DEBTOR :
                     final List<ReportDebtorRow> debtorList = reportsDao.runRptDebtor(sessionState.getOrgUnit().getId(), searchClauseList);
@@ -383,5 +393,13 @@ public class ReportManager {
 
     public void setRptDebtor(String rptDebtor) {
         this.rptDebtor = rptDebtor;
+    }
+
+    public String getRptCustomerList() {
+        return rptCustomerList;
+    }
+
+    public void setRptCustomerList(String rptCustomerList) {
+        this.rptCustomerList = rptCustomerList;
     }
 }

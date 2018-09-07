@@ -339,7 +339,6 @@ public class ReportSaleRow {
     public void setDefaultGrade(double defaultGrade) {
         this.defaultGrade = defaultGrade;
     }
-
     public double getaGrade() {
         return aGrade;
     }

@@ -18,6 +18,8 @@ cimgApp.controller('reportingCtrl', function($scope, baseDataService, ngDialog, 
 
     function initReportFilters() {
         $scope.dateFilterEnabled = false;
+        $scope.dateFromFilterEnabled = false;
+        $scope.dateToFilterEnabled = false;
         $scope.rangeFilterEnabled = false;
         $scope.categoryFilterEnabled = false;
         $scope.supplierFilterEnabled = false;
@@ -67,6 +69,15 @@ cimgApp.controller('reportingCtrl', function($scope, baseDataService, ngDialog, 
             switch ($scope.selectedNode.reportParamList[i].repParamName) {
                 case 'Date' :
                     $scope.dateFilterEnabled = true;
+                    for (var j=0; j < $scope.selectedNode.reportParamList[i].reportParamValList.length ; j++ ) {
+                        if ($scope.selectedNode.reportParamList[i].reportParamValList[j].repParamKey === 'DateFrom') {
+                            $scope.dateFromFilterEnabled = true;
+                        }
+                        if ($scope.selectedNode.reportParamList[i].reportParamValList[j].repParamKey === 'DateTo') {
+                            $scope.dateToFilterEnabled = true;
+                        }
+                    }
+
                     break;
                 case 'Range' :
                     $scope.rangeFilterEnabled = true;

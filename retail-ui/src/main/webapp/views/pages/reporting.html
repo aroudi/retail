@@ -24,13 +24,13 @@
                             Date(s)
                         </div>
                         <div class="panel-body">
-                            <div class="col-lg-3">
+                            <div class="col-lg-3" ng-show="dateFromFilterEnabled">
                                 <div class="form-group">
                                     <label>Date From:</label>
                                     <input type="date" class="form-control" data-ng-model="reportFactor.dateFrom" >
                                 </div >
                             </div >
-                            <div class="col-lg-3">
+                            <div class="col-lg-3" ng-show="dateToFilterEnabled">
                                 <div class="form-group">
                                     <label>Date To:</label>
                                     <input type="date" class="form-control" data-ng-model="reportFactor.dateTo" >

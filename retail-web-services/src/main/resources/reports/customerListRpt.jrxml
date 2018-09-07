@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="55379ca5-4396-4444-968e-91e3d84b80ae">
+	<property name="ireport.zoom" value="2.593742460100003"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="DateFrom" class="java.sql.Timestamp" isForPrompting="false"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\projects\\IReport\\"]]></defaultValueExpression>
+	</parameter>
+	<field name="firstName" class="java.lang.String"/>
+	<field name="surName" class="java.lang.String"/>
+	<field name="companyName" class="java.lang.String"/>
+	<field name="code" class="java.lang.String"/>
+	<field name="grade" class="au.com.biztune.retail.domain.CustomerGrade"/>
+	<field name="contact" class="au.com.biztune.retail.domain.Contact"/>
+	<field name="customerType" class="au.com.biztune.retail.domain.ConfigCategory"/>
+	<field name="creditLimit" class="java.lang.Double"/>
+	<field name="owing" class="java.lang.Double"/>
+	<field name="remainCredit" class="java.lang.Double"/>
+	<field name="creditDuration" class="java.lang.Integer"/>
+	<field name="creditStartEom" class="java.lang.Boolean"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="116" splitType="Stretch">
+			<staticText>
+				<reportElement x="7" y="10" width="203" height="15" uuid="f8428307-e95f-4e17-b4b4-68c1782c42a3"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JOMON ARCHITECTURAL HARDWARE PTY LTD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="57" width="179" height="15" uuid="8703ce78-aaa3-4df5-9b4e-a12d9590f8d3"/>
+				<textElement>
+					<font fontName="Arial" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ABN : 92 084 941 266]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="25" width="217" height="15" uuid="de2aaacf-602b-40ac-8159-af5cb65a8e45"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[32 Spencer St, Five Dock NSW 2046 AUSTRALIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="40" width="222" height="17" uuid="2ef041a5-44f5-4f76-b8de-28ab26602458"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Phone: +61 2  9747 0088     Fax: +61 2 9747 4488]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="292" y="70" width="203" height="18" uuid="2e420e7e-7e3e-42a3-b476-f4caa2f38860"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Customer List]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="34" splitType="Stretch">
+			<staticText>
+				<reportElement x="2" y="13" width="60" height="20" uuid="8d133396-a897-47c2-90fa-906e77fda737"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Given Name]]></text>
+			</staticText>
+			<line>
+				<reportElement x="2" y="26" width="795" height="1" uuid="d62688a5-5cc7-4b5e-b126-04202c450b43"/>
+			</line>
+			<staticText>
+				<reportElement x="79" y="13" width="57" height="20" uuid="ea216d45-61b1-4377-865c-61b62cdc9697"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SurName]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="13" width="52" height="20" uuid="382213ea-a345-411e-9a8d-fa90d2dd6732"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Company]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="707" y="13" width="47" height="20" uuid="a22f4c54-064b-4efd-90dd-b6088ae4ec59"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Postcode]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="13" width="53" height="13" uuid="4f56d653-b5a1-4382-a7cd-d7ae8be2038c"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Address]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="615" y="13" width="40" height="20" uuid="b075f3e5-bc51-45bb-9180-251a2ec15dc8"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Suberb]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="670" y="13" width="27" height="13" uuid="ba6296f0-968b-4ccc-8c3a-b51374d9d5bd"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[State]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="768" y="13" width="32" height="20" uuid="2722f97d-7e70-4891-9d32-fec80d070b4e"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="312" y="13" width="35" height="20" uuid="49ba6835-c704-4a86-8b95-abc74dab7e54"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Type]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="2" y="4" width="75" height="20" uuid="d6901229-484d-4cb0-a8ed-c823fdbbe819"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{firstName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="79" y="4" width="84" height="20" uuid="5e42f4b9-3a97-4aa7-812b-7cc4ac4e63f7"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{surName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="166" y="4" width="146" height="20" uuid="4e610434-c1b9-4a69-83ce-ac92a0e6eab8"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{companyName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="312" y="4" width="68" height="20" uuid="045b4c6f-6e90-4bee-af8f-209675b9402f"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{customerType}.getDescription()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="380" y="4" width="235" height="20" uuid="db758de7-08d5-4b3b-9709-14c85c54a5b6"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{contact}.getAddress1()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="615" y="4" width="55" height="20" uuid="58566a47-9d9e-4113-acc0-2fa95e5c5ea6"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{contact}.getSuburb()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="670" y="4" width="37" height="20" uuid="1e99b1eb-7d87-4d82-89c6-e52a3cbfebe8"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{contact}.getState()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="707" y="4" width="61" height="20" uuid="93c16d0c-0a52-4609-b8de-c3eb2e7f4e7c"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{contact}.getPostCode()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="768" y="4" width="32" height="20" uuid="ee5da8b3-28df-43bd-b8b2-03fa24fabbdb"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{grade}.getGradeCode()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="38" splitType="Stretch"/>
+	</summary>
+</jasperReport>

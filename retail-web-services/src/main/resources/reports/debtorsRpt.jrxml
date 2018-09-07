@@ -12,14 +12,14 @@
 	CUSTOMER.Company_Name customer,
 	INVOICE.TXIV_TRADING_DATE tradingDate,
 	CUSTOMER_ACCOUNT_DEBT.TXHD_TXN_NR invoiceNo,
-	DATEDIFF(DAY,GETDATE(), CUSTOMER_ACCOUNT_DEBT.CAD_START_DATE) age,
+	DATEDIFF(DAY,CUSTOMER_ACCOUNT_DEBT.CAD_START_DATE,GETDATE()) age,
 	CUSTOMER_ACCOUNT_DEBT.CAD_AMOUNT_DEBT totalDebt,
 	(CUSTOMER_ACCOUNT_DEBT.CAD_AMOUNT_DEBT - CUSTOMER_ACCOUNT_DEBT.BALANCE) paid,
 	CUSTOMER_ACCOUNT_DEBT.BALANCE owing,
 	CUSTOMER_ACCOUNT_DEBT.CAD_DUE_DATE dueDate,
-	CUSTOMER.Phone phone,
-	CUSTOMER.Fax fax,
-	CUSTOMER.E_Mail email,
+	CONTACT.Phone phone,
+	CONTACT.Fax fax,
+	CONTACT.E_Mail email,
 	CUSTOMER.CREDIT_LIMIT creditLimit,
 	term =
 	 CASE CUSTOMER.CREDIT_START_EOM
@@ -29,6 +29,7 @@
 from CUSTOMER_ACCOUNT_DEBT
 	INNER JOIN Customer ON (CUSTOMER.CUSTOMER_ID = CUSTOMER_ACCOUNT_DEBT.CUSTOMER_ID)
 	INNER JOIN INVOICE ON (INVOICE.TXIV_ID = CUSTOMER_ACCOUNT_DEBT.TXHD_ID)
+	left outer join CONTACT on (CONTACT.CONTACT_ID = CUSTOMER.CONTACT_ID)
 	WHERE INVOICE.ORGU_ID = 1
 
 ORDER BY CUSTOMER.Company_Name]]>
@@ -69,47 +70,47 @@ ORDER BY CUSTOMER.Company_Name]]>
 		<groupHeader>
 			<band height="58">
 				<textField isBlankWhenNull="true">
-					<reportElement x="8" y="4" width="344" height="19" uuid="60d01f07-29f8-46f2-858d-558e0e17307d"/>
+					<reportElement x="8" y="5" width="262" height="19" uuid="60d01f07-29f8-46f2-858d-558e0e17307d"/>
 					<textElement>
 						<font fontName="Arial" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{customer}]]></textFieldExpression>
 				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement x="29" y="27" width="72" height="20" uuid="0857a951-e5d4-448d-bbdc-9bd6805b9d27"/>
-					<textFieldExpression><![CDATA[$F{phone}]]></textFieldExpression>
-				</textField>
 				<staticText>
-					<reportElement x="11" y="27" width="25" height="20" uuid="bda8b1ce-17bc-41a7-811b-df9407ed53aa"/>
+					<reportElement x="270" y="4" width="25" height="20" uuid="bda8b1ce-17bc-41a7-811b-df9407ed53aa"/>
 					<text><![CDATA[Ph:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="109" y="27" width="25" height="20" uuid="d3eeaf48-722f-431f-afbd-1c0f182e943d"/>
+					<reportElement x="421" y="4" width="25" height="20" uuid="d3eeaf48-722f-431f-afbd-1c0f182e943d"/>
 					<text><![CDATA[Fax:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="201" y="27" width="34" height="20" uuid="6864dbd5-7a43-4b65-a49c-57eecb296f05"/>
+					<reportElement x="10" y="28" width="34" height="20" uuid="6864dbd5-7a43-4b65-a49c-57eecb296f05"/>
 					<text><![CDATA[Email:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="298" y="27" width="38" height="20" uuid="459328c7-b268-4569-97a8-ad42e0c75051"/>
+					<reportElement x="198" y="28" width="38" height="20" uuid="459328c7-b268-4569-97a8-ad42e0c75051"/>
 					<text><![CDATA[Term:]]></text>
 				</staticText>
-				<textField isBlankWhenNull="true">
-					<reportElement x="135" y="27" width="54" height="20" uuid="13e21acf-4a50-4341-b3d7-d9e269165045"/>
-					<textFieldExpression><![CDATA[$F{fax}]]></textFieldExpression>
-				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement x="235" y="27" width="56" height="20" uuid="1d0427ba-5f10-46d0-8033-26d426aa6033"/>
-					<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
-				</textField>
-				<textField pattern="¤ #,##0.00">
-					<reportElement x="336" y="27" width="60" height="20" uuid="2687a04c-0786-40df-bc0b-1425d84ffd6e"/>
+				<textField isStretchWithOverflow="true" pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="236" y="28" width="60" height="20" uuid="2687a04c-0786-40df-bc0b-1425d84ffd6e"/>
 					<textFieldExpression><![CDATA[$F{creditLimit}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement x="399" y="27" width="154" height="20" uuid="7293a2bc-c0e9-4378-b79e-66e89eb1c14d"/>
+					<reportElement x="299" y="28" width="254" height="20" uuid="7293a2bc-c0e9-4378-b79e-66e89eb1c14d"/>
 					<textFieldExpression><![CDATA[$F{term}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="295" y="4" width="126" height="20" uuid="b2b3d92e-bd6f-45fe-b0d8-6b85fd96daa0"/>
+					<textFieldExpression><![CDATA[$F{phone}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="446" y="4" width="104" height="20" uuid="b3ef4686-01ac-4973-b333-968fa0a64555"/>
+					<textFieldExpression><![CDATA[$F{fax}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="45" y="28" width="153" height="20" uuid="3c198612-0a41-4413-99fe-d37a78d633d1"/>
+					<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>

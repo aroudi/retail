@@ -2,6 +2,9 @@ package au.com.biztune.retail.domain;
 
 import java.sql.Timestamp;
 
+/**
+ * created by arash roudi.
+ */
 public class ReportDebtorRow {
     private String customer;
     private Timestamp tradingDate;
