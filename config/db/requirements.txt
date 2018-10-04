@@ -64,6 +64,22 @@ this is while in importing boq, we add supplier to the current product.
 19- try to change a price and set it below the original price; 2 different message appears
 
 
-
-
+---------------------------------------- 04/10/18 ------------------------------
+1  -add grade in customer list
+2  -move customer statements from customer menu to report
+3  -customer list : take out 'stock location' and 'status' and add cost, rrp, and price per grade
+4  -product group - when trying to 'add department' when no group is selected, it doesn't work
+5  -purchase order - on 'create po' page, distinguish po status by colour.
+6  -purchase order - when open the po in view mode, put the return button on top
+7  -purchase order list -  display expected date.
+8  -purchase order list - turn the row colour to red if expected date is passed and it is not being delivered
+9  -purchase order list - add search by expected date
+10 -product: there is no any way to update the stock value
+12 -received notes page: distinguish the status by colour on the page
+13 -received notes page: if 'Rec Qty' be bigger than 'purchased' then 'back order' set to negative figure
+14 -sale order page: in payment list user can see 'Account' but when selecting it, system display message 'it is not available for sale order'
+    it is better to not display Account payment at all
+15 -sale order/quote list: distinguish sale orders from quotes by colour.
+16 -sale order/quote view mode: don't display actions on the item list
+17 -invoice page: on invoice page user should have access to customer sale order and select then to invoice.
 
