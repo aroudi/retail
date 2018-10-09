@@ -45,37 +45,23 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
                     return row.entity.prodSku
                 }
             },
-            /*
-            {field:'reference', enableCellEdit:false, width:'10%',
-                cellTooltip: function(row,col) {
-                    return row.entity.reference
-                }
-            },
-            */
-            {field:'prodName', displayName:'Article Code',enableCellEdit:false, width:'30%',
+            {field:'prodName', displayName:'Article Code',enableCellEdit:false, width:'25%',
                 cellTooltip: function(row,col) {
                     return row.entity.prodName
                 }
             },
-            {field:'prodLocation', displayName:'Stock Location',enableCellEdit:false, width:'20%',
-                cellTooltip: function(row,col) {
-                    return row.entity.prodLocation
-                }
-            },
-            {field:'stockQty', displayName:'Available Qty',enableCellEdit:false, width:'10%'},
-            {field:'reservedQty', displayName:'Reserved Qty',enableCellEdit:false, width:'10%',
-                cellTemplate:'<a href="" ng-click="grid.appScope.displayReservationInfo(row.entity)">{{row.entity.reservedQty}}</a>'
-            },
-            //{field:'sellPrice.prcePrice', displayName:'Cost',enableCellEdit:false, cellFilter: 'currency', width:'10%'},
-            {field:'prodOrguLink.status.displayName', displayName:'Status',enableCellEdit:false, width:'10%',
-                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
-                    if (grid.getCellValue(row, col) === 'IMPORTED') {
-                        return 'amber';
-                    } else if (grid.getCellValue(row, col) === 'LIVE') {
-                        return 'green'
-                    }
-                }
-            }
+            //{field:'department', displayName:'Dept',enableCellEdit:false, width:'10%'},
+            //{field:'category1', displayName:'Cat1',enableCellEdit:false, width:'10%'},
+            //{field:'category2', displayName:'Cat2',enableCellEdit:false, width:'10%'},
+            //{field:'category3', displayName:'Cat3',enableCellEdit:false, width:'10%'},
+            {field:'stockQty', displayName:'In Stock',enableCellEdit:false, width:'5%'},
+            {field:'prodCost', displayName:'Cost',enableCellEdit:false, width:'7%', cellFilter:'currency'},
+            {field:'rrp', displayName:'RRP',enableCellEdit:false, width:'8%', cellFilter:'currency'},
+            {field:'defaultPrice', displayName:'Grade Def',enableCellEdit:false, width:'7%', cellFilter:'currency'},
+            {field:'gradeAPrice', displayName:'Grade A',enableCellEdit:false, width:'7%',cellFilter:'currency'},
+            {field:'gradeBPrice', displayName:'Grade B',enableCellEdit:false, width:'7%',cellFilter:'currency'},
+            {field:'gradeCPrice', displayName:'Grade C',enableCellEdit:false, width:'7%',cellFilter:'currency'},
+            {field:'gradeDPrice', displayName:'Grade D',enableCellEdit:false, width:'7%',cellFilter:'currency'}
         ]
     };
     $scope.gridOptions.enableRowSelection = true;

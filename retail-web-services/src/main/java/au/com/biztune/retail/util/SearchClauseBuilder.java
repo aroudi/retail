@@ -200,31 +200,31 @@ public class SearchClauseBuilder {
         if (searchForm != null) {
             clauseList = new ArrayList<SearchClause>();
             if (searchForm.getSupplierId() > 0) {
-                searchClause = new SearchClause("sol.SUPP_ID", " = ", searchForm.getSupplierId());
+                searchClause = new SearchClause("SUPP_ORGU_LINK.SUPP_ID", " = ", searchForm.getSupplierId());
                 clauseList.add(searchClause);
             }
             if (searchForm.getProdSku() != null && !searchForm.getProdSku().isEmpty()) {
-                searchClause = new SearchClause("prod.PROD_SKU", " like ", "%" + searchForm.getProdSku() + "%");
+                searchClause = new SearchClause("PRODUCT.PROD_SKU", " like ", "%" + searchForm.getProdSku() + "%");
                 clauseList.add(searchClause);
             }
             if (searchForm.getReference() != null && !searchForm.getReference().isEmpty()) {
-                searchClause = new SearchClause("prod.REFERENCE", " like ", "%" + searchForm.getReference() + "%");
+                searchClause = new SearchClause("PRODUCT.REFERENCE", " like ", "%" + searchForm.getReference() + "%");
                 clauseList.add(searchClause);
             }
             if (searchForm.getProdName() != null && !searchForm.getProdName().isEmpty()) {
-                searchClause = new SearchClause("prod.PROD_NAME", " like ", "%" + searchForm.getProdName() + "%");
+                searchClause = new SearchClause("PRODUCT.PROD_NAME", " like ", "%" + searchForm.getProdName() + "%");
                 clauseList.add(searchClause);
             }
             if (searchForm.getProdTypeId() > 0) {
-                searchClause = new SearchClause("prod.CAT_ID_TYPE", " = ", searchForm.getProdTypeId());
+                searchClause = new SearchClause("PRODUCT.CAT_ID_TYPE", " = ", searchForm.getProdTypeId());
                 clauseList.add(searchClause);
             }
             if (searchForm.getInStockQtyFrom() > 0) {
-                searchClause = new SearchClause("stock.STCK_QTY", " >= ", searchForm.getInStockQtyFrom());
+                searchClause = new SearchClause("STOCK.STCK_QTY", " >= ", searchForm.getInStockQtyFrom());
                 clauseList.add(searchClause);
             }
             if (searchForm.getInStockQtyTo() > 0) {
-                searchClause = new SearchClause("stock.STCK_QTY", " <= ", searchForm.getInStockQtyTo());
+                searchClause = new SearchClause("STOCK.STCK_QTY", " <= ", searchForm.getInStockQtyTo());
                 clauseList.add(searchClause);
             }
         }

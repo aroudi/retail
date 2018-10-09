@@ -65,9 +65,10 @@ this is while in importing boq, we add supplier to the current product.
 
 
 ---------------------------------------- 04/10/18 ------------------------------
-1  -add grade in customer list
+1  -add grade in customer list - done
 2  -move customer statements from customer menu to report
-3  -customer list : take out 'stock location' and 'status' and add cost, rrp, and price per grade
+3  -product list : take out 'stock location' and 'status' and add cost, rrp, and price per grade - done
+4  -product list: include product group in product search
 4  -product group - when trying to 'add department' when no group is selected, it doesn't work
 5  -purchase order - on 'create po' page, distinguish po status by colour.
 6  -purchase order - when open the po in view mode, put the return button on top
@@ -82,4 +83,6 @@ this is while in importing boq, we add supplier to the current product.
 15 -sale order/quote list: distinguish sale orders from quotes by colour.
 16 -sale order/quote view mode: don't display actions on the item list
 17 -invoice page: on invoice page user should have access to customer sale order and select then to invoice.
+18 -in reporting, display what user selected for product group
+
 

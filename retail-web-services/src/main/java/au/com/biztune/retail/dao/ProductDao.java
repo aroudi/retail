@@ -148,6 +148,14 @@ public interface ProductDao {
     List<Product> getAllProductsPerOrgUnitIdPaging(long orguId, long fromIndex, long toIndex);
 
     /**
+     * get product list in page format.
+     * @param orguId orguId
+     * @param fromIndex fromIndex
+     * @param toIndex toIndex
+     * @return product list in paging mechanism.
+     */
+    List<Product> getAllProductExtendedPerOrgUnitIdPaging(long orguId, long fromIndex, long toIndex);
+    /**
      * search product.
      * @param orguId orguId
      * @param fromIndex fromIndex
@@ -156,7 +164,15 @@ public interface ProductDao {
      * @return Product List
      */
     List<Product> searchProductsPaging(long orguId, long fromIndex, long toIndex, List<SearchClause> searchClauses);
-
+    /**
+     * search product.
+     * @param orguId orguId
+     * @param fromIndex fromIndex
+     * @param toIndex toIndex
+     * @param searchClauses searchClauses
+     * @return Product List
+     */
+    List<Product> searchProductsExtendedPaging(long orguId, long fromIndex, long toIndex, List<SearchClause> searchClauses);
     /**
      * get all product class.
      * @return list of product class.

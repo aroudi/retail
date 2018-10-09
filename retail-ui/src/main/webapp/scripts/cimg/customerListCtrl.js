@@ -12,12 +12,12 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout, ngDial
                     return grid.getCellValue(row, col).color
                 }
             },
-            {field:'surName', displayName:'Surname',enableCellEdit:false, width:'10%',
+            {field:'surName', displayName:'Surname',enableCellEdit:false, width:'8%',
                 cellTooltip: function(row,col) {
                     return row.entity.surName
                 }
             },
-            {field:'firstName', displayName:'Given Names',enableCellEdit:false, width:'10%',
+            {field:'firstName', displayName:'Given Names',enableCellEdit:false, width:'7%',
                 cellTooltip: function(row,col) {
                     return row.entity.firstName
                 }
@@ -28,6 +28,7 @@ cimgApp.controller('customerListCtrl', function($scope, $state, $timeout, ngDial
                     return row.entity.companyName
                 }
             },
+            {field:'grade.gradeCode', displayName:'Grade', enableCellEdit:false, width:'5%'},
             {field:'contact', displayName:'Address',cellFilter:'address', enableCellEdit:false, width:'18%'},
             {field:'contact.suburb', displayName:'Suburb', enableCellEdit:false, width:'5%'},
             {field:'contact.state', displayName:'State', enableCellEdit:false, width:'5%'},
