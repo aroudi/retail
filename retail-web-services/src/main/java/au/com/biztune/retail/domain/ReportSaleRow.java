@@ -339,34 +339,67 @@ public class ReportSaleRow {
     public void setDefaultGrade(double defaultGrade) {
         this.defaultGrade = defaultGrade;
     }
+
+    /**
+     * get a grade.
+     * @return agrade.
+     */
     public double getaGrade() {
         return aGrade;
     }
 
+    /**
+     * set aGrade.
+     * @param aGrade aGrade
+     */
     public void setaGrade(double aGrade) {
         this.aGrade = aGrade;
     }
 
+    /**
+     * get bGrade.
+     * @return bGrade.
+     */
     public double getbGrade() {
         return bGrade;
     }
 
+    /**
+     * set bGrade.
+     * @param bGrade bGrade
+     */
     public void setbGrade(double bGrade) {
         this.bGrade = bGrade;
     }
 
+    /**
+     * get cGrade.
+     * @return cGrade.
+     */
     public double getcGrade() {
         return cGrade;
     }
 
+    /**
+     * set cGrade.
+     * @param cGrade cGrade.
+     */
     public void setcGrade(double cGrade) {
         this.cGrade = cGrade;
     }
 
+    /**
+     * get dGrade.
+     * @return dGrade.
+     */
     public double getdGrade() {
         return dGrade;
     }
 
+    /**
+     * set dGrade.
+     * @param dGrade dGrade
+     */
     public void setdGrade(double dGrade) {
         this.dGrade = dGrade;
     }
@@ -379,34 +412,66 @@ public class ReportSaleRow {
         this.defaultGradeGp = defaultGradeGp;
     }
 
+    /**
+     * get aGradeGp.
+     * @return aGradeGp
+     */
     public double getaGradeGp() {
         return aGradeGp;
     }
 
+    /**
+     * set aGradeGp.
+     * @param aGradeGp aGradeGp
+     */
     public void setaGradeGp(double aGradeGp) {
         this.aGradeGp = aGradeGp;
     }
 
+    /**
+     * get bGradeGp.
+     * @return bGradeGp
+     */
     public double getbGradeGp() {
         return bGradeGp;
     }
 
+    /**
+     * set bGradeGp.
+     * @param bGradeGp bGradeGp
+     */
     public void setbGradeGp(double bGradeGp) {
         this.bGradeGp = bGradeGp;
     }
 
+    /**
+     * get cGradeGp.
+     * @return cGradeGp
+     */
     public double getcGradeGp() {
         return cGradeGp;
     }
 
+    /**
+     * set cGradeGp.
+     * @param cGradeGp cGradeGp
+     */
     public void setcGradeGp(double cGradeGp) {
         this.cGradeGp = cGradeGp;
     }
 
+    /**
+     * get dGradeGp.
+     * @return dGradeGp
+     */
     public double getdGradeGp() {
         return dGradeGp;
     }
 
+    /**
+     * set dGradeGp.
+     * @param dGradeGp dGradeGp
+     */
     public void setdGradeGp(double dGradeGp) {
         this.dGradeGp = dGradeGp;
     }

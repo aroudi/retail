@@ -289,7 +289,11 @@
 
     <select id="getAllDepartmentListTreeView" resultMap="departmentTreeViewMap" >
         SELECT
-        <include refid="departmentColumns"><property name="alias" value="dept"/></include>
+        dept.DEPT_ID,
+        dept.DEPT_NAME + '(dept)' DEPT_NAME,
+        dept.DEPT_CODE,
+        dept.ACTIVE,
+        dept.DEPT_DESC
         ,'DEPARTMENT' NODE_TYPE
         FROM
         DEPARTMENT dept
@@ -316,8 +320,18 @@
 
     <select id="getCategoryTreeViewListPerDeptId" resultMap="deptCategoryTreeViewMap" >
         SELECT
-        <include refid="categoryHeadingColumns"><property name="alias" value="cath"/></include>
-        , deptc.DEPT_CAT_ID,deptc.CATH_TYPE_CONST, deptc.DEPT_ID, 'CATEGORY_HEADING' NODE_TYPE
+        cath.CATH_ID,
+        cath.CATH_CODE,
+        cath.ACTIVE,
+        cath.CATH_DESC,
+        deptc.DEPT_CAT_ID,deptc.CATH_TYPE_CONST, deptc.DEPT_ID, 'CATEGORY_HEADING' NODE_TYPE,
+        CATH_NAME =
+            CASE CATH_TYPE_CONST
+                WHEN 'PROD_CAT_1' THEN CATH_NAME + '(CAT1)'
+                WHEN 'PROD_CAT_2' THEN CATH_NAME + '(CAT2)'
+                WHEN 'PROD_CAT_3' THEN CATH_NAME + '(CAT3)'
+            ELSE CATH_NAME
+            END
         FROM
         CATEGORY_HEADING cath INNER  JOIN DEPT_CATEGORY deptc on (cath.CATH_ID = deptc.CATH_ID)
         WHERE deptc.DEPT_ID = #{value} and cath.ACTIVE = 1

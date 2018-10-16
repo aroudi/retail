@@ -131,7 +131,15 @@ public interface SuppProdPriceDao {
      * @return ProductPurchaseItem
      */
     ProductPurchaseItem getProductPurchaseItemPerOrgUnitIdAndSuppIdAndCatalogId(long orguId, long suppId, String catalogueNo);
+    /**
+     * get product from specic supplier by catalog no.
+     * @param orguId orguId
+     * @param supplierName supplierName
+     * @param catalogueNo catalogueNo
+     * @return ProductPurchaseItem
+     */
 
+    List<SuppProdPrice> getSuppProdPricePerOrgUnitIdAndSupplierNameAndCatalogNo(long orguId, String supplierName, String catalogueNo);
     /**
      * update product costs per solId and ProdId.
      * @param solId Supplier-OrgU-Id

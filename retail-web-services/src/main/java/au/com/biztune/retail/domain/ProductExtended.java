@@ -1,5 +1,8 @@
 package au.com.biztune.retail.domain;
 
+/**
+ * Extended object to product which include cost, rrp...
+ */
 public class ProductExtended extends Product {
     private long defaultSupplierId;
     private String defaultSupplierName;

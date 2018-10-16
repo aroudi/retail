@@ -45,7 +45,14 @@
                                 </div >
                                 <div class="col-lg-3">
                                     <div class="form-group">
-                                        <label>Status:</label>
+                                        <label>Status:
+                                            <span class="btn btn-warning btn-xs" ng-show="statusNotComplete()">
+                                                                    Draft Mode
+                                            </span>
+                                            <span class="btn btn-success btn-xs" ng-show="!statusNotComplete()">
+                                                                    Final Mode
+                                            </span>
+                                        </label>
                                         <select class="form-control" data-ng-model="deliveryNoteHeader.delnStatus" ng-disabled="disablePage == true"
                                                 ng-options="type.displayName for type in delnStatusSet" >
                                         </select>

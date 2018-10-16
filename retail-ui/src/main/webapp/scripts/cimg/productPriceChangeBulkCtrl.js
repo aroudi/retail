@@ -14,6 +14,7 @@ cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeo
             {field:'id', visible:false, enableCellEdit:false},
             {field:'solId', visible:false, enableCellEdit:false},
             {field:'prodId', visible:false, enableCellEdit:false},
+            {field:'supplierName', visible:true, displayName:'Supplier', enableCellEdit:false, width:'10%'},
             {field:'catalogueNo', enableCellEdit:false, width:'20%',
                 headerCellTemplate: '<div ng-class="{ \'sortable\': sortable }"><div class="ui-grid-vertical-bar">&nbsp;</div><div class="ui-grid-cell-contents" col-index="renderIndex"><span>        {{ col.displayName CUSTOM_FILTERS }}</span><span ui-grid-visible="col.sort.direction" ng-class="{ \'ui-grid-icon-up-dir\': col.sort.direction == asc, \'ui-grid-icon-down-dir\': col.sort.direction == desc, \'ui-grid-icon-blank\': !col.sort.direction }">&nbsp;</span></div><div class="ui-grid-column-menu-button" ng-if="grid.options.enableColumnMenus && !col.isRowHeader  && col.colDef.enableColumnMenu !== false" class="ui-grid-column-menu-button" ng-click="toggleMenu($event)"><i class="ui-grid-icon-angle-down">&nbsp;</i></div><div ng-if="filterable" class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><input type="text" focus-on="focusOnCatalogue" autofocus class="ui-grid-filter-input" ng-model="colFilter.term" ng-click="$event.stopPropagation()" ng-attr-placeholder="{{colFilter.placeholder || \'\'}}" /><div class="ui-grid-filter-button" ng-click="colFilter.term = null"><i class="ui-grid-icon-cancel" ng-show="!!colFilter.term">&nbsp;</i> <!-- use !! because angular interprets \'f\' as false --></div></div></div>',
                 cellTooltip: function(row,col) {
@@ -184,7 +185,7 @@ cimgApp.controller('productPriceChangeBulkCtrl', function($scope, $state, $timeo
     $scope.exportCSV = function() {
         var myElement = angular.element(document.querySelectorAll(".custome-csv-link-location"));
         $scope.gridOptions.exporterCsvFilename = $scope.model.supplier.supplierName + '_product_list.csv';
-        $scope.gridApi.exporter.csvExport('all','all', myElement);
+        $scope.gridApi.exporter.csvExport('visible','visible', myElement);
     }
 
     $scope.importFromCsv = function () {

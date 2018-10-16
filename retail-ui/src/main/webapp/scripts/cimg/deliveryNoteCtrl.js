@@ -492,6 +492,13 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
         }
         $scope.searchProduct();
     };
+    $scope.statusNotComplete = function () {
+
+        if ($scope.deliveryNoteHeader.delnStatus != undefined) {
+            return ($scope.deliveryNoteHeader.delnStatus.categoryCode === 'DLV_NOTE_STATUS_COMPLETE' ? false : true)
+        }
+        return true;
+    };
     function validForm() {
         if ($scope.deliveryNoteHeader.supplier === undefined || $scope.deliveryNoteHeader.supplier.id === -1) {
             baseDataService.displayMessage('info','Form is not valid','Please select supplier');

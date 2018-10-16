@@ -4,6 +4,7 @@ import au.com.biztune.retail.dao.PriceDao;
 import au.com.biztune.retail.dao.SuppProdPriceDao;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.IdBConstant;
 import au.com.biztune.retail.util.StringUtil;
 import au.com.bytecode.opencsv.CSVReader;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.ListIterator;
 
 
@@ -38,6 +40,9 @@ public class ProductImportServiceImpl {
 
     @Autowired
     private PriceDao priceDao;
+
+    @Autowired
+    private SessionState sessionState;
 
     /**
      * import location from csv file.
@@ -164,21 +169,32 @@ public class ProductImportServiceImpl {
                 iterator.next();
             }
             //get o for sell-price
-            final PriceCode priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.SELL_PRICE_CODE);
+            //final PriceCode priceCode = priceDao.getProductPriceCodePerCode(IdBConstant.SELL_PRICE_CODE);
             while (iterator.hasNext()) {
                 csvRow = iterator.next();
                 if (csvRow == null) {
                     continue;
                 }
                 //check if the price has being changed.
-                if (csvRow[5].equals(csvRow[6]) && csvRow[7].equals(csvRow[8]) && csvRow[9].equals(csvRow[10])) {
+                if (csvRow[3].equals(csvRow[4]) && csvRow[5].equals(csvRow[6]) && csvRow[7].equals(csvRow[8])) {
                     continue;
                 }
                 //update product costs.
-                suppProdPriceDao.updateProductCostsPerSolIdAndProdId(StringUtil.strToLong(csvRow[1]), StringUtil.strToLong(csvRow[2])
-                        , StringUtil.strToDouble(csvRow[6]), StringUtil.strToDouble(csvRow[8]), StringUtil.strToDouble(csvRow[10]));
-                //priceDao.updatePricePerProdIdAndPrccId(StringUtil.strToLong(csvRow[2]), priceCode.getId(), StringUtil.strToDouble(csvRow[8]));
-                productService.updateProductCostBaseDefaultSupplier(StringUtil.strToLong(csvRow[2]), StringUtil.strToDouble(csvRow[8]));
+                //check if product with catalogue no exists for that supplier. if not then display and error
+                final List<SuppProdPrice> suppProdPrice = suppProdPriceDao.getSuppProdPricePerOrgUnitIdAndSupplierNameAndCatalogNo(
+                        sessionState.getOrgUnit().getId(), csvRow[0], csvRow[1]);
+                if (suppProdPrice != null && suppProdPrice.size() > 0 && suppProdPrice.get(0) != null) {
+                    suppProdPriceDao.updateProductCostsPerSolIdAndProdId(suppProdPrice.get(0).getSolId(), suppProdPrice.get(0).getProdId()
+                            , StringUtil.strToDouble(csvRow[4]), StringUtil.strToDouble(csvRow[6]), StringUtil.strToDouble(csvRow[8]));
+                    //priceDao.updatePricePerProdIdAndPrccId(StringUtil.strToLong(csvRow[2]), priceCode.getId(), StringUtil.strToDouble(csvRow[8]));
+                    productService.updateProductCostBaseDefaultSupplier(suppProdPrice.get(0).getProdId(), StringUtil.strToDouble(csvRow[6]));
+                    if (suppProdPrice.size() > 1) {
+                        commonResponse.addMessage("there were [" + suppProdPrice.size() + "] products with catalogue no [" + csvRow[1]
+                                + "] from supplier [" + csvRow[0] + "] which one of them updated");
+                    }
+                } else {
+                    commonResponse.addMessage("Catalogue No [" + csvRow[1] + "] for Supplier [" + csvRow[0] + "] does not exists. row ignored");
+                }
 
             }
             commonResponse.addMessage("product price imported successfully");

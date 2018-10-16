@@ -53,6 +53,7 @@ public class SuppProdPrice {
     private boolean changed;
     private boolean supplierDeleted;
     private boolean productDeleted;
+    private String supplierName;
 
     public long getId() {
         return id;
@@ -334,4 +335,11 @@ public class SuppProdPrice {
         this.productDeleted = productDeleted;
     }
 
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
 }

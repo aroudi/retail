@@ -724,6 +724,13 @@ cimgApp.controller('purchaseOrderDetailCtrl', function($filter, $scope,$statePar
             }
         );
     };
+    $scope.statusNotComplete = function () {
+
+        if ($scope.purchaseOrderHeader.pohStatus != undefined) {
+            return (($scope.purchaseOrderHeader.pohStatus.categoryCode === 'POH_STATUS_IN_PROGRESS' || $scope.purchaseOrderHeader.pohStatus.categoryCode === 'POH_STATUS_CANCELLED') ? true : false)
+        }
+        return true;
+    };
 
     function populateDataFromPurchaseOrder(purchaseOrder) {
         for (var i = 0; i < purchaseOrder.lines.length; i++) {
