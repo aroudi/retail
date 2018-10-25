@@ -117,12 +117,13 @@ public class CashSessionServiceImpl implements CashSessionService {
     /**
      * create Session Media.
      * @param sessionEvent sessionEvent
+     * @param txnMedia txnMedia
      * @param paymentMedia paymentMedia
      * @param mediaCount mediaCount
      * @param mediaValue mediaValue
      * @return Session Media.
      */
-    public SessionMedia createSessionMedia(SessionEvent sessionEvent, PaymentMedia paymentMedia, double mediaCount, double mediaValue) {
+    public SessionMedia createSessionMedia(SessionEvent sessionEvent, TxnMedia txnMedia, PaymentMedia paymentMedia, double mediaCount, double mediaValue) {
         try {
             final SessionMedia sessionMedia = new SessionMedia();
             sessionMedia.setOrguId(sessionEvent.getOrguId());
@@ -133,6 +134,9 @@ public class CashSessionServiceImpl implements CashSessionService {
             sessionMedia.setMediaType(paymentMedia.getMediaType());
             sessionMedia.setSemeMediaCount(mediaCount);
             sessionMedia.setSemeMediaValue(mediaValue);
+            if (txnMedia != null) {
+                sessionMedia.setTxmdId(txnMedia.getId());
+            }
             cashSessionDao.insertSessionMedia(sessionMedia);
             return sessionMedia;
         } catch (Exception e) {
@@ -272,7 +276,7 @@ public class CashSessionServiceImpl implements CashSessionService {
             }
             //add session media
             final PaymentMedia paymentMediaCash = paymentMediaDao.getPaymentMediaPerCode(IdBConstant.PAY_MEDIA_CODE_CASH);
-            final SessionMedia sessionMedia = createSessionMedia(sessionEvent, paymentMediaCash, 1.0, addFloatForm.getAmount());
+            final SessionMedia sessionMedia = createSessionMedia(sessionEvent, null, paymentMediaCash, 1.0, addFloatForm.getAmount());
             if (sessionMedia == null) {
                 commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
                 commonResponse.setMessage("error in saving session media.");

@@ -94,6 +94,7 @@ public class SessionProcessor implements Processor {
                 if (txnMedia == null || !txnMedia.isNewAdded() || txnMedia.isTxmdVoided()) {
                     continue;
                 }
+                cashSessionService.createSessionMedia(sessionEvent, txnMedia, txnMedia.getPaymentMedia(), txnMedia.getCount(), txnMedia.getValue());
                 if (totalMediaVals.containsKey(txnMedia.getPaymentMedia())) {
                     values = totalMediaVals.get(txnMedia.getPaymentMedia());
                     values[0] = values[0] + txnMedia.getCount();
@@ -110,7 +111,7 @@ public class SessionProcessor implements Processor {
             SessionTotal sessionTotal = null;
             for (PaymentMedia paymentMedia : totalMediaVals.keySet()) {
                 values = totalMediaVals.get(paymentMedia);
-                sessionMedia = cashSessionService.createSessionMedia(sessionEvent, paymentMedia, values[0], values[1]);
+                //sessionMedia = cashSessionService.createSessionMedia(sessionEvent, paymentMedia, values[0], values[1]);
 
                 //update session total
                 sessionTotal = cashSessionDao.getSessionTotalPerSessionIdAndPaymentMediaId(sessionEvent.getCssnSessionId(), paymentMedia.getId());

@@ -52,12 +52,13 @@ public interface CashSessionService {
     /**
      * create Session Media.
      * @param sessionEvent sessionEvent
+     * @param txnMedia txnMedia
      * @param paymentMedia paymentMedia
      * @param mediaCount mediaCount
      * @param mediaValue mediaValue
      * @return Session Media.
      */
-    SessionMedia createSessionMedia(SessionEvent sessionEvent, PaymentMedia paymentMedia, double mediaCount, double mediaValue);
+    SessionMedia createSessionMedia(SessionEvent sessionEvent, TxnMedia txnMedia, PaymentMedia paymentMedia, double mediaCount, double mediaValue);
 
     /**
      * get All current cash sessions.

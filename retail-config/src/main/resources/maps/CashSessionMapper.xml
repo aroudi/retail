@@ -435,6 +435,7 @@
         SEEV_ID,
         ORGU_ID,
         STORE_ID,
+        TXMD_ID,
         MEDT_ID,
         PAYM_ID,
         SEME_MEDIA_COUNT,
@@ -443,7 +444,8 @@
         #{cssnSessionId},
         #{seevId},
         #{orguId},
-        #{storeId}
+        #{storeId},
+        #{txmdId}
         <if test="mediaType != null">
             ,#{mediaType.id}
         </if>
@@ -470,7 +472,6 @@
         <if test="semeMediaValue == null">
             ,null
         </if>
-
         )
     </insert>
 
