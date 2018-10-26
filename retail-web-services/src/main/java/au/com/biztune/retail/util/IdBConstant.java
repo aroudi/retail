@@ -188,6 +188,10 @@ public interface IdBConstant {
      */
     String TXN_MEDIA_TYPE_SALE = "TXN_MEDIA_SALE";
     /**
+     * TRANSACTION MEDIA TYPE - INVOICE.
+     */
+    String TXN_MEDIA_TYPE_INVOICE = "TXN_MEDIA_INVOICE";
+    /**
      * TRANSACTION MEDIA TYPE - DEPOSIT.
      */
     String TXN_MEDIA_TYPE_DEPOSIT = "TXN_MEDIA_DEPOSIT";

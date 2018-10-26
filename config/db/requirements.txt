@@ -94,5 +94,6 @@ this is while in importing boq, we add supplier to the current product.
 22 - in retail.txt exported from RetailManager in GoodReceived Section column T (Purchase RetailManager - # 1111(OrderNo. 9001-9001) : what is this OrderNo. 9001-9001 and where it come from
 23 - did a purchase order and received goods in 2 stage. in second stage the back order is showing the figures of the first delivery note received figures
 
-
+24- rounding problem in transactions: did a refund transaction with value of -264.55. due showed 264.5 and when added a payment the new due is -0.05. the uses is stucked at this stage and can't go furthur
+25- add opening float and closing float to the cash session. need to indentify the requirements
 

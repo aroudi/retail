@@ -186,8 +186,10 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setProduct(txnDetailForm.getProduct());
                 txnDetail.setUnitOfMeasure(txnDetailForm.getUnitOfMeasure());
                 txnDetail.setTxdeValueLine(txnDetailForm.getTxdeValueLine());
-                txnDetail.setTxdeProfitMargin(txnDetailForm.getTxdeProfitMargin());
-                txnDetail.setTxdeValueProfit(txnDetailForm.getTxdeValueProfit());
+                txnDetail.setTxdeValueProfit(txnDetailForm.getTxdeValueGross() - txnDetailForm.getTxdeValueLine());
+                if (txnDetailForm.getTxdeValueLine() != 0.00) {
+                    txnDetail.setTxdeProfitMargin(txnDetail.getTxdeValueProfit()/txnDetailForm.getTxdeValueLine());
+                }
                 txnDetail.setTxdeValueGross(txnDetailForm.getTxdeValueGross());
                 txnDetail.setTxdeTax(txnDetailForm.getTxdeTax());
                 txnDetail.setTxdeValueNet(txnDetailForm.getTxdeValueNet());
@@ -657,8 +659,10 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setProduct(txnDetailForm.getProduct());
                 txnDetail.setUnitOfMeasure(txnDetailForm.getUnitOfMeasure());
                 txnDetail.setTxdeValueLine(txnDetailForm.getTxdeValueLine());
-                txnDetail.setTxdeProfitMargin(txnDetailForm.getTxdeProfitMargin());
-                txnDetail.setTxdeValueProfit(txnDetailForm.getTxdeValueProfit());
+                txnDetail.setTxdeValueProfit(txnDetailForm.getTxdeValueGross() - txnDetailForm.getTxdeValueLine());
+                if (txnDetailForm.getTxdeValueLine() != 0.00) {
+                    txnDetail.setTxdeProfitMargin(txnDetail.getTxdeValueProfit()/txnDetailForm.getTxdeValueLine());
+                }
                 txnDetail.setTxdeValueGross(txnDetailForm.getTxdeValueGross());
                 txnDetail.setTxdeTax(txnDetailForm.getTxdeTax());
                 txnDetail.setTxdeValueNet(txnDetailForm.getTxdeValueNet());
@@ -702,6 +706,12 @@ public class TransactionServiceImpl implements TransactionService {
                         doInvoicePaymentFromDeposit(txnMediaForm, txnMediaForm.getTxmdAmountLocal(), invoiceId);
                     } else {
                         //link to invoice
+                        //mark that payment source is invoice
+                        final ConfigCategory txnMediaType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_MEDIA_TYPE, IdBConstant.TXN_MEDIA_TYPE_INVOICE);
+                        if (txnMediaType != null) {
+                            //txnMediaForm.setTxmdType(txnMediaType);
+                            txnDao.updateTxnMediaSourceTxn(txnMediaForm.getId(), txnMediaType.getId());
+                        }
                         doInvoicePayment(txnMediaForm, invoiceId);
                     }
                 }
@@ -865,8 +875,10 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setProduct(txnDetailForm.getProduct());
                 txnDetail.setUnitOfMeasure(txnDetailForm.getUnitOfMeasure());
                 txnDetail.setTxdeValueLine(txnDetailForm.getTxdeValueLine());
-                txnDetail.setTxdeProfitMargin(txnDetailForm.getTxdeProfitMargin());
-                txnDetail.setTxdeValueProfit(txnDetailForm.getTxdeValueProfit());
+                txnDetail.setTxdeValueProfit(txnDetailForm.getTxdeValueGross() - txnDetailForm.getTxdeValueLine());
+                if (txnDetailForm.getTxdeValueLine() != 0.00) {
+                    txnDetail.setTxdeProfitMargin(txnDetail.getTxdeValueProfit()/txnDetailForm.getTxdeValueLine());
+                }
                 txnDetail.setTxdeValueGross(txnDetailForm.getTxdeValueGross());
                 txnDetail.setTxdeTax(txnDetailForm.getTxdeTax());
                 txnDetail.setTxdeValueNet(txnDetailForm.getTxdeValueNet());

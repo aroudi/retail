@@ -22,6 +22,12 @@ public interface TxnDao {
     void updateTxnHeader(TxnHeader txnHeader);
 
     /**
+     * update txn media type. update the transaction source for this payment.
+     * @param txmdId txmdId
+     * @param txmdTypeId txmdTypeId
+     */
+    void updateTxnMediaSourceTxn(long txmdId, long txmdTypeId);
+    /**
      * insert txn detail.
      * @param txnDetail txnDetail
      */
