@@ -783,4 +783,17 @@ public interface IdBConstant {
      * Report Key REPORT_KEY_DEBTOR
      */
     String REPORT_KEY_DEBTOR = "DEBTORS";
+    /**
+     * CASH SESSION TYPE.
+     */
+    String CASH_SESSION_TYPE = "CASH_SESSION_TYPE";
+    /**
+     * CASH SESSION TYPE - SESSION PER USER.
+     */
+    String CASH_SESSION_TYPE_PER_USER = "SESSION_PER_USER";
+    /**
+     * CASH SESSION TYPE - SESSION PER COMPANY.
+     */
+    String CASH_SESSION_TYPE_PER_COMPANY = "SESSION_PER_COMPANY";
+
 }

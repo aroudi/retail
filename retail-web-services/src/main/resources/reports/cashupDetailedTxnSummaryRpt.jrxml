@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="55379ca5-4396-4444-968e-91e3d84b80ae">
+    <property name="ireport.zoom" value="2.143588810000003"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+        <defaultValueExpression><![CDATA["D:\\projects\\IReport\\"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="SESSION_ID" class="java.lang.Long" isForPrompting="false"/>
+    <parameter name="SESSION_OPENED" class="java.sql.Timestamp" isForPrompting="false"/>
+    <parameter name="SESSION_CLOSED" class="java.sql.Timestamp" isForPrompting="false"/>
+    <!--queryString language="SQL">
+        <![CDATA[select TXN_HEADER.TXHD_TXN_NR docketNo ,
+	   TXN_HEADER.TXHD_TRADING_DATE tradingDate,
+	   txnType.DISPLAY_NAME txnType,
+	   APP_USER.USR_FIRST_NAME + ' ' + APP_USER.USR_SUR_NAME operator,
+	   TXN_HEADER.TXHD_VALUE_NETT saleTotal,
+	   PAYMENT_MEDIA.PAYM_NAME paymentMedia,
+	   TXN_MEDIA.TXMD_AMOUNT_LOCAL paymentMediaAmount,
+	   txnDetail.txnCostTotal txnTotalCost,
+	   txnDetail.txdePriceLessTaxTotal txnTotalPriceLessTax,
+	   txnDetail.txdePriceAfterTaxTotal txnTotalPricePlusTax,
+	   txnDetail.txnProfitTotal txnTotalProfit
+	from SESSION_MEDIA
+		inner join TXN_MEDIA on (TXN_MEDIA.TXMD_ID = SESSION_MEDIA.TXMD_ID)
+		inner join CONFIG_CATEGORY txnMediaType on (txnMediaType.CATEGORY_ID = TXN_MEDIA.TXMD_TYPE)
+		inner join PAYMENT_MEDIA on (PAYMENT_MEDIA.PAYM_ID = TXN_MEDIA.PAYM_ID)
+		inner join TXN_HEADER on (TXN_MEDIA.TXHD_ID = TXN_HEADER.TXHD_ID)
+		inner join CONFIG_CATEGORY txnType ON (txnType.CATEGORY_ID = TXN_HEADER.TXHD_TXN_TYPE)
+		inner join APP_USER ON ( APP_USER.USR_ID = TXN_HEADER.TXHD_OPERATOR)
+		inner join
+			(select SUM(txde_value_profit * TXDE_QUANTITY_SOLD) txnProfitTotal,
+			    SUM(txde_value_line * TXDE_QUANTITY_SOLD) txnCostTotal,
+				SUM(txde_value_gross * TXDE_QUANTITY_SOLD) txdePriceLessTaxTotal,
+				SUM(txde_value_net * TXDE_QUANTITY_SOLD) txdePriceAfterTaxTotal,
+				MAX(txhd_id) txhd_id
+			 from TXN_DETAIL group by TXHD_ID)
+			 txnDetail on (txnDetail.txhd_id = TXN_HEADER.TXHD_ID)
+	where SESSION_MEDIA.CSSN_SESSION_ID = 4
+	AND txnMediaType.CATEGORY_CODE IN ('TXN_MEDIA_SALE', 'TXN_MEDIA_DEPOSIT')
+
+	UNION ALL
+
+select INVOICE.TXIV_TXN_NR docketNo,
+	   TXN_HEADER.TXHD_TRADING_DATE tradingDate,
+	   txnType.DISPLAY_NAME txnType,
+	   APP_USER.USR_FIRST_NAME + ' ' + APP_USER.USR_SUR_NAME operator,
+	   TXN_HEADER.TXHD_VALUE_NETT saleTotal,
+	   PAYMENT_MEDIA.PAYM_NAME paymentMedia,
+	   TXN_MEDIA.TXMD_AMOUNT_LOCAL paymentMediaAmount,
+	   txnSummary.txnCostTotal txnTotalCost,
+	   txnSummary.txdePriceLessTaxTotal txnTotalPriceLessTax,
+	   txnSummary.txdePriceAfterTaxTotal txnTotalPricePlusTax,
+	   txnSummary.txnProfitTotal txnTotalProfit
+	from SESSION_MEDIA
+		inner join TXN_MEDIA on (TXN_MEDIA.TXMD_ID = SESSION_MEDIA.TXMD_ID)
+		inner join CONFIG_CATEGORY txnMediaType on (txnMediaType.CATEGORY_ID = TXN_MEDIA.TXMD_TYPE)
+		inner join PAYMENT_MEDIA on (PAYMENT_MEDIA.PAYM_ID = TXN_MEDIA.PAYM_ID)
+		inner join INVOICE_MEDIA ON (INVOICE_MEDIA.TXMD_ID = TXN_MEDIA.TXMD_ID)
+		inner join INVOICE ON (INVOICE.TXIV_ID = INVOICE_MEDIA.TXIV_ID)
+		inner join TXN_HEADER on (INVOICE.TXHD_ID = TXN_HEADER.TXHD_ID)
+		inner join CONFIG_CATEGORY txnType ON (txnType.CATEGORY_ID = INVOICE.TXIV_TXN_TYPE)
+		inner join APP_USER ON ( APP_USER.USR_ID = TXN_HEADER.TXHD_OPERATOR)
+		inner join
+			(
+				select
+					SUM(txde_value_profit * txid_qty_invoiced) txnProfitTotal,
+					SUM(txde_value_line * txid_qty_invoiced) txnCostTotal,
+					SUM(txde_value_gross * txid_qty_invoiced) txdePriceLessTaxTotal,
+					SUM(txde_value_net * txid_qty_invoiced) txdePriceAfterTaxTotal,
+					MAX(invoice_detail.TXIV_ID) TXIV_ID,
+					MAX(invoice.TXHD_ID) TXHD_ID
+				FROM INVOICE_detail
+					 inner join INVOICE ON (INVOICE.TXIV_ID = INVOICE_DETAIL.TXIV_ID)
+					 inner join TXN_DETAIL ON (TXN_DETAIL.TXDE_ID = INVOICE_DETAIL.TXDE_ID)
+					 inner join CONFIG_CATEGORY on (CONFIG_CATEGORY.CATEGORY_ID = INVOICE_DETAIL.TXID_LINE_TYPE)
+				where CONFIG_CATEGORY.CATEGORY_CODE = 'TXN_LINE_SALE'
+				group by INVOICE.TXIV_ID
+				UNION
+				select
+					SUM(txde_value_profit * TXID_QTY_REFUND) txnProfitTotal,
+					SUM(txde_value_line * TXID_QTY_REFUND) txnCostTotal,
+					SUM(txde_value_gross * TXID_QTY_REFUND) txdePriceLessTaxTotal,
+					SUM(txde_value_net * TXID_QTY_REFUND) txdePriceAfterTaxTotal,
+					MAX(invoice_detail.TXIV_ID) TXIV_ID,
+					MAX(invoice.TXHD_ID) TXHD_ID
+				FROM INVOICE_detail
+					 inner join INVOICE ON (INVOICE.TXIV_ID = INVOICE_DETAIL.TXIV_ID)
+					 inner join TXN_DETAIL ON (TXN_DETAIL.TXDE_ID = INVOICE_DETAIL.TXDE_ID)
+					 inner join CONFIG_CATEGORY on (CONFIG_CATEGORY.CATEGORY_ID = INVOICE_DETAIL.TXID_LINE_TYPE)
+				where CONFIG_CATEGORY.CATEGORY_CODE = 'TXN_LINE_REFUND'
+				group by INVOICE.TXIV_ID
+			) txnSummary on (txnSummary.TXIV_ID = INVOICE.TXIV_ID)
+	where SESSION_MEDIA.CSSN_SESSION_ID = 4
+	AND txnMediaType.CATEGORY_CODE IN ('TXN_MEDIA_INVOICE', 'TXN_MEDIA_REFUND')
+	order by docketNo dESC]]>
+    </queryString-->
+    <field name="docketNo" class="java.lang.String"/>
+    <field name="tradingDate" class="java.sql.Timestamp"/>
+    <field name="txnType" class="java.lang.String"/>
+    <field name="operator" class="java.lang.String"/>
+    <field name="saleTotal" class="java.lang.Double"/>
+    <field name="paymentMedia" class="java.lang.String"/>
+    <field name="paymentMediaAmount" class="java.lang.Double"/>
+    <field name="txnTotalCost" class="java.lang.Double"/>
+    <field name="txnTotalPriceLessTax" class="java.lang.Double"/>
+    <field name="txnTotalPricePlusTax" class="java.lang.Double"/>
+    <field name="txnTotalProfit" class="java.lang.Double"/>
+    <variable name="groupTotalPaymentMedia" class="java.lang.Double" resetType="Group" resetGroup="TAX" calculation="Sum">
+        <variableExpression><![CDATA[$F{paymentMediaAmount}]]></variableExpression>
+    </variable>
+    <variable name="reportTotalPaymentMedia" class="java.lang.Double" calculation="Sum">
+        <variableExpression><![CDATA[$F{paymentMediaAmount}]]></variableExpression>
+    </variable>
+    <variable name="groupTotalPricePlusTax" class="java.lang.Double" resetType="Group" resetGroup="TAX" calculation="Sum">
+        <variableExpression><![CDATA[$F{txnTotalPricePlusTax}]]></variableExpression>
+    </variable>
+    <variable name="reportTotalPricePlusTax" class="java.lang.Double" calculation="Sum">
+        <variableExpression><![CDATA[$F{txnTotalPricePlusTax}]]></variableExpression>
+    </variable>
+    <group name="TAX">
+        <groupExpression><![CDATA[$F{docketNo}]]></groupExpression>
+        <groupHeader>
+            <band height="35">
+                <textField isBlankWhenNull="true">
+                    <reportElement x="8" y="4" width="60" height="19" uuid="60d01f07-29f8-46f2-858d-558e0e17307d"/>
+                    <textElement>
+                        <font fontName="Arial" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$F{docketNo}]]></textFieldExpression>
+                </textField>
+                <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                    <reportElement x="68" y="4" width="68" height="19" uuid="8ba0a4c2-99d1-4e20-88a8-0236d33fe26f"/>
+                    <textElement>
+                        <font fontName="Arial" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$F{tradingDate}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="138" y="4" width="59" height="20" uuid="9291fef5-6696-48f7-8eaa-a1ef3296061d"/>
+                    <textFieldExpression><![CDATA[$F{txnType}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="209" y="4" width="101" height="20" uuid="edb974cf-cac7-406c-978e-e27122c8cabf"/>
+                    <textFieldExpression><![CDATA[$F{operator}]]></textFieldExpression>
+                </textField>
+                <textField pattern="¤ #,##0.00">
+                    <reportElement x="323" y="4" width="63" height="20" uuid="30b5c8f9-b3c2-4a2a-9e4e-68da55e91488"/>
+                    <textFieldExpression><![CDATA[$F{txnTotalPricePlusTax}]]></textFieldExpression>
+                </textField>
+                <textField pattern="¤ #,##0.00">
+                    <reportElement x="408" y="4" width="56" height="20" uuid="b0fd466b-fd72-42e4-9be0-94ca8a3bbd21"/>
+                    <textFieldExpression><![CDATA[$F{txnTotalProfit}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupHeader>
+        <groupFooter>
+            <band height="34">
+                <line>
+                    <reportElement x="186" y="3" width="367" height="1" uuid="19ec1dd1-74dd-4fa4-b44a-4986f9d21102"/>
+                </line>
+                <staticText>
+                    <reportElement x="144" y="8" width="100" height="20" uuid="003bd784-1187-474f-be54-369c70d5bd36"/>
+                    <textElement textAlignment="Right">
+                        <font fontName="Arial" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Total Payment]]></text>
+                </staticText>
+                <textField pattern="¤ #,##0.00">
+                    <reportElement x="481" y="8" width="72" height="20" uuid="8a96feb4-cfca-417e-894f-85534c90c5af"/>
+                    <textFieldExpression><![CDATA[$V{groupTotalPaymentMedia}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupFooter>
+    </group>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band splitType="Stretch"/>
+    </title>
+    <pageHeader>
+        <band height="194" splitType="Stretch">
+            <staticText>
+                <reportElement x="7" y="10" width="203" height="15" uuid="f8428307-e95f-4e17-b4b4-68c1782c42a3"/>
+                <textElement>
+                    <font fontName="Arial" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[JOMON ARCHITECTURAL HARDWARE PTY LTD]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="7" y="57" width="179" height="15" uuid="8703ce78-aaa3-4df5-9b4e-a12d9590f8d3"/>
+                <textElement>
+                    <font fontName="Arial" isBold="false"/>
+                </textElement>
+                <text><![CDATA[ABN : 92 084 941 266]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="7" y="25" width="217" height="15" uuid="de2aaacf-602b-40ac-8159-af5cb65a8e45"/>
+                <textElement>
+                    <font fontName="Arial"/>
+                </textElement>
+                <text><![CDATA[32 Spencer St, Five Dock NSW 2046 AUSTRALIA]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="7" y="40" width="222" height="17" uuid="2ef041a5-44f5-4f76-b8de-28ab26602458"/>
+                <textElement>
+                    <font fontName="Arial"/>
+                </textElement>
+                <text><![CDATA[Phone: +61 2  9747 0088     Fax: +61 2 9747 4488]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="113" y="72" width="320" height="18" uuid="2e420e7e-7e3e-42a3-b476-f4caa2f38860"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Arial" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Cashup - Detailed Transaction Summary]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="7" y="117" width="45" height="18" uuid="a69fc56c-c412-4906-af2b-5a2f6f8e1f4d"/>
+                <textElement>
+                    <font fontName="Arial" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Session:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="210" y="117" width="53" height="18" uuid="fb7af0ad-6a72-4422-8f47-c2b54eda97ab"/>
+                <textElement>
+                    <font fontName="Arial" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Opened:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="347" y="117" width="53" height="18" uuid="ded54794-9300-48d4-928a-f6725a634bb9"/>
+                <textElement>
+                    <font fontName="Arial" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Closed:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="68" y="117" width="100" height="20" uuid="5dc54402-447e-4533-b166-a5e3399cf6d1"/>
+                <textFieldExpression><![CDATA[$P{SESSION_ID}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="263" y="117" width="77" height="20" uuid="f67fd0ef-94b6-4b3b-8e6c-3f259fbe7115"/>
+                <textFieldExpression><![CDATA[$P{SESSION_OPENED}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="408" y="117" width="100" height="20" uuid="e688c7c1-abc7-43a4-8571-f799d5d72e73"/>
+                <textFieldExpression><![CDATA[$P{SESSION_CLOSED}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+    <columnHeader>
+        <band height="35" splitType="Stretch">
+            <staticText>
+                <reportElement x="68" y="14" width="45" height="20" uuid="8d133396-a897-47c2-90fa-906e77fda737"/>
+                <textElement>
+                    <font fontName="Arial" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Date/Time]]></text>
+            </staticText>
+            <line>
+                <reportElement x="6" y="26" width="547" height="1" uuid="d62688a5-5cc7-4b5e-b126-04202c450b43"/>
+            </line>
+            <staticText>
+                <reportElement x="8" y="14" width="44" height="20" uuid="58643352-18ea-467e-bb34-25494014021e"/>
+                <textElement>
+                    <font fontName="Arial" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Docket]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="138" y="14" width="32" height="20" uuid="ea216d45-61b1-4377-865c-61b62cdc9697"/>
+                <textElement>
+                    <font fontName="Arial" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Type]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="209" y="14" width="25" height="20" uuid="382213ea-a345-411e-9a8d-fa90d2dd6732"/>
+                <textElement>
+                    <font fontName="Arial" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Staff]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="481" y="14" width="58" height="13" uuid="f158419a-ccc5-4013-aedc-2ed9d698533a"/>
+                <textElement>
+                    <font fontName="Arial" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Payment $]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="317" y="12" width="50" height="15" uuid="a22f4c54-064b-4efd-90dd-b6088ae4ec59"/>
+                <textElement>
+                    <font fontName="Arial" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Sale Total]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="406" y="13" width="37" height="13" uuid="a0ac230c-bab5-4706-afc0-4812e373fc84"/>
+                <textElement>
+                    <font fontName="Arial" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[GP $]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="20" splitType="Stretch">
+            <textField>
+                <reportElement x="412" y="0" width="68" height="20" uuid="8c1faed3-0ba0-40da-b444-b526a3f90905"/>
+                <textElement>
+                    <font isBold="true" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{paymentMedia}]]></textFieldExpression>
+            </textField>
+            <textField pattern="¤ #,##0.00">
+                <reportElement x="481" y="0" width="73" height="20" uuid="9748438e-7a53-45cc-a7fc-7601d0446fac"/>
+                <textFieldExpression><![CDATA[$F{paymentMediaAmount}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <columnFooter>
+        <band splitType="Stretch"/>
+    </columnFooter>
+    <pageFooter>
+        <band splitType="Stretch"/>
+    </pageFooter>
+    <summary>
+        <band height="81" splitType="Stretch">
+            <line>
+                <reportElement x="197" y="45" width="356" height="1" uuid="47c4df39-9519-4951-aab2-771c292f35ea"/>
+            </line>
+            <staticText>
+                <reportElement x="179" y="48" width="65" height="20" uuid="b22c9dce-9a84-49c1-98e1-0f5501b06785"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Arial" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Report Totals]]></text>
+            </staticText>
+            <textField pattern="¤ #,##0.00">
+                <reportElement x="481" y="48" width="72" height="20" uuid="14ed7300-f01c-4c25-a12b-2de40ec094ef"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{reportTotalPaymentMedia}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>

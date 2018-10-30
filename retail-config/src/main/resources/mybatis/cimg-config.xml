@@ -88,6 +88,7 @@
         <typeAlias type="au.com.biztune.retail.domain.ReportGoodReceivedRow" alias="ReportGoodReceivedRow" />
         <typeAlias type="au.com.biztune.retail.domain.ReportDebtorRow" alias="ReportDebtorRow" />
         <typeAlias type="au.com.biztune.retail.domain.ProductExtended" alias="ProductExtended" />
+        <typeAlias type="au.com.biztune.retail.domain.CashupDetailTxnSummaryRow" alias="CashupDetailTxnSummaryRow" />
     </typeAliases>
     <mappers>
         <mapper resource="maps/UnitOfMeasureMapper.xml" />

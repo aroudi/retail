@@ -160,4 +160,11 @@ public interface CashSessionDao {
      * @param cssnId cssnId
      */
     void updateCashSessionImportStatus(long cssnId);
+
+    /**
+     * Cashup Detail Txn Summary Report.
+     * @param sessionId session id.
+     * @return List of txn detail.
+     */
+    List<CashupDetailTxnSummaryRow> runCashupDetailTxnSummary(long sessionId);
 }
