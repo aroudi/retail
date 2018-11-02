@@ -80,6 +80,14 @@ public interface CashSessionDao {
     CashSession getCurrentCashSessionPerUser(long userId);
 
     /**
+     * get Active Cash Session for store.
+     * @param orguId orguId
+     * @param storeId storeId
+     * @return CashSession
+     */
+    CashSession getStoreActiveCashSession(long orguId, long storeId);
+
+    /**
      * get All Current(Open or Closed) sessions.
      * @return List of Current Sessions.
      */

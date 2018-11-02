@@ -27,6 +27,7 @@ public class ProductForm {
     private double prceMargin;
     private boolean prceTaxIncluded;
     private double costPrice;
+    private long userId;
 
     private String prodLocation;
     private List<ProdDeptCat> productGroups;
@@ -197,6 +198,14 @@ public class ProductForm {
 
     public void setProductGroups(List<ProdDeptCat> productGroups) {
         this.productGroups = productGroups;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 }
 

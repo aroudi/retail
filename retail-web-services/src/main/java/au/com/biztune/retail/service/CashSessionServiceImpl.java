@@ -55,6 +55,22 @@ public class CashSessionServiceImpl implements CashSessionService {
     @Autowired
     private AccountingDao accountingDao;
 
+    @Autowired
+    private CashSessionService cashSessionService;
+
+    /**
+     * get Active cash session.
+     * @param userId logined user id
+     * @return active cash session.
+     */
+    public CashSession getActiveCashSession(long userId) {
+        //check the cash session mode is per user or company
+        if (sessionState.getStore().getCashSessionType().getCategoryCode().equals(IdBConstant.CASH_SESSION_TYPE_PER_USER)) {
+            return cashSessionDao.getCurrentCashSessionPerUser(userId);
+        } else {
+            return cashSessionDao.getStoreActiveCashSession(sessionState.getOrgUnit().getId(), sessionState.getStore().getId());
+        }
+    }
     /**
      * create cash session for user.
      * @param user user.
@@ -152,8 +168,9 @@ public class CashSessionServiceImpl implements CashSessionService {
     public void assignCashSessionToLoggedinUser(AppUser appUser) {
         try {
             //first search for active(not ended or reconciled) cash session assigned to user.
-            CashSession cashSession = cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
-            //if no session assigned to user then create one.
+            CashSession cashSession = cashSessionService.getActiveCashSession(appUser.getId());
+            //cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
+            //if no active cash session then create one.
             if (cashSession == null) {
                 cashSession = createCashSession(appUser);
             }
@@ -170,21 +187,24 @@ public class CashSessionServiceImpl implements CashSessionService {
 
 
     /**
-     * close cash session after logged out.
+     * in session per user mode, close cash session after logged out.
      * @param appUser appUser.
      */
     public void closeCashSessionForLoggedOutUser(AppUser appUser) {
         try {
-            //first search for active(not ended or reconciled) cash session assigned to user.
-            final CashSession cashSession = cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
-            if (cashSession == null) {
-                return;
-            }
-            //if assigned session is open, then close it.
-            if (cashSession.getCssnStatus().getCategoryCode().equals(IdBConstant.SESSION_STATE_OPEN)) {
-                final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SESSION_STATE, IdBConstant.SESSION_STATE_CLOSED);
-                cashSession.setCssnStatus(status);
-                cashSessionDao.updateCashSessionStatus(cashSession);
+            //check if session is opened per user?
+            if (sessionState.getStore().getCashSessionType().getCategoryCode().equals(IdBConstant.CASH_SESSION_TYPE_PER_USER)) {
+                //first search for active(not ended or reconciled) cash session assigned to user.
+                final CashSession cashSession = cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
+                if (cashSession == null) {
+                    return;
+                }
+                //if assigned session is open, then close it.
+                if (cashSession.getCssnStatus().getCategoryCode().equals(IdBConstant.SESSION_STATE_OPEN)) {
+                    final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SESSION_STATE, IdBConstant.SESSION_STATE_CLOSED);
+                    cashSession.setCssnStatus(status);
+                    cashSessionDao.updateCashSessionStatus(cashSession);
+                }
             }
         } catch (Exception e) {
             logger.error("Exception in assigning cash session to user", e);
@@ -220,7 +240,8 @@ public class CashSessionServiceImpl implements CashSessionService {
                 return null;
             }
             //search for active cash session. if not found create and assign to user.
-            CashSession cashSession = cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
+            CashSession cashSession = cashSessionService.getActiveCashSession(appUser.getId());
+            //cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
             if (cashSession == null) {
                 cashSession = createCashSession(appUser);
             }

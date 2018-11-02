@@ -61,7 +61,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     @Autowired
     private ProductImportServiceImpl productImportService;
     private SecurityContext securityContext;
-
+    @Autowired UserService userService;
     /**
      * upload Bill Of Quantity.
      * @param uploadedInputStream uploadedInputStream
@@ -78,7 +78,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 response.setMessage("Not able to process input stream. please refer to the log");
                 return response;
             }
-            final long result = importBillOfQuantity(billOfQuantity);
+            final long result = importBillOfQuantity(billOfQuantity, securityContext);
             if (result > 0) {
                 response.setStatus(IdBConstant.RESULT_SUCCESS);
                 response.setInfo(String.valueOf(result));
@@ -99,10 +99,12 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     /**
      * import bill of quantity.
      * @param billOfQuantity billOfQuantity
+     * @param securityContext securityContext
      * @return FAILURE if something went wrong, otherwise will return the billOfQuantity id.
      */
-    public long importBillOfQuantity(BillOfQuantity billOfQuantity) {
+    public long importBillOfQuantity(BillOfQuantity billOfQuantity, SecurityContext securityContext) {
         // import BillOfQuantityHeader
+        final AppUser appUser = userService.getAppUserFromSecurityContext(securityContext);
         final List<Object> billOfQuantityObjects = billOfQuantity.getHeaderOrProjectOrClient();
         if (billOfQuantityObjects == null || billOfQuantityObjects.size() < 1) {
             logger.error("List of internal objects in bill of quantity xml is null.");
@@ -141,11 +143,11 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
         final Customer customer = importClient(client);
         final Project project = importProject(inputProject, customer);
         final au.com.biztune.retail.domain.BillOfQuantity billOfQuantityObj = importBillOfQuantityHeader(header, project, productList);
-        importBoqDetail(productList, billOfQuantityObj);
+        importBoqDetail(productList, billOfQuantityObj, appUser.getId());
         return billOfQuantityObj.getId();
     }
 
-    private void importBoqDetail(BillOfQuantity.BillOfQuantities billOfQuantities, au.com.biztune.retail.domain.BillOfQuantity billOfQuantity) {
+    private void importBoqDetail(BillOfQuantity.BillOfQuantities billOfQuantities, au.com.biztune.retail.domain.BillOfQuantity billOfQuantity, long userId) {
         if (billOfQuantities == null) {
             logger.error("List of product is null");
             return;
@@ -163,7 +165,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                     importedProduct.getReference(), importedProduct.getDescription(),
                     null, importedProduct.getSupplier(), null, importedProduct.getUnit(),
                     importedProduct.getTaxName(), importedProduct.getCost() == null ? 0.00 : importedProduct.getCost(),
-                    importedProduct.getSellPrice() == null ? 0.00 : importedProduct.getSellPrice(), 0, false);
+                    importedProduct.getSellPrice() == null ? 0.00 : importedProduct.getSellPrice(), 0, false, userId);
             ///////////////////////////
             final BoqDetail boqDetail = new BoqDetail();
             boqDetail.setBillOfQuantity(billOfQuantity);

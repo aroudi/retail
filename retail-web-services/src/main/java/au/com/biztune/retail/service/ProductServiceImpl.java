@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.ws.rs.core.SecurityContext;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -76,6 +77,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductCategoryDao productCategoryDao;
+
+    @Autowired
+    private StockService stockService;
+    @Autowired
+    private UserService userService;
     /**
      * add product and its related objects.
      * @param productForm productForm
@@ -96,8 +102,13 @@ public class ProductServiceImpl implements ProductService {
             if (isNew) {
                 product = createProductObject(productForm);
             } else {
-                //delete product related objects
                 product = updateProductObject(productForm);
+                //see if we have a price change here
+                final Price oldPrice = priceDao.getProductCostPricePerProdId(productForm.getProdId());
+                if (oldPrice.getPrcePrice() != productForm.getCostPrice()) {
+                    stockService.createCostVarianceEvent(productForm.getProdId(), oldPrice.getPrcePrice(), productForm.getCostPrice(), 1, productForm.getUserId());
+                }
+                //delete product related objects
                 deleteProductRelatedObjects(productForm);
             }
             final ProdOrguLink prodOrguLink = createProdOrguLink(productForm, product);
@@ -478,7 +489,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * import product.
+     * import product from doors3 csv.
      * @param prodSku prodSku
      * @param prodName prodName
      * @param prodDesc prodDesc
@@ -494,6 +505,7 @@ public class ProductServiceImpl implements ProductService {
      * @param price price
      * @param bulkPrice bulkPrice
      * @param overWriteProduct overWriteProduct
+     * @param userId userId
      * @return Product
      */
     public Product addProduct(String prodSku
@@ -510,7 +522,8 @@ public class ProductServiceImpl implements ProductService {
             , double cost
             , double price
             , double bulkPrice
-            , boolean overWriteProduct)
+            , boolean overWriteProduct
+            , long userId)
     {
         try {
             final Timestamp currentTime = new Timestamp(new Date().getTime());
@@ -561,7 +574,7 @@ public class ProductServiceImpl implements ProductService {
                         suppProdPriceDao.updateValues(suppProdPrice);
                     }
                     //update product cost to default supplier cost.
-                    updateProductCostBaseDefaultSupplier(product.getId(), price);
+                    updateProductCostBaseDefaultSupplier(product.getId(), price, userId);
                 }
             } else {
                 //insert product
@@ -720,10 +733,13 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * update supplier prpoduct prices in bulk.
+     * change price from application.
      * @param updatedPriceList : updated price list
+     * @param securityContext securityContext
      * @return Common Response
      */
-    public CommonResponse updateSupplierProductPricesInBulk(List<SuppProdPrice> updatedPriceList) {
+    public CommonResponse updateSupplierProductPricesInBulk(List<SuppProdPrice> updatedPriceList, SecurityContext securityContext) {
+        final AppUser appUser = userService.getAppUserFromSecurityContext(securityContext);
         final CommonResponse response = new CommonResponse();
         try {
             response.setStatus(IdBConstant.RESULT_SUCCESS);
@@ -745,7 +761,7 @@ public class ProductServiceImpl implements ProductService {
                         , suppProdPrice.getCostBeforeTax(), suppProdPrice.getRrp(), suppProdPrice.getBulkPrice());
                 priceDao.updatePricePerProdIdAndPrccId(suppProdPrice.getProdId(), priceCode.getId(), suppProdPrice.getRrp());
                 //update product cost base default supplier
-                updateProductCostBaseDefaultSupplier(suppProdPrice.getProdId(), suppProdPrice.getRrp());
+                updateProductCostBaseDefaultSupplier(suppProdPrice.getProdId(), suppProdPrice.getRrp(), appUser.getId());
             }
             return response;
         } catch (Exception e) {
@@ -790,15 +806,22 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * update product cost base for default supplier.
+     * if product cost is changed, we need to fire a cost variance event.
      * @param prodId prodId
      * @param rrp rrp
+     * @param userId userId
      */
-    public void updateProductCostBaseDefaultSupplier(long prodId, double rrp) {
+    public void updateProductCostBaseDefaultSupplier(long prodId, double rrp, long userId) {
         //update product cost to default supplier cost.
         final List<SuppProdPrice> defaultSpps = suppProdPriceDao.getDefaultSuppliersPerOrguIdAndProdId(sessionState.getOrgUnit().getId(), prodId);
         if (defaultSpps != null && defaultSpps.size() > 0) {
             final Price productCost = priceDao.getProductCostPricePerProdId(prodId);
             if (productCost != null) {
+                //create product cost variance event.
+                final double oldPrice = productCost.getPrcePrice();
+                final double newPrice = defaultSpps.get(0).getCostBeforeTax();
+                final double qtyAffected = stockDao.getProductSaleablePristineStockQty(prodId, sessionState.getOrgUnit().getId());
+                stockService.createCostVarianceEvent(prodId, oldPrice, newPrice, qtyAffected, userId);
                 productCost.setPrcePrice(defaultSpps.get(0).getCostBeforeTax());
                 priceDao.updatePricePerProdIdAndPrccId(prodId, productCost.getPriceCode().getId(), productCost.getPrcePrice());
             }

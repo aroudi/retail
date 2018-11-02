@@ -757,6 +757,17 @@
         CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED' ) AND CSSN_OPERATOR = #{value}
     </select>
 
+    <!-- cash session per company mode: get active cash session. there must be only one active session-->
+    <select id="getStoreActiveCashSession" resultMap="CashSessionMap">
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+          CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID)
+        WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED' )
+        AND cssn.ORGU_ID = #{param1} AND cssn.STORE_ID = #{param2}
+
+    </select>
+
     <select id="getCashSessionPerId" resultMap="CashSessionMap">
         SELECT
         <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>

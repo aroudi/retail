@@ -96,4 +96,6 @@ this is while in importing boq, we add supplier to the current product.
 
 24- rounding problem in transactions: did a refund transaction with value of -264.55. due showed 264.5 and when added a payment the new due is -0.05. the uses is stucked at this stage and can't go furthur
 25- add opening float and closing float to the cash session. need to indentify the requirements
+26- not able to create delivery  note with out a PO
+27- delete product, delete the whole reference of product !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

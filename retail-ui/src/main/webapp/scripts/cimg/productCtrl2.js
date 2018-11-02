@@ -452,6 +452,8 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
     }
 
     function submitForm() {
+        var userId = UserService.getUser().id;
+        $scope.productForm.userId = userId;
         saveBulkPrices();
         $scope.productForm.suppProdPrices = $scope.gridOptions.data;
         //update product groups

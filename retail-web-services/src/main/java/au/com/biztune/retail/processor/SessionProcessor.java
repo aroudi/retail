@@ -154,7 +154,8 @@ public class SessionProcessor implements Processor {
 
     private void doSessionProcess(SessionRequest sessionRequest) {
         //find the active session for current user;
-        CashSession cashSession = cashSessionDao.getCurrentCashSessionPerUser(sessionRequest.getTxnHeader().getTxhdOperator());
+        CashSession cashSession = cashSessionService.getActiveCashSession(sessionRequest.getTxnHeader().getTxhdOperator());
+        //cashSessionDao.getCurrentCashSessionPerUser(sessionRequest.getTxnHeader().getTxhdOperator());
         //if cashcession is null create it.
         if (cashSession == null) {
             cashSession = cashSessionService.createCashSession(sessionRequest.getTxnHeader().getUser());

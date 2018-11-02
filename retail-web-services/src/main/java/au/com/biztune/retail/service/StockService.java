@@ -1,5 +1,6 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.domain.AppUser;
 import au.com.biztune.retail.domain.Stock;
 import au.com.biztune.retail.domain.StockEvent;
 import au.com.biztune.retail.domain.TxnHeader;
@@ -41,4 +42,13 @@ public interface StockService {
      * @return List of StockEvent
      */
     List<StockEvent> viewProductAuditTrail(long prodId);
+    /**
+     * create cost variance event.
+     * @param prodId prodId
+     * @param oldPrice oldPrice
+     * @param newPrice newPrice
+     * @param qty qty
+     * @param userId userId
+     */
+    void createCostVarianceEvent(long prodId, double oldPrice, double newPrice, double qty, long userId);
 }

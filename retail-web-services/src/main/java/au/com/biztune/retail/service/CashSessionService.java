@@ -102,4 +102,12 @@ public interface CashSessionService {
      * @return List of reconciled sessions
      */
     List<SessionEvent> getReconciledSessions();
+
+    /**
+     * get Active cash session.
+     * @param userId logined user id
+     * @return active cash session.
+     */
+    CashSession getActiveCashSession(long userId);
+
 }
