@@ -16,9 +16,12 @@ cimgApp.controller('cashSessionListCtrl', function($scope, $state, $timeout,base
                     return grid.getCellValue(row, col).color
                 }
             },
+            {field:'cssnCurrentCash', displayName:'Opening Float',enableCellEdit:false, width:'15%',cellFilter: 'currency', footerCellFilter: 'currency'},
             {field:'cssnTotalFloat', displayName:'Total Float',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency'},
             {field:'cssnTotalPickup', displayName:'Total Pickup',enableCellEdit:false, width:'10%',cellFilter: 'currency', footerCellFilter: 'currency'}
+
         ]
+
     }
     $scope.gridOptions.enableRowSelection = true;
     $scope.gridOptions.multiSelect = false;

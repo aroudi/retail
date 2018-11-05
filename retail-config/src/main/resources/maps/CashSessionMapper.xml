@@ -768,6 +768,31 @@
 
     </select>
 
+    <!-- cash session per company mode: get last reconciled or ended cash session.-->
+    <select id="getStoreLastEndedOrReconciledCashSession" resultMap="CashSessionMap">
+        SELECT TOP 1
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID)
+        WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_ENDED' OR cc.CATEGORY_CODE = 'SESSION_STATE_RECONCILED' )
+        AND cssn.ORGU_ID = #{param1} AND cssn.STORE_ID = #{param2}
+        order by CSSN_SESSION_ID desc
+
+    </select>
+
+    <!-- cash session per company mode: get last reconciled or ended cash session.-->
+    <select id="getUserLastEndedOrReconciledCashSession" resultMap="CashSessionMap">
+        SELECT TOP 1
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID)
+        WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_ENDED' OR cc.CATEGORY_CODE = 'SESSION_STATE_RECONCILED' )
+        AND cssn.ORGU_ID = #{param1} AND cssn.STORE_ID = #{param2} AND cssn.CSSN_OPERATOR = #{param3}
+        ORDER BY CSSN_SESSION_ID desc
+
+
+    </select>
+
     <select id="getCashSessionPerId" resultMap="CashSessionMap">
         SELECT
         <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>

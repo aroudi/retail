@@ -55,9 +55,6 @@ public class CashSessionServiceImpl implements CashSessionService {
     @Autowired
     private AccountingDao accountingDao;
 
-    @Autowired
-    private CashSessionService cashSessionService;
-
     /**
      * get Active cash session.
      * @param userId logined user id
@@ -71,6 +68,22 @@ public class CashSessionServiceImpl implements CashSessionService {
             return cashSessionDao.getStoreActiveCashSession(sessionState.getOrgUnit().getId(), sessionState.getStore().getId());
         }
     }
+
+    /**
+     * get last ended/reconciled cash session.
+     * @param userId logined user id
+     * @return active cash session.
+     */
+    private CashSession getLastEndedOrReconciledCashSession(long userId) {
+        //check the cash session mode is per user or company
+        if (sessionState.getStore().getCashSessionType().getCategoryCode().equals(IdBConstant.CASH_SESSION_TYPE_PER_USER)) {
+            return cashSessionDao.getUserLastEndedOrReconciledCashSession(sessionState.getOrgUnit().getId(),
+                    sessionState.getStore().getId(), userId);
+        } else {
+            return cashSessionDao.getStoreLastEndedOrReconciledCashSession(sessionState.getOrgUnit().getId(), sessionState.getStore().getId());
+        }
+    }
+
     /**
      * create cash session for user.
      * @param user user.
@@ -78,6 +91,8 @@ public class CashSessionServiceImpl implements CashSessionService {
      */
     public CashSession createCashSession(AppUser user) {
         try {
+            //first get last ended or reconciled cash session to transfer float to new cash session.
+            final CashSession lastProcessedCashSession = getLastEndedOrReconciledCashSession(user.getId());
             final CashSession cashSession = new CashSession();
             cashSession.setCssnOperator(user);
             cashSession.setOrguId(sessionState.getOrgUnit().getId());
@@ -87,7 +102,14 @@ public class CashSessionServiceImpl implements CashSessionService {
             final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SESSION_STATE, IdBConstant.SESSION_STATE_OPEN);
             cashSession.setCssnStatus(status);
             cashSession.setCssnStartDate(currentDate);
-            cashSession.setCssnCurrentCash(0);
+            //transfer the float amount from ended/reconciled cashsession to new cash sessioni
+            if (lastProcessedCashSession != null) {
+                cashSession.setCssnCurrentCash(lastProcessedCashSession.getCssnCurrentCash()
+                        + (lastProcessedCashSession.getCssnTotalFloat() - lastProcessedCashSession.getCssnTotalPickup()));
+
+            } else {
+                cashSession.setCssnCurrentCash(0);
+            }
             cashSession.setCssnTotalFloat(0);
             cashSession.setCssnTotalPickup(0);
             cashSessionDao.createCashSession(cashSession);
@@ -168,7 +190,7 @@ public class CashSessionServiceImpl implements CashSessionService {
     public void assignCashSessionToLoggedinUser(AppUser appUser) {
         try {
             //first search for active(not ended or reconciled) cash session assigned to user.
-            CashSession cashSession = cashSessionService.getActiveCashSession(appUser.getId());
+            CashSession cashSession = getActiveCashSession(appUser.getId());
             //cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
             //if no active cash session then create one.
             if (cashSession == null) {
@@ -240,7 +262,7 @@ public class CashSessionServiceImpl implements CashSessionService {
                 return null;
             }
             //search for active cash session. if not found create and assign to user.
-            CashSession cashSession = cashSessionService.getActiveCashSession(appUser.getId());
+            CashSession cashSession = getActiveCashSession(appUser.getId());
             //cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
             if (cashSession == null) {
                 cashSession = createCashSession(appUser);
@@ -544,7 +566,7 @@ public class CashSessionServiceImpl implements CashSessionService {
                                                   long seevId, String journalAction, String accountName, double amount, boolean isCredit)
     {
         JournalEntry journalEntry = null;
-        JournalRule journalRule;
+        final JournalRule journalRule;
         final List<JournalRule> journalRuleList = accountingDao.getJournalRuleByOrguIdAndTxnTypeAndAction(orguId
                 , txnType.getCategoryCode(), journalAction);
         if (journalRuleList != null && journalRuleList.size() > 0) {

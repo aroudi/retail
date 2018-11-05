@@ -2711,3 +2711,7 @@ alter table stock_event drop constraint STOCK_EVENT_FK10
 go
 alter table stock_event drop constraint STOCK_EVENT_FK14
 go
+
+CREATE INDEX SUPP_PROD_PRICE_IX1 ON SUPP_PROD_PRICE
+(CATALOGUE_NO)
+go
