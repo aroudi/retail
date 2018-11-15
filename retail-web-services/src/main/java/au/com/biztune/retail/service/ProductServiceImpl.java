@@ -834,6 +834,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * change product status to finalise.
+     * @param productList list of products Id
+     * @return Common Response
+     */
+    public CommonResponse finaliseProductStatus(List<Long> productList) {
+        final CommonResponse response = new CommonResponse();
+        try {
+            return response;
+
+        } catch (Exception e) {
+            logger.error("Exception in finalising product status: ", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Exception in finalising prduct status");
+            return response;
+        }
+
+    }
+
+    /**
      * delete a product logically. set the deleted flag to true and add 'DELETED + TIMESTAMP' to some fields.
      * @param productIdList product Id List.
      * @return commonResponse.
@@ -896,9 +915,9 @@ public class ProductServiceImpl implements ProductService {
             }
             return response;
         } catch (Exception e) {
-            logger.error("Exception in deleting supplier: ", e);
+            logger.error("Exception in deleting products: ", e);
             response.setStatus(IdBConstant.RESULT_FAILURE);
-            response.setMessage("Exception in deleting Supplier");
+            response.setMessage("Exception in deleting products");
             return response;
         }
     }

@@ -1,10 +1,8 @@
 package au.com.biztune.retail.service;
 
-import au.com.biztune.retail.domain.AppUser;
 import au.com.biztune.retail.domain.Stock;
 import au.com.biztune.retail.domain.StockEvent;
 import au.com.biztune.retail.domain.TxnHeader;
-
 import java.util.List;
 
 /**

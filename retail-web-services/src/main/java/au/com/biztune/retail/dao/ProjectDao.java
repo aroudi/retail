@@ -1,7 +1,6 @@
 package au.com.biztune.retail.dao;
 
 import au.com.biztune.retail.domain.Project;
-
 import java.util.List;
 
 /**
@@ -14,6 +13,14 @@ public interface ProjectDao {
      * @return Project
      */
     Project getProjectByCode(String code);
+
+    /**
+     * get Projedct by code and client Id.
+     * @param code code
+     * @param clientId clientId
+     * @return Project
+     */
+    Project getProjectByCodeAndClientId(String code, long clientId);
     /**
      * get Projedct by name.
      * @param name name

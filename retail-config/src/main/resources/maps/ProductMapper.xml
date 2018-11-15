@@ -390,6 +390,7 @@
         GRADE_FORMULA.*
 
         from PRODUCT
+        inner join PROD_ORGU_LINK ON (PRODUCT.PROD_ID = PROD_ORGU_LINK.PROD_ID)
         left outer join SUPP_PROD_PRICE supp_prod_price on (supp_prod_price.PROD_ID = product.PROD_ID and supp_prod_price.SPRC_PREFER_BUY = 1)
         left outer join SUPP_ORGU_LINK supp_orgu_link on (supp_prod_price.SOL_ID = supp_orgu_link.SOL_ID)
         left outer join SUPPLIER supplier on (supplier.SUPPLIER_ID = supp_orgu_link.SUPP_ID)
@@ -586,6 +587,7 @@
         GRADE_FORMULA.*
 
         from PRODUCT
+        inner join PROD_ORGU_LINK ON (PRODUCT.PROD_ID = PROD_ORGU_LINK.PROD_ID)
         left outer join SUPP_PROD_PRICE supp_prod_price on (supp_prod_price.PROD_ID = product.PROD_ID and supp_prod_price.SPRC_PREFER_BUY = 1)
         left outer join SUPP_ORGU_LINK supp_orgu_link on (supp_prod_price.SOL_ID = supp_orgu_link.SOL_ID)
         left outer join SUPPLIER supplier on (supplier.SUPPLIER_ID = supp_orgu_link.SUPP_ID)
@@ -972,6 +974,12 @@
             ,DELETED = #{deleted}
         </if>
         WHERE PROD_ID = #{id}
+    </update>
+
+    <update id="updateProductStatus">
+        UPDATE PROD_ORGU_LINK
+        SET CAT_ID_STATUS = #{param1}
+        WHERE PROD_ID = #{param2} and ORGU_ID = #{param3}
     </update>
 
     <delete id="deleteProdOrguLink" >

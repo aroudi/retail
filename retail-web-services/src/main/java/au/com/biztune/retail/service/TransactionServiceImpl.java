@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.sql.Timestamp;
@@ -188,7 +187,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeValueLine(txnDetailForm.getTxdeValueLine());
                 txnDetail.setTxdeValueProfit(txnDetailForm.getTxdeValueGross() - txnDetailForm.getTxdeValueLine());
                 if (txnDetailForm.getTxdeValueLine() != 0.00) {
-                    txnDetail.setTxdeProfitMargin(txnDetail.getTxdeValueProfit()/txnDetailForm.getTxdeValueLine());
+                    txnDetail.setTxdeProfitMargin(txnDetail.getTxdeValueProfit() / txnDetailForm.getTxdeValueLine());
                 }
                 txnDetail.setTxdeValueGross(txnDetailForm.getTxdeValueGross());
                 txnDetail.setTxdeTax(txnDetailForm.getTxdeTax());
@@ -661,7 +660,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeValueLine(txnDetailForm.getTxdeValueLine());
                 txnDetail.setTxdeValueProfit(txnDetailForm.getTxdeValueGross() - txnDetailForm.getTxdeValueLine());
                 if (txnDetailForm.getTxdeValueLine() != 0.00) {
-                    txnDetail.setTxdeProfitMargin(txnDetail.getTxdeValueProfit()/txnDetailForm.getTxdeValueLine());
+                    txnDetail.setTxdeProfitMargin(txnDetail.getTxdeValueProfit() / txnDetailForm.getTxdeValueLine());
                 }
                 txnDetail.setTxdeValueGross(txnDetailForm.getTxdeValueGross());
                 txnDetail.setTxdeTax(txnDetailForm.getTxdeTax());
@@ -877,7 +876,7 @@ public class TransactionServiceImpl implements TransactionService {
                 txnDetail.setTxdeValueLine(txnDetailForm.getTxdeValueLine());
                 txnDetail.setTxdeValueProfit(txnDetailForm.getTxdeValueGross() - txnDetailForm.getTxdeValueLine());
                 if (txnDetailForm.getTxdeValueLine() != 0.00) {
-                    txnDetail.setTxdeProfitMargin(txnDetail.getTxdeValueProfit()/txnDetailForm.getTxdeValueLine());
+                    txnDetail.setTxdeProfitMargin(txnDetail.getTxdeValueProfit() / txnDetailForm.getTxdeValueLine());
                 }
                 txnDetail.setTxdeValueGross(txnDetailForm.getTxdeValueGross());
                 txnDetail.setTxdeTax(txnDetailForm.getTxdeTax());

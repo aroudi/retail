@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.ws.rs.core.SecurityContext;
 import java.io.InputStream;
 import java.security.Principal;
@@ -61,7 +60,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     @Autowired
     private ProductImportServiceImpl productImportService;
     private SecurityContext securityContext;
-    @Autowired UserService userService;
+    @Autowired
+    private UserService userService;
     /**
      * upload Bill Of Quantity.
      * @param uploadedInputStream uploadedInputStream
@@ -220,7 +220,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             totalQty = totalQty + importedProduct.getQty();
         }
         //TODO: we need to search if BOQ Header is already exists.
-        au.com.biztune.retail.domain.BillOfQuantity billOfQuantity;
+        final au.com.biztune.retail.domain.BillOfQuantity billOfQuantity;
         //= billOfQuantityDao.getBillOfQuantityByName(header.getName());
         billOfQuantity = new au.com.biztune.retail.domain.BillOfQuantity();
         billOfQuantity.setProject(project);
@@ -259,7 +259,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             return  null;
         }
         //search for project. if not found import it.
-        Project project = projectDao.getProjectByCode(inputProject.getProjectNo());
+        Project project = projectDao.getProjectByCodeAndClientId(inputProject.getProjectNo(), customer.getId());
         if (project != null) {
             return project;
         } else {

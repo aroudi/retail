@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,7 +53,7 @@ public class SessionProcessor implements Processor {
     public Response process(Request request) {
         final Response response = new Response();
         try {
-            SessionRequest sessionRequest;
+            final SessionRequest sessionRequest;
             if (request instanceof SessionRequest) {
                 sessionRequest = (SessionRequest) request;
             } else {
@@ -107,7 +106,7 @@ public class SessionProcessor implements Processor {
                 }
             }
             //create session media
-            SessionMedia sessionMedia = null;
+            final SessionMedia sessionMedia = null;
             SessionTotal sessionTotal = null;
             for (PaymentMedia paymentMedia : totalMediaVals.keySet()) {
                 values = totalMediaVals.get(paymentMedia);

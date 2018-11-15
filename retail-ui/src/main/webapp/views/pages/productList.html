@@ -27,11 +27,19 @@
                                 </ui-select-choices>
                             </ui-select>
                         </div >
-                        <div class="col-lg-6">
+                        <div class="col-lg-3">
                             <div class="form-group">
                                 <label>Product Type</label>
                                 <select class="form-control" data-ng-model="productType"
                                         ng-options="type.displayName for type in productTypeSet" >
+                                </select>
+                            </div >
+                        </div >
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label>Product Status</label>
+                                <select class="form-control" data-ng-model="productStatus"
+                                        ng-options="type.displayName for type in productStatusSet" >
                                 </select>
                             </div >
                         </div >

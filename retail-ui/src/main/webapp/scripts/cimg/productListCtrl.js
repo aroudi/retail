@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog, UserService, baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI, TAXLEGVARIANCE_ALL_URI, PRODUCT_RESERVATION_INFO_URI, PRODUCT_LOGICAL_DELETE_URI) {
+cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog, UserService, baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI, TAXLEGVARIANCE_ALL_URI, PRODUCT_RESERVATION_INFO_URI, PRODUCT_LOGICAL_DELETE_URI, PRODUCT_STATUS_URI) {
 
     $scope.getPage = function(){
         $scope.productSearchForm.pageNo = paginationOptions.pageNumber*1 ;
@@ -15,6 +15,11 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
             $scope.productSearchForm.prodTypeId = $scope.productType.id;
         } else {
             $scope.productSearchForm.prodTypeId = -1;
+        }
+        if ($scope.productStatus != undefined) {
+            $scope.productSearchForm.prodStatusId = $scope.productStatus.id;
+        } else {
+            $scope.productSearchForm.prodStatusId = -1;
         }
         baseDataService.addRow($scope.productSearchForm, PRODUCT_SEARCH_PAGING_URI).then(function(response) {
             var result = angular.copy(response.data);
@@ -45,7 +50,7 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
                     return row.entity.prodSku
                 }
             },
-            {field:'prodName', displayName:'Article Code',enableCellEdit:false, width:'25%',
+            {field:'prodName', displayName:'Description',enableCellEdit:false, width:'25%',
                 cellTooltip: function(row,col) {
                     return row.entity.prodName
                 }
@@ -159,6 +164,18 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
                     "description" : "All"
                 }
                 $scope.productTypeSet.unshift(prodType);
+            }
+            //$scope.productForm.prodType = baseDataService.populateSelectList($scope.productForm.prodType,$scope.productTypeSet);
+        });
+        baseDataService.getBaseData(PRODUCT_STATUS_URI).then(function(response){
+            $scope.productStatusSet = response.data;
+            if ($scope.productStatusSet.length > 0) {
+                var prodStatus = {
+                    "id" : -1,
+                    "displayName" : "All",
+                    "description" : "All"
+                }
+                $scope.productStatusSet.unshift(prodStatus);
             }
             //$scope.productForm.prodType = baseDataService.populateSelectList($scope.productForm.prodType,$scope.productTypeSet);
         });

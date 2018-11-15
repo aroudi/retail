@@ -5,7 +5,6 @@ import au.com.biztune.retail.domain.Product;
 import au.com.biztune.retail.domain.ProductSaleItem;
 import au.com.biztune.retail.domain.ProuTxrlLink;
 import au.com.biztune.retail.util.SearchClause;
-
 import java.util.List;
 
 /**
@@ -194,4 +193,12 @@ public interface ProductDao {
      * @return list of products match
      */
     List<Product> checkProductExistPerSkuAndRef(String sku, String ref);
+
+    /**
+     * update product status.
+     * @param statusId new status id
+     * @param prodId product id
+     * @param orguId organisation unit id
+     */
+    void updateProductStatus(long statusId, long prodId, long orguId);
 }
