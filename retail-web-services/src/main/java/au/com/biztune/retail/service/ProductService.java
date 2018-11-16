@@ -175,4 +175,12 @@ public interface ProductService {
      * @return commonResponse.
      */
     CommonResponse logicalDeleteProduct(List<Long> productIdList);
+
+    /**
+     * change product status to finalise.
+     * @param productList list of products Id
+     * @return Common Response
+     */
+    CommonResponse finaliseProductStatus(List<Long> productList);
+
     }

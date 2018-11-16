@@ -979,7 +979,13 @@
     <update id="updateProductStatus">
         UPDATE PROD_ORGU_LINK
         SET CAT_ID_STATUS = #{param1}
-        WHERE PROD_ID = #{param2} and ORGU_ID = #{param3}
+        WHERE ORGU_ID = #{param2}
+        and PROD_ID in
+        <foreach collection="param3" item="item" index="index"
+                 open ="(" separator="," close=")">
+            #{item}
+        </foreach>
+
     </update>
 
     <delete id="deleteProdOrguLink" >

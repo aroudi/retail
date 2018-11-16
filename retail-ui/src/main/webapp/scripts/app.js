@@ -80,6 +80,7 @@ var service_uri = {
     'PRODUCT_CLASS_ALL_URI' : 'product/allProductClass',
     'PRODUCT_RESERVATION_INFO_URI' : 'product/getProductReservationInfo/',
     'PRODUCT_CHECK_EXISTENCE_URI' : 'product/checkIfProductExists/',
+    'PRODUCT_FINALISE_URI' : 'product/finaliseProduct',
     'PRODUCT_LOGICAL_DELETE_URI' : 'product/logicalDelete',
     'UPLOAD_BOQ_URI'  : 'billOfQuantity/upload',
     'BOQDETAIL_GET_PER_BOQID_URI' : 'billOfQuantity/detail/getPerBoqId/',

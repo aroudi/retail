@@ -197,8 +197,8 @@ public interface ProductDao {
     /**
      * update product status.
      * @param statusId new status id
-     * @param prodId product id
+     * @param productIdList product id list
      * @param orguId organisation unit id
      */
-    void updateProductStatus(long statusId, long prodId, long orguId);
+    void updateProductStatus(long statusId, long orguId, List productIdList);
 }

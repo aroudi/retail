@@ -597,7 +597,7 @@ public class ProductServiceImpl implements ProductService {
                 prodOrguLink.setId(product.getId());
                 prodOrguLink.setOrguId(sessionState.getOrgUnit().getId());
                 //get product status IMPORTED
-                final ConfigCategory productStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.CONFIG_PRODUCT_STATUS, IdBConstant.PRODUCT_STATUS_IMPORTED);
+                final ConfigCategory productStatus = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.CONFIG_PRODUCT_STATUS, IdBConstant.PRODUCT_STATUS_IN_REVIEW);
                 prodOrguLink.setStatus(productStatus);
                 prodOrguLink.setProdId(product.getId());
                 productDao.insertProdOrguLink(prodOrguLink);
@@ -841,7 +841,17 @@ public class ProductServiceImpl implements ProductService {
     public CommonResponse finaliseProductStatus(List<Long> productList) {
         final CommonResponse response = new CommonResponse();
         try {
-            return response;
+            final ConfigCategory productStatusFinalised = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.CONFIG_PRODUCT_STATUS, IdBConstant.PRODUCT_STATUS_FINALISED);
+            if (productStatusFinalised != null) {
+                productDao.updateProductStatus(productStatusFinalised.getId(), sessionState.getOrgUnit().getId(), productList);
+                response.setStatus(IdBConstant.RESULT_SUCCESS);
+                response.setMessage("update succeeded");
+                return response;
+            } else {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("update failed");
+                return response;
+            }
 
         } catch (Exception e) {
             logger.error("Exception in finalising product status: ", e);

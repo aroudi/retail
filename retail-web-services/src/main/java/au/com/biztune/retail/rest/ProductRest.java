@@ -321,4 +321,17 @@ public class ProductRest {
     public CommonResponse logicalDelete (List<Long> productIdList) {
         return productService.logicalDeleteProduct(productIdList);
     }
+    /**
+     * update product status in bulk.
+     * @param productIdList product id list.
+     * @return response.
+     */
+    @Secured
+    @Path("/finaliseProduct")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse finaliseProduct (List<Long> productIdList) {
+        return productService.finaliseProductStatus(productIdList);
+    }
 }

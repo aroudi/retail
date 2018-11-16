@@ -344,7 +344,7 @@ cimgApp.controller('txnRefundCtrl', function($scope, $state, $timeout, $statePar
         $scope.txnHeaderForm.txhdValueDue = valueNett - calculateAmountPaid();
         //check if amount due is less than 5 cents, then add it to rounding
         console.log('Math.abs($scope.txnHeaderForm.txhdValueDue) =' + Math.abs($scope.txnHeaderForm.txhdValueDue));
-        if (Math.abs($scope.txnHeaderForm.txhdValueDue) <= 0.05 ) {
+        if (Math.abs($scope.txnHeaderForm.txhdValueDue) < 0.06 ) {
             console.log('set rounding value');
             $scope.txnHeaderForm.txhdValRounding = $scope.txnHeaderForm.txhdValueDue;
             $scope.txnHeaderForm.txhdValueDue = 0.00;
