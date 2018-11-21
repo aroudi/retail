@@ -24,6 +24,7 @@ public class GeneralSearchForm {
     private List result;
     private long supplierId;
     private boolean imported;
+    private String expDateTo;
 
 
 
@@ -161,5 +162,13 @@ public class GeneralSearchForm {
 
     public void setImported(boolean imported) {
         this.imported = imported;
+    }
+
+    public String getExpDateTo() {
+        return expDateTo;
+    }
+
+    public void setExpDateTo(String expDateTo) {
+        this.expDateTo = expDateTo;
     }
 }

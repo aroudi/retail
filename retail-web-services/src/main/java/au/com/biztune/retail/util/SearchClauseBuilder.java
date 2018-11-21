@@ -5,10 +5,8 @@ import au.com.biztune.retail.domain.ReportParam;
 import au.com.biztune.retail.domain.ReportParamVal;
 import au.com.biztune.retail.form.BoqSearchForm;
 import au.com.biztune.retail.form.ProductSearchForm;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,6 +32,7 @@ public class SearchClauseBuilder {
             clauseList = new ArrayList<SearchClause>();
             Timestamp dateFrom = null;
             Timestamp dateTo = null;
+            Timestamp expDateTo = null;
             dateFrom = DateUtil.stringToDate(searchForm.getDateFrom(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
             if (dateFrom != null) {
                 if ("TXN_HEADER".equals(searchTable)) {
@@ -85,6 +84,20 @@ public class SearchClauseBuilder {
                 }
                 if ("CASH_SESSION".equals(searchTable) && searchForm.getSearchRange().equals("dateRange")) {
                     searchClause = new SearchClause("CSSN_RECOCILE_DATE", " <= ", dateTo);
+                    clauseList.add(searchClause);
+                }
+            }
+            expDateTo = DateUtil.stringToDate(searchForm.getExpDateTo(), "yyyy-MM-dd'T'HH:mm:ss.SSSX");
+            if (expDateTo != null) {
+                //maximise the hour for dateTo
+                final Calendar cal = Calendar.getInstance();
+                cal.setTime(expDateTo);
+                cal.set(Calendar.HOUR, 24);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                expDateTo = new Timestamp(cal.getTime().getTime());
+                if ("PURCHASE_ORDER_HEADER".equals(searchTable)) {
+                    searchClause = new SearchClause("POH_EXP_DELIVERY", " <= ", expDateTo);
                     clauseList.add(searchClause);
                 }
             }

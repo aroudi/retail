@@ -2722,3 +2722,7 @@ UPDATE CONFIG_CATEGORY SET CATEGORY_CODE = 'PROD_STATUS_IN_REVIEW' , DISPLAY_NAM
 GO
 
 -- up to this point deployed on jomon test server (ver 3.4) ----------------------------------
+
+ALTER TABLE DELIVERY_NOTE_LINE
+  ADD TOTAL_RCVD_QTY DECIMAL(31,4) -- TOTAL ACTUAL RECEIVED SO FAR
+GO

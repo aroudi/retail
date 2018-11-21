@@ -99,6 +99,7 @@
         <result column="DLNL_LINE_NUMBER" property="dlnlLineNumber" />
         <result column="DLNL_UNIT_COST" property="dlnlUnitCost" />
         <result column="RCVD_QTY" property="rcvdQty" />
+        <result column="TOTAL_RCVD_QTY" property="totalRcvdQty" />
         <result column="TOTAL_COST" property="totalCost" />
         <result column="DLNL_VALUE_TAX" property="delnValueTax" />
         <result column="DLNL_VALUE_GROSS" property="delnValueGross" />
@@ -162,6 +163,7 @@
         ${alias}.RCVD_CASE_SIZE,
         ${alias}.RCVD_PRODUCT_SIZE,
         ${alias}.RCVD_QTY,
+        ${alias}.TOTAL_RCVD_QTY,
         ${alias}.TOTAL_COST,
         ${alias}.DLNL_QTY_REJECTED,
         ${alias}.DLNL_STATUS,
@@ -472,6 +474,7 @@
             RCVD_CASE_SIZE,
             RCVD_PRODUCT_SIZE,
             RCVD_QTY,
+            TOTAL_RCVD_QTY,
             TOTAL_COST,
             DLNL_QTY_REJECTED,
             DLNL_STATUS,
@@ -557,6 +560,13 @@
             ,#{rcvdQty}
         </if>
         <if test="rcvdQty == null">
+            ,null
+        </if>
+
+        <if test="totalRcvdQty != null">
+            ,#{totalRcvdQty}
+        </if>
+        <if test="totalRcvdQty == null">
             ,null
         </if>
 
@@ -665,6 +675,10 @@
 
         <if test="rcvdQty != null">
             ,RCVD_QTY = #{rcvdQty}
+        </if>
+
+        <if test="totalRcvdQty != null">
+            ,TOTAL_RCVD_QTY = #{totalRcvdQty}
         </if>
 
         <if test="totalCost != null">

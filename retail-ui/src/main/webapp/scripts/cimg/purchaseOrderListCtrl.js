@@ -99,9 +99,10 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
             },
             {field:'pohCreatedDate', displayName:'Created',enableCellEdit:false, width:'8%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
             {field:'user',  displayName:'Created By',enableFiltering:false, cellFilter:'fullName', enableCellEdit:false, width:'10%'},
-            {field:'pohValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'pohExpDelivery', displayName:'Expected',enableCellEdit:false, width:'8%', cellFilter:'date:\'dd/MM/yyyy HH:mm\''},
+            //{field:'pohValueGross', displayName:'Gross Value',enableCellEdit:false, width:'7%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
             {field:'pohValueNett', displayName:'Net Value',enableCellEdit:false, width:'8%',cellFilter: 'currency', footerCellFilter: 'currency', aggregationType: uiGridConstants.aggregationTypes.sum},
-            {field:'pohCreationType', displayName:'Generated',enableCellEdit:false, width:'9%', cellFilter:'configCategoryFilter',
+            {field:'pohCreationType', displayName:'Generated',enableCellEdit:false, width:'8%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                    return grid.getCellValue(row, col).color
                 }
