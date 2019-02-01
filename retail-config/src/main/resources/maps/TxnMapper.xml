@@ -882,6 +882,12 @@
         WHERE TXDE_ID = #{param3}
     </update>
 
+    <update id="updateTxnMediaSourceTxn" >
+        UPDATE TXN_MEDIA SET
+          TXMD_TYPE = #{param2}
+        WHERE TXMD_ID = #{param1}
+    </update>
+
     <insert id="insertTxnMedia" parameterType="TxnMedia" useGeneratedKeys="true" keyProperty="id" keyColumn="TXMD_ID">
         INSERT INTO TXN_MEDIA(
         ORGU_ID,

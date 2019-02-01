@@ -20,6 +20,7 @@
         <result column="STORE_NAME" property="storeName" />
         <result column="STORE_STATUS" property="storeStatus" />
         <association property="orgUnit" column="ORGU_ID" select="getOrgUnitById" />
+        <association property="cashSessionType" column="CASH_SESSION_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
     <sql id="orguColumns">
@@ -35,7 +36,8 @@
         ${alias}.STORE_CODE,
         ${alias}.STORE_NAME,
         ${alias}.STORE_STATUS,
-        ${alias}.ORGU_ID
+        ${alias}.ORGU_ID,
+        ${alias}.CASH_SESSION_TYPE
     </sql>
 
     <select id="getOrgUnitByTypeAndCode" resultMap="orgUnitMap" >

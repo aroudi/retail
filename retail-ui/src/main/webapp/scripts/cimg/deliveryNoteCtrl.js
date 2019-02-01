@@ -35,6 +35,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             },
             //polQtyOrdered
             {field:'polQty', displayName:'Purchased',enableCellEdit:false, width:'6%',type: 'number',enableFiltering:false, aggregationType: uiGridConstants.aggregationTypes.sum},
+            {field:'totalRcvdQty', displayName:'Delivered',enableCellEdit:false, width:'6%',type: 'number',enableFiltering:false, aggregationType: uiGridConstants.aggregationTypes.sum},
             //{field:'rcvdCaseSize.unomDesc', displayName:'Recd Case Size', enableCellEdit:false, width:'8%'},
             {field:'rcvdQty', displayName:'Rec Qty',enableCellEdit:true, width:'5%',type: 'number',enableFiltering:false, aggregationType: uiGridConstants.aggregationTypes.sum,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
@@ -54,7 +55,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
                         }
                     }
             },
-            {field:'dlnlComment', displayName:'Location',enableCellEdit:true, width:'15%', enableFiltering:false,
+            {field:'dlnlComment', displayName:'Location',enableCellEdit:true, width:'9%', enableFiltering:false,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return 'editModeColor'
                 }
@@ -113,7 +114,11 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             $scope.gridOptions.data = $scope.deliveryNoteHeader.lines;
             angular.forEach($scope.gridOptions.data,function(row){
                 row.backOrder = function() {
-                    return this.polQty - this.rcvdQty;
+                    if (this.rcvdQty*1 + this.totalRcvdQty*1 >= this.polQty*1 ) {
+                        return 0;
+                    } else {
+                        return this.polQty*1 - (this.rcvdQty*1 + this.totalRcvdQty*1);
+                    }
                 }
             });
             $scope.deliveryNoteHeader.deliveryDate = new Date($scope.deliveryNoteHeader.deliveryDate);
@@ -198,7 +203,11 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             var createdLine = createDeliveryNoteLine(purchaseOrder.lines[i]);
             $scope.updateLineTotalCost(createdLine);
             createdLine.backOrder = function() {
-                return this.polQty - this.rcvdQty;
+                if (this.rcvdQty*1 + this.totalRcvdQty*1 >= this.polQty*1 ) {
+                    return 0;
+                } else {
+                    return this.polQty*1 - (this.rcvdQty*1 + this.totalRcvdQty*1);
+                }
             }
             $scope.gridOptions.data.push(createdLine);
             calculateSubTotal();
@@ -231,6 +240,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             'rcvdCaseSize' : purchaseOrderLine.unitOfMeasure,
             'rcvdProductSize' :  $scope.unomContents,
             'rcvdQty' :  purchaseOrderLine.polQtyOrdered - purchaseOrderLine.polQtyReceived,
+            'totalRcvdQty' :  purchaseOrderLine.polQtyReceived,
             'dlnlDiscrepancy' : false,
             'polQty' : purchaseOrderLine.polQtyOrdered,
             'taxLegVariance' : taxLegVar,
@@ -264,6 +274,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             'rcvdCaseSize' : productPurchaseItem.unitOfMeasure,
             'rcvdProductSize' : productPurchaseItem.unitOfMeasureContent,
             'rcvdQty' :  1,
+            'totalRcvdQty' :  0,
             'dlnlDiscrepancy' : false,
             'polQty' : 0,
             'taxLegVariance' : taxLegVar,
@@ -491,6 +502,13 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
             return;
         }
         $scope.searchProduct();
+    };
+    $scope.statusNotComplete = function () {
+
+        if ($scope.deliveryNoteHeader.delnStatus != undefined) {
+            return ($scope.deliveryNoteHeader.delnStatus.categoryCode === 'DLV_NOTE_STATUS_COMPLETE' ? false : true)
+        }
+        return true;
     };
     function validForm() {
         if ($scope.deliveryNoteHeader.supplier === undefined || $scope.deliveryNoteHeader.supplier.id === -1) {

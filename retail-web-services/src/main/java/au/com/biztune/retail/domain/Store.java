@@ -10,6 +10,7 @@ public class Store {
     private String storeCode;
     private String storeName;
     private String storeStatus;
+    private ConfigCategory cashSessionType;
 
     public long getId() {
         return id;
@@ -57,5 +58,13 @@ public class Store {
 
     public void setStoreStatus(String storeStatus) {
         this.storeStatus = storeStatus;
+    }
+
+    public ConfigCategory getCashSessionType() {
+        return cashSessionType;
+    }
+
+    public void setCashSessionType(ConfigCategory cashSessionType) {
+        this.cashSessionType = cashSessionType;
     }
 }

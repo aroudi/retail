@@ -48,7 +48,7 @@ public class TestProduct {
         //insertProduct("sku001","refrence001","prodName-lock","Lock","prodDesc-Lock description",false,"JOMON-BRAND", "prodClass", "LIVE","GST", "supp01","CatalogueNo009","parNo001","each",1,"AUD",100.00, 10.00, 1000,"A","SELL_PRICE",0.30,130.00,false,"each",1);
         //fetchProductAndRelatedObjects();
         au.com.biztune.retail.generated.BillOfQuantity billOfQuantity = billOfQuantityUploader.uploadBillOfQuantityFromFile("BOQ_14711.xml");
-        billOfQuantityServiceImpl.importBillOfQuantity(billOfQuantity);
+        //billOfQuantityServiceImpl.importBillOfQuantity(billOfQuantity);
 
     }
 

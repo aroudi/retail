@@ -92,5 +92,6 @@
     <suppress checks="RedundantThrowsCheck" files="[/\\]BillOfQuantityService.java"/>
     <suppress checks="RedundantThrowsCheck" files="[/\\]BillOfQuantityService.java"/>
     <suppress checks="RedundantThrowsCheck" files="[/\\]LocationService.java"/>
+    <suppress checks="." files="[/\\]ProductExtended.java"/>
     <!-- End of suppressions for specfic files -->
 </suppressions>

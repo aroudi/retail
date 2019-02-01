@@ -13,6 +13,7 @@ public class SessionMedia {
     private PaymentMedia paymentMedia;
     private double semeMediaCount;
     private double semeMediaValue;
+    private long txmdId;
 
     public long getId() {
         return id;
@@ -84,5 +85,13 @@ public class SessionMedia {
 
     public void setSemeMediaValue(double semeMediaValue) {
         this.semeMediaValue = semeMediaValue;
+    }
+
+    public long getTxmdId() {
+        return txmdId;
+    }
+
+    public void setTxmdId(long txmdId) {
+        this.txmdId = txmdId;
     }
 }

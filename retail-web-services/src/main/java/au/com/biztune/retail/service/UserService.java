@@ -6,6 +6,7 @@ import au.com.biztune.retail.domain.AppUser;
 import au.com.biztune.retail.form.ChangePasswordForm;
 import au.com.biztune.retail.response.CommonResponse;
 
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 /**
@@ -96,5 +97,11 @@ public interface UserService {
      */
     CommonResponse changePassword(ChangePasswordForm changePasswordForm);
 
+    /**
+     * get user from security context.
+     * @param securityContext securityContext.
+     * @return AppUser
+     */
+    AppUser getAppUserFromSecurityContext(SecurityContext securityContext);
 
 }

@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,7 +53,7 @@ public class SessionProcessor implements Processor {
     public Response process(Request request) {
         final Response response = new Response();
         try {
-            SessionRequest sessionRequest;
+            final SessionRequest sessionRequest;
             if (request instanceof SessionRequest) {
                 sessionRequest = (SessionRequest) request;
             } else {
@@ -94,6 +93,7 @@ public class SessionProcessor implements Processor {
                 if (txnMedia == null || !txnMedia.isNewAdded() || txnMedia.isTxmdVoided()) {
                     continue;
                 }
+                cashSessionService.createSessionMedia(sessionEvent, txnMedia, txnMedia.getPaymentMedia(), txnMedia.getCount(), txnMedia.getValue());
                 if (totalMediaVals.containsKey(txnMedia.getPaymentMedia())) {
                     values = totalMediaVals.get(txnMedia.getPaymentMedia());
                     values[0] = values[0] + txnMedia.getCount();
@@ -106,11 +106,11 @@ public class SessionProcessor implements Processor {
                 }
             }
             //create session media
-            SessionMedia sessionMedia = null;
+            final SessionMedia sessionMedia = null;
             SessionTotal sessionTotal = null;
             for (PaymentMedia paymentMedia : totalMediaVals.keySet()) {
                 values = totalMediaVals.get(paymentMedia);
-                sessionMedia = cashSessionService.createSessionMedia(sessionEvent, paymentMedia, values[0], values[1]);
+                //sessionMedia = cashSessionService.createSessionMedia(sessionEvent, paymentMedia, values[0], values[1]);
 
                 //update session total
                 sessionTotal = cashSessionDao.getSessionTotalPerSessionIdAndPaymentMediaId(sessionEvent.getCssnSessionId(), paymentMedia.getId());
@@ -153,7 +153,8 @@ public class SessionProcessor implements Processor {
 
     private void doSessionProcess(SessionRequest sessionRequest) {
         //find the active session for current user;
-        CashSession cashSession = cashSessionDao.getCurrentCashSessionPerUser(sessionRequest.getTxnHeader().getTxhdOperator());
+        CashSession cashSession = cashSessionService.getActiveCashSession(sessionRequest.getTxnHeader().getTxhdOperator());
+        //cashSessionDao.getCurrentCashSessionPerUser(sessionRequest.getTxnHeader().getTxhdOperator());
         //if cashcession is null create it.
         if (cashSession == null) {
             cashSession = cashSessionService.createCashSession(sessionRequest.getTxnHeader().getUser());

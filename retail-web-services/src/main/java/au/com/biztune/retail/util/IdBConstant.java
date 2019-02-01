@@ -44,9 +44,13 @@ public interface IdBConstant {
      */
     String CONFIG_PRODUCT_STATUS = "PRODUCT_STATUS";
     /**
-     * SUPPLIER STATUS IMPORTED.
+     * PRODUCT STATUS IN REVIEW.
      */
-    String PRODUCT_STATUS_IMPORTED = "IMPORTED";
+    String PRODUCT_STATUS_IN_REVIEW = "PROD_STATUS_IN_REVIEW";
+    /**
+     * PRODUCT STATUS IN FINALISED.
+     */
+    String PRODUCT_STATUS_FINALISED = "PROD_STATUS_FINALISED";
     /**
      * SUPPLIER STATUS IMPORTED.
      */
@@ -166,6 +170,11 @@ public interface IdBConstant {
     String TXN_TYPE_GOODS_IN_TRANSIT = "TXN_TYPE_GOODS_IN_TRANSIT";
 
     /**
+     * TRANSACTION TYPE CHANGE IN COST.
+     */
+    String TXN_TYPE_CHANGE_IN_COST = "TXN_TYPE_CHANGE_IN_COST";
+
+    /**
      * TRANSACTION LINE TYPE.
      */
     String TYPE_TXN_LINE_TYPE = "TXN_LINE_TYPE";
@@ -187,6 +196,10 @@ public interface IdBConstant {
      * TRANSACTION MEDIA TYPE - SALE.
      */
     String TXN_MEDIA_TYPE_SALE = "TXN_MEDIA_SALE";
+    /**
+     * TRANSACTION MEDIA TYPE - INVOICE.
+     */
+    String TXN_MEDIA_TYPE_INVOICE = "TXN_MEDIA_INVOICE";
     /**
      * TRANSACTION MEDIA TYPE - DEPOSIT.
      */
@@ -594,6 +607,7 @@ public interface IdBConstant {
     String JOURNAL_ACTION_ACTUAL_BANK_ACCOUNT = "JA_ACTUAL_BANK_ACCOUNT";
     String JOURNAL_ACTION_ACCOUNT_SALE = "JA_ACCOUNT_SALE";
     String JOURNAL_ACTION_INVOICE_PAYMENT = "JA_ACTION_INVOICE_PAYMENT";
+    String JOURNAL_ACTION_CHANGE_IN_COST = "JA_CHANGE_IN_COST";
 
 
     /**
@@ -779,4 +793,17 @@ public interface IdBConstant {
      * Report Key REPORT_KEY_DEBTOR
      */
     String REPORT_KEY_DEBTOR = "DEBTORS";
+    /**
+     * CASH SESSION TYPE.
+     */
+    String CASH_SESSION_TYPE = "CASH_SESSION_TYPE";
+    /**
+     * CASH SESSION TYPE - SESSION PER USER.
+     */
+    String CASH_SESSION_TYPE_PER_USER = "SESSION_PER_USER";
+    /**
+     * CASH SESSION TYPE - SESSION PER COMPANY.
+     */
+    String CASH_SESSION_TYPE_PER_COMPANY = "SESSION_PER_COMPANY";
+
 }

@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.ws.rs.core.SecurityContext;
 import java.math.BigInteger;
+import java.security.Principal;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
@@ -361,6 +363,21 @@ public class UserServiceImpl implements UserService {
             response.setMessage("Unexpected error happened: " + e.getMessage() + "\n please report to support team");
             return response;
         }
+    }
+
+    /**
+     * get user from security context.
+     * @param securityContext securityContext.
+     * @return AppUser
+     */
+    public AppUser getAppUserFromSecurityContext(SecurityContext securityContext) {
+        //get current user from security context.
+        final Principal principal = securityContext.getUserPrincipal();
+        AppUser appUser = null;
+        if (principal instanceof AppUser) {
+            appUser = (AppUser) principal;
+        }
+        return appUser;
     }
 
 }

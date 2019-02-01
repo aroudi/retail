@@ -56,12 +56,43 @@ public class CashSessionServiceImpl implements CashSessionService {
     private AccountingDao accountingDao;
 
     /**
+     * get Active cash session.
+     * @param userId logined user id
+     * @return active cash session.
+     */
+    public CashSession getActiveCashSession(long userId) {
+        //check the cash session mode is per user or company
+        if (sessionState.getStore().getCashSessionType().getCategoryCode().equals(IdBConstant.CASH_SESSION_TYPE_PER_USER)) {
+            return cashSessionDao.getCurrentCashSessionPerUser(userId);
+        } else {
+            return cashSessionDao.getStoreActiveCashSession(sessionState.getOrgUnit().getId(), sessionState.getStore().getId());
+        }
+    }
+
+    /**
+     * get last ended/reconciled cash session.
+     * @param userId logined user id
+     * @return active cash session.
+     */
+    private CashSession getLastEndedOrReconciledCashSession(long userId) {
+        //check the cash session mode is per user or company
+        if (sessionState.getStore().getCashSessionType().getCategoryCode().equals(IdBConstant.CASH_SESSION_TYPE_PER_USER)) {
+            return cashSessionDao.getUserLastEndedOrReconciledCashSession(sessionState.getOrgUnit().getId(),
+                    sessionState.getStore().getId(), userId);
+        } else {
+            return cashSessionDao.getStoreLastEndedOrReconciledCashSession(sessionState.getOrgUnit().getId(), sessionState.getStore().getId());
+        }
+    }
+
+    /**
      * create cash session for user.
      * @param user user.
      * @return CashSession
      */
     public CashSession createCashSession(AppUser user) {
         try {
+            //first get last ended or reconciled cash session to transfer float to new cash session.
+            final CashSession lastProcessedCashSession = getLastEndedOrReconciledCashSession(user.getId());
             final CashSession cashSession = new CashSession();
             cashSession.setCssnOperator(user);
             cashSession.setOrguId(sessionState.getOrgUnit().getId());
@@ -71,7 +102,14 @@ public class CashSessionServiceImpl implements CashSessionService {
             final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SESSION_STATE, IdBConstant.SESSION_STATE_OPEN);
             cashSession.setCssnStatus(status);
             cashSession.setCssnStartDate(currentDate);
-            cashSession.setCssnCurrentCash(0);
+            //transfer the float amount from ended/reconciled cashsession to new cash sessioni
+            if (lastProcessedCashSession != null) {
+                cashSession.setCssnCurrentCash(lastProcessedCashSession.getCssnCurrentCash()
+                        + (lastProcessedCashSession.getCssnTotalFloat() - lastProcessedCashSession.getCssnTotalPickup()));
+
+            } else {
+                cashSession.setCssnCurrentCash(0);
+            }
             cashSession.setCssnTotalFloat(0);
             cashSession.setCssnTotalPickup(0);
             cashSessionDao.createCashSession(cashSession);
@@ -117,12 +155,13 @@ public class CashSessionServiceImpl implements CashSessionService {
     /**
      * create Session Media.
      * @param sessionEvent sessionEvent
+     * @param txnMedia txnMedia
      * @param paymentMedia paymentMedia
      * @param mediaCount mediaCount
      * @param mediaValue mediaValue
      * @return Session Media.
      */
-    public SessionMedia createSessionMedia(SessionEvent sessionEvent, PaymentMedia paymentMedia, double mediaCount, double mediaValue) {
+    public SessionMedia createSessionMedia(SessionEvent sessionEvent, TxnMedia txnMedia, PaymentMedia paymentMedia, double mediaCount, double mediaValue) {
         try {
             final SessionMedia sessionMedia = new SessionMedia();
             sessionMedia.setOrguId(sessionEvent.getOrguId());
@@ -133,6 +172,9 @@ public class CashSessionServiceImpl implements CashSessionService {
             sessionMedia.setMediaType(paymentMedia.getMediaType());
             sessionMedia.setSemeMediaCount(mediaCount);
             sessionMedia.setSemeMediaValue(mediaValue);
+            if (txnMedia != null) {
+                sessionMedia.setTxmdId(txnMedia.getId());
+            }
             cashSessionDao.insertSessionMedia(sessionMedia);
             return sessionMedia;
         } catch (Exception e) {
@@ -148,8 +190,9 @@ public class CashSessionServiceImpl implements CashSessionService {
     public void assignCashSessionToLoggedinUser(AppUser appUser) {
         try {
             //first search for active(not ended or reconciled) cash session assigned to user.
-            CashSession cashSession = cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
-            //if no session assigned to user then create one.
+            CashSession cashSession = getActiveCashSession(appUser.getId());
+            //cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
+            //if no active cash session then create one.
             if (cashSession == null) {
                 cashSession = createCashSession(appUser);
             }
@@ -166,21 +209,24 @@ public class CashSessionServiceImpl implements CashSessionService {
 
 
     /**
-     * close cash session after logged out.
+     * in session per user mode, close cash session after logged out.
      * @param appUser appUser.
      */
     public void closeCashSessionForLoggedOutUser(AppUser appUser) {
         try {
-            //first search for active(not ended or reconciled) cash session assigned to user.
-            final CashSession cashSession = cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
-            if (cashSession == null) {
-                return;
-            }
-            //if assigned session is open, then close it.
-            if (cashSession.getCssnStatus().getCategoryCode().equals(IdBConstant.SESSION_STATE_OPEN)) {
-                final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SESSION_STATE, IdBConstant.SESSION_STATE_CLOSED);
-                cashSession.setCssnStatus(status);
-                cashSessionDao.updateCashSessionStatus(cashSession);
+            //check if session is opened per user?
+            if (sessionState.getStore().getCashSessionType().getCategoryCode().equals(IdBConstant.CASH_SESSION_TYPE_PER_USER)) {
+                //first search for active(not ended or reconciled) cash session assigned to user.
+                final CashSession cashSession = cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
+                if (cashSession == null) {
+                    return;
+                }
+                //if assigned session is open, then close it.
+                if (cashSession.getCssnStatus().getCategoryCode().equals(IdBConstant.SESSION_STATE_OPEN)) {
+                    final ConfigCategory status = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_SESSION_STATE, IdBConstant.SESSION_STATE_CLOSED);
+                    cashSession.setCssnStatus(status);
+                    cashSessionDao.updateCashSessionStatus(cashSession);
+                }
             }
         } catch (Exception e) {
             logger.error("Exception in assigning cash session to user", e);
@@ -216,7 +262,8 @@ public class CashSessionServiceImpl implements CashSessionService {
                 return null;
             }
             //search for active cash session. if not found create and assign to user.
-            CashSession cashSession = cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
+            CashSession cashSession = getActiveCashSession(appUser.getId());
+            //cashSessionDao.getCurrentCashSessionPerUser(appUser.getId());
             if (cashSession == null) {
                 cashSession = createCashSession(appUser);
             }
@@ -272,7 +319,7 @@ public class CashSessionServiceImpl implements CashSessionService {
             }
             //add session media
             final PaymentMedia paymentMediaCash = paymentMediaDao.getPaymentMediaPerCode(IdBConstant.PAY_MEDIA_CODE_CASH);
-            final SessionMedia sessionMedia = createSessionMedia(sessionEvent, paymentMediaCash, 1.0, addFloatForm.getAmount());
+            final SessionMedia sessionMedia = createSessionMedia(sessionEvent, null, paymentMediaCash, 1.0, addFloatForm.getAmount());
             if (sessionMedia == null) {
                 commonResponse.setStatus(IdBConstant.RESULT_FAILURE);
                 commonResponse.setMessage("error in saving session media.");
@@ -519,7 +566,7 @@ public class CashSessionServiceImpl implements CashSessionService {
                                                   long seevId, String journalAction, String accountName, double amount, boolean isCredit)
     {
         JournalEntry journalEntry = null;
-        JournalRule journalRule;
+        final JournalRule journalRule;
         final List<JournalRule> journalRuleList = accountingDao.getJournalRuleByOrguIdAndTxnTypeAndAction(orguId
                 , txnType.getCategoryCode(), journalAction);
         if (journalRuleList != null && journalRuleList.size() > 0) {

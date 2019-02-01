@@ -52,7 +52,7 @@ public interface StockDao {
      * @param orguId orguId
      * @return stock qty.
      */
-    double getProductSaleablePristineStockQty(long prodId, long orguId);
+    Double getProductSaleablePristineStockQty(long prodId, long orguId);
 
     /**
      * insert stock reserve.

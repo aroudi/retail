@@ -144,6 +144,20 @@ public class CashSessionRest {
         return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = PurchaseOrder" + seevId + ".pdf").build();
     }
     /**
+     * run cashup report.
+     * @param sessionId sessionId
+     * @return Stream output.
+     */
+    @Secured
+    @Path("/cashupDetailedTxnSummaryRpt/{sessionId}")
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response runCashupDetailedTxnSummaryRpt(@PathParam("sessionId") long sessionId) {
+        final StreamingOutput streamingOutput = reconciliationRptMgr.runCashupDetailTxnRpt(sessionId);
+        //purchaseOrderRptMgr.createPurchaseOrderPdfFile(pohId);
+        return Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename = cashupRpt" + sessionId + ".pdf").build();
+    }
+    /**
      * Returns list of reconciled sessions.
      * @return list of reconciled sessions
      */

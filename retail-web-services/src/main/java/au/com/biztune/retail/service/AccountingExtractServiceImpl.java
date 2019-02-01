@@ -36,7 +36,8 @@ public class AccountingExtractServiceImpl implements AccountingExtractService {
      */
     public void extractAccountingFiguresFromTxn(TxnHeader txnHeader) {
         try {
-            cashSession = cashSessionDao.getCurrentCashSessionPerUser(txnHeader.getTxhdOperator());
+            cashSession = cashSessionService.getActiveCashSession(txnHeader.getTxhdOperator());
+            //cashSessionDao.getCurrentCashSessionPerUser(txnHeader.getTxhdOperator());
             //if cashcession is null create it.
             if (cashSession == null) {
                 cashSession = cashSessionService.createCashSession(txnHeader.getUser());

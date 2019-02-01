@@ -17,7 +17,7 @@ cimgApp.controller('productAuditTrailCtrl', function($scope, $state, $timeout, n
             {field:'stockCategory', displayName:'Stock', enableCellEdit:false, width:'15%', cellFilter:'configCategoryFilter'},
             {field:'txnNumber', displayName:'Source',enableCellEdit:false, width:'10%'},
             {field:'stckQty', displayName:'Move',enableCellEdit:false, width:'15%'},
-            {field:'sellPrice', displayName:'Price',enableCellEdit:false, width:'15%'},
+            {field:'sellPrice', displayName:'Price/Variance',enableCellEdit:false, width:'15%'},
             {name:'Action', enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.viewSourceTxn(row)"></i></a>', width:'12%' }
         ]
     };

@@ -5,7 +5,6 @@ import au.com.biztune.retail.domain.Product;
 import au.com.biztune.retail.domain.ProductSaleItem;
 import au.com.biztune.retail.domain.ProuTxrlLink;
 import au.com.biztune.retail.util.SearchClause;
-
 import java.util.List;
 
 /**
@@ -148,6 +147,14 @@ public interface ProductDao {
     List<Product> getAllProductsPerOrgUnitIdPaging(long orguId, long fromIndex, long toIndex);
 
     /**
+     * get product list in page format.
+     * @param orguId orguId
+     * @param fromIndex fromIndex
+     * @param toIndex toIndex
+     * @return product list in paging mechanism.
+     */
+    List<Product> getAllProductExtendedPerOrgUnitIdPaging(long orguId, long fromIndex, long toIndex);
+    /**
      * search product.
      * @param orguId orguId
      * @param fromIndex fromIndex
@@ -156,7 +163,15 @@ public interface ProductDao {
      * @return Product List
      */
     List<Product> searchProductsPaging(long orguId, long fromIndex, long toIndex, List<SearchClause> searchClauses);
-
+    /**
+     * search product.
+     * @param orguId orguId
+     * @param fromIndex fromIndex
+     * @param toIndex toIndex
+     * @param searchClauses searchClauses
+     * @return Product List
+     */
+    List<Product> searchProductsExtendedPaging(long orguId, long fromIndex, long toIndex, List<SearchClause> searchClauses);
     /**
      * get all product class.
      * @return list of product class.
@@ -178,4 +193,12 @@ public interface ProductDao {
      * @return list of products match
      */
     List<Product> checkProductExistPerSkuAndRef(String sku, String ref);
+
+    /**
+     * update product status.
+     * @param statusId new status id
+     * @param productIdList product id list
+     * @param orguId organisation unit id
+     */
+    void updateProductStatus(long statusId, long orguId, List productIdList);
 }

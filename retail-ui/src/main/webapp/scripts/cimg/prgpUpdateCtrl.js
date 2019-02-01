@@ -141,10 +141,12 @@ cimgApp.controller('prgpUpdateCtrl', function($scope,treeViewNode,command, $stat
 
     }
     function trimTreeViewNodeObject(treeViewNode) {
-        delete treeViewNode.parentId;
-        delete treeViewNode.nodeId;
-        delete treeViewNode.selected;
-        delete treeViewNode.expanded;
-        delete treeViewNode.children;
+        if (treeViewNode != undefined) {
+            delete treeViewNode.parentId;
+            delete treeViewNode.nodeId;
+            delete treeViewNode.selected;
+            delete treeViewNode.expanded;
+            delete treeViewNode.children;
+        }
     }
 });

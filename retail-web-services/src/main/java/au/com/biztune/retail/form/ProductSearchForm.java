@@ -10,6 +10,7 @@ public class ProductSearchForm extends GeneralSearchForm {
     private String prodName;
     private String reference;
     private long prodTypeId;
+    private long prodStatusId;
     private long inStockQtyFrom;
     private long inStockQtyTo;
 
@@ -60,5 +61,13 @@ public class ProductSearchForm extends GeneralSearchForm {
 
     public void setInStockQtyTo(long inStockQtyTo) {
         this.inStockQtyTo = inStockQtyTo;
+    }
+
+    public long getProdStatusId() {
+        return prodStatusId;
+    }
+
+    public void setProdStatusId(long prodStatusId) {
+        this.prodStatusId = prodStatusId;
     }
 }

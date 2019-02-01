@@ -29,6 +29,7 @@
         <property name="reportPath" value="classpath:reports" />
         <property name="reportHeaderFileName" value="reconciliation" />
         <property name="reportDetailFileName" value="reconciliationLine" />
+        <property name="cashupDetailTxnRptFileName" value="cashupDetailedTxnSummaryRpt" />
     </bean>
     <bean id="AccountingRptMgr" class="au.com.biztune.retail.report.AccountingRptMgr">
         <property name="reportPath" value="classpath:reports" />

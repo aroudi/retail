@@ -19,10 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.core.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
 import java.io.InputStream;
 import java.util.List;
 
@@ -50,6 +48,9 @@ public class ProductRest {
     private TransactionService transactionService;
     @Autowired
     private StockService stockService;
+    @Context
+    private SecurityContext securityContext;
+
     /**
      * Get All Unit Of Measures as JSON.
      * @return List of categories
@@ -138,7 +139,7 @@ public class ProductRest {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public CommonResponse uploadPorductsFromCsv(@FormDataParam("file")InputStream uploadedInputStream) {
         try {
-            return productImportService.importProductsFromCsvInputStream(uploadedInputStream);
+            return productImportService.importProductsFromCsvInputStream(uploadedInputStream, securityContext);
         } catch (Exception e) {
             logger.error("Exception in importing products from csv.", e);
             return null;
@@ -228,7 +229,7 @@ public class ProductRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResponse updateProductPricesInBulk (List<SuppProdPrice> updatedPriceList) {
-        return productService.updateSupplierProductPricesInBulk(updatedPriceList);
+        return productService.updateSupplierProductPricesInBulk(updatedPriceList, securityContext);
     }
 
     /**
@@ -242,7 +243,7 @@ public class ProductRest {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public CommonResponse updatePorductPriceFromCsv(@FormDataParam("file")InputStream uploadedInputStream) {
         try {
-            return productImportService.updateProductPriceFromCsvInputStream(uploadedInputStream);
+            return productImportService.updateProductPriceFromCsvInputStream(uploadedInputStream, securityContext);
         } catch (Exception e) {
             logger.error("Exception in updating product price from csv.", e);
             return null;
@@ -319,5 +320,18 @@ public class ProductRest {
     @Produces(MediaType.APPLICATION_JSON)
     public CommonResponse logicalDelete (List<Long> productIdList) {
         return productService.logicalDeleteProduct(productIdList);
+    }
+    /**
+     * update product status in bulk.
+     * @param productIdList product id list.
+     * @return response.
+     */
+    @Secured
+    @Path("/finaliseProduct")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse finaliseProduct (List<Long> productIdList) {
+        return productService.finaliseProductStatus(productIdList);
     }
 }

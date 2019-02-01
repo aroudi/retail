@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog, UserService, baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI, TAXLEGVARIANCE_ALL_URI, PRODUCT_RESERVATION_INFO_URI, PRODUCT_LOGICAL_DELETE_URI) {
+cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog, UserService, baseDataService,uiGridConstants, SUCCESS, FAILURE, PRODUCT_ALL_URI, PRODUCT_GET_URI, PRODUCT_ALL_PAGING_URI, PRODUCT_SEARCH_PAGING_URI, SUPPLIER_ALL_URI, PRODUCT_TYPE_URI, TAXLEGVARIANCE_ALL_URI, PRODUCT_RESERVATION_INFO_URI, PRODUCT_LOGICAL_DELETE_URI, PRODUCT_STATUS_URI, PRODUCT_FINALISE_URI) {
 
     $scope.getPage = function(){
         $scope.productSearchForm.pageNo = paginationOptions.pageNumber*1 ;
@@ -15,6 +15,11 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
             $scope.productSearchForm.prodTypeId = $scope.productType.id;
         } else {
             $scope.productSearchForm.prodTypeId = -1;
+        }
+        if ($scope.productStatus != undefined) {
+            $scope.productSearchForm.prodStatusId = $scope.productStatus.id;
+        } else {
+            $scope.productSearchForm.prodStatusId = -1;
         }
         baseDataService.addRow($scope.productSearchForm, PRODUCT_SEARCH_PAGING_URI).then(function(response) {
             var result = angular.copy(response.data);
@@ -45,37 +50,23 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
                     return row.entity.prodSku
                 }
             },
-            /*
-            {field:'reference', enableCellEdit:false, width:'10%',
+            {field:'prodDesc', displayName:'Description',enableCellEdit:false, width:'25%',
                 cellTooltip: function(row,col) {
-                    return row.entity.reference
+                    return row.entity.prodDesc
                 }
             },
-            */
-            {field:'prodName', displayName:'Article Code',enableCellEdit:false, width:'30%',
-                cellTooltip: function(row,col) {
-                    return row.entity.prodName
-                }
-            },
-            {field:'prodLocation', displayName:'Stock Location',enableCellEdit:false, width:'20%',
-                cellTooltip: function(row,col) {
-                    return row.entity.prodLocation
-                }
-            },
-            {field:'stockQty', displayName:'Available Qty',enableCellEdit:false, width:'10%'},
-            {field:'reservedQty', displayName:'Reserved Qty',enableCellEdit:false, width:'10%',
-                cellTemplate:'<a href="" ng-click="grid.appScope.displayReservationInfo(row.entity)">{{row.entity.reservedQty}}</a>'
-            },
-            //{field:'sellPrice.prcePrice', displayName:'Cost',enableCellEdit:false, cellFilter: 'currency', width:'10%'},
-            {field:'prodOrguLink.status.displayName', displayName:'Status',enableCellEdit:false, width:'10%',
-                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
-                    if (grid.getCellValue(row, col) === 'IMPORTED') {
-                        return 'amber';
-                    } else if (grid.getCellValue(row, col) === 'LIVE') {
-                        return 'green'
-                    }
-                }
-            }
+            //{field:'department', displayName:'Dept',enableCellEdit:false, width:'10%'},
+            //{field:'category1', displayName:'Cat1',enableCellEdit:false, width:'10%'},
+            //{field:'category2', displayName:'Cat2',enableCellEdit:false, width:'10%'},
+            //{field:'category3', displayName:'Cat3',enableCellEdit:false, width:'10%'},
+            {field:'stockQty', displayName:'In Stock',enableCellEdit:false, width:'5%'},
+            {field:'prodCost', displayName:'Cost',enableCellEdit:false, width:'7%', cellFilter:'currency'},
+            {field:'rrp', displayName:'RRP',enableCellEdit:false, width:'8%', cellFilter:'currency'},
+            {field:'defaultPrice', displayName:'Grade Def',enableCellEdit:false, width:'7%', cellFilter:'currency'},
+            {field:'gradeAPrice', displayName:'Grade A',enableCellEdit:false, width:'7%',cellFilter:'currency'},
+            {field:'gradeBPrice', displayName:'Grade B',enableCellEdit:false, width:'7%',cellFilter:'currency'},
+            {field:'gradeCPrice', displayName:'Grade C',enableCellEdit:false, width:'7%',cellFilter:'currency'},
+            {field:'gradeDPrice', displayName:'Grade D',enableCellEdit:false, width:'7%',cellFilter:'currency'}
         ]
     };
     $scope.gridOptions.enableRowSelection = true;
@@ -176,6 +167,18 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
             }
             //$scope.productForm.prodType = baseDataService.populateSelectList($scope.productForm.prodType,$scope.productTypeSet);
         });
+        baseDataService.getBaseData(PRODUCT_STATUS_URI).then(function(response){
+            $scope.productStatusSet = response.data;
+            if ($scope.productStatusSet.length > 0) {
+                var prodStatus = {
+                    "id" : -1,
+                    "displayName" : "All",
+                    "description" : "All"
+                }
+                $scope.productStatusSet.unshift(prodStatus);
+            }
+            //$scope.productForm.prodType = baseDataService.populateSelectList($scope.productForm.prodType,$scope.productTypeSet);
+        });
         baseDataService.getBaseData(SUPPLIER_ALL_URI).then(function(response){
             $scope.supplierSet = response.data;
             if ($scope.supplierSet.length > 0) {
@@ -267,6 +270,46 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
             }
         });
     }
+
+    $scope.finaliseProduct = function () {
+
+
+        var selectedProductIdList = [];
+        if ($scope.gridApi.selection.getSelectedRows() === undefined || $scope.gridApi.selection.getSelectedRows().length < 1){
+            baseDataService.displayMessage('info', 'rows not selected', 'please select item/s ');
+            return;
+        }
+        baseDataService.displayMessage('yesNo','Confirmation required!!','Do you want to finalise selected products?').then(function(result){
+            if (result) {
+                for (var i = 0; i < $scope.gridApi.selection.getSelectedRows().length; i++) {
+                    selectedProductIdList.push($scope.gridApi.selection.getSelectedRows()[i].id);
+                }
+                baseDataService.addRow(selectedProductIdList, PRODUCT_FINALISE_URI).then(function(response) {
+                    var res = response.data;
+                    if (res.status != SUCCESS ) {
+                        baseDataService.displayMessage('info', 'warning', 'Not able to finalise product/s. message:' + res.message);
+                    } else {
+                        baseDataService.displayMessage('info', 'info', 'products status changed to finalised');
+                        /*
+                        for (var i = 0; i < $scope.gridApi.selection.getSelectedRows().length; i++) {
+                            var itemIndex = baseDataService.getArrIndexOf($scope.gridOptions.data, $scope.gridApi.selection.getSelectedRows()[i]);
+                            console.log('index= ' + itemIndex);
+                            if (itemIndex > -1) {
+                                $scope.gridOptions.data.splice(itemIndex, 1);
+                            }
+                            $scope.gridApi.selection.unSelectRow($scope.gridApi.selection.getSelectedRows()[i]);
+                            //$scope.gridApi.core.setRowInvisible($scope.gridApi.selection.getSelectedRows()[i]);
+                        }
+                        */
+                    }
+                });
+            } else {
+                return;
+            }
+        });
+    }
+
+
     $scope.createProduct = function () {
         //check if customer has access
         if (!UserService.checkUserHasAccess("createProduct")) {

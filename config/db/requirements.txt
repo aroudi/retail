@@ -65,21 +65,37 @@ this is while in importing boq, we add supplier to the current product.
 
 
 ---------------------------------------- 04/10/18 ------------------------------
-1  -add grade in customer list
+1  -add grade in customer list - done
 2  -move customer statements from customer menu to report
-3  -customer list : take out 'stock location' and 'status' and add cost, rrp, and price per grade
-4  -product group - when trying to 'add department' when no group is selected, it doesn't work
-5  -purchase order - on 'create po' page, distinguish po status by colour.
+3  -product list : take out 'stock location' and 'status' and add cost, rrp, and price per grade - done
+4  -product list: include product group in product search
+4  -product group - when trying to 'add department' when no group is selected, it doesn't work - done
+5  -purchase order - on 'create po' page, distinguish po status by colour - done
 6  -purchase order - when open the po in view mode, put the return button on top
-7  -purchase order list -  display expected date.
+7  -purchase order list -  display expected date - done
 8  -purchase order list - turn the row colour to red if expected date is passed and it is not being delivered
-9  -purchase order list - add search by expected date
+9  -purchase order list - add search by expected date - done
 10 -product: there is no any way to update the stock value
-12 -received notes page: distinguish the status by colour on the page
-13 -received notes page: if 'Rec Qty' be bigger than 'purchased' then 'back order' set to negative figure
+12 -received notes page: distinguish the status by colour on the page - done
+13 -received notes page: if 'Rec Qty' be bigger than 'purchased' then 'back order' set to negative figure - done
 14 -sale order page: in payment list user can see 'Account' but when selecting it, system display message 'it is not available for sale order'
     it is better to not display Account payment at all
 15 -sale order/quote list: distinguish sale orders from quotes by colour.
 16 -sale order/quote view mode: don't display actions on the item list
 17 -invoice page: on invoice page user should have access to customer sale order and select then to invoice.
+18 -in reporting, display what user selected for product group
+19 - in product page, selected a product group and categories for a product and submit it.
+    then edit the product again and selected a default department and tried do submit
+    but there was an error
+
+
+20 - duplicate products with same catalogue no from same supplier
+21 - check the account code with JOMON
+22 - in retail.txt exported from RetailManager in GoodReceived Section column T (Purchase RetailManager - # 1111(OrderNo. 9001-9001) : what is this OrderNo. 9001-9001 and where it come from
+23 - did a purchase order and received goods in 2 stage. in second stage the back order is showing the figures of the first delivery note received figures- done
+
+24- rounding problem in transactions: did a refund transaction with value of -264.55. due showed 264.5 and when added a payment the new due is -0.05. the uses is stucked at this stage and can't go furthur - done
+25- add opening float and closing float to the cash session. need to indentify the requirements
+26- not able to create delivery  note with out a PO
+27- delete product, delete the whole reference of product !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

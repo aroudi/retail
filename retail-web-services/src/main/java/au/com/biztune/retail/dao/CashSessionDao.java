@@ -80,6 +80,14 @@ public interface CashSessionDao {
     CashSession getCurrentCashSessionPerUser(long userId);
 
     /**
+     * get Active Cash Session for store.
+     * @param orguId orguId
+     * @param storeId storeId
+     * @return CashSession
+     */
+    CashSession getStoreActiveCashSession(long orguId, long storeId);
+
+    /**
      * get All Current(Open or Closed) sessions.
      * @return List of Current Sessions.
      */
@@ -160,4 +168,28 @@ public interface CashSessionDao {
      * @param cssnId cssnId
      */
     void updateCashSessionImportStatus(long cssnId);
+
+    /**
+     * Cashup Detail Txn Summary Report.
+     * @param sessionId session id.
+     * @return List of txn detail.
+     */
+    List<CashupDetailTxnSummaryRow> runCashupDetailTxnSummary(long sessionId);
+
+    /**
+     * get store Last Ended or Reconciled Cash Session for store.
+     * @param orguId orguId
+     * @param storeId storeId
+     * @return CashSession
+     */
+    CashSession getStoreLastEndedOrReconciledCashSession(long orguId, long storeId);
+
+    /**
+     * get user Last Ended or Reconciled Cash Session for store.
+     * @param orguId orguId
+     * @param storeId storeId
+     * @param userId userId
+     * @return CashSession
+     */
+    CashSession getUserLastEndedOrReconciledCashSession(long orguId, long storeId, long userId);
 }

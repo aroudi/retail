@@ -17,6 +17,7 @@ public class DeliveryNoteLine {
     private UnitOfMeasure rcvdCaseSize;
     private UnitOfMeasure rcvdProductSize;
     private double rcvdQty;
+    private double totalRcvdQty;
     private double totalCost;
     private double delnValueTax;
     private double delnValueGross;
@@ -219,5 +220,13 @@ public class DeliveryNoteLine {
 
     public void setQtyNotChanged(boolean qtyNotChanged) {
         this.qtyNotChanged = qtyNotChanged;
+    }
+
+    public double getTotalRcvdQty() {
+        return totalRcvdQty;
+    }
+
+    public void setTotalRcvdQty(double totalRcvdQty) {
+        this.totalRcvdQty = totalRcvdQty;
     }
 }

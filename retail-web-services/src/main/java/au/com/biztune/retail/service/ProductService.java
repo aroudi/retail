@@ -5,6 +5,7 @@ import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.form.ProductSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
 
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 /**
@@ -80,6 +81,7 @@ public interface ProductService {
      * @param price price
      * @param bulkPrice bulkPrice
      * @param overWriteProduct overWriteProduct
+     * @param prodId prodId
      * @return Product
      */
     Product addProduct(String prodSku
@@ -96,7 +98,8 @@ public interface ProductService {
             , double cost
             , double price
             , double bulkPrice
-            , boolean overWriteProduct);
+            , boolean overWriteProduct
+            , long prodId);
     /**
      * get product object per sku.
      * @param prodId prodId
@@ -126,10 +129,12 @@ public interface ProductService {
     ProductSearchForm searchProductPaging(ProductSearchForm productSearchForm);
     /**
      * update supplier prpoduct prices in bulk.
+     * change price from application.
      * @param updatedPriceList : updated price list
+     * @param securityContext securityContext
      * @return Common Response
      */
-    CommonResponse updateSupplierProductPricesInBulk(List<SuppProdPrice> updatedPriceList);
+    CommonResponse updateSupplierProductPricesInBulk(List<SuppProdPrice> updatedPriceList, SecurityContext securityContext);
 
     /**
      * get product reservation list.
@@ -157,10 +162,12 @@ public interface ProductService {
 
     /**
      * update product cost base for default supplier.
+     * if product cost is changed, we need to fire a cost variance event.
      * @param prodId prodId
      * @param rrp rrp
+     * @param userId userId
      */
-    void updateProductCostBaseDefaultSupplier(long prodId, double rrp);
+    void updateProductCostBaseDefaultSupplier(long prodId, double rrp, long userId);
 
     /**
      * delete a product logically. set the deleted flag to true and add 'DELETED + TIMESTAMP' to some fields.
@@ -168,4 +175,12 @@ public interface ProductService {
      * @return commonResponse.
      */
     CommonResponse logicalDeleteProduct(List<Long> productIdList);
+
+    /**
+     * change product status to finalise.
+     * @param productList list of products Id
+     * @return Common Response
+     */
+    CommonResponse finaliseProductStatus(List<Long> productList);
+
     }

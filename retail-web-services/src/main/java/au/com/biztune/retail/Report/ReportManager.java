@@ -170,10 +170,8 @@ public class ReportManager {
                     reportJrxmlName = pathStr + "/" + rptPriceByGrade + ".jrxml";
                     outputFile = pathStr + "/" + rptPriceByGrade + ".pdf";
                     break;
-                default:
-                    break;
                 case IdBConstant.REPORT_KEY_GOODS_RECEIVED :
-                    List <ReportGoodReceivedRow> rowList1 = reportsDao.runRptGoodsReceived(sessionState.getOrgUnit().getId(),
+                    final List<ReportGoodReceivedRow> rowList1 = reportsDao.runRptGoodsReceived(sessionState.getOrgUnit().getId(),
                             searchClauseList);
                     beanColDataSource = new JRBeanCollectionDataSource(rowList1);
                     reportJrxmlName = pathStr + "/" + rptGoodsReceived + ".jrxml";
@@ -218,6 +216,8 @@ public class ReportManager {
                     beanColDataSource = new JRBeanCollectionDataSource(debtorList);
                     reportJrxmlName = pathStr + "/" + rptDebtor + ".jrxml";
                     outputFile = pathStr + "/" + rptDebtor + ".pdf";
+                    break;
+                default:
                     break;
             }
 

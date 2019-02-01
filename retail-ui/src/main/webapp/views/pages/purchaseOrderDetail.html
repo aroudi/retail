@@ -105,7 +105,14 @@
                             </div >
                             <div class="col-lg-3">
                                 <div class="form-group">
-                                    <label>Status:</label>
+                                    <label>Status:
+                                        <span class="btn btn-warning btn-xs" ng-show="statusNotComplete()">
+                                                                    Draft Mode
+                                        </span>
+                                        <span class="btn btn-success btn-xs" ng-show="!statusNotComplete()">
+                                                                    Final Mode
+                                        </span>
+                                    </label>
                                     <select class="form-control" data-ng-model="purchaseOrderHeader.pohStatus" ng-disabled="true"
                                             ng-options="type.displayName for type in pohStatusSet" >
                                     </select>
@@ -124,7 +131,7 @@
                             <div class="col-lg-6">
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                 <button type="button" class="btn btn-primary" ng-click="cancelForm()" ng-show="!isViewMode">Cancel</button>
-                                <button type="button" class="btn btn-success" ng-click="submitPo()" ng-show="!isViewMode">Submit</button>
+                                <button type="button" class="btn btn-success" ng-click="submitPo()" ng-show="!isViewMode">Commit</button>
                                 <button type="button" class="btn btn-success" ng-click="savePoAsDraft()" ng-show="(!isViewMode)&&(purchaseOrderHeader.pohStatus.categoryCode === 'POH_STATUS_IN_PROGRESS')">Save As Draft</button>
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                 <button type="button" class="btn btn-group" ng-click="mergePurchaseOrder()" ng-show="(!isViewMode)&&(purchaseOrderHeader.pohStatus.categoryCode === 'POH_STATUS_IN_PROGRESS')">Merge another po into this</button>

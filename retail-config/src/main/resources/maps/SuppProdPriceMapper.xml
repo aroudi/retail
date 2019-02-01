@@ -96,6 +96,7 @@
     <resultMap id="suppProdPriceWithRrpOnlyMap" type="SuppProdPrice" >
         <id column="SPRC_ID" property="id" />
         <result column="SOL_ID" property="solId" />
+        <result column="SUPPLIER_NAME" property="supplierName" />
         <result column="PROD_ID" property="prodId" />
         <result column="CATALOGUE_NO" property="catalogueNo" />
         <result column="PART_NO" property="partNo" />
@@ -289,9 +290,11 @@
     <select id="getAllProductPurchaseItemsWithRrpPerOrgUnitIdAndSuppId" resultMap="suppProdPriceWithRrpOnlyMap" >
         SELECT
         <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>,
-        prce.PRCE_PRICE RRP
+        prce.PRCE_PRICE RRP,
+        supp.SUPPLIER_NAME
         FROM
           SUPP_PROD_PRICE spp INNER JOIN SUPP_ORGU_LINK sol ON (spp.sol_id = sol.sol_id)
+          inner join SUPPLIER supp on (supp.supplier_id = sol.supp_id)
           LEFT OUTER JOIN
             PRICE prce on (spp.PROD_ID = prce.PROD_ID)
             INNER JOIN
@@ -309,7 +312,15 @@
         WHERE
         sol.ORGU_ID= #{param1} AND sol.SUPP_ID = #{param2} AND spp.CATALOGUE_NO = #{param3}
     </select>
-
+    <select id="getSuppProdPricePerOrgUnitIdAndSupplierNameAndCatalogNo" resultMap="suppProdPriceOnlyMap" >
+        SELECT
+        <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>
+        FROM
+        SUPP_PROD_PRICE spp INNER JOIN SUPP_ORGU_LINK sol ON (spp.sol_id = sol.sol_id)
+        inner join SUPPLIER supp ON (supp.SUPPLIER_ID = sol.supp_id)
+        WHERE
+        sol.ORGU_ID= #{param1} AND supp.SUPPLIER_NAME = #{param2} AND spp.CATALOGUE_NO = #{param3}
+    </select>
     <select id="getProductPurchaseItemPerSprcId" resultMap="suppPurchaseProdMap" >
         SELECT
         <include refid="suppProdPriceColumns"><property name="alias" value="spp"/></include>,

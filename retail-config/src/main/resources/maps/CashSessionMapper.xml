@@ -115,6 +115,19 @@
         <association property="txnType" column="TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById"/>
     </resultMap>
 
+    <resultMap id="CashupDetailTxnSummaryRptMap" type="CashupDetailTxnSummaryRow" >
+        <result column="docketNo" property="docketNo" />
+        <result column="tradingDate" property="tradingDate" />
+        <result column="txnType" property="txnType" />
+        <result column="operator" property="operator" />
+        <result column="saleTotal" property="saleTotal" />
+        <result column="paymentMedia" property="paymentMedia" />
+        <result column="paymentMediaAmount" property="paymentMediaAmount" />
+        <result column="txnTotalCost" property="txnTotalCost" />
+        <result column="txnTotalPriceLessTax" property="txnTotalPriceLessTax" />
+        <result column="txnTotalPricePlusTax" property="txnTotalPricePlusTax" />
+        <result column="txnTotalProfit" property="txnTotalProfit" />
+    </resultMap>
 
     <sql id="cashSessionColumns">
         ${alias}.CSSN_SESSION_ID,
@@ -435,6 +448,7 @@
         SEEV_ID,
         ORGU_ID,
         STORE_ID,
+        TXMD_ID,
         MEDT_ID,
         PAYM_ID,
         SEME_MEDIA_COUNT,
@@ -443,7 +457,8 @@
         #{cssnSessionId},
         #{seevId},
         #{orguId},
-        #{storeId}
+        #{storeId},
+        #{txmdId}
         <if test="mediaType != null">
             ,#{mediaType.id}
         </if>
@@ -470,7 +485,6 @@
         <if test="semeMediaValue == null">
             ,null
         </if>
-
         )
     </insert>
 
@@ -743,6 +757,42 @@
         CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED' ) AND CSSN_OPERATOR = #{value}
     </select>
 
+    <!-- cash session per company mode: get active cash session. there must be only one active session-->
+    <select id="getStoreActiveCashSession" resultMap="CashSessionMap">
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+          CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID)
+        WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED' )
+        AND cssn.ORGU_ID = #{param1} AND cssn.STORE_ID = #{param2}
+
+    </select>
+
+    <!-- cash session per company mode: get last reconciled or ended cash session.-->
+    <select id="getStoreLastEndedOrReconciledCashSession" resultMap="CashSessionMap">
+        SELECT TOP 1
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID)
+        WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_ENDED' OR cc.CATEGORY_CODE = 'SESSION_STATE_RECONCILED' )
+        AND cssn.ORGU_ID = #{param1} AND cssn.STORE_ID = #{param2}
+        order by CSSN_SESSION_ID desc
+
+    </select>
+
+    <!-- cash session per company mode: get last reconciled or ended cash session.-->
+    <select id="getUserLastEndedOrReconciledCashSession" resultMap="CashSessionMap">
+        SELECT TOP 1
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID)
+        WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_ENDED' OR cc.CATEGORY_CODE = 'SESSION_STATE_RECONCILED' )
+        AND cssn.ORGU_ID = #{param1} AND cssn.STORE_ID = #{param2} AND cssn.CSSN_OPERATOR = #{param3}
+        ORDER BY CSSN_SESSION_ID desc
+
+
+    </select>
+
     <select id="getCashSessionPerId" resultMap="CashSessionMap">
         SELECT
         <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
@@ -805,5 +855,95 @@
         ACC_EXPORTED = 1
         WHERE CSSN_SESSION_ID = #{value}
     </update>
+
+    <select id="runCashupDetailTxnSummary" resultMap="CashupDetailTxnSummaryRptMap">
+    select TXN_HEADER.TXHD_TXN_NR docketNo ,
+           TXN_HEADER.TXHD_TRADING_DATE tradingDate,
+           txnType.DISPLAY_NAME txnType,
+           APP_USER.USR_FIRST_NAME + ' ' + APP_USER.USR_SUR_NAME operator,
+           TXN_HEADER.TXHD_VALUE_NETT saleTotal,
+           --TXN_HEADER.CUSTOMER_ID customer,
+           PAYMENT_MEDIA.PAYM_NAME paymentMedia,
+           TXN_MEDIA.TXMD_AMOUNT_LOCAL paymentMediaAmount,
+           txnDetail.txnCostTotal txnTotalCost,
+           txnDetail.txdePriceLessTaxTotal txnTotalPriceLessTax,
+           txnDetail.txdePriceAfterTaxTotal txnTotalPricePlusTax,
+           txnDetail.txnProfitTotal txnTotalProfit
+        from SESSION_MEDIA
+            inner join TXN_MEDIA on (TXN_MEDIA.TXMD_ID = SESSION_MEDIA.TXMD_ID)
+            inner join CONFIG_CATEGORY txnMediaType on (txnMediaType.CATEGORY_ID = TXN_MEDIA.TXMD_TYPE)
+            inner join PAYMENT_MEDIA on (PAYMENT_MEDIA.PAYM_ID = TXN_MEDIA.PAYM_ID)
+            inner join TXN_HEADER on (TXN_MEDIA.TXHD_ID = TXN_HEADER.TXHD_ID)
+            inner join CONFIG_CATEGORY txnType ON (txnType.CATEGORY_ID = TXN_HEADER.TXHD_TXN_TYPE)
+            inner join APP_USER ON ( APP_USER.USR_ID = TXN_HEADER.TXHD_OPERATOR)
+            inner join
+                (select SUM(txde_value_profit * TXDE_QUANTITY_SOLD) txnProfitTotal,
+                    SUM(txde_value_line * TXDE_QUANTITY_SOLD) txnCostTotal,
+                    SUM(txde_value_gross * TXDE_QUANTITY_SOLD) txdePriceLessTaxTotal,
+                    SUM(txde_value_net * TXDE_QUANTITY_SOLD) txdePriceAfterTaxTotal,
+                    MAX(txhd_id) txhd_id
+                 from TXN_DETAIL group by TXHD_ID)
+                 txnDetail on (txnDetail.txhd_id = TXN_HEADER.TXHD_ID)
+        where SESSION_MEDIA.CSSN_SESSION_ID = #{param1}
+        AND txnMediaType.CATEGORY_CODE IN ('TXN_MEDIA_SALE', 'TXN_MEDIA_DEPOSIT')
+
+        UNION ALL
+
+    select INVOICE.TXIV_TXN_NR docketNo,
+           TXN_HEADER.TXHD_TRADING_DATE tradingDate,
+           txnType.DISPLAY_NAME txnType,
+           APP_USER.USR_FIRST_NAME + ' ' + APP_USER.USR_SUR_NAME operator,
+           TXN_HEADER.TXHD_VALUE_NETT saleTotal,
+           --TXN_HEADER.CUSTOMER_ID,
+           PAYMENT_MEDIA.PAYM_NAME paymentMedia,
+           TXN_MEDIA.TXMD_AMOUNT_LOCAL paymentMediaAmount,
+           txnSummary.txnCostTotal txnTotalCost,
+           txnSummary.txdePriceLessTaxTotal txnTotalPriceLessTax,
+           txnSummary.txdePriceAfterTaxTotal txnTotalPricePlusTax,
+           txnSummary.txnProfitTotal txnTotalProfit
+        from SESSION_MEDIA
+            inner join TXN_MEDIA on (TXN_MEDIA.TXMD_ID = SESSION_MEDIA.TXMD_ID)
+            inner join CONFIG_CATEGORY txnMediaType on (txnMediaType.CATEGORY_ID = TXN_MEDIA.TXMD_TYPE)
+            inner join PAYMENT_MEDIA on (PAYMENT_MEDIA.PAYM_ID = TXN_MEDIA.PAYM_ID)
+            inner join INVOICE_MEDIA ON (INVOICE_MEDIA.TXMD_ID = TXN_MEDIA.TXMD_ID)
+            inner join INVOICE ON (INVOICE.TXIV_ID = INVOICE_MEDIA.TXIV_ID)
+            inner join TXN_HEADER on (INVOICE.TXHD_ID = TXN_HEADER.TXHD_ID)
+            inner join CONFIG_CATEGORY txnType ON (txnType.CATEGORY_ID = INVOICE.TXIV_TXN_TYPE)
+            inner join APP_USER ON ( APP_USER.USR_ID = TXN_HEADER.TXHD_OPERATOR)
+            inner join
+                (
+                    select
+                        SUM(txde_value_profit * txid_qty_invoiced) txnProfitTotal,
+                        SUM(txde_value_line * txid_qty_invoiced) txnCostTotal,
+                        SUM(txde_value_gross * txid_qty_invoiced) txdePriceLessTaxTotal,
+                        SUM(txde_value_net * txid_qty_invoiced) txdePriceAfterTaxTotal,
+                        MAX(invoice_detail.TXIV_ID) TXIV_ID,
+                        MAX(invoice.TXHD_ID) TXHD_ID
+                    FROM INVOICE_detail
+                         inner join INVOICE ON (INVOICE.TXIV_ID = INVOICE_DETAIL.TXIV_ID)
+                         inner join TXN_DETAIL ON (TXN_DETAIL.TXDE_ID = INVOICE_DETAIL.TXDE_ID)
+                         inner join CONFIG_CATEGORY on (CONFIG_CATEGORY.CATEGORY_ID = INVOICE_DETAIL.TXID_LINE_TYPE)
+                    where CONFIG_CATEGORY.CATEGORY_CODE = 'TXN_LINE_SALE'
+                    group by INVOICE.TXIV_ID
+                    --order by INVOICE.TXIV_ID
+                    UNION
+                    select
+                        SUM(txde_value_profit * TXID_QTY_REFUND) txnProfitTotal,
+                        SUM(txde_value_line * TXID_QTY_REFUND) txnCostTotal,
+                        SUM(txde_value_gross * TXID_QTY_REFUND) txdePriceLessTaxTotal,
+                        SUM(txde_value_net * TXID_QTY_REFUND) txdePriceAfterTaxTotal,
+                        MAX(invoice_detail.TXIV_ID) TXIV_ID,
+                        MAX(invoice.TXHD_ID) TXHD_ID
+                    FROM INVOICE_detail
+                         inner join INVOICE ON (INVOICE.TXIV_ID = INVOICE_DETAIL.TXIV_ID)
+                         inner join TXN_DETAIL ON (TXN_DETAIL.TXDE_ID = INVOICE_DETAIL.TXDE_ID)
+                         inner join CONFIG_CATEGORY on (CONFIG_CATEGORY.CATEGORY_ID = INVOICE_DETAIL.TXID_LINE_TYPE)
+                    where CONFIG_CATEGORY.CATEGORY_CODE = 'TXN_LINE_REFUND'
+                    group by INVOICE.TXIV_ID
+                ) txnSummary on (txnSummary.TXIV_ID = INVOICE.TXIV_ID)
+        where SESSION_MEDIA.CSSN_SESSION_ID = #{param1}
+        AND txnMediaType.CATEGORY_CODE IN ('TXN_MEDIA_INVOICE', 'TXN_MEDIA_REFUND')
+        order by docketNo dESC
+  </select>
 
 </mapper>

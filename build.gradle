@@ -67,6 +67,8 @@ subprojects {
             // For now look in a fixed place Maven Repository - File Share
             url project["depsDir"]
         }
+        mavenLocal()
+
     }
     dependencies {
 

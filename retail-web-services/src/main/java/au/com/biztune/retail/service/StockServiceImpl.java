@@ -1,5 +1,6 @@
 package au.com.biztune.retail.service;
 
+import au.com.biztune.retail.dao.AccountingDao;
 import au.com.biztune.retail.dao.ConfigCategoryDao;
 import au.com.biztune.retail.dao.StockDao;
 import au.com.biztune.retail.domain.*;
@@ -32,6 +33,11 @@ public class StockServiceImpl implements StockService {
     private StockProcessor stockProcessor;
     @Autowired
     private QueueManager stockProcessingQueue;
+    @Autowired
+    private AccountingDao accountingDao;
+    @Autowired
+    private CashSessionService cashSessionService;
+
 
     /**
      * update stock quantity.
@@ -158,6 +164,12 @@ public class StockServiceImpl implements StockService {
                 logger.debug("StockQty is 0");
                 return;
             }
+            //check if event is change price
+            if (stockEvent.getTxnTypeConst().equals(IdBConstant.TXN_TYPE_CHANGE_IN_COST)) {
+                processCostVarianceEvent(stockEvent);
+                return;
+            }
+
             //set stock location
             stockEvent.setStckLocId(sessionState.getOrgUnit().getStockLocation().getId());
             //indicate stock category from txnType.
@@ -339,6 +351,101 @@ public class StockServiceImpl implements StockService {
             logger.error("Exception in updating stock qty:", e);
         }
 
+    }
+
+    /**
+     * process cost variance stock event.
+     * the value for price change is set in stock event as below:
+     * txnType = 'SESSION_EVENT_TYPE_CHANGE_IN_COST'
+     * stckQty = qty of product being affected by change price
+     * costPrice = product variance for qty 1 (new price - old price)
+     * sellPrice = stock variance for whole qty ( qty * (new price - old price))
+     * @param stockEvent stockEvent
+     */
+    private void processCostVarianceEvent(StockEvent stockEvent) {
+        try {
+            if (stockEvent == null) {
+                return;
+            }
+            //add stock event for reference.
+            final ConfigCategory sourceTxnType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_TXN_TYPE, IdBConstant.TXN_TYPE_CHANGE_IN_COST);
+            if (sourceTxnType != null) {
+                stockEvent.setTxnType(sourceTxnType.getId());
+            }
+            stockDao.insertStockEvent(stockEvent);
+            //insert journal entry.
+            final CashSession activeCashSession = cashSessionService.getActiveCashSession(stockEvent.getUserId());
+            final List<JournalRule> journalRuleList = accountingDao.getJournalRuleByOrguIdAndTxnTypeAndAction(sessionState.getOrgUnit().getId(),
+                    "TXN_TYPE_CHANGE_IN_COST", "JA_CHANGE_IN_COST");
+            JournalEntry journalEntry = null;
+            if (journalRuleList != null && journalRuleList.size() > 0) {
+                for (JournalRule journalRule : journalRuleList) {
+                    if (journalRule == null) {
+                        continue;
+                    }
+                    journalEntry = new JournalEntry();
+                    if (sourceTxnType != null) {
+                        journalEntry.setSrcTxnType(sourceTxnType.getId());
+                    }
+                    //journalEntry.setSrcTxnId(txnHeader.getId());
+                    journalEntry.setAppUserId(stockEvent.getUserId());
+                    journalEntry.setOrguId(sessionState.getOrgUnit().getId());
+                    if (activeCashSession != null) {
+                        journalEntry.setCssnSessionId(activeCashSession.getId());
+                    }
+                    journalEntry.setJrnActual(journalRule.isJrnrActual());
+                    journalEntry.setJrnDate(new Timestamp(new Date().getTime()));
+                    journalEntry.setAccId(journalRule.getAccount().getId());
+                    journalEntry.setJrnAccCode(journalRule.getJrnrAccCode());
+                    journalEntry.setJrnAccDesc(journalRule.getJrnrAccDesc());
+                    //if (variance is positive)
+                    if (stockEvent.getSellPrice() > 0) {
+                        if (journalRule.isJrnrDebit()) {
+                            journalEntry.setJrnDebit(stockEvent.getSellPrice());
+                        } else if (journalRule.isJrnrCredit()) {
+                            journalEntry.setJrnCredit(stockEvent.getSellPrice());
+                        }
+                    } else {
+                        if (journalRule.isJrnrDebit()) {
+                            journalEntry.setJrnCredit(stockEvent.getSellPrice());
+                        } else if (journalRule.isJrnrCredit()) {
+                            journalEntry.setJrnDebit(stockEvent.getSellPrice());
+                        }
+                    }
+                    accountingDao.insertJournalEntry(journalEntry);
+
+                }
+            }
+
+        } catch (Exception e) {
+            logger.debug("Exception in processing cost variance event", e);
+        }
+    }
+
+    /**
+     * create cost variance event.
+     * @param prodId prodId
+     * @param oldPrice oldPrice
+     * @param newPrice newPrice
+     * @param qty qty
+     * @param userId userId
+     */
+    public void createCostVarianceEvent(long prodId, double oldPrice, double newPrice, double qty, long userId) {
+        //if there is no change in price then return.
+        if ((newPrice == oldPrice) || qty == 0) {
+            return;
+        }
+        final StockEvent stockEvent = new StockEvent();
+        stockEvent.setTxnTypeConst(IdBConstant.TXN_TYPE_CHANGE_IN_COST);
+        stockEvent.setCostPrice(newPrice - oldPrice);
+        stockEvent.setStckQty(qty);
+        stockEvent.setProdId(prodId);
+        stockEvent.setSellPrice(qty * stockEvent.getCostPrice());
+        stockEvent.setOrguId(sessionState.getOrgUnit().getId());
+        stockEvent.setStoreId(sessionState.getStore().getId());
+        stockEvent.setStckEvntDate(new Timestamp(new Date().getTime()));
+        stockEvent.setUserId(userId);
+        pushStockEvent(stockEvent);
     }
 
     /**

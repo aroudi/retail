@@ -56,6 +56,13 @@
           project.PROJECT_CODE = #{value}
     </select>
 
+    <select id="getProjectByCodeAndClientId" resultMap="ProjectMap" >
+        <include refid="getProject">
+        </include>
+        WHERE
+        project.PROJECT_CODE = #{param1} and project.CLIENT_ID = #{param2}
+    </select>
+
     <select id="getProjectByName" resultMap="ProjectMap" >
         <include refid="getProject">
         </include>

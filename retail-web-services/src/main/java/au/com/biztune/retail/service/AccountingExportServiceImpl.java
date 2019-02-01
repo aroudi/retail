@@ -51,7 +51,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
     private String buildHeader() {
         final Date currentDate = new Date();
         final String dateStr = DateUtil.dateToString(new Timestamp(currentDate.getTime()), "dd/MM/yyyy");
-        return "[BitPos Retail Manager " + dateStr + "]" + " " + "[Exported]";
+        return "[RetailManager " + dateStr + "]" + " " + "[Exported]";
     }
 
     private String buildTaxCodeList() {
@@ -152,9 +152,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
         }
         result.append(buildGap("\t", 2));
         result.append(deliveryNoteHeader.getDelnValueNett());
-        result.append("\t");
-        result.append("55");
-        result.append("\t");
+        result.append(buildGap("\t", 2));
         if (deliveryNoteHeader.getDelnComment() != null) {
             result.append(deliveryNoteHeader.getDelnComment());
         }
@@ -166,7 +164,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
             if (deliveryNoteHeader.getFreightTaxCode() != null) {
                 result.append(deliveryNoteHeader.getFreightTaxCode());
             } else {
-                result.append("GST");
+                result.append("GPR");
             }
             result.append(buildGap("\t", 4));
             result.append(deliveryNoteHeader.getFreightAmount());
@@ -176,7 +174,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
             if (deliveryNoteHeader.getFreightTaxCode() != null) {
                 result.append(deliveryNoteHeader.getFreightTaxCode());
             } else {
-                result.append("GST");
+                result.append("GPR");
             }
             result.append(buildGap("\t", 2));
             result.append(deliveryNoteHeader.getFreightTax());
@@ -206,11 +204,11 @@ public class AccountingExportServiceImpl implements AccountingExportService {
         }
         result.append("\t");
 
+        result.append(journalEntry.getJrnAccDesc());
+        result.append(" ");
         if (dateStr != null && !dateStr.isEmpty()) {
             result.append(dateStr);
         }
-        result.append(" ");
-        result.append(journalEntry.getJrnAccDesc());
         if (journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_SALES_INCOME) && journalEntry.getJrnTaxCode() != null) {
             result.append(" ( " + journalEntry.getJrnTaxCode() + " ) ");
         }
@@ -226,7 +224,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
             result.append(journalEntry.getJrnCredit());
         }
         result.append("\t");
-        result.append("55");
+        //result.append("55");
         result.append("\t");
 
         if (!journalEntry.getAccount().getAccName().equals(IdBConstant.ACCOUNT_INVENTORY)
@@ -257,6 +255,7 @@ public class AccountingExportServiceImpl implements AccountingExportService {
         } else {
             result.append("N-T");
             if (isSecondRecord) {
+                result.append(System.getProperty("line.separator"));
                 result.append(System.getProperty("line.separator"));
             }
 
@@ -322,8 +321,8 @@ public class AccountingExportServiceImpl implements AccountingExportService {
             fileContent.append(content);
 
 
-            output.write(System.getProperty("line.separator").getBytes());
-            fileContent.append(System.getProperty("line.separator"));
+            //output.write(System.getProperty("line.separator").getBytes());
+            //fileContent.append(System.getProperty("line.separator"));
             output.write(System.getProperty("line.separator").getBytes());
             fileContent.append(System.getProperty("line.separator"));
 
