@@ -50,9 +50,9 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
                     return row.entity.prodSku
                 }
             },
-            {field:'prodName', displayName:'Description',enableCellEdit:false, width:'25%',
+            {field:'prodDesc', displayName:'Description',enableCellEdit:false, width:'25%',
                 cellTooltip: function(row,col) {
-                    return row.entity.prodName
+                    return row.entity.prodDesc
                 }
             },
             //{field:'department', displayName:'Dept',enableCellEdit:false, width:'10%'},

@@ -820,8 +820,10 @@ public class ProductServiceImpl implements ProductService {
                 //create product cost variance event.
                 final double oldPrice = productCost.getPrcePrice();
                 final double newPrice = defaultSpps.get(0).getCostBeforeTax();
-                final double qtyAffected = stockDao.getProductSaleablePristineStockQty(prodId, sessionState.getOrgUnit().getId());
-                stockService.createCostVarianceEvent(prodId, oldPrice, newPrice, qtyAffected, userId);
+                final Double qtyAffected = stockDao.getProductSaleablePristineStockQty(prodId, sessionState.getOrgUnit().getId());
+                if (qtyAffected != null) {
+                    stockService.createCostVarianceEvent(prodId, oldPrice, newPrice, qtyAffected, userId);
+                }
                 productCost.setPrcePrice(defaultSpps.get(0).getCostBeforeTax());
                 priceDao.updatePricePerProdIdAndPrccId(prodId, productCost.getPriceCode().getId(), productCost.getPrcePrice());
             }
