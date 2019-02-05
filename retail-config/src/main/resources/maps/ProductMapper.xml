@@ -980,6 +980,12 @@
         WHERE PROD_ID = #{id}
     </update>
 
+    <update id="updateProductDescription">
+        UPDATE PRODUCT SET
+            PROD_DESC = #{param1}
+        WHERE PROD_ID = #{param2}
+    </update>
+
     <update id="updateProductStatus">
         UPDATE PROD_ORGU_LINK
         SET CAT_ID_STATUS = #{param1}

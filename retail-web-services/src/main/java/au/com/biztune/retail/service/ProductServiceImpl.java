@@ -575,6 +575,10 @@ public class ProductServiceImpl implements ProductService {
                     }
                     //update product cost to default supplier cost.
                     updateProductCostBaseDefaultSupplier(product.getId(), price, userId);
+                    //update product description:
+                    if (!product.getProdDesc().equals(prodDesc)) {
+                        productDao.updateProductDescription(prodDesc, product.getId());
+                    }
                 }
             } else {
                 //insert product

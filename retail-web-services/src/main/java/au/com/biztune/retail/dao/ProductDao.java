@@ -201,4 +201,11 @@ public interface ProductDao {
      * @param orguId organisation unit id
      */
     void updateProductStatus(long statusId, long orguId, List productIdList);
+
+    /**
+     * update product description per prod id.
+     * @param prodDesc product description
+     * @param prodId product id.
+     */
+    void updateProductDescription(String prodDesc, long prodId);
 }
