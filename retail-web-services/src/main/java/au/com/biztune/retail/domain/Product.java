@@ -29,8 +29,8 @@ public class Product {
     private ProdOrguLink prodOrguLink;
     private List<Price> priceList;
     private List<SuppProdPrice> suppProdPriceList;
-    private double stockQty;
-    private double reservedQty;
+    private Double stockQty;
+    private Double reservedQty;
     private Price sellPrice;
     private String prodLocation;
     private boolean deleted;
@@ -204,19 +204,11 @@ public class Product {
         this.suppProdPriceList = suppProdPriceList;
     }
 
-    public double getStockQty() {
-        return stockQty;
-    }
-
-    public void setStockQty(double stockQty) {
-        this.stockQty = stockQty;
-    }
-
-    public double getReservedQty() {
+    public Double getReservedQty() {
         return reservedQty;
     }
 
-    public void setReservedQty(double reservedQty) {
+    public void setReservedQty(Double reservedQty) {
         this.reservedQty = reservedQty;
     }
 
@@ -258,5 +250,13 @@ public class Product {
 
     public void setProductGroups(List<ProdDeptCat> productGroups) {
         this.productGroups = productGroups;
+    }
+
+    public Double getStockQty() {
+        return stockQty;
+    }
+
+    public void setStockQty(Double stockQty) {
+        this.stockQty = stockQty;
     }
 }
