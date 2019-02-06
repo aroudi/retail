@@ -80,4 +80,12 @@ public interface CustomerDao {
      * @param customer customer
      */
     void updateCustomerDebt(Customer customer);
+
+    /**
+     * update customer verification status. set verified to 0 or 1.
+     * @param verified verification flag.
+     * @param custId customer id.
+     */
+    void updateCustomerVerificationStatus(boolean verified, long custId);
+
 }

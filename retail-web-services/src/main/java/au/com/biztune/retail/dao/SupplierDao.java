@@ -112,4 +112,11 @@ public interface SupplierDao {
      * @return Supplier
      */
     Supplier getDefaultSupplierOfProductPerOrguIdAndProdId(long orguId, long prodId);
+
+    /**
+     * update supplier verification status.
+     * @param verified verification status. true: verified false: temp
+     * @param suppId supplier Id.
+     */
+    void updateSupplierVerificationStatus(boolean verified, long suppId);
 }

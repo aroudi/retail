@@ -534,6 +534,10 @@ public class ProductServiceImpl implements ProductService {
             Product product = null;
             if (checkIfProductExistsPerSkuAndReference(prodSku, reference)) {
                 product = getProductPerSkuAndRef(prodSku, reference);
+
+                //set the verification flag so in importing BOQ we know that product is already exists.
+                product.setVerified(true);
+
                 //check if we need to overWrite the current product. the overWrite flag is True for ImportProduct from Doors3
                 // but it is false for import BOQ.
                 if (overWriteProduct) {
@@ -583,6 +587,8 @@ public class ProductServiceImpl implements ProductService {
             } else {
                 //insert product
                 product = new Product();
+                //set the verification flag to false so in importing BOQ we know that product is a new product.
+                product.setVerified(false);
                 product.setOrguIdOwning(sessionState.getOrgUnit().getId());
                 product.setProdSku(prodSku);
                 product.setReference(reference);

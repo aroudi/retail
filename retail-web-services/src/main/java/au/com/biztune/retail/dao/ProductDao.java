@@ -208,4 +208,18 @@ public interface ProductDao {
      * @param prodId product id.
      */
     void updateProductDescription(String prodDesc, long prodId);
+
+    /**
+     * update product verification status. set verified to 0 or 1.
+     * @param verified verification flag.
+     * @param prodId product id.
+     */
+    void updateProductVerificationStatus(boolean verified, long prodId);
+
+    /**
+     * get No of Boq referenced this product.
+     * @param prodId product id
+     * @return No Of Boq Referenced this product.
+     */
+    Long getNoOfBoqReferencedProduct(long prodId);
 }

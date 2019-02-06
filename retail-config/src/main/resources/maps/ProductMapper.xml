@@ -24,6 +24,7 @@
         <result column="PROD_CLASS" property="prodClass" />
         <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
         <result column="PROD_LOCATION" property="prodLocation" />
+        <result column="VERIFIED" property="verified" />
         <association property="stockQty" column="{prodId=PROD_ID, orguId=ORGU_ID_OWNING}" select="au.com.biztune.retail.dao.StockDao.getProductSaleablePristineStockQty" />
         <association property="prodType" column="CAT_ID_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association resultMap="prodOrguLinkDetailMap" property="prodOrguLink" />
@@ -67,6 +68,7 @@
         <result column="PROD_CLASS" property="prodClass" />
         <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
         <result column="PROD_LOCATION" property="prodLocation" />
+        <result column="VERIFIED" property="verified" />
         <association property="sellPrice" column="PROD_ID" select="au.com.biztune.retail.dao.PriceDao.getProductSellPricePerProdId" />
         <association property="stockQty" column="{prodId=PROD_ID, orguId=ORGU_ID_OWNING}" select="au.com.biztune.retail.dao.StockDao.getProductSaleablePristineStockQty" />
         <association property="reservedQty" column="{prodId=PROD_ID, orguId=ORGU_ID_OWNING}" select="au.com.biztune.retail.dao.StockDao.getProductReservedPristineStockQty" />
@@ -94,6 +96,7 @@
         <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
         <result column="PROD_LOCATION" property="prodLocation" />
         <result column="STCK_QTY" property="stockQty" />
+        <result column="VERIFIED" property="verified" />
         <association property="sellPrice" column="PROD_ID" select="au.com.biztune.retail.dao.PriceDao.getProductSellPricePerProdId" />
         <association property="reservedQty" column="{prodId=PROD_ID, orguId=ORGU_ID_OWNING}" select="au.com.biztune.retail.dao.StockDao.getProductReservedPristineStockQty" />
         <association resultMap="prodOrguLinkListMap" property="prodOrguLink" />
@@ -119,6 +122,7 @@
         <result property="category1" column="prodCat1" />
         <result property="category2" column="prodCat2" />
         <result property="category3" column="prodCat3" />
+        <result column="VERIFIED" property="verified" />
     </resultMap>
     <resultMap id="productListLiteMap" type="Product" >
         <id column="PROD_ID" property="id" />
@@ -140,6 +144,7 @@
         <result column="PROD_CLASS" property="prodClass" />
         <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
         <result column="PROD_LOCATION" property="prodLocation" />
+        <result column="VERIFIED" property="verified" />
         <association resultMap="prodOrguLinkListMap" property="prodOrguLink" />
     </resultMap>
 
@@ -163,6 +168,7 @@
         <result column="PROD_CLASS" property="prodClass" />
         <result column="PROD_WARRANTY_TEXT" property="prodWarrantyText" />
         <result column="PROD_LOCATION" property="prodLocation" />
+        <result column="VERIFIED" property="verified" />
     </resultMap>
 
     <resultMap id="prodOrguLinkListMap" type="ProdOrguLink" >
@@ -230,7 +236,8 @@
         ${alias}.PROD_CLASS,
         ${alias}.PROD_WARRANTY_TEXT,
         ${alias}.PROD_LOCATION,
-        ${alias}.CAT_ID_TYPE
+        ${alias}.CAT_ID_TYPE,
+        ${alias}.VERIFIED
     </sql>
 
 
@@ -268,7 +275,7 @@
         PRODUCT prod
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
         INNER JOIN CONFIG_CATEGORY cat on (cat.CATEGORY_ID=  prou.CAT_ID_STATUS)
-        WHERE prou.orgu_id = #{value} and prod.DELETED = 0
+        WHERE prou.orgu_id = #{value} and prod.DELETED = 0 and prod.VERIFIED = 1
     </select>
 
     <select id="getAllProductsPerOrgUnitIdPaging" resultMap="productListMap" >
@@ -281,7 +288,7 @@
         FROM PRODUCT
         INNER JOIN PROD_ORGU_LINK  ON (PRODUCT.prod_id = PROD_ORGU_LINK.prod_id)
         INNER JOIN CONFIG_CATEGORY  on (CONFIG_CATEGORY.CATEGORY_ID= PROD_ORGU_LINK.CAT_ID_STATUS)
-        WHERE PROD_ORGU_LINK.orgu_id = #{param1} and PRODUCT.DELETED = 0
+        WHERE PROD_ORGU_LINK.orgu_id = #{param1} and PRODUCT.DELETED = 0 and PRODUCT.VERIFIED = 1
         ) q_result
         where q_result.NUMBER BETWEEN #{param2} AND #{param3}
     </select>
@@ -450,7 +457,7 @@
         for GRADE_CODE in (A_GRADE,B_GRADE,C_GRADE,D_GRADE,Default_GRADE)
         )piv
         ) GRADE_FORMULA
-        where SUPP_ORGU_LINK.ORGU_ID = 1 and PRODUCT.DELETED = 0
+        where SUPP_ORGU_LINK.ORGU_ID = 1 and PRODUCT.DELETED = 0 and PRODUCT.VERIFIED = 1
         ) QUERY1
         ) AS SourceTable	  PIVOT ( MAX ([CAT_VALUE]) FOR [CATH_TYPE_CONST] IN ([PROD_CAT_1],[PROD_CAT_2],[PROD_CAT_3])) AS PivotTable
         )q_result
@@ -473,7 +480,7 @@
         LEFT OUTER JOIN  (select stck.* from STOCK stck
                             inner JOIN CONFIG_CATEGORY cat2 on (cat2.CATEGORY_ID = stck.STCK_CAT AND cat2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE')
                          ) STOCK on (prod.prod_id = stock.prod_id)
-        WHERE PROD_ORGU_LINK.orgu_id = #{param1} AND PRODUCT.DELETED = 0
+        WHERE PROD_ORGU_LINK.orgu_id = #{param1} AND PRODUCT.DELETED = 0 and PRODUCT.VERIFIED = 1
             <if test="param4 != null">
                 AND
                 <foreach collection="param4" item="item" index="index"
@@ -649,7 +656,7 @@
         for GRADE_CODE in (A_GRADE,B_GRADE,C_GRADE,D_GRADE,Default_GRADE)
         )piv
         ) GRADE_FORMULA
-        where SUPP_ORGU_LINK.ORGU_ID = 1 and PRODUCT.DELETED = 0
+        where SUPP_ORGU_LINK.ORGU_ID = 1 and PRODUCT.DELETED = 0 and PRODUCT.VERIFIED = 1
         <if test="param4 != null">
             AND
             <foreach collection="param4" item="item" index="index"
@@ -679,7 +686,7 @@
         LEFT OUTER JOIN STOCK  on (PRODUCT.prod_id = STOCK.prod_id)
         LEFT OUTER JOIN CONFIG_CATEGORY cat2 on (cat2.CATEGORY_ID = STOCK.STCK_CAT AND cat2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE')
         LEFT OUTER JOIN CONFIG_CATEGORY cat3 on (cat3.CATEGORY_ID = STOCK.STCK_COND and cat3.CATEGORY_CODE = 'STOCK_CONDITION_PRISTINE')
-        WHERE SUPP_ORGU_LINK.orgu_id = #{param1} AND PRODUCT.DELETED = 0
+        WHERE SUPP_ORGU_LINK.orgu_id = #{param1} AND PRODUCT.DELETED = 0 and PRODUCT.VERIFIED = 1
         <if test="param2 != null">
             AND
             <foreach collection="param2" item="item" index="index"
@@ -725,7 +732,7 @@
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
         LEFT OUTER JOIN
         CONFIG_CATEGORY prodStatus on (prou.CAT_ID_STATUS = prodStatus.CATEGORY_ID)
-        WHERE prod.REFERENCE = #{value} and prod.DELETED = 0
+        WHERE prod.REFERENCE = #{value} and prod.DELETED = 0 and prod.VERIFIED = 1
     </select>
 
     <select id="getProductPerSku" resultMap="productDetailMap" >
@@ -770,7 +777,7 @@
         FROM
         PRODUCT prod
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
-        WHERE prod.PROD_SKU = #{value} and prod.DELETED = 0
+        WHERE prod.PROD_SKU = #{value} and prod.DELETED = 0 and prod.VERIFIED = 1
     </select>
 
     <select id="getProductSaleItemPerReference" resultMap="productSaleItemMap" >
@@ -780,7 +787,7 @@
         FROM
         PRODUCT prod
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
-        WHERE prod.REFERENCE = #{value}
+        WHERE prod.REFERENCE = #{value} and prod.DELETED = 0 and prod.VERIFIED = 1
     </select>
 
     <select id="getProductSaleItemPerProdId" resultMap="productSaleItemMap" >
@@ -798,7 +805,7 @@
         SELECT
         prod.prod_id, prod.prod_sku, prod.reference, prod.prod_name
         FROM
-        PRODUCT prod where prod.DELETED = 0 and (prod.prod_sku like #{value} or prod.reference like #{value} or prod.prod_name like #{value})
+        PRODUCT prod where prod.DELETED = 0 and prod.VERIFIED = 1 and (prod.prod_sku like #{value} or prod.reference like #{value} or prod.prod_name like #{value})
     </select>
 
     <select id="getProductSaleItemPerOrgUnitIdAndSku" resultMap="productSaleItemMap" >
@@ -808,7 +815,7 @@
         FROM
         PRODUCT prod
         INNER JOIN PROD_ORGU_LINK prou ON (prod.prod_id = prou.prod_id)
-        WHERE prou.orgu_id = #{param1} AND prod.prod_sku = #{param2} and prod.DELETED = 0
+        WHERE prou.orgu_id = #{param1} AND prod.prod_sku = #{param2} and prod.DELETED = 0 and prod.VERIFIED = 1
     </select>
 
     <insert id="insertProduct" parameterType="Product" useGeneratedKeys="true" keyProperty="id" keyColumn="PROD_ID">
@@ -998,6 +1005,12 @@
 
     </update>
 
+    <update id="updateProductVerificationStatus">
+        UPDATE PRODUCT SET
+            VERIFIED = #{param1}
+        WHERE PROD_ID = #{param2}
+    </update>
+
     <delete id="deleteProdOrguLink" >
         DELETE
         From PROD_ORGU_LINK
@@ -1019,5 +1032,9 @@
         PROD_ID = #{value}
     </delete>
 
+    <select id="getNoOfBoqReferencedProduct" resultType="Long" >
+        SELECT
+        count(*) from (select distinct boq_id from boq_detail where prod_id = #{value}) boq_count
+    </select>
 
 </mapper>

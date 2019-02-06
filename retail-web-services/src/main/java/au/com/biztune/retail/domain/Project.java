@@ -17,6 +17,9 @@ public class Project {
     private double totalCost;
     private double totalPrice;
     private Customer customer;
+    //set to 0 when importing by BOQ. after BOQ verified set it to 1
+    private boolean verified;
+
 
     public long getId() {
         return id;
@@ -104,5 +107,13 @@ public class Project {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 }

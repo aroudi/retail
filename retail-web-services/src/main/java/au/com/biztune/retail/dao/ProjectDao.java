@@ -55,4 +55,12 @@ public interface ProjectDao {
      * @return project list
      */
     List<Project> getAllProject();
+
+    /**
+     * update project verification status. set verified to 0 or 1.
+     * @param verified verification flag.
+     * @param prodId project id.
+     */
+    void updateProjectVerificationStatus(boolean verified, long prodId);
+
 }

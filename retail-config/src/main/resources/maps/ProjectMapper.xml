@@ -46,7 +46,7 @@
         SELECT
         <include refid="projectColumns"><property name="alias" value="project"/></include>
         FROM
-        PROJECT project order by PROJECT_NAME
+        PROJECT project where project.VERIFIED = 1 order by PROJECT_NAME
     </select>
 
     <select id="getProjectByCode" resultMap="ProjectMap" >
@@ -186,4 +186,12 @@
         </include>
         WHERE PROJECT_CODE = #{projectCode}
     </update>
+
+    <update id="updateProjectVerificationStatus">
+        UPDATE PROJECT SET
+            VERIFIED = #{param1}
+        WHERE PROJECT_ID = #{param2}
+    </update>
+
+
 </mapper>

@@ -29,6 +29,7 @@
         <result column="CREDIT_START_DATE" property="creditStartDate" />
         <result column="CREDIT_START_EOM" property="creditStartEom" />
         <result column="DELETED" property="deleted" />
+        <result column="VERIFIED" property="verified" />
         <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
         <association property="customerType" column="Customer_Type" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="customerStatus" column="CUSTOMER_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -60,6 +61,7 @@
         <result column="CREDIT_START_DATE" property="creditStartDate" />
         <result column="CREDIT_START_EOM" property="creditStartEom" />
         <result column="DELETED" property="deleted" />
+        <result column="VERIFIED" property="verified" />
         <association resultMap="au.com.biztune.retail.dao.CustomerGradeDao.gradeMap" property="grade" />
         <association property="customerType" column="Customer_Type" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="customerStatus" column="CUSTOMER_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
@@ -95,7 +97,8 @@
         ${alias}.CREDIT_START_EOM,
         ${alias}.CONTACT_ID,
         ${alias}.CUST_POSITION,
-        ${alias}.DELETED
+        ${alias}.DELETED,
+        ${alias}.VERIFIED
     </sql>
     <sql id="gradeColumns">
         ${alias}.grade_id,
@@ -121,7 +124,7 @@
         CUSTOMER C
         LEFT OUTER JOIN
         CUSTOMER_GRADE g on (c.grade_id = g.grade_id)
-        where c.DELETED = 0
+        where c.DELETED = 0 and c.VERIFIED = 1
         order by c.company_name
     </select>
 
@@ -463,4 +466,11 @@
             REMAIN_CREDIT = #{remainCredit}
         WHERE CUSTOMER_ID = #{id}
     </update>
+
+    <update id="updateCustomerVerificationStatus">
+        UPDATE CUSTOMER SET
+            VERIFIED = #{param1}
+        WHERE CUSTOMER_ID = #{param2}
+    </update>
+
 </mapper>

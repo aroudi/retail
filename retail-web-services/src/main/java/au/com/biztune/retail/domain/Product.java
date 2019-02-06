@@ -34,6 +34,8 @@ public class Product {
     private Price sellPrice;
     private String prodLocation;
     private boolean deleted;
+    //set to 0 when importing by BOQ. after BOQ verified set it to 1
+    private boolean verified;
     private List<ProdDeptCat> productGroups;
 
     public long getId() {
@@ -258,5 +260,13 @@ public class Product {
 
     public void setStockQty(Double stockQty) {
         this.stockQty = stockQty;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 }

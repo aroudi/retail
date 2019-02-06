@@ -62,6 +62,10 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     private SecurityContext securityContext;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ProductDao productDao;
+    @Autowired
+    private SupplierDao supplierDao;
     /**
      * upload Bill Of Quantity.
      * @param uploadedInputStream uploadedInputStream
@@ -144,6 +148,14 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
         final Project project = importProject(inputProject, customer);
         final au.com.biztune.retail.domain.BillOfQuantity billOfQuantityObj = importBillOfQuantityHeader(header, project, productList);
         importBoqDetail(productList, billOfQuantityObj, appUser.getId());
+        //if it is a new customer, then set the verification status to false.
+        if (!customer.isVerified()) {
+            customerDao.updateCustomerVerificationStatus(false, customer.getId());
+        }
+        //if it is a new project, then set the verification status to false.
+        if (!project.isVerified()) {
+            projectDao.updateProjectVerificationStatus(false, project.getId());
+        }
         return billOfQuantityObj.getId();
     }
 
@@ -197,6 +209,16 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 boqDetail.setBqdCreationType(creationType);
             }
             boqDetailDao.insert(boqDetail);
+            //check if product is a new product then set it to a temporary product.
+            //to be clarify: in adding product if product does not exist we set its verified flag to false.
+            if (!importProductResult.getImportedProduct().isVerified()) {
+                productDao.updateProductVerificationStatus(false, importProductResult.getImportedProduct().getId());
+            }
+            //check if supplier is a new supplier then set it to a temporary supplier.
+            //to be clarify: in adding supplier if it does not exist we set its verified flag to false.
+            if (!importProductResult.getImportedSupplier().isVerified()) {
+                supplierDao.updateSupplierVerificationStatus(false, importProductResult.getImportedSupplier().getId());
+            }
         }
     }
 
@@ -261,9 +283,13 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
         //search for project. if not found import it.
         Project project = projectDao.getProjectByCodeAndClientId(inputProject.getProjectNo(), customer.getId());
         if (project != null) {
+            //set verification code to true so in BOQ we know it is an existing project.
+            project.setVerified(true);
             return project;
         } else {
             project = new Project();
+            //set verification code to false so in BOQ we know it is a new one and need to be verified.
+            project.setVerified(false);
             project.setCustomer(customer);
             project.setProjectCode(inputProject.getProjectNo());
             project.setProjectName(inputProject.getProjectName());
@@ -304,6 +330,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
         Customer customer = customerDao.getCustomerByCompanyName(client.getClientName());
         if (customer == null) {
             customer = new Customer();
+            //set verification to flase so in BOQ import we know this is a new customer and need to be verified.
+            customer.setVerified(false);
             final ConfigCategory customerType = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_CUSTOMER_TYPE, IdBConstant.CUSTOMER_TYPE_CASH_ONLY);
             if (customerType != null) {
                 customer.setCustomerType(customerType);
@@ -335,6 +363,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             }
         } else {
             //customer.setCustomerType(IdBConstant.CUSTOMER_TYPE_COMPANY);
+            customer.setVerified(true);
             customer.setAddress(client.getAdd1());
             customer.setCompanyName(client.getClientName());
             try {
@@ -697,6 +726,61 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             response.setStatus(IdBConstant.RESULT_FAILURE);
             response.setMessage("Error in deleting BOQ" + e.getMessage());
             return  response;
+        }
+    }
+
+    /**
+     * confirm BOQ. when BOQ is imported, the status is pending(temporary).
+     * somebody need to review and confirm it.
+     * @param boqId boqId
+     * @return CommonResponse
+     */
+    public CommonResponse confirmBoq(long boqId) {
+        final CommonResponse response = new CommonResponse();
+        try {
+            final au.com.biztune.retail.domain.BillOfQuantity billOfQuantity = billOfQuantityDao.getBillOfQuantityById(boqId);
+            if (billOfQuantity == null) {
+                response.setStatus(IdBConstant.RESULT_FAILURE);
+                response.setMessage("BOQ object with Id [" + boqId + "] not found in DB");
+                return response;
+            }
+            //change the BOQ status to confirmed.
+            final ConfigCategory boqStatusConfirmed = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_CONFIRMED);
+            if (boqStatusConfirmed != null) {
+                billOfQuantityDao.updateBoqStatusPerId(boqStatusConfirmed.getId(), boqId);
+                confirmBoqRelatedObjects(billOfQuantity);
+            }
+            return response;
+        } catch (Exception e) {
+            logger.error("Error in getting BOQ from DB", e);
+            response.setStatus(IdBConstant.RESULT_FAILURE);
+            response.setMessage("Error in deleting BOQ" + e.getMessage());
+            return  response;
+        }
+    }
+    private void confirmBoqRelatedObjects(au.com.biztune.retail.domain.BillOfQuantity billOfQuantity) {
+        if (billOfQuantity == null) {
+            return;
+        }
+        // update project and customer verification status to true.
+        if (billOfQuantity.getProject() != null) {
+            projectDao.updateProjectVerificationStatus(true, billOfQuantity.getProject().getId());
+            if (billOfQuantity.getProject().getCustomer() != null) {
+                customerDao.updateCustomerVerificationStatus(true, billOfQuantity.getProject().getCustomer().getId());
+            }
+        }
+        for (BoqDetail boqDetail : billOfQuantity.getLines()) {
+            if (boqDetail == null) {
+                continue;
+            }
+            //update product verification status to true
+            if (boqDetail.getProduct() != null) {
+                productDao.updateProductVerificationStatus(true, boqDetail.getProduct().getId());
+            }
+            //update customer verification status to true
+            if (boqDetail.getSupplier() != null) {
+                supplierDao.updateSupplierVerificationStatus(true, boqDetail.getSupplier().getId());
+            }
         }
     }
 }

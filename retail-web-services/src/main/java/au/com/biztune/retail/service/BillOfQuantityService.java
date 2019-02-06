@@ -6,7 +6,6 @@ import au.com.biztune.retail.domain.PurchaseOrderHeader;
 import au.com.biztune.retail.form.BoqSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.ws.rs.core.SecurityContext;
 import java.io.InputStream;
 import java.util.List;
@@ -86,4 +85,12 @@ public interface BillOfQuantityService {
      * @return response.
      */
     CommonResponse deleteBoqPerIdList(List<Long> boqIdList);
+
+    /**
+     * confirm BOQ. when BOQ is imported, the status is pending(temporary).
+     * somebody need to review and confirm it.
+     * @param boqId boqId
+     * @return CommonResponse
+     */
+    CommonResponse confirmBoq(long boqId);
     }

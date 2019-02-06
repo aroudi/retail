@@ -27,6 +27,9 @@ public class Supplier {
     private SuppOrguLink suppOrguLink;
     private boolean deliveryFreightFree;
     private boolean deleted;
+    //set to 0 when importing by BOQ. after BOQ verified set it to 1
+    private boolean verified;
+
 
     public long getId() {
         return id;
@@ -194,5 +197,13 @@ public class Supplier {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 }

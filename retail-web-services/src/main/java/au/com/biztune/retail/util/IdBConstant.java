@@ -282,6 +282,10 @@ public interface IdBConstant {
      */
     String BOQ_STATUS_NEW = "BOQ_STATUS_NEW";
     /**
+     * BILL OF QUANTITY HEADER STATUS CONFIRMED.
+     */
+    String BOQ_STATUS_CONFIRMED = "BOQ_STATUS_CONFIRMED";
+    /**
      * BILL OF QUANTITY HEADER STATUS ON ORDER.
      */
     String BOQ_STATUS_ON_ORDER = "BOQ_STATUS_ON_ORDER";

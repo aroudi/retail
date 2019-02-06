@@ -233,8 +233,12 @@ public class SupplierServiceImpl implements SupplierService {
         try {
             final Timestamp currentTime = new Timestamp(new Date().getTime());
             Supplier supplier = getSupplierByName(supplierName);
+            //set verified to true so in BOQ import we know it is existing supplier.
+            supplier.setVerified(true);
             if (supplier == null) {
                 supplier = new Supplier();
+                //set verified to false indicate this is a new supplier and need to be verified.
+                supplier.setVerified(false);
                 supplier.setSupplierName(supplierName);
                 supplier.setSupplierCode(supplierCode);
                 supplier.setCreateDate(currentTime);

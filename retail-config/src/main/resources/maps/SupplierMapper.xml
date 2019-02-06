@@ -22,6 +22,7 @@
         <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
         <result column="DELIVERY_FREIGHT_FREE" property="deliveryFreightFree" />
         <result column="DELETED" property="deleted" />
+        <result column="VERIFIED" property="verified" />
         <association property="supplierType" column="SUPPLIER_TYPE_ID" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
         <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
         <association resultMap="suppOrguLinkMap" property="suppOrguLink" />
@@ -44,6 +45,7 @@
         <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
         <result column="DELIVERY_FREIGHT_FREE" property="deliveryFreightFree" />
         <result column="DELETED" property="deleted" />
+        <result column="VERIFIED" property="verified" />
         <association property="contact" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
     </resultMap>
     <resultMap id="supplierOnlyMap" type="Supplier" >
@@ -64,6 +66,7 @@
         <result column="CONTACT_KNOWN_AS" property="contactKnownAs" />
         <result column="DELIVERY_FREIGHT_FREE" property="deliveryFreightFree" />
         <result column="DELETED" property="deleted" />
+        <result column="VERIFIED" property="verified" />
     </resultMap>
 
     <resultMap id="suppOrguLinkMap" type="SuppOrguLink" >
@@ -99,7 +102,8 @@
         ${alias}.SUPPLIER_STATUS_ID,
         ${alias}.CONTACT_ID,
         ${alias}.DELIVERY_FREIGHT_FREE,
-        ${alias}.DELETED
+        ${alias}.DELETED,
+        ${alias}.VERIFIED
 
     </sql>
 
@@ -128,7 +132,7 @@
         INNER JOIN SUPP_ORGU_LINK suporgl ON (supp.supplier_id = suporgl.supp_id)
         LEFT OUTER JOIN
         CONFIG_CATEGORY suppStatus on (suporgl.CAT_ID_STATUS = suppStatus.CATEGORY_ID)
-        WHERE suporgl.orgu_id = #{value} AND supp.DELETED = 0
+        WHERE suporgl.orgu_id = #{value} AND supp.DELETED = 0 AND supp.VERIFIED = 1
     </select>
 
     <select id="getSupplierByOrgUnitIdAndSuppCode" resultMap="supplierMap" >
@@ -501,17 +505,24 @@
         </if>
         WHERE SOL_ID = #{id}
     </update>
+
+    <update id="updateSupplierVerificationStatus">
+        UPDATE SUPPLIER SET
+            VERIFIED = #{param1}
+        WHERE SUPPLIER_ID = #{param2}
+    </update>
+
     <select id="getSupplierListForAccExport" resultMap="supplierExportMap" >
         SELECT
         <include refid="supplierColumns"><property name="alias" value="supp"/></include>
         FROM
         SUPPLIER supp
-        WHERE supp.ACC_EXPORTED = 0 and supp.DELETED=0
+        WHERE supp.ACC_EXPORTED = 0 and supp.DELETED=0 AND supp.VERIFIED = 1
     </select>
 
     <select id="getNoOfSupplierToBeExported" resultType="java.lang.Integer" >
         SELECT
-          COUNT(SUPPLIER_ID) FROM SUPPLIER WHERE ACC_EXPORTED = 0 and DELETED=0
+          COUNT(SUPPLIER_ID) FROM SUPPLIER WHERE ACC_EXPORTED = 0 and DELETED=0 AND VERIFIED = 1
     </select>
 
     <update id="setSupplierExportFlagPerSuppId">

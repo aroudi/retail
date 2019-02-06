@@ -174,4 +174,18 @@ public class BillOfQuantityRest {
     public CommonResponse deleteBoqListPerId (List<Long> boqIdList) {
         return billOfQuantityService.deleteBoqPerIdList(boqIdList);
     }
+
+    /**
+     * confirm BOQ.
+     * @param boqId boqId
+     * @return CommonResponse.
+     */
+    @Secured
+    @Path("/confirmBoq/{boqId}")
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public CommonResponse confirmBoq(@PathParam("boqId") long boqId) {
+        return billOfQuantityService.confirmBoq(boqId);
+    }
+
 }
