@@ -2,7 +2,6 @@ package au.com.biztune.retail.dao;
 
 import au.com.biztune.retail.domain.ProductPurchaseItem;
 import au.com.biztune.retail.domain.SuppProdPrice;
-
 import java.util.List;
 
 /**
@@ -169,4 +168,10 @@ public interface SuppProdPriceDao {
      * @param solId supplier-orgu-id
      */
     void markSupplierAsDeletedPerSolId(long solId);
+
+    /**
+     * delete supplier product price per Supplier Orgu Link Id.
+     * @param solId solId
+     */
+    void deleteSuppProdPricePerSolId(long solId);
 }

@@ -63,4 +63,16 @@ public interface ProjectDao {
      */
     void updateProjectVerificationStatus(boolean verified, long prodId);
 
+    /**
+     * get no of boq referenced this project.
+     * @param projectId projectId
+     * @return No Of Boq referenced this project.
+     */
+    Long getNoOfBoqReferencedProject(long projectId);
+
+    /**
+     * delete project by project id.
+     * @param projectId projectId.
+     */
+    void deleteProjectById(long projectId);
 }

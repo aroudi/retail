@@ -193,5 +193,15 @@
         WHERE PROJECT_ID = #{param2}
     </update>
 
+    <select id="getNoOfBoqReferencedProject" resultType="Long" >
+      SELECT  count(*) from (select distinct boq_id from BILL_OF_QUANTITY where PROJECT_ID = #{value}) boq
+    </select>
+
+    <delete id="deleteProjectById" >
+        DELETE
+        From PROJECT
+        WHERE
+        PROJECT_ID = #{value}
+    </delete>
 
 </mapper>

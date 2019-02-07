@@ -316,4 +316,20 @@ public class SupplierServiceImpl implements SupplierService {
         }
     }
 
+    /**
+     * delete temporary supplier.
+     * @param supplier supplier
+     */
+    public void deleteTemporarySupplier(Supplier supplier) {
+        try {
+            if (supplier != null && supplier.getSuppOrguLink() != null) {
+                suppProdPriceDao.deleteSuppProdPricePerSolId(supplier.getSuppOrguLink().getId());
+                supplierDao.deleteSuppOrguLinkPerSuppId(supplier.getId());
+                supplierDao.deleteSupplierPerId(supplier.getId());
+            }
+        } catch (Exception e) {
+            logger.error("Exception in removing temporary product", e);
+        }
+    }
+
 }

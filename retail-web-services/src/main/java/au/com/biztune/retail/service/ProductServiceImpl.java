@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.core.SecurityContext;
 import java.sql.Timestamp;
@@ -944,4 +945,19 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    /**
+     * delete temporary product (verified = 0) and its related objects.
+     * @param product product
+     */
+    @Transactional
+    public void deleteTemporaryProduct(Product product) {
+        try {
+            suppProdPriceDao.deleteSuppProdPricePerProdIdAndOrguId(product.getId(), sessionState.getOrgUnit().getId());
+            priceDao.deleteProdPricePerProdId(product.getId());
+            productDao.deleteProdTaxLink(product.getProdOrguLink().getId());
+            productDao.deleteProdOrguLink(product.getProdOrguLink().getId());
+       } catch (Exception e) {
+            logger.error("Exception in removing temporary product", e);
+        }
+    }
 }

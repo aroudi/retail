@@ -646,4 +646,11 @@
 
     </delete>
 
+    <delete id="deleteSuppProdPricePerSolId" >
+        DELETE
+        From SUPP_PROD_PRICE
+        WHERE
+        SOL_ID = #{value}
+    </delete>
+
 </mapper>

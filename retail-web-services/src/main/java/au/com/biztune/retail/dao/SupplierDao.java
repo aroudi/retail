@@ -2,7 +2,6 @@ package au.com.biztune.retail.dao;
 
 import au.com.biztune.retail.domain.SuppOrguLink;
 import au.com.biztune.retail.domain.Supplier;
-
 import java.util.List;
 
 /**
@@ -119,4 +118,23 @@ public interface SupplierDao {
      * @param suppId supplier Id.
      */
     void updateSupplierVerificationStatus(boolean verified, long suppId);
+
+    /**
+     * get No of Boq referenced this supplier.
+     * @param supplierId supplierId
+     * @return No Of Boq Referenced this supplier.
+     */
+    Long getNoOfBoqReferencedSupplier(long supplierId);
+
+    /**
+     * delete supplier per id.
+     * @param supplierId supplierId
+     */
+    void deleteSupplierPerId (long supplierId);
+
+    /**
+     * delete supplierOrguLink per suppId.
+     * @param suppId suppId
+     */
+    void deleteSuppOrguLinkPerSuppId (long suppId);
 }

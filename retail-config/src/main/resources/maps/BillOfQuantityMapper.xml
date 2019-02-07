@@ -306,6 +306,12 @@
             #{item}
         </foreach>
     </delete>
+    <delete id="deleteBoq" >
+        DELETE
+        From BILL_OF_QUANTITY
+        WHERE
+        BOQ_ID = #{value}
+    </delete>
     <delete id="deleteBoqDetailPerBoqId" >
         DELETE
         From BOQ_DETAIL
@@ -315,6 +321,12 @@
                  open ="(" separator="," close=")">
             #{item}
         </foreach>
+    </delete>
+    <delete id="deleteBoqDetail" >
+        DELETE
+        From BOQ_DETAIL
+        WHERE
+        BOQ_ID = #{value}
     </delete>
     <update id="updateBoqDateReleasedPerId">
         UPDATE BILL_OF_QUANTITY set DATE_RELEASED = #{param1}

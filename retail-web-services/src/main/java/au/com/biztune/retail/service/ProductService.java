@@ -4,6 +4,7 @@ import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.ProductForm;
 import au.com.biztune.retail.form.ProductSearchForm;
 import au.com.biztune.retail.response.CommonResponse;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
@@ -183,4 +184,10 @@ public interface ProductService {
      */
     CommonResponse finaliseProductStatus(List<Long> productList);
 
+    /**
+     * delete temporary product (verified = 0) and its related objects.
+     * @param product product
+     */
+    @Transactional
+    void deleteTemporaryProduct(Product product);
     }

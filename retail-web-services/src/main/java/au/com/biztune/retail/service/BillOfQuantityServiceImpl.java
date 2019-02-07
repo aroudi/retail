@@ -66,6 +66,12 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     private ProductDao productDao;
     @Autowired
     private SupplierDao supplierDao;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private SupplierService supplierService;
+    @Autowired
+    private CustomerService customerService;
     /**
      * upload Bill Of Quantity.
      * @param uploadedInputStream uploadedInputStream
@@ -715,17 +721,77 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
      * @return response.
      */
     public CommonResponse deleteBoqPerIdList(List<Long> boqIdList) {
+        //TODO: system should allow only deleting the 'PENDING' BOQs
         final CommonResponse response = new CommonResponse();
         try {
+            for (long boqId : boqIdList) {
+                final au.com.biztune.retail.domain.BillOfQuantity billOfQuantity = billOfQuantityDao.getBillOfQuantityById(boqId);
+                if (billOfQuantity == null) {
+                    continue;
+                }
+                deleteBillOfQuantity(billOfQuantity);
+            }
             response.setStatus(IdBConstant.RESULT_SUCCESS);
-            billOfQuantityDao.deleteBoqDetailPerBoqId(boqIdList);
-            billOfQuantityDao.deleteBoqPerId(boqIdList);
+            //billOfQuantityDao.deleteBoqDetailPerBoqId(boqIdList);
+            //billOfQuantityDao.deleteBoqPerId(boqIdList);
             return response;
         } catch (Exception e) {
             logger.error("Error in getting project list", e);
             response.setStatus(IdBConstant.RESULT_FAILURE);
             response.setMessage("Error in deleting BOQ" + e.getMessage());
             return  response;
+        }
+    }
+
+    /**
+     * delete bill of quantity.
+     * @param billOfQuantity billOfQuantity
+     */
+    @Transactional
+    public void deleteBillOfQuantity(au.com.biztune.retail.domain.BillOfQuantity billOfQuantity) {
+        try {
+            if (billOfQuantity == null) {
+                return;
+            }
+            //now delete boq itself
+            billOfQuantityDao.deleteBoqDetail(billOfQuantity.getId());
+            billOfQuantityDao.deleteBoq(billOfQuantity.getId());
+
+            //delete the temporary customer assigned to this boq.
+            if (billOfQuantity.getProject() != null && billOfQuantity.getProject().getCustomer() != null) {
+                if (!billOfQuantity.getProject().isVerified()) {
+                    //project is temporary
+                    projectDao.deleteProjectById(billOfQuantity.getProject().getId());
+                }
+                if (!billOfQuantity.getProject().getCustomer().isVerified()) {
+                    //customer is temporary customer
+                    if (!(projectDao.getNoOfBoqReferencedProject(billOfQuantity.getProject().getId()) < 1)) {
+                        customerService.deleteTemporaryCustomer(billOfQuantity.getProject().getCustomer());
+                    }
+                }
+            }
+            //iterate through products and delete them if they are temporary products.
+            for (BoqDetail boqDetail : billOfQuantity.getLines()) {
+                if (boqDetail == null) {
+                    continue;
+                }
+                //check if product is temporary product.
+                if (boqDetail.getProduct() != null && !boqDetail.getProduct().isVerified()) {
+                    //check if product also is not used by other BOQ
+                    if (productDao.getNoOfBoqReferencedProduct(boqDetail.getProduct().getId()) < 1) {
+                        productService.deleteTemporaryProduct(boqDetail.getProduct());
+                    }
+                }
+                //check if supplier if a temporary supplier
+                if (boqDetail.getSupplier() != null && !boqDetail.getSupplier().isVerified()) {
+                    //check if supplier also is not used by other boq
+                    if (supplierDao.getNoOfBoqReferencedSupplier(boqDetail.getSupplier().getId()) < 1) {
+                        supplierService.deleteTemporarySupplier(boqDetail.getSupplier());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Exceptioon in deleting BOQ", e);
         }
     }
 

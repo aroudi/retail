@@ -336,4 +336,17 @@ public class CustomerServiceImpl implements CustomerService {
             return response;
         }
     }
+
+    /**
+     * delete temporary customer.
+     * @param customer customer.
+     */
+    public void deleteTemporaryCustomer(Customer customer) {
+        try {
+            customerDao.deleteCustomerContactByCustomerId(customer.getId());
+            customerDao.deleteCustomerById(customer.getId());
+        } catch (Exception e) {
+            logger.error("Exceptioin in deleting temporary customer", e);
+        }
+    }
 }

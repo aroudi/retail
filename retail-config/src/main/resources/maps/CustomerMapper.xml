@@ -473,4 +473,18 @@
         WHERE CUSTOMER_ID = #{param2}
     </update>
 
+    <delete id="deleteCustomerContactByCustomerId" >
+        DELETE
+        From CUSTOMER_CONTACT
+        WHERE
+        CUSTOMER_ID = #{value}
+    </delete>
+
+    <delete id="deleteCustomerById" >
+        DELETE
+        From CUSTOMER
+        WHERE
+        CUSTOMER_ID = #{value}
+    </delete>
+
 </mapper>

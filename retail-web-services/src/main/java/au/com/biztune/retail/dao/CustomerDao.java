@@ -2,7 +2,6 @@ package au.com.biztune.retail.dao;
 
 import au.com.biztune.retail.domain.Customer;
 import au.com.biztune.retail.domain.CustomerContact;
-
 import java.util.List;
 
 /**
@@ -88,4 +87,15 @@ public interface CustomerDao {
      */
     void updateCustomerVerificationStatus(boolean verified, long custId);
 
+    /**
+     * delete customer by id.
+     * @param customerId customerId
+     */
+    void deleteCustomerById (long customerId);
+
+    /**
+     * delete customer contact by customer id.
+     * @param customerId customerId
+     */
+    void deleteCustomerContactByCustomerId (long customerId);
 }

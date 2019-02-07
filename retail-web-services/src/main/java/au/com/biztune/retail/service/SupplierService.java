@@ -89,4 +89,10 @@ public interface SupplierService {
      * @return commonResponse.
      */
     CommonResponse logicalDeleteSupplier(List<Long> supplierIdList);
+
+    /**
+     * delete temporary supplier.
+     * @param supplier supplier
+     */
+    void deleteTemporarySupplier(Supplier supplier);
 }

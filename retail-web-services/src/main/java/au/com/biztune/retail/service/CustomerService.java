@@ -95,4 +95,9 @@ public interface CustomerService {
      */
     CommonResponse logicalDeleteCustomer(List<Long> customerIdList);
 
+    /**
+     * delete temporary customer.
+     * @param customer customer.
+     */
+    void deleteTemporaryCustomer(Customer customer);
 }

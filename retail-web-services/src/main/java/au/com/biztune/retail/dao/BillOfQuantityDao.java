@@ -94,10 +94,22 @@ public interface BillOfQuantityDao {
     void deleteBoqPerId(List<Long> boqIdList);
 
     /**
+     * delete boq  per id.
+     * @param boqId boqId
+     */
+    void deleteBoq(long boqId);
+
+    /**
      * delete boqdetail per boq id.
      * @param boqIdList boqIdList
      */
     void deleteBoqDetailPerBoqId(List<Long> boqIdList);
+
+    /**
+     * delete boqdetail per boq id.
+     * @param boqId boqId
+     */
+    void deleteBoqDetail(long boqId);
 
     /**
      * update date released per boqId.

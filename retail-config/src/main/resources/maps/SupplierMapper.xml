@@ -537,4 +537,22 @@
         INNER JOIN SUPP_PROD_PRICE spp on(sol.SOL_ID = spp.SOL_ID)
         WHERE spp.PROD_ID = #{param2}
     </select>
+    <select id="getNoOfBoqReferencedSupplier" resultType="Long" >
+      SELECT  count(*) from (select distinct boq_id from boq_detail where supplier_id = #{value}) boq
+    </select>
+
+    <delete id="deleteSupplierPerId" >
+        DELETE
+        From SUPPLIER
+        WHERE
+        SUPPLIER_ID = #{value}
+    </delete>
+
+    <delete id="deleteSuppOrguLinkPerSuppId" >
+        DELETE
+        From SUPP_ORGU_LINK
+        WHERE
+        SUPP_ID = #{value}
+    </delete>
+
 </mapper>
