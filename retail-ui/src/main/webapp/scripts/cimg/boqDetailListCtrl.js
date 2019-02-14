@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService,viewMode, SUCCESS, FAILURE,  PRODUCT_GET_URI, UPDATE_BOQ_STOCK_URI, POH_GET_URI, BOQ_EXPORT_PICKING_SLIP_PDF) {
+cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants, $state,ngDialog, $timeout,baseDataService,viewMode, SUCCESS, FAILURE,  PRODUCT_GET_URI, UPDATE_BOQ_STOCK_URI, POH_GET_URI, BOQ_EXPORT_PICKING_SLIP_PDF, SUPPLIER_GET_URI, TAXLEGVARIANCE_ALL_URI) {
 
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -23,8 +23,11 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
         rowTemplate : rowtpl,
         columnDefs: [
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'supplier.supplierName', displayName:'Supplier', enableCellEdit:false, width:'10%'},
-            {field:'product.prodSku', displayName:'SKU',enableCellEdit:false, width:'10%',
+            {field:'supplier.supplierName', displayName:'Supplier', enableCellEdit:false, width:'10%',
+                cellTemplate:'<a href="" ng-click="grid.appScope.viewSupplier(row)">{{row.entity.supplier.supplierName}}</a>'
+            },
+            {field:'product.prodSku', displayName:'SKU',enableCellEdit:false, width:'12%',
+                cellTemplate:'<a href="" ng-click="grid.appScope.viewProduct(row)">{{row.entity.product.prodSku}}</a>',
                 cellTooltip: function(row,col) {
                     return row.entity.product.prodName + "\n" + "Available in stock: " + row.entity.product.stockQty
                 }
@@ -44,7 +47,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
             {field:'linkedPurchaseOrders', displayName:'Purchase Order',enableCellEdit:false, width:'9%', cellFilter:'poBoqLinkOrderNumberFilter',
                 cellTemplate:'<a href="" ng-click="grid.appScope.viewPohDetail(row)">{{grid.appScope.getPoBoqLinkOrderNo(row)}}</a>'
             },
-            {field:'changeComment', displayName:'Comment', width:'8%', enableCellEdit:true, cellClass:"blue"},
+            {field:'changeComment', displayName:'Comment', width:'6%', enableCellEdit:true, cellClass:"blue"},
             {field:'bqdCreationType', displayName:'Created',enableCellEdit:false, width:'7%', cellFilter:'configCategoryFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                     return grid.getCellValue(row, col).color
@@ -125,19 +128,6 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
         //baseDataService.setRow({});
     }
 
-    $scope.editProduct = function(row) {
-        if (row == undefined || row.entity == undefined) {
-            baseDataService.displayMessage('info','Warning!!','row is undefined');
-            return;
-        }
-        var productGetURI = PRODUCT_GET_URI + '/' + row.entity.product.id;
-        baseDataService.getBaseData(productGetURI).then(function(response){
-            //baseDataService.setIsPageNew(false);
-            baseDataService.setRow(response.data);
-            //redirect to the supplier page.
-            $state.go('dashboard.createProduct');
-        });
-    }
     $scope.updateBoqStock = function () {
 
         /*
@@ -356,5 +346,59 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
         $scope.closeThisDialog('button');
     }
 
+    $scope.viewSupplier = function(row) {
+        if (row == undefined || row.entity == undefined) {
+            alert('row is undefined');
+            return;
+        }
+        var supplierGetURI = SUPPLIER_GET_URI + '/' + row.entity.supplier.id;
+        baseDataService.getBaseData(supplierGetURI).then(function (response) {
+            //baseDataService.setIsPageNew(false);
+            baseDataService.setRow(response.data);
+            ngDialog.openConfirm({
+                template:'views/pages/supplier.html',
+                controller:'supplierCtrl',
+                className: 'ngdialog-pdfView',
+                closeByDocument:false,
+                resolve: {viewMode: function(){return true}
+                }
+            }).then (function (){
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                }
+            );
+        });
+
+    }
+
+    $scope.viewProduct = function(row) {
+        if (row == undefined || row.entity == undefined) {
+            alert('row is undefined');
+            return;
+        }
+        var productGetURI = PRODUCT_GET_URI + '/' + row.entity.product.id;
+        baseDataService.getBaseData(productGetURI).then(function(response){
+            //baseDataService.setIsPageNew(false);
+            baseDataService.setRow(response.data);
+            //redirect to the supplier page.
+            //$state.go('dashboard.createProduct');
+            ngDialog.openConfirm({
+                template:'views/pages/product.html',
+                controller:'productCtrl2',
+                className: 'ngdialog-pdfView',
+                closeByDocument:false,
+                resolve: {viewMode: function(){return true},
+                    taxCodeSet: function(baseDataService, TAXLEGVARIANCE_ALL_URI){
+                        console.log('TAXLEGVARIANCE_ALL_URI = ' + TAXLEGVARIANCE_ALL_URI);
+                        return baseDataService.getBaseData(TAXLEGVARIANCE_ALL_URI);
+                    }
+                }
+            }).then (function (){
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                }
+            );
+        });
+    }
 
 });

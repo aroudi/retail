@@ -87,7 +87,7 @@ var service_uri = {
     'BOQ_GET_ALL_URI' : 'billOfQuantity/header/getAll',
     'BOQ_GET_URI' : 'billOfQuantity/header/get/',
     'BOQ_SEARCH_PAGING_URI' : 'billOfQuantity/searchBoqPaging',
-    'BOQ_CONFIRM_URI' : 'billOfQuantity/confirmBoq/',
+    'BOQ_CONFIRM_LIST_URI' : 'billOfQuantity/confirmBoqList',
     'PROJECT_GET_ALL_URI' : 'billOfQuantity/getAllProjects',
     'UPDATE_BOQ_STOCK_URI'  : 'billOfQuantity/updateStockQty',
     'BOQ_EXPORT_PICKING_SLIP_PDF' : 'billOfQuantity/pickingSlip/exportPdf/',

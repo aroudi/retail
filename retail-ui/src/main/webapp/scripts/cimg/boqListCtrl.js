@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('boqListCtrl', function($scope, $state,ngDialog, uiGridConstants, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI, CREATE_PO_FROM_BOQ_URI, BOQ_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, PROJECT_GET_ALL_URI, BOQ_STATUS_URI, BOQ_EXPORT_PICKING_SLIP_PDF, BOQ_DELETE_LIST_URI) {
+cimgApp.controller('boqListCtrl', function($scope, $state,ngDialog, uiGridConstants, purchaseOrderService, $timeout,baseDataService, SUCCESS, FAILURE, BOQ_GET_ALL_URI, BOQ_GET_URI, CREATE_PO_FROM_BOQ_URI, BOQ_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, PROJECT_GET_ALL_URI, BOQ_STATUS_URI, BOQ_EXPORT_PICKING_SLIP_PDF, BOQ_DELETE_LIST_URI, BOQ_CONFIRM_LIST_URI, CUSTOMER_GET_URI) {
     $scope.getPage = function(){
         $scope.searchForm.pageNo = paginationOptions.pageNumber*1 ;
         $scope.searchForm.pageSize = paginationOptions.pageSize;
@@ -46,7 +46,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state,ngDialog, uiGridConsta
         enableColumnResizing: true,
         enableSorting:true,
         columnDefs: [
-            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewBoqDetail(row, false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.viewBoqDetail(row, true)"></i></a>&nbsp;<a href=""><i tooltip="Picking Slip" tooltip-placement="bottom" class="fa fa-file-pdf-o fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' },
+            {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewBoqDetail(row, false)"></i></a>&nbsp;<a href=""><i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.viewBoqDetail(row, true)"></i></a>&nbsp;<a href=""><i tooltip="Picking Slip" tooltip-placement="bottom" class="fa fa-file-pdf-o fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>&nbsp;<a href=""><i tooltip="Delete" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-show="row.entity.boqStatus.categoryCode ===\'BOQ_STATUS_NEW\'" ng-click="grid.appScope.deleteBoq(row)"></i></a>&nbsp;<a href=""><i tooltip="Confirm" tooltip-placement="bottom" class="fa fa-check-square fa-2x" ng-show="row.entity.boqStatus.categoryCode ===\'BOQ_STATUS_NEW\'" ng-click="grid.appScope.confirmBoq(row)"></i></a>', width:'12%' },
             {field:'id', visible:false, enableCellEdit:false},
             {field:'project.projectCode', displayName:'Project No',enableCellEdit:false, width:'10%',
                 cellTooltip: function(row,col) {
@@ -54,12 +54,13 @@ cimgApp.controller('boqListCtrl', function($scope, $state,ngDialog, uiGridConsta
                 }
             },
             {field:'project.customer.companyName', displayName:'Client',enableCellEdit:false, width:'20%',
+                cellTemplate:'<a href="" ng-click="grid.appScope.viewCustomer(row)">{{row.entity.project.customer.companyName}}</a>',
                 cellTooltip: function(row,col) {
                     return row.entity.project.customer.companyName
                 }
             },
-            {field:'orderNo', displayName:'Client Order',enableCellEdit:false, width:'10%'},
-            {field:'project.projectName',displayName:'Project', enableCellEdit:false, width:'20%',
+            {field:'orderNo', displayName:'Client Order',enableCellEdit:false, width:'13%'},
+            {field:'project.projectName',displayName:'Project', enableCellEdit:false, width:'15%',
                 cellTooltip: function(row,col) {
                     return row.entity.project.projectName
                 }
@@ -91,7 +92,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state,ngDialog, uiGridConsta
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
         gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-            if (row.entity.boqStatus.displayName != 'NEW') {
+            if (row.entity.boqStatus.categoryCode != 'BOQ_STATUS_CONFIRMED' && row.entity.boqStatus.categoryCode != 'BOQ_STATUS_NEW') {
                 //baseDataService.displayMessage('Purchase Order already has been created');
                 $scope.gridApi.selection.unSelectRow(row.entity);
             }
@@ -235,6 +236,93 @@ cimgApp.controller('boqListCtrl', function($scope, $state,ngDialog, uiGridConsta
             } else {
                 return;
             }
+        });
+    }
+
+    $scope.deleteBoq= function(row) {
+        var selectedBoqList = [];
+        baseDataService.displayMessage('yesNo','Confirmation required!!','Do you want to delete selected rows?').then(function(result){
+            if (result) {
+                selectedBoqList.push(row.entity.id)
+                baseDataService.addRow(selectedBoqList, BOQ_DELETE_LIST_URI).then(function(response) {
+                    var response = response.data;
+                    if (response.status != SUCCESS ) {
+                        baseDataService.displayMessage('info', 'warning', 'Not able to delete. message:' + response.message);
+                    } else {
+                        $scope.getPage();
+                    }
+                });
+            } else {
+                return;
+            }
+        });
+    }
+
+    $scope.confirmBoq= function(row) {
+        var selectedBoqList = [];
+        baseDataService.displayMessage('yesNo','Confirmation required!!','Do you want to confirm this BOQ?').then(function(result){
+            if (result) {
+                selectedBoqList.push(row.entity.id)
+                baseDataService.addRow(selectedBoqList, BOQ_CONFIRM_LIST_URI).then(function(response) {
+                    var response = response.data;
+                    if (response.status != SUCCESS ) {
+                        baseDataService.displayMessage('info', 'warning', 'Not able to confirm. message:' + response.message);
+                    } else {
+                        $scope.getPage();
+                    }
+                });
+            } else {
+                return;
+            }
+        });
+    }
+
+    $scope.confirmBoqList= function() {
+        var selectedBoqList = [];
+        if ($scope.gridApi.selection.getSelectedRows() === undefined || $scope.gridApi.selection.getSelectedRows().length < 1){
+            baseDataService.displayMessage('info', 'rows not selected', 'please select item/s to confirm');
+            return;
+        }
+        baseDataService.displayMessage('yesNo','Confirmation required!!','Do you want to confirm selected rows?').then(function(result){
+            if (result) {
+                for (var i = 0; i < $scope.gridApi.selection.getSelectedRows().length; i++) {
+                    selectedBoqList.push($scope.gridApi.selection.getSelectedRows()[i].id)
+                }
+                baseDataService.addRow(selectedBoqList, BOQ_CONFIRM_LIST_URI).then(function(response) {
+                    var response = response.data;
+                    if (response.status != SUCCESS ) {
+                        baseDataService.displayMessage('info', 'warning', 'Not able to confirm. message:' + response.message);
+                    } else {
+                        $scope.getPage();
+                    }
+                });
+            } else {
+                return;
+            }
+        });
+    }
+    $scope.viewCustomer = function(row) {
+        if (row == undefined || row.entity == undefined) {
+            alert('row is undefined');
+            return;
+        }
+        var customerGetURI = CUSTOMER_GET_URI + '/' + row.entity.project.customer.id;
+        baseDataService.getBaseData(customerGetURI).then(function(response){
+            //baseDataService.setIsPageNew(false);
+            baseDataService.setRow(response.data);
+            //redirect to the customer page.
+            ngDialog.openConfirm({
+                template:'views/pages/customer.html',
+                controller:'customerCtrl',
+                className: 'ngdialog-pdfView',
+                closeByDocument:false,
+                resolve: {viewMode: function(){return true}
+                }
+            }).then (function (){
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                }
+            );
         });
     }
 

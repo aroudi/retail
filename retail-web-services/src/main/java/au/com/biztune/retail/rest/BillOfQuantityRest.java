@@ -177,15 +177,16 @@ public class BillOfQuantityRest {
 
     /**
      * confirm BOQ.
-     * @param boqId boqId
+     * @param boqIdList boqIdList
      * @return CommonResponse.
      */
     @Secured
-    @Path("/confirmBoq/{boqId}")
-    @GET
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public CommonResponse confirmBoq(@PathParam("boqId") long boqId) {
-        return billOfQuantityService.confirmBoq(boqId);
+    @Path("/confirmBoqList")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommonResponse confirmBoq(List<Long> boqIdList) {
+        return billOfQuantityService.confirmBoq(boqIdList);
     }
 
 }

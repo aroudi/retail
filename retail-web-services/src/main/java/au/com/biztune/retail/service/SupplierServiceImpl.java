@@ -168,6 +168,9 @@ public class SupplierServiceImpl implements SupplierService {
     public Supplier getSupplierByName(String name) {
         try {
             final List<Supplier> supplierList = supplierDao.getSupplierByOrgUnitIdAndSuppName(sessionState.getOrgUnit().getId(), name);
+            if (supplierList == null || supplierList.size() < 1) {
+                return null;
+            }
             final Supplier supplier = supplierList.get(0);
             return supplier;
         } catch (Exception e) {
@@ -233,8 +236,6 @@ public class SupplierServiceImpl implements SupplierService {
         try {
             final Timestamp currentTime = new Timestamp(new Date().getTime());
             Supplier supplier = getSupplierByName(supplierName);
-            //set verified to true so in BOQ import we know it is existing supplier.
-            supplier.setVerified(true);
             if (supplier == null) {
                 supplier = new Supplier();
                 //set verified to false indicate this is a new supplier and need to be verified.
@@ -259,6 +260,9 @@ public class SupplierServiceImpl implements SupplierService {
                 suppOrguLink.setSolAccCode(solAccCode);
                 supplierDao.insertSuppOrguLink(suppOrguLink);
                 supplier.setSuppOrguLink(suppOrguLink);
+            } else {
+                //set verified to true so in BOQ import we know it is existing supplier.
+                supplier.setVerified(true);
             }
             return supplier;
         } catch (Exception e) {
@@ -322,10 +326,11 @@ public class SupplierServiceImpl implements SupplierService {
      */
     public void deleteTemporarySupplier(Supplier supplier) {
         try {
-            if (supplier != null && supplier.getSuppOrguLink() != null) {
-                suppProdPriceDao.deleteSuppProdPricePerSolId(supplier.getSuppOrguLink().getId());
-                supplierDao.deleteSuppOrguLinkPerSuppId(supplier.getId());
-                supplierDao.deleteSupplierPerId(supplier.getId());
+            if (supplier != null) {
+                final Supplier supplierWholeObject = supplierDao.getSupplierByOrgUnitIdAndSuppId(sessionState.getOrgUnit().getId(), supplier.getId());
+                suppProdPriceDao.deleteSuppProdPricePerSolId(supplierWholeObject.getSuppOrguLink().getId());
+                supplierDao.deleteSuppOrguLinkPerSuppId(supplierWholeObject.getId());
+                supplierDao.deleteSupplierPerId(supplierWholeObject.getId());
             }
         } catch (Exception e) {
             logger.error("Exception in removing temporary product", e);

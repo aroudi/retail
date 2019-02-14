@@ -387,7 +387,7 @@ public class ProductServiceImpl implements ProductService {
     public Product getProductPerSkuAndRef(String skuCode, String reference) {
         try {
             final List<Product> result = productDao.getProductPerSkuAndRef(skuCode, reference);
-            if (result == null) {
+            if (result == null || result.size() < 1) {
                 return null;
             } else {
                 return result.get(0);
@@ -956,6 +956,7 @@ public class ProductServiceImpl implements ProductService {
             priceDao.deleteProdPricePerProdId(product.getId());
             productDao.deleteProdTaxLink(product.getProdOrguLink().getId());
             productDao.deleteProdOrguLink(product.getProdOrguLink().getId());
+            productDao.deleteProduct(product.getId());
        } catch (Exception e) {
             logger.error("Exception in removing temporary product", e);
         }

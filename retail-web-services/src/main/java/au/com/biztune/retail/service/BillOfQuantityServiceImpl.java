@@ -534,6 +534,14 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 if (billOfQuantity == null) {
                     continue;
                 }
+                if ((billOfQuantity.getBoqStatus() != null)
+                        && (!billOfQuantity.getBoqStatus().getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_PENDING)
+                        && !billOfQuantity.getBoqStatus().getCategoryCode().equals(IdBConstant.BOQ_STATUS_CONFIRMED))
+                ) {
+                    logger.debug("boq [{}] status is not PENDING or CONFIRMED. skip it", billOfQuantity.getId());
+                    continue;
+                }
+
                 boqIdList.add(billOfQuantity.getId());
             }
             //fetch all Bill Of Quantity details from db
@@ -729,6 +737,10 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 if (billOfQuantity == null) {
                     continue;
                 }
+                if (billOfQuantity.getBoqStatus() != null && !billOfQuantity.getBoqStatus().getCategoryCode().equals(IdBConstant.BOQ_STATUS_NEW)) {
+                    logger.debug("boq [{}] status is not pending. can't delete it", boqId);
+                    continue;
+                }
                 deleteBillOfQuantity(billOfQuantity);
             }
             response.setStatus(IdBConstant.RESULT_SUCCESS);
@@ -756,16 +768,17 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
             //now delete boq itself
             billOfQuantityDao.deleteBoqDetail(billOfQuantity.getId());
             billOfQuantityDao.deleteBoq(billOfQuantity.getId());
-
             //delete the temporary customer assigned to this boq.
             if (billOfQuantity.getProject() != null && billOfQuantity.getProject().getCustomer() != null) {
                 if (!billOfQuantity.getProject().isVerified()) {
                     //project is temporary
-                    projectDao.deleteProjectById(billOfQuantity.getProject().getId());
+                    if (projectDao.getNoOfBoqReferencedProject(billOfQuantity.getProject().getId()) < 1) {
+                        projectDao.deleteProjectById(billOfQuantity.getProject().getId());
+                    }
                 }
                 if (!billOfQuantity.getProject().getCustomer().isVerified()) {
                     //customer is temporary customer
-                    if (!(projectDao.getNoOfBoqReferencedProject(billOfQuantity.getProject().getId()) < 1)) {
+                    if (projectDao.getNoOfBoqReferencedProject(billOfQuantity.getProject().getId()) < 1) {
                         customerService.deleteTemporaryCustomer(billOfQuantity.getProject().getCustomer());
                     }
                 }
@@ -785,7 +798,9 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 //check if supplier if a temporary supplier
                 if (boqDetail.getSupplier() != null && !boqDetail.getSupplier().isVerified()) {
                     //check if supplier also is not used by other boq
-                    if (supplierDao.getNoOfBoqReferencedSupplier(boqDetail.getSupplier().getId()) < 1) {
+                    final long noOfSupplier = supplierDao.getNoOfBoqReferencedSupplier(boqDetail.getSupplier().getId());
+                    logger.debug("noOfSuppilier = [{}]", noOfSupplier);
+                    if (noOfSupplier < 1) {
                         supplierService.deleteTemporarySupplier(boqDetail.getSupplier());
                     }
                 }
@@ -798,24 +813,31 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
     /**
      * confirm BOQ. when BOQ is imported, the status is pending(temporary).
      * somebody need to review and confirm it.
-     * @param boqId boqId
+     * @param boqIdList boqIdList
      * @return CommonResponse
      */
-    public CommonResponse confirmBoq(long boqId) {
+    public CommonResponse confirmBoq(List<Long> boqIdList) {
         final CommonResponse response = new CommonResponse();
         try {
-            final au.com.biztune.retail.domain.BillOfQuantity billOfQuantity = billOfQuantityDao.getBillOfQuantityById(boqId);
-            if (billOfQuantity == null) {
-                response.setStatus(IdBConstant.RESULT_FAILURE);
-                response.setMessage("BOQ object with Id [" + boqId + "] not found in DB");
-                return response;
+            for (long boqId : boqIdList) {
+                final au.com.biztune.retail.domain.BillOfQuantity billOfQuantity = billOfQuantityDao.getBillOfQuantityById(boqId);
+                if (billOfQuantity == null) {
+                    logger.debug("confirmBoq: boq [{}] not found", boqId);
+                    continue;
+                }
+                //if boq is not in PENDING status, then we don't need to confirm it.
+                if (billOfQuantity.getBoqStatus() != null && !billOfQuantity.getBoqStatus().getCategoryCode().equals(IdBConstant.BOQ_STATUS_NEW)) {
+                    logger.debug("boq [{}] status is not pending. skip confirming it", boqId);
+                    continue;
+                }
+                //change the BOQ status to confirmed.
+                final ConfigCategory boqStatusConfirmed = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_CONFIRMED);
+                if (boqStatusConfirmed != null) {
+                    billOfQuantityDao.updateBoqStatusPerId(boqStatusConfirmed.getId(), boqId);
+                    confirmBoqRelatedObjects(billOfQuantity);
+                }
             }
-            //change the BOQ status to confirmed.
-            final ConfigCategory boqStatusConfirmed = configCategoryDao.getCategoryOfTypeAndCode(IdBConstant.TYPE_BOQ_STATUS, IdBConstant.BOQ_STATUS_CONFIRMED);
-            if (boqStatusConfirmed != null) {
-                billOfQuantityDao.updateBoqStatusPerId(boqStatusConfirmed.getId(), boqId);
-                confirmBoqRelatedObjects(billOfQuantity);
-            }
+            response.setStatus(IdBConstant.RESULT_SUCCESS);
             return response;
         } catch (Exception e) {
             logger.error("Error in getting BOQ from DB", e);

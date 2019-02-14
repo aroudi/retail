@@ -89,8 +89,8 @@ public interface BillOfQuantityService {
     /**
      * confirm BOQ. when BOQ is imported, the status is pending(temporary).
      * somebody need to review and confirm it.
-     * @param boqId boqId
+     * @param boqIdList boqIdList
      * @return CommonResponse
      */
-    CommonResponse confirmBoq(long boqId);
+    CommonResponse confirmBoq(List<Long> boqIdList);
     }
