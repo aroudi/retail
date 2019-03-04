@@ -15,19 +15,19 @@
                 <a href="" ng-click="check(1)"><i class="fa fa-shopping-cart fa-fw"></i> Sales<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=1">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.createSaleTransaction')">
                         <a ui-sref="dashboard.createSaleTransaction({txnType:'quote', blankPage:'true'})">Quote</a>
                     </li>
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.createSaleTransaction({txnType:'txnSale', blankPage:'true'})">Sale Order</a>
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.createSaleTransaction')">
+                        <a ui-sref="dashboard.createSaleTransaction({txnType:'txnSale', blankPage:'true'})" >Sale Order</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.createSaleTransaction')">
                         <a ui-sref="dashboard.createInvoice({txnType:'txnInvoice', blankPage:'true'})">Invoice</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.listSaleTransaction')">
                         <a ui-sref="dashboard.listSaleTransaction">Sale Order/Quote List</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.listInvoice')">
                         <a ui-sref="dashboard.listInvoice">Invoice List</a>
                     </li>
                 </ul>
@@ -37,7 +37,7 @@
                 <a href="" ng-click="check(2)"><i class="fa fa-group fa-fw"></i> Customer<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=2">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.createCustomer')">
                         <a ui-sref="dashboard.createCustomer({blankPage:'true'})">Create Customer</a>
                     </li>
                     <!--
@@ -45,10 +45,10 @@
                         <a ui-sref="dashboard.buttons">Review And Publish</a>
                     </li>
                     -->
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.listCustomer')">
                         <a ui-sref="dashboard.listCustomer">Customer List</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.customerStatement')">
                         <a ui-sref="dashboard.customerStatement"> Customer Statements</a>
                     </li>
 
@@ -60,7 +60,7 @@
                 <a href="" ng-click="check(3)"><i class="fa fa-group fa-fw"></i> Supplier<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=3">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.createSupplier')">
                         <a ui-sref="dashboard.createSupplier({blankPage:'true'})">Create Supplier</a>
                     </li>
                     <!--
@@ -68,7 +68,7 @@
                         <a ui-sref="dashboard.buttons">Review And Publish</a>
                     </li>
                     -->
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.listSupplier')">
                         <a ui-sref="dashboard.listSupplier">Supplier List</a>
                     </li>
                 </ul>
@@ -79,7 +79,7 @@
                 <a href="" ng-click="check(4)"><i class="fa fa-cubes fa-fw"></i> Product<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=4">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.createProduct')">
                         <a ui-sref="dashboard.createProduct({blankPage:'true'})">New Product</a>
                     </li>
                     <!--
@@ -87,13 +87,13 @@
                         <a ui-sref="dashboard.buttons">Review And Publish</a>
                     </li>
                     -->
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.listProduct')">
                         <a ui-sref="dashboard.listProduct">Product List</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.productPriceChangeBulk')">
                         <a ui-sref="dashboard.productPriceChangeBulk">Change Price</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.productGroupTreeView')">
                         <a ui-sref="dashboard.productGroupTreeView">Product Groups</a>
                     </li>
                 </ul>
@@ -103,10 +103,10 @@
                 <a href="" ng-click="check(5)"><i class="fa fa-list fa-fw"></i> Bill Of Quantity<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=5">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.uploadFile')">
                         <a ui-sref="dashboard.uploadFile">Import BOQ</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.boqList')">
                         <a ui-sref="dashboard.boqList">BOQ List</a>
                     </li>
                 </ul>
@@ -115,10 +115,10 @@
                 <a href="" ng-click="check(6)"><i class="fa fa-pencil-square-o fa-fw"></i> Purchase Order<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=6">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.purchaseOrderDetail')">
                         <a ui-sref="dashboard.purchaseOrderDetail({blankPage:'true'})">Create Purchase Order</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.purchaseOrderList')">
                         <a ui-sref="dashboard.purchaseOrderList">Purchase Order List</a>
                     </li>
                 </ul>
@@ -128,10 +128,10 @@
                 <a href="" ng-click="check(7)"><i class="fa fa-truck fa-fw"></i>Good Received<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=7">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.deliveryNote')">
                         <a ui-sref="dashboard.deliveryNote(({blankPage:'true'}))">Create Received Note</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.deliveryNoteList')">
                         <a ui-sref="dashboard.deliveryNoteList">Received Note List</a>
                     </li>
                 </ul>
@@ -141,12 +141,12 @@
                 <a href="" ng-click="check(8)"><i class="fa fa-calendar-o fa-fw"></i> Reconciliation<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=8">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.listCurrentCashSession')">
                         <a ui-sref="dashboard.listCurrentCashSession">Session List</a>
                     </li>
                 </ul>
                 <ul class="nav nav-second-level" collapse="collapseVar!=8">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.cashupReport')">
                         <a ui-sref="dashboard.cashupReport">Cash Up Reports</a>
                     </li>
                 </ul>
@@ -157,10 +157,10 @@
                 <a href="" ng-click="check(9)"><i class="fa fa-money fa-fw"></i> Debtor Payments<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=9">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.debtorPayment')">
                         <a ui-sref="dashboard.debtorPayment"><i class="fa fa-money fa-fw"></i> Debtor Payment</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.reverseDebtorPayment')">
                         <a ui-sref="dashboard.reverseDebtorPayment"><i class="fa fa-arrow-circle-left fa-fw"></i>Reverse Debtor Payments</a>
                     </li>
                 </ul>
@@ -172,16 +172,16 @@
                 <a href="" ng-click="check(10)"><i class="fa fa-dollar fa-fw"></i> Accounting<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=10">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.updateAccountCodes')">
                         <a ui-sref="dashboard.updateAccountCodes">Accounting Chart</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.accountingExportReport')">
                         <a ui-sref="dashboard.accountingExportReport">Accounting Report</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.accountingExport')">
                         <a ui-sref="dashboard.accountingExport">Export to file</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.accountingExportList')">
                         <a ui-sref="dashboard.accountingExportList">List exported journal</a>
                     </li>
                 </ul>
@@ -192,19 +192,19 @@
                 <a href="" ng-click="check(11)"><i class="fa fa-users fa-fw"></i> User Management<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=11">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.addUser')">
                         <a ui-sref="dashboard.addUser({blankPage:'true'})">Create User</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.listUser')">
                         <a ui-sref="dashboard.listUser">User List</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.addRole')">
                         <a ui-sref="dashboard.addRole({blankPage:'true'})">Create Role</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.listRole')">
                         <a ui-sref="dashboard.listRole">Role List</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.changePassword')">
                         <a ui-sref="dashboard.changePassword">Change Password</a>
                     </li>
                 </ul>
@@ -213,7 +213,7 @@
                 <a href="" ng-click="check(12)"><i class="fa fa-wrench fa-fw"></i> Configuration<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=12">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.updatePricingGradeList')">
                         <a ui-sref="dashboard.updatePricingGradeList">Pricing Grades</a>
                     </li>
                 </ul>
@@ -222,16 +222,16 @@
                 <a href="" ng-click="check(13)"><i class="fa fa-database fa-fw"></i> Import<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=13">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.importCustomer')">
                         <a ui-sref="dashboard.importCustomer">Import Customer from MYOB</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.importSupplier')">
                         <a ui-sref="dashboard.importSupplier">Import Supplier from MYOB</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.importProduct')">
                         <a ui-sref="dashboard.importProduct">Import product from doors3</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.uploadFile')">
                         <a ui-sref="dashboard.uploadFile">Import BOQ from doors3</a>
                     </li>
                     <!--li ui-sref-active="active">
@@ -244,19 +244,19 @@
                 <a href="" ng-click="check(14)"><i class="fa fa-bar-chart fa-fw"></i> Reports<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=14">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.saleSummaryReport')">
                         <a ui-sref="dashboard.saleSummaryReport">Sale Summary report</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.reporting')">
                         <a ui-sref="dashboard.reporting">Reporting</a>
                     </li>
                 </ul>
             </li>
 
-            <li ui-sref-active="active">
+            <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.openDraftPageList')">
                 <a ui-sref="dashboard.openDraftPageList"><i class="fa fa-clipboard fa-fw"></i> Draft Pages</a>
             </li>
-            <li ui-sref-active="active">
+            <li ui-sref-active="active" ng-show="haveAccessToToken('dashboard.logout')">
                 <a ui-sref="dashboard.logout"><i class="glyphicon glyphicon-log-out"></i> logout</a>
             </li>
         </ul>

@@ -819,6 +819,28 @@ cimgApp.service('AccessChecker2', function ($state, $rootScope, UserService, bas
             //user dont have access. display message and return to the previouse state
             baseDataService.displayMessage("info","Warning", "Access Denied!!");
             $state.go($rootScope.previouseState);
+        },
+        haveAccessToToken: function (accessName) {
+            if (accessName == 'dashboard.login' || accessName == 'dashboard.logout' || accessName == 'dashboard.firstPage') {
+                return true;
+            }
+            var userAccessList = UserService.getUserAccess();
+            var user = UserService.getUser();
+            if (user == undefined || user == null || userAccessList == undefined || userAccessList == null) {
+                return false;
+            }
+            var token = '';
+            for (var i= 0; i<userAccessList.length; i++) {
+                token = 'dashboard.' + userAccessList[i];
+                if(token == accessName) {
+                    //let proceed.
+                    return true;
+                }
+            }
+            console.log('accessName = ' + accessName);
+            //user dont have access. display message and return to the previouse state
+            //baseDataService.displayMessage("info","Warning", "Access Denied!!");
+            return false;
         }
     };
 });

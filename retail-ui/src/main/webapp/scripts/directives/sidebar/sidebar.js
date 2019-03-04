@@ -8,14 +8,14 @@
  */
 
 angular.module('sbAdminApp')
-  .directive('sidebar',['$location',function() {
+  .directive('sidebar',['$location', 'AccessChecker2',function() {
     return {
       templateUrl:'scripts/directives/sidebar/sidebar.html',
       restrict: 'E',
       replace: true,
       scope: {
       },
-      controller:function($scope){
+      controller:function($scope, AccessChecker2){
         $scope.selectedMenu = 'dashboard';
         $scope.collapseVar = 0;
         $scope.multiCollapseVar = 0;
@@ -35,6 +35,9 @@ angular.module('sbAdminApp')
           else
             $scope.multiCollapseVar = y;
         };
+        $scope.haveAccessToToken = function(token) {
+          return AccessChecker2.haveAccessToToken(token);
+        }
       }
     }
   }]);
