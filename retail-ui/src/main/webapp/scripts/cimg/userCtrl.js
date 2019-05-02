@@ -92,12 +92,14 @@ cimgApp.controller('userCtrl', function($scope, $state,$stateParams,ngDialog, Us
         */
 
         //$scope.facility.lastModifiedBy = userId;
+        /*
         if ($scope.pageIsNew) {
             if ($scope.retryPassword != $scope.appUser.usrPass) {
                 baseDataService.displayMessage('info','Warning', 'Password and Retry does not match ');
                 return
             }
         }
+        */
         $scope.appUser.accessPoints = $scope.accessPoints.data;
         $scope.appUser.appRoles = $scope.appRoles.data;
         var rowObject = $scope.appUser;

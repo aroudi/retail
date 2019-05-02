@@ -98,6 +98,10 @@
           USR_FIRST_NAME = #{usrFirstName},
           USR_SUR_NAME = #{usrSurName},
           USR_ACTIVE = #{usrActive}
+          <if test="usrPass != null">
+              ,USR_PASS = #{usrPass}
+          </if>
+
         WHERE USR_ID = #{id}
     </update>
 

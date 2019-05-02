@@ -537,7 +537,8 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                 if ((billOfQuantity.getBoqStatus() != null)
                         && (!billOfQuantity.getBoqStatus().getCategoryCode().equals(IdBConstant.BOQ_LINE_STATUS_PENDING)
                         && !billOfQuantity.getBoqStatus().getCategoryCode().equals(IdBConstant.BOQ_STATUS_CONFIRMED))
-                ) {
+                )
+                {
                     logger.debug("boq [{}] status is not PENDING or CONFIRMED. skip it", billOfQuantity.getId());
                     continue;
                 }

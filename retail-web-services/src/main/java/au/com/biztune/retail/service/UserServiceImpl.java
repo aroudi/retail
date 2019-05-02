@@ -6,6 +6,7 @@ import au.com.biztune.retail.form.ChangePasswordForm;
 import au.com.biztune.retail.response.CommonResponse;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.IdBConstant;
+import au.com.biztune.retail.util.encryption.PasswordEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,8 @@ public class UserServiceImpl implements UserService {
     public CommonResponse addUser(AppUser appUser) {
         final CommonResponse response = new CommonResponse();
         try {
+            //enctypt the password before update
+            appUser.setUsrPass(PasswordEncryptor.encrypt(appUser.getUsrPass()));
             response.setStatus(IdBConstant.RESULT_SUCCESS);
 
             if (appUser == null) {
@@ -301,7 +304,7 @@ public class UserServiceImpl implements UserService {
     public AppUser doLogin (String userName, String password) {
         try {
             String token = null;
-            final AppUser appUser = userDao.doLogin(userName, password);
+            final AppUser appUser = userDao.doLogin(userName, PasswordEncryptor.encrypt(password));
             if (appUser != null) {
                 token = generateToken();
                 appUser.setToken(token);
@@ -346,14 +349,14 @@ public class UserServiceImpl implements UserService {
                 return response;
             }
             //check oldpass in database
-            if (userDao.getUserByUserIdAndPassword(changePasswordForm.getUserId(), changePasswordForm.getOldPassword()) == null) {
+            if (userDao.getUserByUserIdAndPassword(changePasswordForm.getUserId(), PasswordEncryptor.encrypt(changePasswordForm.getOldPassword())) == null) {
                 response.setStatus(IdBConstant.RESULT_FAILURE);
                 response.setMessage("Old password is incorrect!!!");
                 return response;
             }
             final AppUser appUser = new AppUser();
             appUser.setId(changePasswordForm.getUserId());
-            appUser.setUsrPass(changePasswordForm.getPassword());
+            appUser.setUsrPass(PasswordEncryptor.encrypt(changePasswordForm.getPassword()));
             userDao.changePasswordPerUserId(appUser);
             response.setStatus(IdBConstant.RESULT_SUCCESS);
             response.setMessage("Password changed successfully");
