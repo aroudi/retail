@@ -37,7 +37,8 @@ var cimgApp = angular
     'chart.js',
     'ui.grid.exporter',
     'ui.select',
-    'TreeWidget'
+    'TreeWidget',
+    'ngIdle'
   ]);
 var config_data = {
     'WEBAPP' :'retail-web-services'
@@ -267,7 +268,21 @@ cimgApp.service('configService', function ($window,$http, UserService,WEBAPP) {
 
 });
 
-cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDialog, configService, $sessionStorage,UserService, GET_DATA_CHANGE_INDICATOR_URI) {
+cimgApp.service('userIdleService', function (LOGOUT_URI, multiPageService, $rootScope, $state, baseDataService, UserService) {
+    return {
+        loggOutUser: function () {
+            baseDataService.getBaseData(LOGOUT_URI).then(function (response) {
+            });
+            UserService.removeUser();
+            multiPageService.removePageList();
+            var userLoggedIn = '';
+            $rootScope.$emit('loginChanged', userLoggedIn);
+            $state.go('dashboard.login');
+        }
+    }
+});
+
+cimgApp.service('baseDataService', function ($location, $q, $http, $window,ngDialog, configService, $sessionStorage) {
 
     //$sessionStorage.isPageNew = true;
     //$sessionStorage.rowSelected = false;
@@ -610,7 +625,7 @@ cimgApp.service('purchaseOrderService', function () {
     };
 });
 
-cimgApp.service('multiPageService', function ($location,$http,$sessionStorage, $state, baseDataService) {
+cimgApp.service('multiPageService', function ($location,$http,$sessionStorage) {
     return {
         addPage: function(pageId, pageType, pageNo, formData) {
             var pageList = $sessionStorage.pageList;
@@ -799,7 +814,7 @@ cimgApp.service('AccessChecker2', function ($state, $rootScope, UserService, bas
     /*userType must be user,admin or reader*/
     return {
         checkAcess: function (accessName) {
-            if (accessName == 'dashboard.login' || accessName == 'dashboard.logout' || accessName == 'dashboard.firstPage') {
+            if (accessName == 'dashboard.login' ||  accessName == 'dashboard.userIdle' || accessName == 'dashboard.logout' || accessName == 'dashboard.firstPage') {
                 return;
             }
             var userAccessList = UserService.getUserAccess();
@@ -1178,11 +1193,3 @@ cimgApp.factory('beforeUnload', function ($rootScope, $window) {
 cimgApp.run(function (beforeUnload) {
         // Must invoke the service at least once
 });
-
-/*
-cimgApp.config(['ChartJsProvider', function(ChartJsProvider){
-    ChartJsProvider.setOptions({ chartColors : [ '#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'],
-    responsive : false});
-    ChartJsProvider.setOptions('line', {showLines:false});
-}]);
-*/

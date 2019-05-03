@@ -2,7 +2,8 @@
  * Created by arash on 13/11/2015.
  */
 
-cimgApp.controller('loginController', function($http, $scope,$rootScope, UserService, $state, LOGIN_URI, baseDataService) {
+cimgApp.controller('loginController', function(Idle, $http, $scope,$rootScope, UserService, $state, LOGIN_URI, baseDataService) {
+    Idle.watch();
     $scope.message = "";
     /*
      if ($window.sessionStorage.userInfo !=undefined ){

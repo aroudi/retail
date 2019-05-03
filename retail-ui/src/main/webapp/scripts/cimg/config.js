@@ -1,4 +1,9 @@
-cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',function ($stateProvider,$urlRouterProvider,$ocLazyLoadProvider) {
+cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider','KeepaliveProvider', 'IdleProvider',function ($stateProvider,$urlRouterProvider,$ocLazyLoadProvider, KeepaliveProvider, IdleProvider) {
+
+    IdleProvider.idle(60*60);
+    IdleProvider.timeout(10);
+    KeepaliveProvider.interval(10);
+    IdleProvider.interrupt('keydown wheel mousedown touchstart touchmove scroll');
 
     $ocLazyLoadProvider.config({
         debug:false,
@@ -261,6 +266,10 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
             url:'/logout',
             controller: 'logoutController'
         })
+        .state('dashboard.userIdle',{
+            url:'/userIdle',
+            controller: 'userIdleController'
+        })
         .state('dashboard.changePassword',{
             url:'/changePassword',
             controller: 'changePasswordCtrl',
@@ -429,18 +438,25 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
     });
 });
      **/
-} ]).run(['$rootScope','AccessChecker2',function ($rootScope, AccessChecker2) {
+} ]).run(['$rootScope','AccessChecker2', 'userIdleService',function ($rootScope, AccessChecker2, userIdleService) {
 
     $rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
         $rootScope.previouseState = from.name;
         AccessChecker2.checkAcess(to.name);
     });
-    $rootScope.$on('onBeforeUnload', function (e, confirmation) {
+    $rootScope.$on('IdleTimeout', function() {
+        console.log('IdleTimeout ...... called');
+        userIdleService.loggOutUser();
+        // end their session and redirect to login
+    });    $rootScope.$on('onBeforeUnload', function (e, confirmation) {
         confirmation.message = "All data willl be lost.";
         e.preventDefault();
     });
     $rootScope.$on('onUnload', function (e) {
         console.log('leaving page'); // Use 'Preserve Log' option in Console
     });
-}]);
-
+}])
+.run(function(Idle){
+    // start watching when the app runs. also starts the Keepalive service by default.
+    Idle.watch();
+});
