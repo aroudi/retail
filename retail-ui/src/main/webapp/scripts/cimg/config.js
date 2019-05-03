@@ -435,6 +435,12 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',func
         $rootScope.previouseState = from.name;
         AccessChecker2.checkAcess(to.name);
     });
-
+    $rootScope.$on('onBeforeUnload', function (e, confirmation) {
+        confirmation.message = "All data willl be lost.";
+        e.preventDefault();
+    });
+    $rootScope.$on('onUnload', function (e) {
+        console.log('leaving page'); // Use 'Preserve Log' option in Console
+    });
 }]);
 

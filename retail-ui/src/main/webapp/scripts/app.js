@@ -1159,6 +1159,26 @@ cimgApp.filter('propsFilter', function() {
     };
 });
 
+cimgApp.factory('beforeUnload', function ($rootScope, $window) {
+    // Events are broadcast outside the Scope Lifecycle
+
+    $window.onbeforeunload = function (e) {
+        var confirmation = {message:'Do you want to close the BitPos????'};
+        var event = $rootScope.$broadcast('onBeforeUnload', confirmation);
+        if (event.defaultPrevented) {
+            return confirmation.message;
+        }
+    };
+
+    $window.onunload = function () {
+        $rootScope.$broadcast('onUnload');
+    };
+    return {};
+})
+cimgApp.run(function (beforeUnload) {
+        // Must invoke the service at least once
+});
+
 /*
 cimgApp.config(['ChartJsProvider', function(ChartJsProvider){
     ChartJsProvider.setOptions({ chartColors : [ '#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'],
