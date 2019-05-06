@@ -2753,3 +2753,22 @@ GO
 alter table app_user
 	alter column USR_PASS VARCHAR(500) NULL
 go
+
+alter table company
+	add COMP_NAME VARCHAR(500) NOT NULL
+go
+
+alter table company
+	add  COMP_USER_LICENCE DECIMAL(31,0) DEFAULT 1 NOT NULL
+go
+
+-- company
+INSERT INTO COMPANY(COMP_NAME, COMP_IS_TRADING, COMP_USER_LICENCE) values ('Jomon Architectural Hardware', 1, 10);
+go
+
+
+update ORG_UNIT set COMP_ID = (select MAX(comp_id) from COMPANY)
+go
+
+UPDATE APP_USER SET USR_PASS = 'C1C224B03CD9BC7B6A86D77F5DACE40191766C485CD55DC48CAF9AC873335D6F' where usr_name = 'Admin'
+go

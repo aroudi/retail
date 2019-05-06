@@ -17,6 +17,12 @@ public interface OrgUnitDao {
     OrgUnit getOrgUnitByTypeAndCode(String type, String code);
     /**
      * get the supplier by id.
+     * @param compId compId
+     * @return Company
+     */
+    OrgUnit getCompanyById(long compId);
+    /**
+     * get Company by id.
      * @param orguId orguId
      * @return OrgUnit
      */

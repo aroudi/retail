@@ -246,4 +246,24 @@ public interface UserDao {
      * @return list of active users
      */
     List<AppUser> getAllActiveUsers();
+
+    /**
+     * update user logged on status.
+     * @param userIsLoggedIn userIsLoggedIn
+     * @param userId userId
+     */
+    void updateUserLoggedOnStatus(boolean userIsLoggedIn, long userId);
+
+    /**
+     * get no of logged on users.
+     * @return no of user already logged in to the system.
+     */
+    long getNoOfLoggedInUser ();
+
+    /**
+     * get no of active non-deleted users.
+     * @return no of users.
+     */
+    long getNoOfUserDefined ();
+
 }

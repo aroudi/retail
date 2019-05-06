@@ -4,12 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="au.com.biztune.retail.dao.OrgUnitDao">
     <!-- result maps -->
+    <resultMap id="companyMap" type="Company" >
+        <id column="COMP_ID" property="id" />
+        <result column="COMP_NAME" property="compName" />
+        <result column="COMP_USER_LICENCE" property="compUserLicence" />
+    </resultMap>
+
     <resultMap id="orgUnitMap" type="OrgUnit" >
         <id column="ORGU_ID" property="id" />
         <result column="ORGU_CODE" property="orguCode" />
         <result column="ORGU_NAME" property="orguName" />
         <result column="ORGU_DESC" property="orguDesc" />
         <association property="priceBand" column="ORGU_ID" select="au.com.biztune.retail.dao.PriceBandDao.getActivePriceBandPerOrgUnitId" />
+        <association property="company" column="COMP_ID" select="getCompanyById" />
         <association property="stockLocation" column="ORGU_ID" select="au.com.biztune.retail.dao.StockDao.getStockLocationPerOrguId" />
     </resultMap>
 
@@ -23,11 +30,18 @@
         <association property="cashSessionType" column="CASH_SESSION_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
     </resultMap>
 
+    <sql id="companyColumns">
+        ${alias}.COMP_ID,
+        ${alias}.COMP_NAME,
+        ${alias}.COMP_USER_LICENCE
+    </sql>
+
     <sql id="orguColumns">
         ${alias}.ORGU_ID,
         ${alias}.ORGU_CODE,
         ${alias}.ORGU_NAME,
-        ${alias}.ORGU_DESC
+        ${alias}.ORGU_DESC,
+        ${alias}.COMP_ID
     </sql>
 
     <sql id="storeColumns">
@@ -39,6 +53,13 @@
         ${alias}.ORGU_ID,
         ${alias}.CASH_SESSION_TYPE
     </sql>
+
+    <select id="getCompanyById" resultMap="companyMap" >
+        SELECT
+        <include refid="companyColumns"><property name="alias" value="comp"/></include>
+        FROM COMPANY comp
+        WHERE comp.COMP_ID=#{value}
+    </select>
 
     <select id="getOrgUnitByTypeAndCode" resultMap="orgUnitMap" >
         SELECT

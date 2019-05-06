@@ -99,3 +99,6 @@ this is while in importing boq, we add supplier to the current product.
 26- not able to create delivery  note with out a PO
 27- delete product, delete the whole reference of product !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+---------------------------------------------------------------------- STRUCTURAL CHANGE NEEDED -------------------------------------------------
+1- currently on application startup, OrgUnit and Store fetched by code and assigned to the sessionObject (in Loader.java).
+    orgUnit and Store need to be fetched by user login and assigned to the user object.

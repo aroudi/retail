@@ -448,11 +448,13 @@ cimgApp.config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider','Kee
         console.log('IdleTimeout ...... called');
         userIdleService.loggOutUser();
         // end their session and redirect to login
-    });    $rootScope.$on('onBeforeUnload', function (e, confirmation) {
-        confirmation.message = "All data willl be lost.";
+    });
+    $rootScope.$on('onBeforeUnload', function (e, confirmation) {
+        confirmation.message = "All data will be lost.";
         e.preventDefault();
     });
     $rootScope.$on('onUnload', function (e) {
+        userIdleService.loggOutUser();
         console.log('leaving page'); // Use 'Preserve Log' option in Console
     });
 }])

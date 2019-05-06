@@ -4,6 +4,7 @@ import au.com.biztune.retail.dao.UserDao;
 import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.ChangePasswordForm;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.response.LoginResponse;
 import au.com.biztune.retail.session.SessionState;
 import au.com.biztune.retail.util.IdBConstant;
 import au.com.biztune.retail.util.encryption.PasswordEncryptor;
@@ -53,6 +54,13 @@ public class UserServiceImpl implements UserService {
             final boolean isNew = appUser.getId() > 0 ? false : true;
             //new user
             if (isNew) {
+                //check the maximum user we can define.
+                final long noOfUserDefined = userDao.getNoOfUserDefined();
+                if (noOfUserDefined >= sessionState.getOrgUnit().getCompany().getCompUserLicence()) {
+                    response.setStatus(IdBConstant.RESULT_FAILURE);
+                    response.setMessage("No of user defined exceeded the maximum licenced users");
+                    return response;
+                }
                 //check if username is already exists
                 final AppUser appUser1 = userDao.getUserByUserName(appUser.getUsrName());
                 if (appUser1 != null) {
@@ -301,20 +309,45 @@ public class UserServiceImpl implements UserService {
      * @param password password
      * @return appUser
      */
-    public AppUser doLogin (String userName, String password) {
+    public LoginResponse doLogin (String userName, String password) {
+        final LoginResponse loginResponse = new LoginResponse();
         try {
             String token = null;
+            //check if maximum allowed user is logged in to the system.
+            final long noOfUserLoggedIn = userDao.getNoOfLoggedInUser();
+            final long maxNoOfLicencedUser = sessionState.getOrgUnit().getCompany().getCompUserLicence();
+            if (noOfUserLoggedIn >= maxNoOfLicencedUser) {
+                loginResponse.setStatus(IdBConstant.RESULT_FAILURE);
+                loginResponse.setMessage("Number of active users exceeded the maximum licence");
+                return loginResponse;
+            }
             final AppUser appUser = userDao.doLogin(userName, PasswordEncryptor.encrypt(password));
             if (appUser != null) {
+                //check if user is already logged in
+                if (appUser.isUsrLogedOn()) {
+                    //return a proper message
+                    loginResponse.setStatus(IdBConstant.RESULT_FAILURE);
+                    loginResponse.setMessage("User is already logged in from different session.");
+                    return loginResponse;
+                }
                 token = generateToken();
                 appUser.setToken(token);
                 sessionState.addToken(token, appUser);
                 cashSessionService.assignCashSessionToLoggedinUser(appUser);
+                loginResponse.setAppUser(appUser);
+                loginResponse.setStatus(IdBConstant.RESULT_SUCCESS);
+                //set the user logged-on status
+                userDao.updateUserLoggedOnStatus(true, appUser.getId());
+            } else {
+                loginResponse.setStatus(IdBConstant.RESULT_FAILURE);
+                loginResponse.setMessage("Invalid username or password");
             }
-            return appUser;
+            return loginResponse;
         } catch (Exception e) {
             logger.error("Exception in login user: ", e);
-            return null;
+            loginResponse.setStatus(IdBConstant.RESULT_FAILURE);
+            loginResponse.setMessage(e.getMessage());
+            return loginResponse;
         }
     }
 
@@ -325,6 +358,8 @@ public class UserServiceImpl implements UserService {
     public void logOut(AppUser appUser) {
         sessionState.removeToken(appUser.getToken());
         cashSessionService.closeCashSessionForLoggedOutUser(appUser);
+        //update user logged-on status in system
+        userDao.updateUserLoggedOnStatus(false, appUser.getId());
     }
     /**
      * generate randowm token for user.

@@ -14,7 +14,7 @@ public class AppUser implements Principal {
     private String usrSurName;
     private String usrActive;
     private boolean usrDeleted;
-    private String usrLogedOn;
+    private boolean usrLogedOn;
     private List<AccessPoint> accessPoints;
     private List<AppRole> appRoles;
     private String token;
@@ -79,11 +79,11 @@ public class AppUser implements Principal {
         this.usrActive = usrActive;
     }
 
-    public String getUsrLogedOn() {
+    public boolean isUsrLogedOn() {
         return usrLogedOn;
     }
 
-    public void setUsrLogedOn(String usrLogedOn) {
+    public void setUsrLogedOn(boolean usrLogedOn) {
         this.usrLogedOn = usrLogedOn;
     }
 

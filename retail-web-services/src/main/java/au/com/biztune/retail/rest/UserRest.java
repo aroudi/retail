@@ -4,10 +4,12 @@ import au.com.biztune.retail.domain.*;
 import au.com.biztune.retail.form.ChangePasswordForm;
 import au.com.biztune.retail.form.LoginForm;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.response.LoginResponse;
 import au.com.biztune.retail.security.Secured;
 import au.com.biztune.retail.service.UserService;
 import au.com.biztune.retail.session.DataChangeIndicator;
 import au.com.biztune.retail.session.SessionState;
+import au.com.biztune.retail.util.IdBConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -203,12 +205,15 @@ public class UserRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public AppUser logon (LoginForm loginForm) {
+    public LoginResponse logon (LoginForm loginForm) {
         try {
             return userService.doLogin (loginForm.getUserName(), loginForm.getPassword());
         } catch (Exception e) {
             logger.error ("UserLoginService: Error in user logon: ", e);
-            return null;
+            final LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setStatus(IdBConstant.RESULT_FAILURE);
+            loginResponse.setMessage(e.getMessage());
+            return loginResponse;
         }
     }
 

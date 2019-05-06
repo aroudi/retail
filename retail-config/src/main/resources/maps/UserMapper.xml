@@ -432,4 +432,14 @@
         WHERE
         usr.USR_DELETED != 1 and usr.USR_ACTIVE = 1
     </select>
+    <update id="updateUserLoggedOnStatus" >
+        UPDATE APP_USER SET
+        USR_LOGED_ON = #{param1} WHERE USR_ID = #{param2}
+    </update>
+    <select id="getNoOfLoggedInUser" resultType="long" >
+        SELECT count(*) from APP_USER where USR_LOGED_ON = 1
+    </select>
+    <select id="getNoOfUserDefined" resultType="long" >
+        SELECT count(*) from APP_USER where USR_ACTIVE = 1 and USR_DELETED = 0
+    </select>
 </mapper>

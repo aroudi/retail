@@ -2,7 +2,7 @@
  * Created by arash on 13/11/2015.
  */
 
-cimgApp.controller('loginController', function(Idle, $http, $scope,$rootScope, UserService, $state, LOGIN_URI, baseDataService) {
+cimgApp.controller('loginController', function(Idle, $http, $scope,$rootScope, UserService, $state, LOGIN_URI, baseDataService, SUCCESS, FAILURE ) {
     Idle.watch();
     $scope.message = "";
     /*
@@ -11,32 +11,38 @@ cimgApp.controller('loginController', function(Idle, $http, $scope,$rootScope, U
      UserService.setUser('reader', '')
      }
      */
-    if (UserService.getMessage() != null) {
+    if (UserService.getMessage() != undefined) {
         $scope.message = UserService.getMessage();
     }
     //$scope.userService = UserService;
     $scope.checkUser = function (loginForm) {
         var rowObject = $scope.loginForm;
         baseDataService.addRow(rowObject, LOGIN_URI).then(function(response) {
-            var userInfo = response.data;
-            if (userInfo != undefined && userInfo != null && userInfo.usrName!=undefined )
-            {
-                console.log('login succeeded...');
-                var token = userInfo.token;
-                //store token in session so on refreshing the page we can access it.
-                UserService.setUserToken(token);
-                //set token to http header
-                $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-                UserService.setUser(userInfo);
-                UserService.setMessage('');
-                UserService.setUserAccess(extractUserAccess(userInfo));
-                var userLoggedIn = ' - User: ' + userInfo.usrFirstName + ' ' + userInfo.usrSurName;
-                $rootScope.$emit('loginChanged', userLoggedIn);
-                $state.go('dashboard.firstPage');
-            } else
-            {
-                UserService.setMessage('Login Failed');
+            var loginResponse = response.data;
+            if (loginResponse.status === FAILURE ) {
+                UserService.setMessage(loginResponse.message);
                 $state.go('dashboard.login');
+            } else {
+                userInfo = loginResponse.appUser;
+                if (userInfo != undefined && userInfo != null && userInfo.usrName!=undefined )
+                {
+                    console.log('login succeeded...');
+                    var token = userInfo.token;
+                    //store token in session so on refreshing the page we can access it.
+                    UserService.setUserToken(token);
+                    //set token to http header
+                    $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+                    UserService.setUser(userInfo);
+                    UserService.setMessage('');
+                    UserService.setUserAccess(extractUserAccess(userInfo));
+                    var userLoggedIn = ' - User: ' + userInfo.usrFirstName + ' ' + userInfo.usrSurName;
+                    $rootScope.$emit('loginChanged', userLoggedIn);
+                    $state.go('dashboard.firstPage');
+                } else
+                {
+                    UserService.setMessage('Login Failed');
+                    $state.go('dashboard.login');
+                }
             }
         });
     };
@@ -63,5 +69,13 @@ cimgApp.controller('loginController', function(Idle, $http, $scope,$rootScope, U
         }
         return userAccess;
     };
+    $scope.isMessageAvailable = function() {
+        $scope.message = UserService.getMessage();
+        if ($scope.message != undefined && $scope.message != '') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 })
 

@@ -5,6 +5,7 @@ import au.com.biztune.retail.domain.AppRole;
 import au.com.biztune.retail.domain.AppUser;
 import au.com.biztune.retail.form.ChangePasswordForm;
 import au.com.biztune.retail.response.CommonResponse;
+import au.com.biztune.retail.response.LoginResponse;
 
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
@@ -82,7 +83,7 @@ public interface UserService {
      * @param password password
      * @return appUser
      */
-    AppUser doLogin (String userName, String password);
+    LoginResponse doLogin (String userName, String password);
 
     /**
      * logout user from the system. remove the token.
