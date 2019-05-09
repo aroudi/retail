@@ -103,3 +103,4 @@ this is while in importing boq, we add supplier to the current product.
 1- currently on application startup, OrgUnit and Store fetched by code and assigned to the sessionObject (in Loader.java).
     orgUnit and Store need to be fetched by user login and assigned to the user object.
 2- BOQ Detail does not display Client
+3- in good received, the status colour for 'ON HOLD' should be red
