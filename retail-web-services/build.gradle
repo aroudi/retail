@@ -91,6 +91,9 @@ dependencies {
     compile group:'org.aspectj', name:'aspectjrt', version :'1.8.2'
     compile group:'org.aspectj', name:'aspectjweaver', version :'1.8.2'
 
+    //audit4J org.audit4j:audit4j-spring:2.2.0
+    compile group:'org.audit4j', name:'audit4j-core', version :audit4JVer
+    compile group:'org.audit4j', name:'audit4j-spring', version :audit4JSpringVer
 
 }
 

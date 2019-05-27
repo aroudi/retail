@@ -18,15 +18,32 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
         <!--http://www.springframework.org/schema/aop-->
 
-    <aop:aspectj-autoproxy />
+    <bean id="auditAspect" class="org.audit4j.integration.spring.AuditAspect" />
+
+    <aop:aspectj-autoproxy>
+        <aop:include name="auditAspect" />
+    </aop:aspectj-autoproxy>
+    <!--aop:aspectj-autoproxy /-->
 	<context:spring-configured/>
     <context:annotation-config/>
     <context:component-scan base-package="au.com.biztune.retail" />
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
+    <aop:config>
+        <aop:aspect id="aspect" ref="auditAspect" >
+            <aop:pointcut id="pointCutSave" expression="execution(* au.com.biztune.retail.rest.*.*(..))" />
+            <aop:before method="audit" pointcut-ref="pointCutSave" />
+        </aop:aspect>
+    </aop:config>
+
+
 
     <import resource="classpath:application-context-dao.xml"/>
     <import resource="classpath:application-context-report.xml"/>
+    <import resource="classpath:application-context-audit4j.xml"/>
+
+
+
     <bean id="transactionManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>

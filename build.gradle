@@ -32,7 +32,9 @@ subprojects {
         guavaVersion = '18.0'
         slf4jVersion = '1.7.10'
         jerseyGlassfishVer ='2.23.1'
-		
+        audit4JVer ='2.5.0'
+        audit4JSpringVer ='2.5.0'
+
 	}	
     sourceSets.test.output.resourcesDir = sourceSets.test.output.classesDir
     configurations {

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="layout" class="org.audit4j.core.layout.SimpleLayout"></bean>
+    <bean id="metaData" class="au.com.biztune.retail.security.Audit4jMetaData"></bean>
+    <bean id="fileAuditHandler" class="org.audit4j.core.handler.file.FileAuditHandler">
+    </bean>
+    <bean id="auditconfig" class="org.audit4j.integration.spring.SpringAudit4jConfig">
+        <property name="layout" ref="layout"></property>
+        <property name="metaData" ref="metaData"></property>
+        <property name="handlers">
+            <list>
+                <ref bean="fileAuditHandler"/>
+            </list>
+        </property>
+
+    </bean>
+
+    <!--bean id="auditManager" class="org.audit4j.core.AuditManager" factory-method="startWithConfiguration" lazy-init="true">
+        <constructor-arg ref="auditconfig"/>
+    </bean-->
+
+</beans>
