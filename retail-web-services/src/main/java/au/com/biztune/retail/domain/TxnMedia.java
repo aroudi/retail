@@ -19,6 +19,7 @@ public class TxnMedia {
     private Timestamp txmdStartDate;
     private Timestamp txmdExpiryDate;
     private boolean txmdVoided;
+    private boolean txmdRefunded;
     //use only for invoice. populated with media id from txn_media
     private long parentId;
     private boolean newAdded;
@@ -200,5 +201,13 @@ public class TxnMedia {
 
     public void setTxmdComment(String txmdComment) {
         this.txmdComment = txmdComment;
+    }
+
+    public boolean isTxmdRefunded() {
+        return txmdRefunded;
+    }
+
+    public void setTxmdRefunded(boolean txmdRefunded) {
+        this.txmdRefunded = txmdRefunded;
     }
 }

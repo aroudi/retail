@@ -59,6 +59,12 @@ public interface TxnDao {
     void voidTxnMedia (TxnMedia txnMedia);
 
     /**
+     * refund txnMedia.
+     * @param txnMedia txnMedia
+     */
+    void setTxnMediaRefunded (TxnMedia txnMedia);
+
+    /**
      * get TxnMedia Per TxhdId.
      * @param txhdId txhdId
      * @return List of TxnMedia

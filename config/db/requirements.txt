@@ -105,7 +105,7 @@ this is while in importing boq, we add supplier to the current product.
 2-  BOQ Detail does not display Client
 3-  in view BOQ, display status in colour
 4-  in good received, the status colour for 'ON HOLD' should be red
-5-  [*****]in creating new customer, not able to add contact into contact list tab
+5-  [DONE]in creating new customer, not able to add contact into contact list tab
 6-  []create product :in buying (add) supplier list is not searchable
 7-  [*]when add a new buyer, the preferred buy should be selected by default
 8-  [*]BOQ - when voiding an item, it still showing on picking slip

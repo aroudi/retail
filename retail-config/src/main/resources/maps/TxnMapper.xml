@@ -175,6 +175,7 @@
         <result column="TXMD_AMNT_FOREIGN" property="txmdAmntForeign" />
         <result column="TXMD_PAN" property="txmdPan" />
         <result column="TXMD_VOIDED" property="txmdVoided" />
+        <result column="TXMD_REFUNDED" property="txmdRefunded" />
         <result column="TXMD_COMMENT" property="txmdComment" />
         <result column="MEDT_ID" property="medtId" />
         <result column="TXHD_ID" property="txhdId" />
@@ -276,6 +277,7 @@
         ${alias}.TXMD_AMNT_FOREIGN,
         ${alias}.TXMD_PAN,
         ${alias}.TXMD_VOIDED,
+        ${alias}.TXMD_REFUNDED,
         ${alias}.TXMD_COMMENT
     </sql>
 
@@ -900,6 +902,7 @@
         TXMD_AMNT_FOREIGN,
         TXMD_PAN,
         TXMD_VOIDED,
+        TXMD_REFUNDED,
         TXMD_COMMENT
         ) VALUES (
         #{orguId},
@@ -953,6 +956,12 @@
         <if test="txmdVoided == null">
             ,null
         </if>
+        <if test="txmdRefunded != null">
+            ,#{txmdRefunded}
+        </if>
+        <if test="txmdRefunded == null">
+            ,null
+        </if>
         <if test="txmdComment != null">
             ,#{txmdComment}
         </if>
@@ -968,6 +977,11 @@
         WHERE TXMD_ID = #{id}
     </update>
 
+    <update id="setTxnMediaRefunded" parameterType="TxnMedia" >
+        UPDATE TXN_MEDIA SET
+          TXMD_REFUNDED = #{txmdRefunded}
+        WHERE TXMD_ID = #{id}
+    </update>
 
     <select id="getTxnDetailPerTxhdId" resultMap="txnDetailMap" >
         SELECT

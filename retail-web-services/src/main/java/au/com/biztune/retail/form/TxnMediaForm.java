@@ -12,6 +12,7 @@ public class TxnMediaForm {
     private ConfigCategory txmdType;
     private double txmdAmountLocal;
     private boolean txmdVoided;
+    private boolean txmdRefunded;
     private long orguId;
     private boolean deleted;
     private long txhdId;
@@ -107,5 +108,13 @@ public class TxnMediaForm {
 
     public void setTxmdComment(String txmdComment) {
         this.txmdComment = txmdComment;
+    }
+
+    public boolean isTxmdRefunded() {
+        return txmdRefunded;
+    }
+
+    public void setTxmdRefunded(boolean txmdRefunded) {
+        this.txmdRefunded = txmdRefunded;
     }
 }

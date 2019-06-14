@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService,UserService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI, TXN_EXPORT_PDF, PRODUCT_SALE_ITEM_SEARCH_URI, TXN_STATUS_OUTSTANDING, CUSTOMER_CONTACT_LIST_URI) {
+cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService,UserService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT,TXN_MEDIA_REFUND,TXN_MEDIA_DEPOSIT_REFUNDED, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI, TXN_EXPORT_PDF, PRODUCT_SALE_ITEM_SEARCH_URI, TXN_STATUS_OUTSTANDING, CUSTOMER_CONTACT_LIST_URI) {
 
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -33,6 +33,12 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         });
         baseDataService.getBaseData(TXN_MEDIA_DEPOSIT).then(function(response){
             $scope.txnMediaTypeDeposit = response.data;
+        });
+        baseDataService.getBaseData(TXN_MEDIA_REFUND).then(function(response){
+            $scope.txnMediaTypeRefund = response.data;
+        });
+        baseDataService.getBaseData(TXN_MEDIA_DEPOSIT_REFUNDED).then(function(response){
+            $scope.txnMediaTypeDepositRefunded = response.data;
         });
         $scope.model={};
         if ( $stateParams.blankPage) {
@@ -427,7 +433,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
 
     function initTxnMediaList() {
-        var tenderTpl='<div ng-class="{\'blue\':row.entity.txmdVoided==false, \'red\':row.entity.txmdVoided==true }"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
+        var tenderTpl='<div ng-class="{\'blue\':row.entity.txmdRefunded==false, \'red\':row.entity.txmdRefunded==true, \'amber\':row.entity.txmdType.categoryCode===\'TXN_MEDIA_REFUND\' }"><div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div></div>';
         $scope.txnMediaList = {
             enableFiltering: true,
             showGridFooter: true,
@@ -448,7 +454,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         return row.entity.txmdComment;
                     }
                 },
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTenderVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>', width: '15%'}
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTenderVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>&nbsp;<a href=""><i tooltip="Refund" ng-show="(row.entity.id > 0)&&(row.entity.txmdAmountLocal>0)&&(!row.entity.txmdRefunded)&&(row.entity.txmdType.categoryCode===\'TXN_MEDIA_DEPOSIT\')" tooltip-placement="bottom" class="fa fa-backward fa-2x" ng-click="grid.appScope.refundTxnMedia(row)"></i></a>', width: '20%'}
 
             ]
         }
@@ -712,13 +718,29 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
     }
 
-    $scope.addTxnMedia= function() {
+    /**
+     *
+     * @param amount amount of media
+     * @param paymentMedia payment media
+     * @param parentId : in case of refund, we need to have the id of media we refund. this is used when we delete a refund media. we need to have access
+     * to its parent to revert its status back to original
+     */
+    $scope.addTxnMedia= function(amount, paymentMedia, refundedRowId) {
+        if (paymentMedia === undefined) {
+            paymentMedia = $scope.paymentMedia;
+        }
+        if (amount === undefined) {
+            amount = $scope.paymentAmount;
+        }
+        if (refundedRowId === undefined) {
+            refundedRowId = -1;
+        }
         //check if selected Media Type is Account. then we need to check if customer is account customer and has enough credit
-        if (($scope.paymentAmount === 0.00) || ($scope.paymentAmount > $scope.maxPaymentAllowed())){
+        if ((amount === 0.00) || (amount > $scope.maxPaymentAllowed())){
             return;
         }
 
-        if ($scope.paymentMedia.paymName === 'Account') {
+        if (paymentMedia.paymName === 'Account') {
             //check if we are not in invoice mode then do nothing
             if (!$scope.isInvoiceMode) {
                 baseDataService.displayMessage('info','Warning!!','Account Payment is only available for Invoice');
@@ -734,7 +756,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 return;
             }
             //check if we have enough credit
-            var newCredit = $scope.txnHeaderForm.txhdValueCredit*1  + $scope.paymentAmount*1;
+            var newCredit = $scope.txnHeaderForm.txhdValueCredit*1  + amount*1;
             if (newCredit > $scope.model.customer.remainCredit) {
                 baseDataService.displayMessage('info','Warning!!','amount exceeds remain credit.');
             }
@@ -751,18 +773,24 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }else {
             txnMediaType = $scope.txnMediaTypeDeposit;
         }
+        //check if we refund deposit amount
+        if (amount < 0) {
+            txnMediaType = $scope.txnMediaTypeRefund;
+        }
         txnMedia = {
             "id" : rowId,
-            "paymentMedia":$scope.paymentMedia,
-            "txmdAmountLocal" : $scope.paymentAmount,
+            "paymentMedia":paymentMedia,
+            "txmdAmountLocal" : amount,
             "txmdVoided":false,
+            "txmdRefunded":false,
             "deleted" : false,
             "txmdComment":'',
+            "parentId":refundedRowId,
             "txmdType": txnMediaType
         }
         $scope.txnMediaList.data.push(txnMedia);
-        if ($scope.paymentMedia.paymName === 'Account') {
-            $scope.txnHeaderForm.txhdValueCredit = $scope.txnHeaderForm.txhdValueCredit*1 + $scope.paymentAmount*1
+        if (paymentMedia.paymName === 'Account') {
+            $scope.txnHeaderForm.txhdValueCredit = $scope.txnHeaderForm.txhdValueCredit*1 + amount*1
         }
         totalTransaction();
         //check if transaction is fully paid
@@ -793,12 +821,44 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     baseDataService.displayMessage('info','Warning!!','item is undefined');
                     return;
                 }
+                //set the parent row status back to its original
+                if ($scope.txnMediaList.data != undefined) {
+                    for (var i=0; i<$scope.txnMediaList.data.length; i++) {
+                        var txnMedia = $scope.txnMediaList.data[i];
+                        console.log('txnMedia.id = ' + txnMedia.id);
+                        console.log('row.entity.parentId = ' + row.entity.parentId);
+                        if (row.entity.parentId === txnMedia.id) {
+                            console.log('found.....');
+                            txnMedia.txmdRefunded = false;
+                            txnMedia.txmdType = $scope.txnMediaTypeDeposit;
+                        }
+                    }
+                }
+
                 row.entity.deleted = true;
                 $scope.txnMediaGridApi.core.setRowInvisible(row);
                 totalTransaction();
                 if ((!$scope.isInvoiceMode) && ($scope.paymentMedia.paymName === 'Account')) {
                     $scope.txnHeaderForm.txhdValueCredit = $scope.txnHeaderForm.txhdValueCredit*1 - $scope.paymentAmount*1
                 }
+
+            } else {
+                return;
+            }
+        });
+
+    };
+    $scope.refundTxnMedia= function (row) {
+        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to refund this payment?').then(function(result){
+            if (result) {
+                if (row == undefined || row.entity == undefined) {
+                    baseDataService.displayMessage('info','Warning!!','payment item is undefined');
+                    return;
+                }
+                //refund transaction
+                $scope.addTxnMedia((-1)*row.entity.txmdAmountLocal, row.entity.paymentMedia, row.entity.id);
+                row.entity.txmdRefunded = true;
+                row.entity.txmdType = $scope.txnMediaTypeDepositRefunded;
 
             } else {
                 return;
@@ -1368,7 +1428,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         if (!$scope.showAddPaymentButtom()) {
             return;
         }
-        $scope.addTxnMedia();
+        $scope.addTxnMedia($scope.paymentAmount, $scope.paymentMedia);
     };
 
     function populateCustomerContactinfo(contactLit) {

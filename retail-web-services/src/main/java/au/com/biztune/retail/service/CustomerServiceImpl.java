@@ -110,7 +110,7 @@ public class CustomerServiceImpl implements CustomerService {
                 customerDao.update(customer);
             }
             //update contact persons
-            if (customer.getContacts() != null && customer.getContacts().size() > 1) {
+            if (customer.getContacts() != null && customer.getContacts().size() > 0) {
                 final ArrayList<Long> contactList = new ArrayList<Long>();
                 for (Contact contact : customer.getContacts()) {
                     if (contact == null) {
