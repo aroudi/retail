@@ -2,7 +2,20 @@
  * Created by arash on 14/08/2015.
  */
 cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParams,viewMode, baseDataService,UserService, multiPageService,ngDialog, uiGridConstants, SUCCESS, FAILURE, TXN_ADD_URI, TXN_TYPE_QUOTE, TXN_TYPE_SALE,TXN_TYPE_INVOICE, TXN_STATE_FINAL, TXN_STATE_DRAFT, TXN_EXPORT_PDF, TXN_ADD_PAYMENT_URI, TXN_INVOICE_URI, TXN_MEDIA_SALE, TXN_MEDIA_DEPOSIT,TXN_MEDIA_REFUND,TXN_MEDIA_DEPOSIT_REFUNDED, INVOICE_EXPORT_PDF, PRODUCT_SALE_ITEM_GET_BY_SKU_URI, PRODUCT_SALE_ITEM_GET_BY_PROD_ID_URI, MEDIA_TYPE_GET_BYNAME_URI, PRICING_GRADE_DEFAULT, CUSTOMER_ALL_URI, PAYMENT_MEDIA_ALL_URI, TXN_EXPORT_PDF, PRODUCT_SALE_ITEM_SEARCH_URI, TXN_STATUS_OUTSTANDING, CUSTOMER_CONTACT_LIST_URI) {
-
+    /**
+     * this controller serve all transaction types (quote, sale, invoice from sale and invoice)
+     * $stateParams.txnType is passing to the controller and indicates the txn type this controller should handle it can be:
+     *      quote: for creating/editing a quote (pass only for new transaction)
+     *      txnSale: for creating and editing sale order (pass only for new transaction)
+     *      txnSaleInvoice: for creating invoice from existing sale order. a sale order can be invoiced multiple time (pass only for edit sale transaction)
+     *      txnInvoice : for creating/editing invoice (pass only for new transaction)
+     * based on the txnType, the view and action on the form is adjusted.
+     *
+     * also there is another parameter passed to this controller named viewMode. it indicates if this page is only for view or not.
+     * $stateParams.txnType indicates if page is a new page(blank page) or not.
+     *      true: it is a blank page(creating a new transaction)
+     *      false: it is in edit mode
+     */
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
         $scope.isViewMode = viewMode;
@@ -15,14 +28,16 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
      */
     $scope.isInvoiceMode = false;
     $scope.exportSaleOrderToPdfUrl = TXN_EXPORT_PDF;
-    $scope.allItemsSelected = false;
+    //$scope.allItemsSelected = false;
     $scope.exportInvoiceToPdfUrl = INVOICE_EXPORT_PDF;
     initPageData();
     initTxnDetail();
     initTxnMediaList();
+    /**
     if ( $scope.txnHeaderForm.temporarySaved  && $scope.txnHeaderForm.txhdTxnType.categoryCode === 'TXN_TYPE_SALE') {
         checkIfItemsInvoiced();
     }
+     **/
 
     function initPageData() {
         baseDataService.getBaseData(TXN_MEDIA_SALE).then(function(response){
@@ -41,7 +56,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             $scope.txnMediaTypeDepositRefunded = response.data;
         });
         $scope.model={};
-        if ( $stateParams.blankPage) {
+        if ( $scope.isPageNew) {
             //get txn_type from state params.
             $scope.txnType = $stateParams.txnType;
             $scope.txnHeaderForm = {};
@@ -57,6 +72,14 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         } else {
             $scope.txnHeaderForm = angular.copy(baseDataService.getRow());
             $scope.model.customer = $scope.txnHeaderForm.customer;
+            //if we invoice from existing sale order
+            if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
+                if ($stateParams.txnType === 'txnSaleInvoice') {
+                    $scope.txnType = $stateParams.txnType;
+                    $scope.isInvoiceMode = true;
+                //it is undefined. so it should be txn sale.
+                }
+            }
             //baseDataService.setRow({});
             //baseDataService.setIsPageNew(true);
             $scope.paymentAmount = maxPaymentAllowed()*1;
@@ -143,7 +166,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             enableFiltering: false,
             showGridFooter: true,
             showColumnFooter: true,
-            enableRowSelection:true,
+            enableRowSelection:false,
             gridFooterTemplate:"<div id=\"currency-default\"> Total:{{grid.appScope.txnHeaderForm.txhdValueNett | currency}}</div>",
             rowTemplate : rowtpl,
             columnDefs: [
@@ -189,10 +212,12 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         return 'editModeColor'
                     }
                 },
-                {field: 'txdeQtyInvoiced', displayName: 'Invoice', type: 'number',enableFiltering:false, width: '6%',
+                {field: 'txdeQtyInvoiced', displayName: 'Qty Inv.', type: 'number',enableFiltering:false, width: '6%',
                     cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
                         return 'editModeColor'
                     }
+                },
+                {field: 'txdeQtyTotalInvoiced', displayName: 'Total Invoiced',enableCellEdit: false, type: 'number',enableFiltering:false, width: '10%',
                 },
                 {field: 'originalQuantity', visible: false, type: 'number',enableFiltering:false},
                 {field: 'txdeQtyBalance', enableCellEdit: false, displayName: 'Balance',enableFiltering:false, type: 'number', width: '6%',
@@ -224,14 +249,15 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
             ]
         }
-        $scope.txnDetailList.enableRowSelection = true;
-        $scope.txnDetailList.multiSelect = true;
-        $scope.txnDetailList.enableSelectAll = false;
+        $scope.txnDetailList.enableRowSelection = false;
+        //$scope.txnDetailList.multiSelect = false;
+        //$scope.txnDetailList.enableSelectAll = false;
         //$scope.txnDetailList.noUnselect = true;
         //
         $scope.txnDetailList.onRegisterApi = function (gridApi) {
             gridApi.core.registerColumnsProcessor(hideInvoiceColumns);
             $scope.txnDetailGridApi = gridApi;
+            /**
             gridApi.selection.on.rowSelectionChanged($scope, function (row) {
                 //$scope.selectedTxnDetailRow = row.entity;
                 //invoice option must be available only for Sale Order (type=TXN_SALE)
@@ -254,6 +280,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 evaluatRowItem(row.entity, false);
                 totalTransaction();
             });
+             **/
             gridApi.edit.on.beginCellEdit($scope, function(rowEntity, colDef){
                 if (colDef.name === 'txdeQuantitySold') {
                     $scope.txdeQuantitySoldBeforeEditting = rowEntity.txdeQuantitySold;
@@ -275,32 +302,64 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 }
                 if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_SALE') {
                     columns.forEach(function(column){
-                        if (column.field === 'txdeQtyInvoiced' || column.field ==='txdeQtyBalance' || column.field === 'txdeQtyBackOrder') {
-                            column.visible = true;
-                        }
+                        //if it is a new sale order we don't need to display qtyInvoiced and qtyBalanced
+                        if ($scope.isPageNew){
+                            if (column.field === 'txdeQtyInvoiced' ||column.field === 'txdeQtyTotalInvoiced' || column.field ==='txdeQtyBalance') {
+                                column.visible = false;
+                            }
+                            if (column.field === 'txdeQtyBackOrder') {
+                                column.visible = true;
+                            }
+                        //page is not new. we need to display
+                        } else {
+                            //if we invoice from existing sale order, we need to display qtyInvoice, qty balance and not display total invoice
+                            if ($scope.txnType ==='txnSaleInvoice'){
+                                console.log('it is txnSaleInvoice');
+                                if (column.field === 'txdeQtyInvoiced' || column.field ==='txdeQtyBalance') {
+                                    column.visible = true;
+                                }
+                                if (column.field === 'txdeQtyTotalInvoiced' || column.field === 'txdeQtyBackOrder') {
+                                    column.visible = false;
+                                }
 
-                        if (column.field === 'product.prodSku') {
-                            column.width = '10%';
-                        }
-                        if (column.field === 'product.prodName') {
-                            column.width = '20%';
+                            }
+                            //if it is editing a sale order, only display total invoiced and balance. no need to display qtyInvoice
+                            else{
+                                if (column.field === 'txdeQtyInvoiced' ) {
+                                    column.visible = false;
+                                }
+                                if (column.field === 'txdeQtyTotalInvoiced' || column.field ==='txdeQtyBalance' || column.field === 'txdeQtyBackOrder') {
+                                    column.visible = true;
+                                }
+
+                            }
+
                         }
                     });
                     return columns;
                 }
-                columns.forEach(function(column){
-                    if (column.field === 'txdeQtyInvoiced' || column.field ==='txdeQtyBalance' || column.field === 'txdeQtyBackOrder') {
-                        column.visible = false;
-                    }
+                //for quote we don't need the following field to be displayed
+                if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_QUOTE') {
+                    columns.forEach(function(column){
+                        if (column.field === 'txdeQtyInvoiced' || column.field === 'txdeQtyTotalInvoiced' || column.field ==='txdeQtyBalance' || column.field === 'txdeQtyBackOrder') {
+                            column.visible = false;
+                        }
+                    });
+                    return columns;
+                }
+                //for invoice we only need to display qty invoiced
+                if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') {
+                    columns.forEach(function(column){
+                        if (column.field === 'txdeQuantitySold' || column.field === 'txdeQtyTotalInvoiced' || column.field ==='txdeQtyBalance' || column.field === 'txdeQtyBackOrder') {
+                            column.visible = false;
+                        }
+                        if (column.field === 'txdeQtyInvoiced') {
+                            column.visible = true;
+                        }
+                    });
+                    return columns;
+                }
 
-                    if (column.field === 'product.prodSku') {
-                        column.width = '17%';
-                    }
-                    if (column.field === 'product.prodName') {
-                        column.width = '27%';
-                    }
-                });
-                return columns;
             }
         };
 
@@ -406,7 +465,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             } else {
                 txnDetail['invoiced'] = false;
             }
-            checkIfItemsInvoiced();
+            //checkIfItemsInvoiced();
             //check the mode.
             var quantity = 0;
             if ($scope.isInvoiceMode) {
@@ -476,6 +535,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
         if ((!$scope.isPageNew) || $scope.txnHeaderForm.temporarySaved ) {
             $scope.txnMediaList.data = $scope.txnHeaderForm.txnMediaFormList;
+            //if we invoice from a sale transaction, then revise the txn media list.
+            if ($scope.txnType == 'txnSaleInvoice') {
+                changeToInvoiceMode();
+            }
+
         }
     }
 
@@ -953,7 +1017,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         $scope.txnHeaderForm.txhdValueNett = valueNett;
         $scope.txnHeaderForm.txhdValueGross = valueGross;
         $scope.txnHeaderForm.txhdValueTax = valueTax;
-        $scope.txnHeaderForm.txhdValueDue = valueNett - $scope.calculateAmountPaid();
+        $scope.txnHeaderForm.txhdValueDue = valueNett - calculateAmountPaid();
         //check if amount due is less than 5 cents, then add it to rounding
         if (Math.abs($scope.txnHeaderForm.txhdValueDue) < 0.06 ) {
             $scope.txnHeaderForm.txhdValRounding = $scope.txnHeaderForm.txhdValueDue;
@@ -964,6 +1028,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
 
     }
     $scope.calculateAmountPaid = function() {
+        calculateAmountPaid();
+    }
+    function calculateAmountPaid(){
         if ($scope.txnMediaList == undefined || $scope.txnMediaList.data == undefined) {
             return 0.00;
         }
@@ -1237,7 +1304,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             changeToInvoiceMode();
         }
     };
-
+    /**
     function checkIfItemsInvoiced(){
         var invoiceModeBeforeSelection = $scope.isInvoiceMode;
         var itemsInvoiced = false;
@@ -1253,16 +1320,11 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         } else {
             $scope.isInvoiceMode = false;
         }
-        /*
-        if ($scope.txnHeaderForm.temporarySaved) {
-            return;
-        }
-        */
         if (invoiceModeBeforeSelection != $scope.isInvoiceMode) {
             changeToInvoiceMode();
         }
     }
-
+    **/
     $scope.showSubmitButtom = function() {
         return (!$scope.isTxnSaleAndFinal()) && !($scope.isInvoiceMode || isInvoiceViewMode() );
     };
@@ -1311,6 +1373,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
         return ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') && (!$scope.isPageNew) && (!$scope.txnHeaderForm.convertedToInvoice)
     };
+    /**
     function selectAllRowsForInvoice() {
         $scope.isInvoiceMode = true;
         if ($scope.txnDetailList === undefined) {
@@ -1353,6 +1416,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
             selectAllRowsForInvoice();
         }
     };
+     **/
     function saveAsDraft()
     {
         if ($scope.isViewMode) {
