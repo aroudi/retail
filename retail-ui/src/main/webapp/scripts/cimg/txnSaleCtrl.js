@@ -318,7 +318,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                                 if (column.field === 'txdeQtyInvoiced' || column.field ==='txdeQtyBalance') {
                                     column.visible = true;
                                 }
-                                if (column.field === 'txdeQtyTotalInvoiced' || column.field === 'txdeQtyBackOrder') {
+                                if (column.field === 'txdeQuantitySold' || column.field === 'txdeQtyTotalInvoiced' || column.field === 'txdeQtyBackOrder') {
                                     column.visible = false;
                                 }
 
@@ -350,10 +350,10 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 //for invoice we only need to display qty invoiced
                 if ($scope.txnHeaderForm.txhdTxnType.categoryCode == 'TXN_TYPE_INVOICE') {
                     columns.forEach(function(column){
-                        if (column.field === 'txdeQuantitySold' || column.field === 'txdeQtyTotalInvoiced' || column.field ==='txdeQtyBalance' || column.field === 'txdeQtyBackOrder') {
+                        if (column.field === 'txdeQtyInvoiced' || column.field === 'txdeQtyTotalInvoiced' || column.field ==='txdeQtyBalance' || column.field === 'txdeQtyBackOrder') {
                             column.visible = false;
                         }
-                        if (column.field === 'txdeQtyInvoiced') {
+                        if (column.field === 'txdeQuantitySold') {
                             column.visible = true;
                         }
                     });
@@ -657,7 +657,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
         }
         $scope.searchProduct();
     }
-    
+
     function createTxnDetail () {
         var rowId;
         if ($scope.txnDetailList.data == undefined && $scope.txnDetailList.data ==null) {
