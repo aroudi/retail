@@ -426,7 +426,9 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         });
                     }
                 } else {
+                    //TODO: commented the warning for available qty in stock. we need to implement it in proper way later.
                     //we need to check against availabl qty in stock
+                    /*
                     if (txnDetail.txdeQtyInvoiced > txnDetail.product.stockQty) {
                         baseDataService.displayMessage('yesNo','Warnning','Qty entered is more than available qty('+ txnDetail.product.stockQty +'). Do you want to continue?').then(function(result){
                             if (result) {
@@ -437,6 +439,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                             }
                         });
                     }
+                    */
                 }
             }
             console.log('continued....');
@@ -452,6 +455,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                     //txnDetail.txdeQuantitySold = $scope.txdeQuantitySoldBeforeEditting;
                     //txnDetail[event.targetScope.col.field] = $scope.txdeQuantitySoldBeforeEditting;
                     txnDetail[event.targetScope.col.field] = txnDetail['originalQuantity'];
+                    return;
                 }
                 if (event.targetScope.col.field == 'txdeQtyInvoiced') {
                     //txnDetail.txdeQtyInvoice = $scope.txdeQtyInvoicedBeforeEditting;
@@ -513,7 +517,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         return row.entity.txmdComment;
                     }
                 },
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTenderVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>&nbsp;<a href=""><i tooltip="Refund" ng-show="(row.entity.id > 0)&&(row.entity.txmdAmountLocal>0)&&(!row.entity.txmdRefunded)&&(row.entity.txmdType.categoryCode===\'TXN_MEDIA_DEPOSIT\')" tooltip-placement="bottom" class="fa fa-backward fa-2x" ng-click="grid.appScope.refundTxnMedia(row)"></i></a>', width: '20%'}
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTenderVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>&nbsp;<a href=""><i tooltip="Refund" ng-show="(row.entity.id > 0)&&(row.entity.txmdAmountLocal>0)&&(!row.entity.txmdRefunded)&&(row.entity.txmdType.categoryCode===\'TXN_MEDIA_DEPOSIT\')&&(!$scope.isInvoiceMode)" tooltip-placement="bottom" class="fa fa-backward fa-2x" ng-click="grid.appScope.refundTxnMedia(row)"></i></a>', width: '20%'}
 
             ]
         }
@@ -1506,6 +1510,17 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 return;
             }
         }
+
+    };
+
+    $scope.setFormHeading = function() {
+
+        //if we creating invoice from sale order
+        if ($stateParams.txnType === 'txnSaleInvoice') {
+            return 'Create Invoice from Sale Order No ' + $scope.txnHeaderForm.txhdTxnNr;
+        }
+
+        return $scope.txnHeaderForm.txhdTxnType.displayName
 
     }
 });
