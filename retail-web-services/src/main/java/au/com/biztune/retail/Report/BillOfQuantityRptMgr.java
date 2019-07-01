@@ -48,7 +48,7 @@ public class BillOfQuantityRptMgr {
             final String pathStr = reportPath.getURL().getPath();
             final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             final List<BillOfQuantity> billOfQuantities = new ArrayList<BillOfQuantity>();
-            final BillOfQuantity billOfQuantity = billOfQuantityDao.getBillOfQuantityById(boqId);
+            final BillOfQuantity billOfQuantity = billOfQuantityDao.getBillOfQuantityExcludeVoidedLinesById(boqId);
             billOfQuantities.add(billOfQuantity);
             final JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(billOfQuantities);
             final String reportDetailJrxmlName = pathStr + "/" + reportDetailFileName + ".jrxml";

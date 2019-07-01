@@ -92,7 +92,7 @@ cimgApp.controller('boqListCtrl', function($scope, $state,ngDialog, uiGridConsta
     $scope.gridOptions.onRegisterApi = function (gridApi) {
         $scope.gridApi = gridApi;
         gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-            if (row.entity.boqStatus.categoryCode != 'BOQ_STATUS_CONFIRMED' && row.entity.boqStatus.categoryCode != 'BOQ_STATUS_NEW') {
+            if (row.entity.boqStatus.categoryCode != 'BOQ_STATUS_CONFIRMED') {
                 //baseDataService.displayMessage('Purchase Order already has been created');
                 $scope.gridApi.selection.unSelectRow(row.entity);
             }

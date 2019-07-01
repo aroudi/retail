@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialog, UserService, baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, TXN_TYPE_INVOICE, TXN_TYPE_REFUND, INVOICE_SEARCH_URI, INVOICE_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, DELIVERY_DOCKET_REPRINT_URI) {
+cimgApp.controller('invoiceListCtrl', function($q, $scope, $state, $timeout, ngDialog, UserService, baseDataService, SUCCESS, FAILURE, INVOICE_ALL_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, TXN_TYPE_INVOICE, TXN_TYPE_REFUND, INVOICE_SEARCH_URI, INVOICE_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, DELIVERY_DOCKET_REPRINT_URI) {
 
     $scope.showRefNo = function(row) {
         if (row.txhdOrigTxnNr == undefined || row.txhdOrigTxnNr == null) {
@@ -23,9 +23,10 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
     $scope.includeInvoice = true;
     $scope.includeRefund = true;
     $scope.searchForm.imported = false;
+    initPageData();
+
 
     $scope.getPage = function(){
-        console.log('get page called');
         $scope.searchForm.txnTypeList = [];
         if ($scope.includeInvoice) {
             $scope.searchForm.txnTypeList.push($scope.txnTypeInvoice.id);
@@ -114,17 +115,28 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
             $scope.getPage();
         });
     };
-    initPageData();
     function initPageData() {
         $scope.searchForm = {};
-        baseDataService.getBaseData(TXN_TYPE_INVOICE).then(function(response){
+        /*
+         * by default we only wants to query the invoices for last month until user change the date
+         */
+        $scope.searchForm.dateFrom = new Date(
+            new Date().getFullYear(),
+            new Date().getMonth() - 1,
+            new Date().getDate()
+        );
+
+        /*
+         * promiseList for using to call search after resolving all promises (after retreiving all base data)
+         */
+        promiseList = [];
+        promiseList.push(baseDataService.getBaseData(TXN_TYPE_INVOICE).then(function(response){
             $scope.txnTypeInvoice = response.data;
-            baseDataService.getBaseData(TXN_TYPE_REFUND).then(function(response){
-                $scope.txnTypeRefund = response.data;
-                $scope.getPage();
-            });
-        });
-        baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
+        }));
+        promiseList.push(baseDataService.getBaseData(TXN_TYPE_REFUND).then(function(response){
+            $scope.txnTypeRefund = response.data;
+        }));
+        promiseList.push(baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
             $scope.customerSet = response.data;
             baseDataService.populateCustomerDropdownList($scope.customerSet);
 
@@ -136,7 +148,10 @@ cimgApp.controller('invoiceListCtrl', function($scope, $state, $timeout, ngDialo
                 $scope.customerSet.unshift(customer);
             }
             //$scope.model.client = baseDataService.populateSelectList($scope.model.client,$scope.customerSet);
-        });
+        }));
+        $q.all(promiseList).then(function(results) {
+            $scope.getPage();
+        })
     }
 
     $scope.editTransaction = function(row, viewMode) {

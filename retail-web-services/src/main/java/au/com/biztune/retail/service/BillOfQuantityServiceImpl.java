@@ -591,6 +591,7 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                     }
                 }
                 //update the total fields in purchase order header.
+                purchaseOrderHeader.setCostsIncludeTax(true);
                 purchaseOrderDao.updatePurchaseOrderHeader(purchaseOrderHeader);
                 //fetch all project codes assigned to PO and insert as comma separated list to field PO_PRJ_CODE just for search.
 

@@ -295,6 +295,10 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
             "bulkPrice5" : productSupplier.suppBulkPrice5
         }
         displayBulkPrices(suppProdPrice);
+        //check if this is the only supplier added then set the default supplier to this one
+        if ($scope.gridOptions.data.length < 1) {
+            suppProdPrice.sprcPrefferBuy = true;
+        }
         $scope.gridOptions.data.push(suppProdPrice);
         $scope.selectDefaultSupplier(suppProdPrice);
     };

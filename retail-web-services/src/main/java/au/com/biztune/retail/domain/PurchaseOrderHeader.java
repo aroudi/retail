@@ -70,7 +70,9 @@ public class PurchaseOrderHeader {
      * @param purchaseLine purchaseLine
      */
     public void addLine(PurchaseLine purchaseLine) {
-        this.setPohValueGross(this.getPohValueGross() + purchaseLine.getPolValueOrdered());
+        //this.setPohValueGross(this.getPohValueGross() + purchaseLine.getPolValueGross());
+        this.setPohValueNett(this.getPohValueNett() + purchaseLine.getPolValueOrdered());
+        //this.setPohValueTax(this.getPohValueTax() + purchaseLine.getPolValueTax());
         this.setPohTotalQty(this.getPohTotalQty() + purchaseLine.getPolQtyOrdered());
         this.setPohTotalLines(this.getPohTotalLines() + 1);
         if (lines == null) {

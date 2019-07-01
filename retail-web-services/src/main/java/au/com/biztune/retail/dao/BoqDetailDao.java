@@ -78,6 +78,14 @@ public interface BoqDetailDao {
     BoqDetail getBoqDetailById(long id);
 
     /**
+     * get BOQDetail by id.
+     *
+     * @param id id
+     * @return BOQDetail
+     */
+    BoqDetail getBoqDetailNotVoidedByBoqId(long id);
+
+    /**
      * update received, balance and status.
      *
      * @param boqDetail boqDetail

@@ -43,6 +43,25 @@
         <collection property="lines" javaType="ArrayList" column="BOQ_ID" ofType="BoqDetail" select="au.com.biztune.retail.dao.BoqDetailDao.getBoqDetailByBoqId"/>
     </resultMap>
 
+    <resultMap id="BillOfQuantityNotVoidedDetailMap" type="BillOfQuantity" >
+        <id column="BOQ_ID" property="id" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="REFERENCE_CODE" property="referenceCode" />
+        <result column="BOQ_NAME" property="boqName" />
+        <result column="ORDER_NO" property="orderNo" />
+        <result column="NOTE" property="note" />
+        <result column="DATE_CREATED" property="dateCreated" />
+        <result column="BOQ_LAST_MODIFIED_DATE" property="boqLastModifiedDate" />
+        <result column="BOQ_LAST_MODIFIED_BY" property="boqLastModifiedBy" />
+        <result column="BOQ_VALUE_GROSS" property="boqValueGross" />
+        <result column="BOQ_VALUE_NETT" property="boqValueNett" />
+        <result column="BOQ_TOTAL_QTY" property="boqTotalQty" />
+        <result column="BOQ_TOTAL_LINES" property="boqTotalLines" />
+        <association property="project" column="PROJECT_ID" select="au.com.biztune.retail.dao.ProjectDao.getProjectById" />
+        <association property="boqStatus" column="BOQ_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <collection property="lines" javaType="ArrayList" column="BOQ_ID" ofType="BoqDetail" select="au.com.biztune.retail.dao.BoqDetailDao.getBoqDetailNotVoidedByBoqId"/>
+    </resultMap>
+
     <sql id="boqColumns">
      ${alias}.BOQ_ID,
      ${alias}.ORGU_ID,
@@ -137,6 +156,13 @@
     </select>
 
     <select id="getBillOfQuantityById" resultMap="BillOfQuantityDetailMap" >
+        <include refid="getBillOfQuantity">
+        </include>
+        WHERE
+        boq.BOQ_ID = #{value}
+    </select>
+
+    <select id="getBillOfQuantityExcludeVoidedLinesById" resultMap="BillOfQuantityNotVoidedDetailMap" >
         <include refid="getBillOfQuantity">
         </include>
         WHERE

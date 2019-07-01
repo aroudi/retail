@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout,UserService,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, TXN_STATUS_ONORDER, SO_STATUS_URI, POH_OF_SO_URI, INVOICE_OF_SO_URI) {
+cimgApp.controller('txnSaleListCtrl', function($q, $scope, $state,ngDialog, $timeout,UserService,baseDataService, SUCCESS, FAILURE, TXN_ALL_URI, TXN_GET_URI, TXN_EXPORT_PDF, TXN_TYPE_QUOTE, TXN_TYPE_SALE, TXN_SEARCH_URI, QUOTE_DELETE_URI, TXN_SEARCH_PAGING_URI, CUSTOMER_ALL_URI, TXN_STATUS_ONORDER, SO_STATUS_URI, POH_OF_SO_URI, INVOICE_OF_SO_URI) {
 
     $scope.saleOrderSearchForm = {};
     $scope.model = {};
@@ -81,18 +81,30 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
     };
     initPageData();
     function initPageData() {
+        /*
+         * promiseList for using to call search after resolving all promises (after retreiving all base data)
+         */
+        promiseList = [];
         $scope.saleOrderSearchForm = {};
-        baseDataService.getBaseData(TXN_TYPE_SALE).then(function(response){
+        /*
+         * by default we only wants to query the sale orders for last month until user change the date
+         */
+        $scope.saleOrderSearchForm.dateFrom = new Date(
+            new Date().getFullYear(),
+            new Date().getMonth() - 1,
+            new Date().getDate()
+        );
+
+        promiseList.push(baseDataService.getBaseData(TXN_TYPE_SALE).then(function(response){
             $scope.txnTypeSale = response.data;
-            baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){
-                $scope.txnTypeQuote = response.data;
-                $scope.getPage();
-            });
-        });
-        baseDataService.getBaseData(TXN_STATUS_ONORDER).then(function(response){
+        }));
+        promiseList.push(baseDataService.getBaseData(TXN_TYPE_QUOTE).then(function(response){
+            $scope.txnTypeQuote = response.data;
+        }));
+        promiseList.push(baseDataService.getBaseData(TXN_STATUS_ONORDER).then(function(response){
             $scope.txnStatusOnOrder = response.data;
-        });
-        baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
+        }));
+        promiseList.push(baseDataService.getBaseData(CUSTOMER_ALL_URI).then(function(response){
             $scope.customerSet = response.data;
             baseDataService.populateCustomerDropdownList($scope.customerSet);
 
@@ -104,8 +116,8 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
                 $scope.customerSet.unshift(customer);
             }
             //$scope.client = baseDataService.populateSelectList($scope.client,$scope.customerSet);
-        });
-        baseDataService.getBaseData(SO_STATUS_URI).then(function(response){
+        }));
+        promiseList.push(baseDataService.getBaseData(SO_STATUS_URI).then(function(response){
             $scope.statusSet = response.data;
             if ($scope.statusSet.length > 0) {
                 var allStatus = {
@@ -116,7 +128,10 @@ cimgApp.controller('txnSaleListCtrl', function($scope, $state,ngDialog, $timeout
                 $scope.statusSet.unshift(allStatus);
             }
             $scope.status = baseDataService.populateSelectList($scope.status,$scope.statusSet);
-        });
+        }));
+        $q.all(promiseList).then(function(results) {
+            $scope.getPage();
+        })
     }
 
     $scope.editTransaction = function(row, viewMode) {

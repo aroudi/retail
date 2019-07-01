@@ -477,6 +477,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 purchaseLine.setPolSuppId(txnDetail.getSupplierId());
                 purchaseOrderDao.insertPurchaseLine(purchaseLine);
                 createPoSoLink(purchaseLine, txnDetail);
+                //update total on purchase order header
                 purchaseOrderHeader.addLine(purchaseLine);
             }
             return true;

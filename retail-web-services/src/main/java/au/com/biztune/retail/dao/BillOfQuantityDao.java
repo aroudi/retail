@@ -25,6 +25,12 @@ public interface BillOfQuantityDao {
      */
     BillOfQuantity getBillOfQuantityById(long id);
 
+    /**
+     * get Bill of quantity exclude voided lines by id.
+     * @param id id
+     * @return BillOfQuantity
+     */
+    BillOfQuantity getBillOfQuantityExcludeVoidedLinesById(long id);
 
     /**
      * get all bill of quantities.

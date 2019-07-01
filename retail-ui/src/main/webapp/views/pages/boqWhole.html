@@ -2,7 +2,7 @@
         <div class="col-lg-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    Bill Of Quantity Header
+                    Bill Of Quantity
                 </div>
                 <div class="panel-body">
                     <form role="form" name="mainForm">
@@ -38,7 +38,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Project:</label>
                                             <input class="form-control" data-ng-model="billOfQuantity.project.projectName" ng-disabled="true">
@@ -48,6 +48,12 @@
                                         <div class="form-group">
                                             <label>Project No:</label>
                                             <input class="form-control" data-ng-model="billOfQuantity.project.projectCode" ng-disabled="true">
+                                        </div >
+                                    </div >
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label>Client:</label>
+                                            <input class="form-control" data-ng-model="billOfQuantity.project.customer.companyName" ng-disabled="true">
                                         </div >
                                     </div >
                                     <div class="col-lg-2">
@@ -83,8 +89,8 @@
                                 <div class="panel  panel-info">
                                     <div class="panel-heading">
                                         Lines:
-                                        <button type="button" class="btn btn-success" ng-click="addItem()" ng-disabled="billOfQuantity.boqStatus.categoryCode!='BOQ_STATUS_NEW'" ng-show="!isViewMode">add item</button>
-                                        <button type="button" class="btn btn-primary" ng-click="addItemFromPurchaseOrder()" ng-disabled="billOfQuantity.boqStatus.categoryCode!='BOQ_STATUS_NEW'" ng-show="!isViewMode">add item from purchase order</button>
+                                        <button type="button" class="btn btn-success" ng-click="addItem()" ng-disabled="(billOfQuantity.boqStatus.categoryCode!='BOQ_STATUS_NEW')&&(billOfQuantity.boqStatus.categoryCode!='BOQ_STATUS_CONFIRMED')" ng-show="!isViewMode">add item</button>
+                                        <button type="button" class="btn btn-primary" ng-click="addItemFromPurchaseOrder()" ng-disabled="(billOfQuantity.boqStatus.categoryCode!='BOQ_STATUS_NEW')&&(billOfQuantity.boqStatus.categoryCode!='BOQ_STATUS_CONFIRMED')" ng-show="!isViewMode">add item from purchase order</button>
                                     </div>
                                     <div class="panel-body">
                                         <div class="row">

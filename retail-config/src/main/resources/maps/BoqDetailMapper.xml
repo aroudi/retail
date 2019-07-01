@@ -110,6 +110,13 @@
         boqd.BOQ_ID = #{value}
     </select>
 
+    <select id="getBoqDetailNotVoidedByBoqId" resultMap="BoqDetailMap" >
+        <include refid="getBoqDetail">
+        </include>
+        WHERE
+        boqd.BOQ_ID = #{value} and boqd.bqd_status != (select category_id from CONFIG_CATEGORY where CATEGORY_CODE = 'BOQ_LINE_STATUS_VOID' )
+    </select>
+
     <select id="getBoqDetailLightByBoqId" resultMap="BoqDetailLightMap" >
         <include refid="getBoqDetail">
         </include>
