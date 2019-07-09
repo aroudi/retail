@@ -245,7 +245,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                 {field: 'calculatedLineValue', enableFiltering:false,displayName: 'Amount', enableCellEdit: false, cellFilter: 'currency', width: '8%'},
                 {field: 'calculatedLineTax', enableFiltering:false,displayName: 'Tax', cellFilter: 'currency', footerCellFilter: 'currency',enableCellEdit: false, width: '7%'},
                 {field: 'txdePriceSold', enableFiltering:false, displayName: 'Total', cellFilter: 'currency', footerCellFilter: 'currency', enableCellEdit: false, width: '10%'},
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="grid.appScope.isTxnLineVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Item" ng-show="(grid.appScope.isTxnLineVoidable(row))&&(!grid.appScope.isViewMode)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidItem(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)"></i></a>', width: '8%'}
 
             ]
         }
@@ -517,7 +517,7 @@ cimgApp.controller('txnSaleCtrl', function($scope, $state, $timeout, $stateParam
                         return row.entity.txmdComment;
                     }
                 },
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTenderVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>&nbsp;<a href=""><i tooltip="Refund" ng-show="(row.entity.id > 0)&&(row.entity.txmdAmountLocal>0)&&(!row.entity.txmdRefunded)&&(row.entity.txmdType.categoryCode===\'TXN_MEDIA_DEPOSIT\')&&(!$scope.isInvoiceMode)" tooltip-placement="bottom" class="fa fa-backward fa-2x" ng-click="grid.appScope.refundTxnMedia(row)"></i></a>', width: '20%'}
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Void Tender" ng-show="grid.appScope.isTenderVoidable(row)" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-click="grid.appScope.voidTender(row)" ></i></a>&nbsp;<a href=""><i tooltip="Delete Item" ng-show="row.entity.id < 0" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeTxnMedia(row)"></i></a>&nbsp;<a href=""><i tooltip="Refund" ng-show="(row.entity.id > 0)&&(row.entity.txmdAmountLocal>0)&&(!row.entity.txmdRefunded)&&(row.entity.txmdType.categoryCode===\'TXN_MEDIA_DEPOSIT\')&&(!$scope.isInvoiceMode)&&(!grid.appScope.isViewMode)" tooltip-placement="bottom" class="fa fa-backward fa-2x" ng-click="grid.appScope.refundTxnMedia(row)"></i></a>', width: '20%'}
 
             ]
         }

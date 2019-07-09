@@ -60,7 +60,7 @@ cimgApp.controller('deliveryNoteCtrl', function($filter, $scope,uiGridConstants,
                     return 'editModeColor'
                 }
             },
-            {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeItem(row)" ng-disabled="disablePage"></i></a>', width: '5%'}
+            {name:'Action', sortable:false,enableFiltering:false,enableCellEdit:false, cellTemplate:'<a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-show="(!grid.appScope.isViewMode)&&(!disablePage)" ng-click="grid.appScope.removeItem(row)" ng-disabled="disablePage"></i></a>', width: '5%'}
         ]
     }
     $scope.gridOptions.enableRowSelection = true;

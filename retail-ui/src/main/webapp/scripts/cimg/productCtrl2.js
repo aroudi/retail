@@ -141,7 +141,7 @@ cimgApp.controller('productCtrl2', function($scope, $state, $stateParams, UserSe
                 },
                 {field:'costBeforeTax', displayName:'cost(ex tax)',enableCellEdit:true, cellFilter: 'currency', width:'10%', enableFiltering:false},
                 {field:'price', displayName:'RRP',enableCellEdit:true, cellFilter: 'currency', width:'10%', enableFiltering:false},
-                {name:'Action',enableCellEdit:false,sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Remove" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-show="row.entity.id < 0" ng-click="grid.appScope.removeSuppProdPrice(row)"></i></a>&nbsp;<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-show="row.entity.id > 0" ng-click="grid.appScope.editSuppProdPrice(row)"></i></a>', width:'10%' }
+                {name:'Action',enableCellEdit:false,sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="Remove" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-show="row.entity.id < 0" ng-click="grid.appScope.removeSuppProdPrice(row)"></i></a>&nbsp;<a href=""><i tooltip="Edit" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-show="(row.entity.id > 0)&&(!grid.appScope.isViewMode)" ng-click="grid.appScope.editSuppProdPrice(row)"></i></a>', width:'10%' }
 
             ]
         }

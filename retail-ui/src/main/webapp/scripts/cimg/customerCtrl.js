@@ -1,7 +1,7 @@
 /**
  * Created by arash on 14/08/2015.
  */
-cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialog,uiGridConstants,viewMode, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_PAYMENT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI, TXN_EXPORT_PDF,ALL_CATEGORY_OFTYPE_URI, COUNTRY_LIST_URI ) {
+cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialog,uiGridConstants,viewMode, UserService, baseDataService, SUCCESS, FAILURE, CUSTOMER_ADD_URI, TXN_GET_URI, CUSTOMERGRADE_ALL_URI, CUSTOMER_TYPE_URI, CUSTOMER_STATUS_URI, CUSTOMER_GET_ACCOUNT_PAYMENT_URI, CUSTOMER_ALL_INVOICE_URI, CUSTOMER_ALL_SALEORDER_URI,CUSTOMER_ALL_BOQ_URI, INVOICE_GET_URI, INVOICE_EXPORT_PDF, BOQ_GET_URI, TXN_EXPORT_PDF,ALL_CATEGORY_OFTYPE_URI, COUNTRY_LIST_URI ) {
     $scope.isNewPage = true;
     $scope.isViewMode = false;
     if (viewMode!=undefined) {
@@ -64,7 +64,7 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
                 {field:'txhdTxnNr', displayName:'Invoice No',enableCellEdit:false, width:'15%'},
                 {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'15%', cellFilter:'currency'},
                 {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'15%', cellFilter:'currency'},
-                {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' }
+                {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.editTransaction(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.exportToPdf(row)"></i></a>', width:'10%' }
             ]
         }
         $scope.invoiceList.enableRowSelection = true;
@@ -96,7 +96,7 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
                 {field:'txhdTxnType.displayName' , displayName:'Type', enableCellEdit:false, width:'10%'},
                 {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'10%', cellFilter:'currency'},
                 {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'10%', cellFilter:'currency'},
-                {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editSaleOrder(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.printSaleOrder(row)"></i></a>', width:'10%' }
+                {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.editSaleOrder(row)"></i></a>&nbsp;<a href=""><i tooltip="Print" tooltip-placement="bottom" class="fa fa-print fa-2x" ng-click="grid.appScope.printSaleOrder(row)"></i></a>', width:'10%' }
             ]
         }
         $scope.saleOrderList.enableRowSelection = true;
@@ -149,7 +149,7 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
                         return grid.getCellValue(row, col).color
                     }
                 },
-                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.viewBoqDetail(row)"></i></a>', width:'5%' }
+                {name:'Action', sortable:false,enableFiltering:false, cellTemplate:'<a href=""><i tooltip="View Detail" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.viewBoqDetail(row)"></i></a>', width:'5%' }
             ]
         }
         $scope.boqList.enableRowSelection = true;
@@ -189,7 +189,7 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
                 },
                 {field:'mobile', enableCellEdit:false, width:'10%'},
                 {field:'email', enableCellEdit:false, width:'20%'},
-                {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editContact(row)"></i></a><a href=""><i tooltip="Remove" tooltip-placement="bottom" class="fa fa-remove fa-2x" ng-click="grid.appScope.removeContact(row)"></i></a>', width:'5%' }
+                {name:'Action', cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.editContact(row)"></i></a>', width:'5%' }
             ]
         }
         $scope.gridOptions.enableRowSelection = true;
@@ -331,23 +331,6 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
             }
         );
     }
-    $scope.removeContact = function(row) {
-        baseDataService.displayMessage('yesNo','Warning!!','Are you sure you want to delete this contact?').then(function(result){
-            if (result) {
-                if (row == undefined || row.entity == undefined) {
-                    alert('item is undefined');
-                    return;
-                }
-                var rowIndex = baseDataService.getArrIndexOf($scope.gridOptions.data, row.entity);
-                if (rowIndex>-1) {
-                    $scope.gridOptions.data.splice(rowIndex,1);
-                }
-            } else {
-                return;
-            }
-        });
-
-    }
 
     function getLastDateOfMonth() {
         var date = new Date();
@@ -377,7 +360,17 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
             //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
-            $state.go('dashboard.createSaleTransaction');
+            ngDialog.openConfirm({
+                template:'views/pages/txnSale.html',
+                controller:'txnSaleCtrl',
+                className: 'ngdialog-pdfView',
+                closeByDocument:false,
+                resolve: {viewMode: function(){return true}}
+            }).then (function (){
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                }
+            );
         });
     }
     $scope.exportToPdf = function(row) {
@@ -386,7 +379,7 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
         baseDataService.pdfViewer(exportUrl);
     }
 
-    $scope.editSaleOrder = function(row) {
+    $scope.editSaleOrder = function(row){
         if (row == undefined || row.entity == undefined) {
             alert('row is undefined');
             return;
@@ -396,9 +389,20 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
             //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
             //redirect to the supplier page.
-            $state.go('dashboard.createSaleTransaction');
+            ngDialog.openConfirm({
+                template:'views/pages/txnSale.html',
+                controller:'txnSaleCtrl',
+                className: 'ngdialog-pdfView',
+                closeByDocument:false,
+                resolve: {viewMode: function(){return true}}
+            }).then (function (){
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                }
+            );
         });
     }
+
 
     $scope.printSaleOrder = function(row) {
 
@@ -444,10 +448,20 @@ cimgApp.controller('customerCtrl', function($scope, $state, $stateParams,ngDialo
         baseDataService.getBaseData(boqGetURI).then(function(response){
             //baseDataService.setIsPageNew(false);
             baseDataService.setRow(response.data);
-            //redirect to the supplier page.
-            $state.go('dashboard.viewBoqDetail');
+            ngDialog.openConfirm({
+                template:'views/pages/boqWhole.html',
+                controller:'boqDetailListCtrl',
+                className: 'ngdialog-pdfView',
+                closeByDocument:false,
+                resolve: {viewMode: function(){return true}}
+            }).then (function (){
+                }, function(reason) {
+                    console.log('Modal promise rejected. Reason:', reason);
+                }
+            );
         });
-    };
+    }
+
     $scope.cancel = function() {
         $scope.closeThisDialog('button');
     };

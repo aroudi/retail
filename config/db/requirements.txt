@@ -140,3 +140,5 @@ this is while in importing boq, we add supplier to the current product.
 35- [***********] voided an item on sale order. there is no any way to unvoid it before committing the transaction
 36- [**********] it is better to display void-line with a line across the item. also it is better to display void lines when retreiving a transaction
 37- [***] when invoicing item from sale order, the page need to display invoice mode( for example change the colour or change caption to invoice)
+38- [*******] when open a customer in view mode, the transaction belogns to that coustomer (invoices, sale orders ....) need alse to be opened in view mode not edit mode
+
