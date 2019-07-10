@@ -78,15 +78,9 @@ cimgApp.controller('invoiceListCtrl', function($q, $scope, $state, $timeout, ngD
             },
             {field:'txhdOrigTxnNr', cellTemplate: txnNumberTemplate,displayName:'Ref No',enableCellEdit:false, width:'8%'},
             {field:'txhdTxnNr', displayName:'Invoice/Refund No',enableCellEdit:false, width:'15%'},
-            {field:'invoiceTxnType.displayName', displayName:'Type',enableCellEdit:false, width:'5%',
+            {field:'invoiceTxnType', displayName:'Type',enableCellEdit:false, width:'5%', cellFilter:'invoiceTxnTypeFilter',
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
-                    if (grid.getCellValue(row, col) === 'INVOICE') {
-                        return 'green';
-                    } else if (grid.getCellValue(row, col) === 'REFUND') {
-                        return 'red'
-                    } else{
-                        return 'amber'
-                    }
+                    return grid.getCellValue(row, col).color
                 }
             },
             {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'7%', cellFilter:'currency'},

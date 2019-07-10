@@ -54,7 +54,11 @@ cimgApp.controller('txnSaleListCtrl', function($q, $scope, $state,ngDialog, $tim
             {field:'customer.companyName', displayName:'Client', enableCellEdit:false, width:'15%'},
             {field:'txhdPrjCode', displayName:'Project', enableCellEdit:false, width:'5%'},
             {field:'txhdTxnNr', displayName:'Number',enableCellEdit:false, width:'7%'},
-            {field:'txhdTxnType.displayName' , displayName:'Type', enableCellEdit:false, width:'8%'},
+            {field:'txhdTxnType' , displayName:'Type', enableCellEdit:false, width:'8%',cellFilter:'txnTypeFilter',
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    return grid.getCellValue(row, col).color
+                }
+            },
             {field:'txhdValueNett', displayName:'Total',enableCellEdit:false, width:'8%', cellFilter:'currency'},
             {field:'txhdValueDue', displayName:'Due',enableCellEdit:false, width:'7%', cellFilter:'currency'},
             {field:'status', displayName:'Status', enableCellEdit:false, width:'10%', cellFilter:'configCategoryFilter',

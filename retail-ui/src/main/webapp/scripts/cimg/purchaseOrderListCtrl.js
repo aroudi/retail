@@ -73,7 +73,21 @@ cimgApp.controller('purchaseOrderListCtrl', function($scope, $state, uiGridConst
                     //baseDataService.setIsPageNew(false);
                     baseDataService.setRow(response.data);
                     //redirect to the supplier page.
-                    $state.go('dashboard.deliveryNote');
+                    ngDialog.openConfirm({
+                        template:'views/pages/deliveryNote.html',
+                        controller:'deliveryNoteCtrl',
+                        className: 'ngdialog-pdfView',
+                        closeByDocument:false,
+                        resolve: {viewMode: function(){return true},
+                            taxCodeSet: function(baseDataService, TAXLEGVARIANCE_ALL_URI){
+                                return baseDataService.getBaseData(TAXLEGVARIANCE_ALL_URI);
+                            }
+                        }
+                    }).then (function (){
+                        }, function(reason) {
+                            console.log('Modal promise rejected. Reason:', reason);
+                        }
+                    );
                 });
             },
 

@@ -116,19 +116,19 @@ this is while in importing boq, we add supplier to the current product.
 13- [***] created a purchase order from 2 BOQ. received goods in 2 stages. the second stage update the qty and status on po successfully but the status and qty received didn't get updated successfully on boq on second time
 14- [******] from previous example, if we update BOQ figures manually on PO(detail) the figures does not update the BOQ item received qty and status. also it update BOQ status to 'CONFIRMED' which is not correct
 15- [*****] when-ever open existing PO and commit it, the status changed to 'confirmed' which is not correct
-16- [*] BOQ - when confirmed, we can't delete it from the system
-17- [*] BOQ - when the status is 'PENDING' user should not be able to generate PO from it
+16- [DONE] BOQ - when confirmed, we can't delete it from the system
+17- [DONE] BOQ - when the status is 'PENDING' user should not be able to generate PO from it
 18- [**] when system get shutdown, we need to set usr_loged_on to 0
 19- [] PO search based on create date is not accurate(to date return the PO with create date one day ahead (to date))
-20- [] PO, on view mode the action should not be displayed
-21- [] PO list, when expand the PO, the delivery note should be displayed in view mode
+20- [DONE] PO, on view mode the action should not be displayed
+21- [DONE] PO list, when expand the PO, the delivery note should be displayed in view mode
 22- [] DN search based on create date is not accurate(to date return the PO with create date one day ahead (to date))
-23- [*] on Sale Order/ Quote List, distinguish sale order from quote by different colour
-24- [*] on view quote, the action button must be invisible - also the AddProduct button must be invisible
+23- [DONE] on Sale Order/ Quote List, distinguish sale order from quote by different colour
+24- [DONE] on view quote, the action button must be invisible - also the AddProduct button must be invisible
 25- [***] which contact info from customer appears on sale order/quote and also on search box?.
 26- [] deleting a product mark it as deleted and add deleted caption stamped with date to its information. the problem is that if that product is used in any transaction,
      when viewing the transaction the sku is amended with deleted and date at the end of it.
-27- [] sale order in view mode the action and search product must be disabled.
+27- [DONE] sale order in view mode the action and search product must be disabled.
 28- [DONE] sale order / quote list, by default list is empty. may be it should be this way because of the amount of transactions. it is better to limit them to  last month
 29- [DONE] sale order: if we received deposit for sale order, there is no any way to refund deposit if user cancel the sale order.
     one option is to negate the deposit amount
@@ -140,5 +140,5 @@ this is while in importing boq, we add supplier to the current product.
 35- [***********] voided an item on sale order. there is no any way to unvoid it before committing the transaction
 36- [**********] it is better to display void-line with a line across the item. also it is better to display void lines when retreiving a transaction
 37- [***] when invoicing item from sale order, the page need to display invoice mode( for example change the colour or change caption to invoice)
-38- [*******] when open a customer in view mode, the transaction belogns to that coustomer (invoices, sale orders ....) need alse to be opened in view mode not edit mode
+38- [DONE] when open a customer in view mode, the transaction belogns to that coustomer (invoices, sale orders ....) need alse to be opened in view mode not edit mode
 

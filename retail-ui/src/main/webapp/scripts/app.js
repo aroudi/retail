@@ -1061,6 +1061,22 @@ cimgApp.filter('configCategoryFilter', function() {
         return status.displayName;
     };
 });
+cimgApp.filter('txnTypeFilter', function() {
+    return function (txhdTxnType) {
+        if (txhdTxnType === undefined || txhdTxnType === null) {
+            return '';
+        }
+        return txhdTxnType.displayName;
+    };
+});
+cimgApp.filter('invoiceTxnTypeFilter', function() {
+    return function (invoiceTxnType) {
+        if (invoiceTxnType === undefined || invoiceTxnType === null) {
+            return '';
+        }
+        return invoiceTxnType.displayName;
+    };
+});
     cimgApp.filter('fullName', function() {
         return function (lastModifiedBy) {
             if (lastModifiedBy ==undefined || lastModifiedBy ==null) {

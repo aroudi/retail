@@ -61,7 +61,7 @@ cimgApp.controller('boqDetailListCtrl', function($filter, $scope,uiGridConstants
                     return 'Released by invoice: ' + row.entity.releasedForInvoice;
                 }
             },
-            {name:'Action', cellTemplate:'<a href=""><i tooltip="void item" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-show="grid.appScope.showVoidButton(row.entity)" ng-click="grid.appScope.voidItem(row)"></i></a><a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)" ng-show="row.entity.id < 0 "></i></a>', width:'10%' }
+            {name:'Action', cellTemplate:'<a href=""><i tooltip="void item" tooltip-placement="bottom" class="fa fa-close fa-2x" ng-show="grid.appScope.showVoidButton(row.entity)" ng-click="grid.appScope.voidItem(row)"></i></a><a href=""><i tooltip="delete item" tooltip-placement="bottom" class="fa fa-trash-o fa-2x" ng-click="grid.appScope.removeItem(row)" ng-show="(row.entity.id < 0) && (!grid.appScope.isViewMode)"></i></a>', width:'10%' }
 
         ]
     }
