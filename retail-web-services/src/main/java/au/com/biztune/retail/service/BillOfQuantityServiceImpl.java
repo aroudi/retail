@@ -740,7 +740,9 @@ public class BillOfQuantityServiceImpl implements BillOfQuantityService {
                     continue;
                 }
                 if (billOfQuantity.getBoqStatus() != null
-                        && !(billOfQuantity.getBoqStatus().getCategoryCode().equals(IdBConstant.BOQ_STATUS_NEW) || billOfQuantity.getBoqStatus().getCategoryCode().equals(IdBConstant.BOQ_STATUS_CONFIRMED))) {
+                        && !(billOfQuantity.getBoqStatus().getCategoryCode().equals(IdBConstant.BOQ_STATUS_NEW)
+                        || billOfQuantity.getBoqStatus().getCategoryCode().equals(IdBConstant.BOQ_STATUS_CONFIRMED)))
+                {
                     logger.debug("boq [{}] status is not pending or confirmed. can't delete it", boqId);
                     continue;
                 }

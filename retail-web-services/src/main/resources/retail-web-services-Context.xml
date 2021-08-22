@@ -25,7 +25,10 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
 
-    <import resource="classpath:application-context-dao.xml"/>
+    <!-- use this for running on docker-->
+    <import resource="classpath:application-context-docker-dao.xml"/>
+    <!-- uncomment this for running on local tomcat-->
+    <!--import resource="classpath:application-context-dao.xml"/-->
     <import resource="classpath:application-context-report.xml"/>
     <bean id="transactionManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

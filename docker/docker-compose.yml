@@ -1,0 +1,51 @@
+version: '3.9'
+volumes:
+  retail_db:
+
+services:
+  app_server:
+    container_name: tomcat_container
+    build:
+        context: ./web-app
+        dockerfile: Dockerfile
+    depends_on:
+      MsSqlDb:
+             condition: service_healthy
+    ports:
+            - "8082:8080"
+    environment:
+            - db_driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
+            - db_url=jdbc:sqlserver://MsSqlDb:1433;DatabaseName=RETAIL
+            - db_initialSize=5
+            - db_maxActive=10
+            - db_username=RETAILUser
+            - db_password=RETAILUser
+            - RETAIL_CONFIG_DIR=configDev
+  mssqldata:
+    image: liaisonintl/mssql-server-linux:latest
+    entrypoint: /bin/bash
+
+  MsSqlDb:
+    image: liaisonintl/mssql-server-linux:latest
+    ports:
+      - 1433:1433
+    volumes:
+      - /var/opt/mssql
+      - retail_db:/var/retail-data
+      # map local drive to container drive
+      - ./db/sql:/usr/src/app 
+    # bash will be executed from that path, our scripts folder
+    working_dir: /usr/src/app 
+    # run the entrypoint.sh that will import the data AND sqlserver
+    command: sh -c ' chmod +x ./entrypoint.sh; ./entrypoint.sh & /opt/mssql/bin/sqlservr;'
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "P@55w0rd"
+    healthcheck:
+              test: /opt/mssql-tools/bin/sqlcmd -U RETAILUser -P 'RETAILUser' -Q 'select count(*) from app_user'
+              interval: 1s
+              retries: 50
+              timeout: 50s
+    #don't use this if you don't want to persit data between docker up and down
+    volumes_from:
+      - mssqldata
