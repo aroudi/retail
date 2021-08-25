@@ -1,7 +1,7 @@
 // rtta-configuration gradle setup:
 dependencies {
-    compile group:'org.springframework', name:'spring-context', version :springVersion
-    testCompile group: 'org.apache.commons', name: 'commons-dbcp2', version: commonsDbcp2Version
+    implementation group:'org.springframework', name:'spring-context', version :springVersion
+    testImplementation group: 'org.apache.commons', name: 'commons-dbcp2', version: commonsDbcp2Version
 
 }
 jar {
