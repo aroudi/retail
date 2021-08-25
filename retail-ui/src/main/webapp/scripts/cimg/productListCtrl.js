@@ -45,12 +45,12 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
         columnDefs: [
             {name:'Action', enableFiltering:false,cellTemplate:'<a href=""><i tooltip="Open" tooltip-placement="bottom" class="fa fa-edit fa-2x" ng-click="grid.appScope.editProduct(row)"></i></a><a href="">&nbsp;&nbsp;<i tooltip="View" tooltip-placement="bottom" class="fa fa-eye fa-2x" ng-click="grid.appScope.viewProduct(row)"></i></a>', width:'5%' },
             {field:'id', visible:false, enableCellEdit:false},
-            {field:'prodSku', enableCellEdit:false, width:'10%',
+            {field:'prodSku', enableCellEdit:false, width:'25%',
                 cellTooltip: function(row,col) {
                     return row.entity.prodSku
                 }
             },
-            {field:'prodDesc', displayName:'Description',enableCellEdit:false, width:'25%',
+            {field:'prodDesc', displayName:'Description',enableCellEdit:false, width:'30%',
                 cellTooltip: function(row,col) {
                     return row.entity.prodDesc
                 }
@@ -59,14 +59,14 @@ cimgApp.controller('productListCtrl', function($scope, $state, $timeout,ngDialog
             //{field:'category1', displayName:'Cat1',enableCellEdit:false, width:'10%'},
             //{field:'category2', displayName:'Cat2',enableCellEdit:false, width:'10%'},
             //{field:'category3', displayName:'Cat3',enableCellEdit:false, width:'10%'},
-            {field:'stockQty', displayName:'In Stock',enableCellEdit:false, width:'5%'},
-            {field:'prodCost', displayName:'Cost',enableCellEdit:false, width:'7%', cellFilter:'currency'},
-            {field:'rrp', displayName:'RRP',enableCellEdit:false, width:'8%', cellFilter:'currency'},
-            {field:'defaultPrice', displayName:'Grade Def',enableCellEdit:false, width:'7%', cellFilter:'currency'},
-            {field:'gradeAPrice', displayName:'Grade A',enableCellEdit:false, width:'7%',cellFilter:'currency'},
-            {field:'gradeBPrice', displayName:'Grade B',enableCellEdit:false, width:'7%',cellFilter:'currency'},
-            {field:'gradeCPrice', displayName:'Grade C',enableCellEdit:false, width:'7%',cellFilter:'currency'},
-            {field:'gradeDPrice', displayName:'Grade D',enableCellEdit:false, width:'7%',cellFilter:'currency'}
+            {field:'stockQty', displayName:'In Stock',enableCellEdit:false, width:'15%'},
+            {field:'sellPrice.prcePrice', displayName:'price',enableCellEdit:false, width:'30%', cellFilter:'currency'}
+            //{field:'rrp', displayName:'RRP',enableCellEdit:false, width:'8%', cellFilter:'currency'},
+            //{field:'defaultPrice', displayName:'Grade Def',enableCellEdit:false, width:'7%', cellFilter:'currency'},
+            //{field:'gradeAPrice', displayName:'Grade A',enableCellEdit:false, width:'7%',cellFilter:'currency'},
+            //{field:'gradeBPrice', displayName:'Grade B',enableCellEdit:false, width:'7%',cellFilter:'currency'},
+            //{field:'gradeCPrice', displayName:'Grade C',enableCellEdit:false, width:'7%',cellFilter:'currency'},
+            //{field:'gradeDPrice', displayName:'Grade D',enableCellEdit:false, width:'7%',cellFilter:'currency'}
         ]
     };
     $scope.gridOptions.enableRowSelection = true;

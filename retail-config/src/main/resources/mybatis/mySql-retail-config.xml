@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+        <typeAlias type="au.com.biztune.retail.domain.CustomerGrade" alias="CustomerGrade" />
+        <typeAlias type="au.com.biztune.retail.domain.Customer" alias="Customer" />
+        <typeAlias type="au.com.biztune.retail.domain.ConfigCategory" alias="ConfigCategory" />
+        <typeAlias type="au.com.biztune.retail.domain.Contact" alias="Contact" />
+        <typeAlias type="au.com.biztune.retail.domain.Supplier" alias="Supplier" />
+        <typeAlias type="au.com.biztune.retail.domain.SuppOrguLink" alias="SuppOrguLink" />
+        <typeAlias type="au.com.biztune.retail.domain.Company" alias="Company" />
+        <typeAlias type="au.com.biztune.retail.domain.OrgUnit" alias="OrgUnit" />
+        <typeAlias type="au.com.biztune.retail.domain.UnitOfMeasure" alias="UnitOfMeasure" />
+        <typeAlias type="au.com.biztune.retail.domain.TaxRule" alias="TaxRule" />
+        <typeAlias type="au.com.biztune.retail.domain.TaxRuleName" alias="TaxRuleName" />
+        <typeAlias type="au.com.biztune.retail.domain.TaxLegVariance" alias="TaxLegVariance" />
+        <typeAlias type="au.com.biztune.retail.domain.ProuTxrlLink" alias="ProuTxrlLink" />
+        <typeAlias type="au.com.biztune.retail.domain.PriceBand" alias="PriceBand" />
+        <typeAlias type="au.com.biztune.retail.domain.Price" alias="Price" />
+        <typeAlias type="au.com.biztune.retail.domain.PriceCode" alias="PriceCode" />
+        <typeAlias type="au.com.biztune.retail.domain.LegalTender" alias="LegalTender" />
+        <typeAlias type="au.com.biztune.retail.domain.Product" alias="Product" />
+        <typeAlias type="au.com.biztune.retail.domain.SuppProdPrice" alias="SuppProdPrice" />
+        <typeAlias type="au.com.biztune.retail.domain.ProdOrguLink" alias="ProdOrguLink" />
+        <typeAlias type="au.com.biztune.retail.domain.Project" alias="Project" />
+        <typeAlias type="au.com.biztune.retail.domain.BillOfQuantity" alias="BillOfQuantity" />
+        <typeAlias type="au.com.biztune.retail.domain.BoqDetail" alias="BoqDetail" />
+        <typeAlias type="au.com.biztune.retail.domain.MediaType" alias="MediaType" />
+        <typeAlias type="au.com.biztune.retail.domain.PaymentMedia" alias="PaymentMedia" />
+        <typeAlias type="au.com.biztune.retail.domain.Store" alias="Store" />
+        <typeAlias type="au.com.biztune.retail.domain.TxnDetail" alias="TxnDetail" />
+        <typeAlias type="au.com.biztune.retail.domain.TxnHeader" alias="TxnHeader" />
+        <typeAlias type="au.com.biztune.retail.domain.TxnMedia" alias="TxnMedia" />
+        <typeAlias type="au.com.biztune.retail.domain.ProductSaleItem" alias="ProductSaleItem" />
+        <typeAlias type="au.com.biztune.retail.domain.PurchaseOrderHeader" alias="PurchaseOrderHeader" />
+        <typeAlias type="au.com.biztune.retail.domain.PurchaseLine" alias="PurchaseLine" />
+        <typeAlias type="au.com.biztune.retail.domain.ProductPurchaseItem" alias="ProductPurchaseItem" />
+        <typeAlias type="au.com.biztune.retail.domain.PoBoqLink" alias="PoBoqLink" />
+        <typeAlias type="au.com.biztune.retail.domain.DeliveryNoteHeader" alias="DeliveryNoteHeader" />
+        <typeAlias type="au.com.biztune.retail.domain.DeliveryNoteLine" alias="DeliveryNoteLine" />
+        <typeAlias type="au.com.biztune.retail.domain.PoDelNoteLink" alias="PoDelNoteLink" />
+        <typeAlias type="au.com.biztune.retail.domain.CustomerContact" alias="CustomerContact" />
+        <typeAlias type="au.com.biztune.retail.domain.AppUser" alias="AppUser" />
+        <typeAlias type="au.com.biztune.retail.domain.AppRole" alias="AppRole" />
+        <typeAlias type="au.com.biztune.retail.domain.AccessPoint" alias="AccessPoint" />
+        <typeAlias type="au.com.biztune.retail.domain.AppUserRole" alias="AppUserRole" />
+        <typeAlias type="au.com.biztune.retail.domain.UserAccess" alias="UserAccess" />
+        <typeAlias type="au.com.biztune.retail.domain.RoleAccess" alias="RoleAccess" />
+        <typeAlias type="au.com.biztune.retail.domain.StockLocation" alias="StockLocation" />
+        <typeAlias type="au.com.biztune.retail.domain.Stock" alias="Stock" />
+        <typeAlias type="au.com.biztune.retail.domain.StockEvent" alias="StockEvent" />
+        <typeAlias type="au.com.biztune.retail.domain.CustomerAccountDebt" alias="CustomerAccountDebt" />
+        <typeAlias type="au.com.biztune.retail.domain.CashSession" alias="CashSession" />
+        <typeAlias type="au.com.biztune.retail.domain.SessionEvent" alias="SessionEvent" />
+        <typeAlias type="au.com.biztune.retail.domain.SessionEventDetail" alias="SessionEventDetail" />
+        <typeAlias type="au.com.biztune.retail.domain.SessionMedia" alias="SessionMedia" />
+        <typeAlias type="au.com.biztune.retail.domain.SessionTotal" alias="SessionTotal" />
+        <typeAlias type="au.com.biztune.retail.domain.TxnSessionLink" alias="TxnSessionLink" />
+        <typeAlias type="au.com.biztune.retail.domain.TotalMediaOperator" alias="TotalMediaOperator" />
+        <typeAlias type="au.com.biztune.retail.domain.TotalSaleOperator" alias="TotalSaleOperator" />
+        <typeAlias type="au.com.biztune.retail.domain.TotalTaxGroup" alias="TotalTaxGroup" />
+        <typeAlias type="au.com.biztune.retail.domain.ConfigType" alias="ConfigType" />
+        <typeAlias type="au.com.biztune.retail.domain.Account" alias="Account" />
+        <typeAlias type="au.com.biztune.retail.domain.JournalEntry" alias="JournalEntry" />
+        <typeAlias type="au.com.biztune.retail.domain.JournalSupport" alias="JournalSupport" />
+        <typeAlias type="au.com.biztune.retail.domain.JournalRule" alias="JournalRule" />
+        <typeAlias type="au.com.biztune.retail.domain.AccountingExport" alias="AccountingExport" />
+        <typeAlias type="au.com.biztune.retail.domain.AccExportDelnLink" alias="AccExportDelnLink" />
+        <typeAlias type="au.com.biztune.retail.domain.AccExportSuppLink" alias="AccExportSuppLink" />
+        <typeAlias type="au.com.biztune.retail.domain.AccExportSessionLink" alias="AccExportSessionLink" />
+        <typeAlias type="au.com.biztune.retail.domain.ProductSale" alias="ProductSale" />
+        <typeAlias type="au.com.biztune.retail.domain.TxnAccPayment" alias="TxnAccPayment" />
+        <typeAlias type="au.com.biztune.retail.domain.PoSoLink" alias="PoSoLink" />
+        <typeAlias type="au.com.biztune.retail.domain.StockReserve" alias="StockReserve" />
+        <typeAlias type="au.com.biztune.retail.domain.TxnDebtorPayment" alias="TxnDebtorPayment" />
+        <typeAlias type="au.com.biztune.retail.domain.Department" alias="Department" />
+        <typeAlias type="au.com.biztune.retail.domain.CategoryHeading" alias="CategoryHeading" />
+        <typeAlias type="au.com.biztune.retail.domain.CategoryValue" alias="CategoryValue" />
+        <typeAlias type="au.com.biztune.retail.domain.ProdDeptCat" alias="ProdDeptCat" />
+        <typeAlias type="au.com.biztune.retail.domain.DeptCategoryVal" alias="DeptCategoryVal" />
+        <typeAlias type="au.com.biztune.retail.domain.DeptCategory" alias="DeptCategory" />
+        <typeAlias type="au.com.biztune.retail.domain.TreeViewNode" alias="TreeViewNode" />
+        <typeAlias type="au.com.biztune.retail.domain.ReportTreeViewNode" alias="ReportTreeViewNode" />
+        <typeAlias type="au.com.biztune.retail.domain.ReportParam" alias="ReportParam" />
+        <typeAlias type="au.com.biztune.retail.domain.ReportParamVal" alias="ReportParamVal" />
+        <typeAlias type="au.com.biztune.retail.domain.ReportSaleRow" alias="ReportSaleRow" />
+        <typeAlias type="au.com.biztune.retail.domain.ReportGoodReceivedRow" alias="ReportGoodReceivedRow" />
+        <typeAlias type="au.com.biztune.retail.domain.ReportDebtorRow" alias="ReportDebtorRow" />
+        <typeAlias type="au.com.biztune.retail.domain.ProductExtended" alias="ProductExtended" />
+        <typeAlias type="au.com.biztune.retail.domain.CashupDetailTxnSummaryRow" alias="CashupDetailTxnSummaryRow" />
+    </typeAliases>
+    <mappers>
+        <mapper resource="maps/UnitOfMeasureMapper.xml" />
+        <mapper resource="maps/CustomerMapper.xml" />
+        <mapper resource="maps/CustomerGradeMapper.xml" />
+        <mapper resource="maps/ConfigCategoryMapper.xml" />
+        <mapper resource="maps/ContactMapper.xml" />
+        <mapper resource="maps/SupplierMapper.xml" />
+        <mapper resource="maps/OrgUnitMapper.xml" />
+        <mapper resource="maps/TaxRuleMapper.xml" />
+        <mapper resource="maps/PriceBandMapper.xml" />
+        <mapper resource="maps/PriceMapper.xml" />
+        <mapper resource="maps/ProductMapper.xml" />
+        <mapper resource="maps/TaxRuleMapper.xml" />
+        <mapper resource="maps/SuppProdPriceMapper.xml" />
+        <mapper resource="maps/LegalTenderMapper.xml" />
+        <mapper resource="maps/ProjectMapper.xml" />
+        <mapper resource="maps/BillOfQuantityMapper.xml" />
+        <mapper resource="maps/BoqDetailMapper.xml" />
+        <mapper resource="maps/PaymentMediaMapper.xml" />
+        <mapper resource="maps/TxnMapper.xml" />
+        <mapper resource="maps/PurchaseOrderMapper.xml" />
+        <mapper resource="maps/PoBoqLinkMapper.xml" />
+        <mapper resource="maps/DeliveryNoteMapper.xml" />
+        <mapper resource="maps/PoDelNoteLinkMapper.xml" />
+        <mapper resource="maps/UserMapper.xml" />
+        <mapper resource="maps/StockMapper.xml" />
+        <mapper resource="maps/InvoiceMapper.xml" />
+        <mapper resource="maps/CustomerAccountDebtMapper.xml" />
+        <mapper resource="maps/mysql/MySqlCashSessionMapper.xml" />
+        <mapper resource="maps/TotalerMapper.xml" />
+        <mapper resource="maps/AccountingMapper.xml" />
+        <mapper resource="maps/PoSoLinkMapper.xml" />
+        <mapper resource="maps/ProductCategoryMapper.xml" />
+        <mapper resource="maps/ReportingMapper.xml" />
+        <mapper resource="maps/ReportsMapper.xml" />
+    </mappers>
+</configuration>

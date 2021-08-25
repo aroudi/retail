@@ -1,0 +1,51 @@
+version: '3.9'
+volumes:
+  retail_db:
+
+services:
+  app_server:
+    container_name: tomcat_container
+    build:
+        context: ./web-app
+        dockerfile: Dockerfile
+    depends_on:
+      MysqlDb:
+             condition: service_healthy
+    ports:
+            - "8082:8080"
+    environment:
+            - db_driverClassName=com.mysql.jdbc.Driver
+            - db_url=jdbc:mysql://localhost:3333/RETAIL
+            - db_initialSize=5
+            - db_maxActive=10
+            - db_username=RETAILUser
+            - db_password=RETAILUser
+            - RETAIL_CONFIG_DIR=configDev
+  mysqldata:
+    image: mysql:latest
+    entrypoint: /bin/bash
+
+  MysqlDb:
+    image: mysql:latest:latest
+    ports:
+      - 3333:3306
+    volumes:
+      #- /var/lib/mysql
+      - retail_db:/var/retail-data:/var/lib/mysql
+      # map local drive to container drive
+      - ./db/sql:/usr/src/app 
+    # bash will be executed from that path, our scripts folder
+    working_dir: /usr/src/app 
+    # run the entrypoint.sh that will import the data AND sqlserver
+    command: sh -c ' chmod +x ./entrypoint.sh; ./entrypoint.sh;'
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "P@55w0rd"
+    healthcheck:
+              test: mysql -u RETAILUser -p 'RETAILUser' RETAIL -e 'select count(*) from app_user'
+              interval: 1s
+              retries: 50
+              timeout: 50s
+    #don't use this if you don't want to persit data between docker up and down
+    volumes_from:
+      - mysqldata

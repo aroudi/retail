@@ -285,10 +285,10 @@
         <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>,
         <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="cat"/></include>,
         ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS NUMBER
-        FROM PRODUCT
-        INNER JOIN PROD_ORGU_LINK  ON (PRODUCT.prod_id = PROD_ORGU_LINK.prod_id)
-        INNER JOIN CONFIG_CATEGORY  on (CONFIG_CATEGORY.CATEGORY_ID= PROD_ORGU_LINK.CAT_ID_STATUS)
-        WHERE PROD_ORGU_LINK.orgu_id = #{param1} and PRODUCT.DELETED = 0 and PRODUCT.VERIFIED = 1
+        FROM PRODUCT prod
+        INNER JOIN PROD_ORGU_LINK prou  ON (prod.prod_id = prou.prod_id)
+        INNER JOIN CONFIG_CATEGORY cat on (cat.CATEGORY_ID= prou.CAT_ID_STATUS)
+        WHERE prou.orgu_id = #{param1} and prod.DELETED = 0 and prod.VERIFIED = 1
         ) q_result
         where q_result.NUMBER BETWEEN #{param2} AND #{param3}
     </select>
@@ -467,9 +467,9 @@
     <select id="searchProductsPaging" resultMap="productSearchMap" >
         SELECT * FROM
         (SELECT
-        <include refid="productColumns"><property name="alias" value="prod"/></include>,
-        <include refid="prodOrguLinkColumns"><property name="alias" value="prou"/></include>,
-        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="cat"/></include>,
+        <include refid="productColumns"><property name="alias" value="PRODUCT"/></include>,
+        <include refid="prodOrguLinkColumns"><property name="alias" value="PROD_ORGU_LINK"/></include>,
+        <include refid="au.com.biztune.retail.dao.ConfigCategoryDao.configCategoryColumns"><property name="alias" value="CONFIG_CATEGORY"/></include>,
         stock.STCK_QTY,
         ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS NUMBER
         FROM PRODUCT
@@ -479,7 +479,7 @@
         LEFT OUTER JOIN SUPP_ORGU_LINK  on (SUPP_ORGU_LINK.SOL_ID = SUPP_PROD_PRICE.SOL_ID)
         LEFT OUTER JOIN  (select stck.* from STOCK stck
                             inner JOIN CONFIG_CATEGORY cat2 on (cat2.CATEGORY_ID = stck.STCK_CAT AND cat2.CATEGORY_CODE = 'STOCK_CATEGORY_SALEABLE')
-                         ) STOCK on (prod.prod_id = stock.prod_id)
+                         ) STOCK on (PRODUCT.prod_id = STOCK.prod_id)
         WHERE PROD_ORGU_LINK.orgu_id = #{param1} AND PRODUCT.DELETED = 0 and PRODUCT.VERIFIED = 1
             <if test="param4 != null">
                 AND

@@ -154,7 +154,7 @@ public class ProductServiceImpl implements ProductService {
             final long rowNoFrom = (pageNo - 1) * pageSize + 1;
             final long rowNoTo = rowNoFrom + pageSize - 1;
             final ProductSearchForm productSearchForm = new ProductSearchForm();
-            productSearchForm.setResult(productDao.getAllProductExtendedPerOrgUnitIdPaging(sessionState.getOrgUnit().getId(), rowNoFrom, rowNoTo));
+            productSearchForm.setResult(productDao.getAllProductsPerOrgUnitIdPaging(sessionState.getOrgUnit().getId(), rowNoFrom, rowNoTo));
             productSearchForm.setTotalRecords(productDao.searchProductsTotalRecords(sessionState.getOrgUnit().getId(), null));
             return productSearchForm;
         } catch (Exception e) {
@@ -712,7 +712,7 @@ public class ProductServiceImpl implements ProductService {
             final long rowNoTo = rowNoFrom + productSearchForm.getPageSize() - 1;
             //final ProductSearchForm productSearchForm = new ProductSearchForm();
             final List<SearchClause> searchClauseList = SearchClauseBuilder.buildProductSearchWhereCluase(productSearchForm);
-            productSearchForm.setResult(productDao.searchProductsExtendedPaging(sessionState.getOrgUnit().getId(), rowNoFrom, rowNoTo, searchClauseList));
+            productSearchForm.setResult(productDao.searchProductsPaging(sessionState.getOrgUnit().getId(), rowNoFrom, rowNoTo, searchClauseList));
             productSearchForm.setTotalRecords(productDao.searchProductsTotalRecords(sessionState.getOrgUnit().getId(), searchClauseList));
             return productSearchForm;
         } catch (Exception e) {

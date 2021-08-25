@@ -1,0 +1,950 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.CashSessionDao">
+    <!-- result maps -->
+    <resultMap id="CashSessionMap" type="CashSession" >
+        <id column="CSSN_SESSION_ID" property="id" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="TILL_SHORT_DESC" property="tillShortDesc" />
+        <result column="CSSN_TRADING_DATE" property="cssnTradingDate" />
+        <result column="CSSN_START_DATE" property="cssnStartDate" />
+        <result column="CSSN_IMBALANCE_RSN" property="cssnImbalanceRsn" />
+        <result column="CSSN_TXN_NR" property="cssnTxnNr" />
+        <result column="CSSN_FORCED" property="cssnForced" />
+        <result column="CSSN_IS_OP_ACC" property="cssnIsOpAcc" />
+        <result column="CSSN_SAP_CTRL_NR" property="cssnSapCtrlNr" />
+        <result column="CSSN_EXP_END_DATE" property="cssnExpEndDate" />
+        <result column="CSSN_ACT_END_DATE" property="cssnActEndDate" />
+        <result column="CSSN_RECOCILE_DATE" property="cssnReconcileDate" />
+        <result column="CSSN_CURRENT_CASH" property="cssnCurrentCash" />
+        <result column="CSSN_TOTAL_FLOAT" property="cssnTotalFloat" />
+        <result column="CSSN_TOTAL_PICKUP" property="cssnTotalPickup" />
+        <result column="ACC_EXPORTED" property="accExported" />
+        <!--association resultMap="au.com.biztune.retail.dao.CustomerDao.customerMap" property="customer" /-->
+        <association property="cssnStatus" column="CSSN_STATUS" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="cssnOperator" column="CSSN_OPERATOR" select="au.com.biztune.retail.dao.UserDao.getUserById" />
+        <association property="cssnMethodClose" column="CSSN_METHOD_CLOSE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="cssnMethodOpen" column="CSSN_METHOD_OPEN" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="cssnCyclePeriod" column="CSSN_CYCLE_PERIOD" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+    </resultMap>
+
+    <resultMap id="SessionEventMap" type="SessionEvent" >
+        <id column="SEEV_ID" property="id" />
+        <result column="CSSN_SESSION_ID" property="cssnSessionId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="SEEV_EVENT_DATE" property="seevEventDate" />
+        <result column="SEEV_OPERATOR" property="seevOperator" />
+        <result column="SEEV_REFERENCE" property="seevReference" />
+        <result column="SEEV_COMMENT" property="seevComment" />
+        <result column="SEEV_REASON" property="seevReason" />
+        <result column="SEEV_COLLECT_DATE" property="seevCollectDate" />
+        <result column="SEEV_COLLECT_REF" property="seevCollectRef" />
+        <result column="SEEV_PICKUP_NR" property="seevPickupNr" />
+        <result column="SEEV_PAY_IN_SLIP" property="seevPayInSlip" />
+        <association property="seevEventType" column="SEEV_EVENT_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById" />
+        <association property="cashSession" column="CSSN_SESSION_ID" select="getCashSessionPerId" />
+        <collection property="eventDetails" javaType="ArrayList" column="SEEV_ID" ofType="SessionEventDetail" select="getSessionEventDetailsPerEventId"/>
+    </resultMap>
+
+    <resultMap id="SessionEventLiteMap" type="SessionEvent" >
+        <id column="SEEV_ID" property="id" />
+        <result column="CSSN_SESSION_ID" property="cssnSessionId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="SEEV_EVENT_DATE" property="seevEventDate" />
+        <result column="SEEV_OPERATOR" property="seevOperator" />
+        <result column="SEEV_REFERENCE" property="seevReference" />
+        <result column="SEEV_COMMENT" property="seevComment" />
+        <result column="SEEV_REASON" property="seevReason" />
+        <result column="SEEV_COLLECT_DATE" property="seevCollectDate" />
+        <result column="SEEV_COLLECT_REF" property="seevCollectRef" />
+        <result column="SEEV_PICKUP_NR" property="seevPickupNr" />
+        <result column="SEEV_PAY_IN_SLIP" property="seevPayInSlip" />
+        <association property="cashSession" column="CSSN_SESSION_ID" select="getCashSessionPerId" />
+    </resultMap>
+
+    <resultMap id="SessionMediaMap" type="SessionMedia" >
+        <id column="SEME_ID" property="id" />
+        <result column="CSSN_SESSION_ID" property="cssnSessionId" />
+        <result column="SEEV_ID" property="seevId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="SEME_MEDIA_COUNT" property="semeMediaCount" />
+        <result column="SEME_MEDIA_VALUE" property="semeMediaValue" />
+        <association property="paymentMedia" column="PAYM_ID" select="au.com.biztune.retail.dao.PaymentMediaDao.getPaymentMediaPerId"/>
+    </resultMap>
+
+    <resultMap id="SessionTotalMap" type="SessionTotal" >
+        <id column="SETL_ID" property="id" />
+        <result column="CSSN_SESSION_ID" property="cssnSessionId" />
+        <result column="MEDIA_TOTAL_COUNT" property="mediaTotalCount" />
+        <result column="MEDIA_TOTAL_VALUE" property="mediaTotalValue" />
+        <association property="paymentMedia" column="PAYM_ID" select="au.com.biztune.retail.dao.PaymentMediaDao.getPaymentMediaPerId"/>
+    </resultMap>
+
+
+    <resultMap id="SessionEventDetailMap" type="SessionEventDetail" >
+        <id column="SEDE_ID" property="id" />
+        <result column="CSSN_SESSION_ID" property="cssnSessionId" />
+        <result column="SEEV_ID" property="seevId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="MEDIA_COUNT_ACTUAL" property="mediaCountActual" />
+        <result column="MEDIA_COUNT_EXPECTED" property="mediaCountExpected" />
+        <result column="MEDIA_COUNT_DIFF" property="mediaCountDiff" />
+        <result column="MEDIA_VALUE_ACTUAL" property="mediaValueActual" />
+        <result column="MEDIA_VALUE_EXPECTED" property="mediaValueExpected" />
+        <result column="MEDIA_VALUE_DIFF" property="mediaValueDiff" />
+        <result column="SEDE_COMMENT" property="sedeComment" />
+        <association property="paymentMedia" column="PAYM_ID" select="au.com.biztune.retail.dao.PaymentMediaDao.getPaymentMediaPerId"/>
+    </resultMap>
+
+    <resultMap id="TxnSessionLinkMap" type="TxnSessionLink" >
+        <id column="TSL_ID" property="id" />
+        <result column="CSSN_SESSION_ID" property="cssnSessionId" />
+        <result column="TXN_ID" property="txnId" />
+        <result column="ORGU_ID" property="orguId" />
+        <result column="STORE_ID" property="storeId" />
+        <result column="TILL_SHORT_DESC" property="tillShortDesc" />
+        <result column="TXHD_TXN_NR" property="txhdTxnNr" />
+        <result column="TSL_DATE_CREATED" property="tslDateCreated" />
+        <association property="txnType" column="TXN_TYPE" select="au.com.biztune.retail.dao.ConfigCategoryDao.getCategoryById"/>
+    </resultMap>
+
+    <resultMap id="CashupDetailTxnSummaryRptMap" type="CashupDetailTxnSummaryRow" >
+        <result column="docketNo" property="docketNo" />
+        <result column="tradingDate" property="tradingDate" />
+        <result column="txnType" property="txnType" />
+        <result column="operator" property="operator" />
+        <result column="saleTotal" property="saleTotal" />
+        <result column="paymentMedia" property="paymentMedia" />
+        <result column="paymentMediaAmount" property="paymentMediaAmount" />
+        <result column="txnTotalCost" property="txnTotalCost" />
+        <result column="txnTotalPriceLessTax" property="txnTotalPriceLessTax" />
+        <result column="txnTotalPricePlusTax" property="txnTotalPricePlusTax" />
+        <result column="txnTotalProfit" property="txnTotalProfit" />
+    </resultMap>
+
+    <sql id="cashSessionColumns">
+        ${alias}.CSSN_SESSION_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.CSSN_OPERATOR,
+        ${alias}.CSSN_TRADING_DATE,
+        ${alias}.CSSN_STATUS,
+        ${alias}.CSSN_START_DATE,
+        ${alias}.CSSN_IMBALANCE_RSN,
+        ${alias}.CSSN_TXN_NR,
+        ${alias}.CSSN_FORCED,
+        ${alias}.CSSN_IS_OP_ACC,
+        ${alias}.CSSN_SAP_CTRL_NR,
+        ${alias}.CSSN_EXP_END_DATE,
+        ${alias}.CSSN_ACT_END_DATE,
+        ${alias}.CSSN_RECOCILE_DATE,
+        ${alias}.CSSN_METHOD_OPEN,
+        ${alias}.CSSN_METHOD_CLOSE,
+        ${alias}.CSSN_CYCLE_PERIOD,
+        ${alias}.CSSN_CURRENT_CASH,
+        ${alias}.CSSN_TOTAL_FLOAT,
+        ${alias}.CSSN_TOTAL_PICKUP,
+        ${alias}.ACC_EXPORTED
+    </sql>
+
+    <sql id="sessionEventColumns">
+        ${alias}.SEEV_ID,
+        ${alias}.CSSN_SESSION_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.SEEV_EVENT_TYPE,
+        ${alias}.SEEV_EVENT_DATE,
+        ${alias}.SEEV_OPERATOR,
+        ${alias}.SEEV_REFERENCE,
+        ${alias}.SEEV_COMMENT,
+        ${alias}.SEEV_REASON,
+        ${alias}.SEEV_COLLECT_DATE,
+        ${alias}.SEEV_COLLECT_REF,
+        ${alias}.SEEV_PICKUP_NR,
+        ${alias}.SEEV_PAY_IN_SLIP
+    </sql>
+
+    <sql id="sessionMediaColumns">
+        ${alias}.SEME_ID,
+        ${alias}.CSSN_SESSION_ID,
+        ${alias}.SEEV_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.MEDT_ID,
+        ${alias}.PAYM_ID,
+        ${alias}.SEME_MEDIA_COUNT,
+        ${alias}.SEME_MEDIA_VALUE
+    </sql>
+
+    <sql id="sessionTotalColumns">
+        ${alias}.SETL_ID,
+        ${alias}.CSSN_SESSION_ID,
+        ${alias}.MEDT_ID,
+        ${alias}.PAYM_ID,
+        ${alias}.MEDIA_TOTAL_COUNT,
+        ${alias}.MEDIA_TOTAL_VALUE
+    </sql>
+
+    <sql id="sessionEventDetailColumns">
+        ${alias}.SEDE_ID,
+        ${alias}.CSSN_SESSION_ID,
+        ${alias}.SEEV_ID,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.MEDT_ID,
+        ${alias}.PAYM_ID,
+        ${alias}.MEDIA_COUNT_ACTUAL,
+        ${alias}.MEDIA_COUNT_EXPECTED,
+        ${alias}.MEDIA_COUNT_DIFF,
+        ${alias}.MEDIA_VALUE_ACTUAL,
+        ${alias}.MEDIA_VALUE_EXPECTED,
+        ${alias}.MEDIA_VALUE_DIFF,
+        ${alias}.SEDE_COMMENT
+    </sql>
+
+    <sql id="txnSessionLinkColumns">
+        ${alias}.TSL_ID,
+        ${alias}.CSSN_SESSION_ID,
+        ${alias}.TXN_ID,
+        ${alias}.TXN_TYPE,
+        ${alias}.ORGU_ID,
+        ${alias}.STORE_ID,
+        ${alias}.TILL_SHORT_DESC,
+        ${alias}.TXHD_TXN_NR,
+        ${alias}.TSL_DATE_CREATED
+    </sql>
+
+    <insert id="createCashSession" parameterType="CashSession" useGeneratedKeys="true" keyProperty="id" keyColumn="CSSN_SESSION_ID">
+        INSERT INTO CASH_SESSION(
+        ORGU_ID,
+        STORE_ID,
+        TILL_SHORT_DESC,
+        CSSN_OPERATOR,
+        CSSN_TRADING_DATE,
+        CSSN_STATUS,
+        CSSN_START_DATE,
+        CSSN_IMBALANCE_RSN,
+        CSSN_TXN_NR,
+        CSSN_FORCED,
+        CSSN_IS_OP_ACC,
+        CSSN_SAP_CTRL_NR,
+        CSSN_EXP_END_DATE,
+        CSSN_ACT_END_DATE,
+        CSSN_METHOD_OPEN,
+        CSSN_METHOD_CLOSE,
+        CSSN_CYCLE_PERIOD,
+        CSSN_CURRENT_CASH,
+        CSSN_TOTAL_FLOAT,
+        CSSN_TOTAL_PICKUP
+        ) VALUES (
+        #{orguId},
+        #{storeId}
+        <if test="tillShortDesc != null">
+            ,#{tillShortDesc}
+        </if>
+        <if test="tillShortDesc == null">
+            ,null
+        </if>
+        <if test="cssnOperator != null">
+            ,#{cssnOperator.id}
+        </if>
+        <if test="cssnOperator == null">
+            ,null
+        </if>
+
+        <if test="cssnTradingDate != null">
+            ,#{cssnTradingDate}
+        </if>
+        <if test="cssnTradingDate == null">
+            ,null
+        </if>
+        <if test="cssnStatus != null">
+            ,#{cssnStatus.id}
+        </if>
+        <if test="cssnStatus == null">
+            ,null
+        </if>
+        <if test="cssnStartDate != null">
+            ,#{cssnStartDate}
+        </if>
+        <if test="cssnStartDate == null">
+            ,null
+        </if>
+        <if test="cssnImbalanceRsn != null">
+            ,#{cssnImbalanceRsn}
+        </if>
+        <if test="cssnImbalanceRsn == null">
+            ,null
+        </if>
+        <if test="cssnTxnNr != null">
+            ,#{cssnTxnNr}
+        </if>
+        <if test="cssnTxnNr == null">
+            ,null
+        </if>
+        <if test="cssnForced != null">
+            ,#{cssnForced}
+        </if>
+        <if test="cssnForced == null">
+            ,null
+        </if>
+        <if test="cssnIsOpAcc != null">
+            ,#{cssnIsOpAcc}
+        </if>
+        <if test="cssnIsOpAcc == null">
+            ,null
+        </if>
+
+        <if test="cssnSapCtrlNr != null">
+            ,#{cssnSapCtrlNr}
+        </if>
+        <if test="cssnSapCtrlNr == null">
+            ,null
+        </if>
+        <if test="cssnExpEndDate != null">
+            ,#{cssnExpEndDate}
+        </if>
+        <if test="cssnExpEndDate == null">
+            ,null
+        </if>
+        <if test="cssnActEndDate != null">
+            ,#{cssnActEndDate}
+        </if>
+        <if test="cssnActEndDate == null">
+            ,null
+        </if>
+        <if test="cssnMethodOpen != null">
+            ,#{cssnMethodOpen.id}
+        </if>
+        <if test="cssnMethodOpen == null">
+            ,null
+        </if>
+        <if test="cssnMethodClose != null">
+            ,#{cssnMethodClose.id}
+        </if>
+        <if test="cssnMethodClose == null">
+            ,null
+        </if>
+        <if test="cssnCyclePeriod != null">
+            ,#{cssnCyclePeriod.id}
+        </if>
+        <if test="cssnCyclePeriod == null">
+            ,null
+        </if>
+        <if test="cssnCurrentCash != null">
+            ,#{cssnCurrentCash}
+        </if>
+        <if test="cssnCurrentCash == null">
+            ,null
+        </if>
+        <if test="cssnTotalFloat != null">
+            ,#{cssnTotalFloat}
+        </if>
+        <if test="cssnTotalFloat == null">
+            ,null
+        </if>
+        <if test="cssnTotalPickup != null">
+            ,#{cssnTotalPickup}
+        </if>
+        <if test="cssnTotalPickup == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <insert id="insertSessionEvent" parameterType="SessionEvent" useGeneratedKeys="true" keyProperty="id" keyColumn="SEEV_ID">
+        INSERT INTO SESSION_EVENT(
+        CSSN_SESSION_ID,
+        ORGU_ID,
+        STORE_ID,
+        SEEV_EVENT_TYPE,
+        SEEV_EVENT_DATE,
+        SEEV_OPERATOR,
+        SEEV_REFERENCE,
+        SEEV_COMMENT,
+        SEEV_REASON,
+        SEEV_COLLECT_DATE,
+        SEEV_COLLECT_REF,
+        SEEV_PICKUP_NR,
+        SEEV_PAY_IN_SLIP
+        ) VALUES (
+        #{cssnSessionId},
+        #{orguId},
+        #{storeId}
+        <if test="seevEventType != null">
+            ,#{seevEventType.id}
+        </if>
+        <if test="seevEventType == null">
+            ,null
+        </if>
+        <if test="seevEventDate != null">
+            ,#{seevEventDate}
+        </if>
+        <if test="seevEventDate == null">
+            ,null
+        </if>
+
+        <if test="seevOperator != null">
+            ,#{seevOperator}
+        </if>
+        <if test="seevOperator == null">
+            ,null
+        </if>
+        <if test="seevReference != null">
+            ,#{seevReference}
+        </if>
+        <if test="seevReference == null">
+            ,null
+        </if>
+        <if test="seevComment != null">
+            ,#{seevComment}
+        </if>
+        <if test="seevComment == null">
+            ,null
+        </if>
+        <if test="seevReason != null">
+            ,#{seevReason}
+        </if>
+        <if test="seevReason == null">
+            ,null
+        </if>
+        <if test="seevCollectDate != null">
+            ,#{seevCollectDate}
+        </if>
+        <if test="seevCollectDate == null">
+            ,null
+        </if>
+        <if test="seevCollectRef != null">
+            ,#{seevCollectRef}
+        </if>
+        <if test="seevCollectRef == null">
+            ,null
+        </if>
+        <if test="seevPickupNr != null">
+            ,#{seevPickupNr}
+        </if>
+        <if test="seevPickupNr == null">
+            ,null
+        </if>
+        <if test="seevPayInSlip != null">
+            ,#{seevPayInSlip}
+        </if>
+        <if test="seevPayInSlip == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <insert id="insertSessionMedia" parameterType="SessionMedia" useGeneratedKeys="true" keyProperty="id" keyColumn="SEME_ID">
+        INSERT INTO SESSION_MEDIA(
+        CSSN_SESSION_ID,
+        SEEV_ID,
+        ORGU_ID,
+        STORE_ID,
+        TXMD_ID,
+        MEDT_ID,
+        PAYM_ID,
+        SEME_MEDIA_COUNT,
+        SEME_MEDIA_VALUE
+        ) VALUES (
+        #{cssnSessionId},
+        #{seevId},
+        #{orguId},
+        #{storeId},
+        #{txmdId}
+        <if test="mediaType != null">
+            ,#{mediaType.id}
+        </if>
+        <if test="mediaType == null">
+            ,null
+        </if>
+        <if test="paymentMedia != null">
+            ,#{paymentMedia.id}
+        </if>
+        <if test="paymentMedia == null">
+            ,null
+        </if>
+
+        <if test="semeMediaCount != null">
+            ,#{semeMediaCount}
+        </if>
+        <if test="semeMediaCount == null">
+            ,null
+        </if>
+
+        <if test="semeMediaValue != null">
+            ,#{semeMediaValue}
+        </if>
+        <if test="semeMediaValue == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <insert id="insertSessionTotal" parameterType="SessionTotal" useGeneratedKeys="true" keyProperty="id" keyColumn="SETL_ID">
+        INSERT INTO SESSION_TOTAL(
+        CSSN_SESSION_ID,
+        MEDT_ID,
+        PAYM_ID,
+        MEDIA_TOTAL_COUNT,
+        MEDIA_TOTAL_VALUE
+        ) VALUES (
+        #{cssnSessionId}
+        <if test="mediaType != null">
+            ,#{mediaType.id}
+        </if>
+        <if test="mediaType == null">
+            ,null
+        </if>
+        <if test="paymentMedia != null">
+            ,#{paymentMedia.id}
+        </if>
+        <if test="paymentMedia == null">
+            ,null
+        </if>
+
+        <if test="mediaTotalCount != null">
+            ,#{mediaTotalCount}
+        </if>
+        <if test="mediaTotalCount == null">
+            ,null
+        </if>
+
+        <if test="mediaTotalValue != null">
+            ,#{mediaTotalValue}
+        </if>
+        <if test="mediaTotalValue == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <insert id="insertSessionEventDetail" parameterType="SessionEventDetail" useGeneratedKeys="true" keyProperty="id" keyColumn="SEDE_ID">
+        INSERT INTO SESSION_EVENT_DETAIL(
+        CSSN_SESSION_ID,
+        SEEV_ID,
+        ORGU_ID,
+        STORE_ID,
+        MEDT_ID,
+        PAYM_ID,
+        MEDIA_COUNT_ACTUAL,
+        MEDIA_COUNT_EXPECTED,
+        MEDIA_COUNT_DIFF,
+        MEDIA_VALUE_ACTUAL,
+        MEDIA_VALUE_EXPECTED,
+        MEDIA_VALUE_DIFF,
+        SEDE_COMMENT
+        ) VALUES (
+        #{cssnSessionId},
+        #{seevId},
+        #{orguId},
+        #{storeId}
+        <if test="mediaType != null">
+            ,#{mediaType.id}
+        </if>
+        <if test="mediaType == null">
+            ,null
+        </if>
+        <if test="paymentMedia != null">
+            ,#{paymentMedia.id}
+        </if>
+        <if test="paymentMedia == null">
+            ,null
+        </if>
+        <if test="mediaCountActual != null">
+            ,#{mediaCountActual}
+        </if>
+        <if test="mediaCountActual == null">
+            ,null
+        </if>
+        <if test="mediaCountExpected != null">
+            ,#{mediaCountExpected}
+        </if>
+        <if test="mediaCountExpected == null">
+            ,null
+        </if>
+
+        <if test="mediaCountDiff != null">
+            ,#{mediaCountDiff}
+        </if>
+        <if test="mediaCountDiff == null">
+            ,null
+        </if>
+
+        <if test="mediaValueActual != null">
+            ,#{mediaValueActual}
+        </if>
+        <if test="mediaValueActual == null">
+            ,null
+        </if>
+
+        <if test="mediaValueExpected != null">
+            ,#{mediaValueExpected}
+        </if>
+        <if test="mediaValueExpected == null">
+            ,null
+        </if>
+
+        <if test="mediaValueDiff != null">
+            ,#{mediaValueDiff}
+        </if>
+        <if test="mediaValueDiff == null">
+            ,null
+        </if>
+
+        <if test="sedeComment != null">
+            ,#{sedeComment}
+        </if>
+        <if test="sedeComment == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+    <insert id="insertTxnSessionLink" parameterType="TxnSessionLink" useGeneratedKeys="true" keyProperty="id" keyColumn="TSL_ID">
+        INSERT INTO TXN_SESSION_LINK(
+        CSSN_SESSION_ID,
+        TXN_ID,
+        TXN_TYPE,
+        ORGU_ID,
+        STORE_ID,
+        TILL_SHORT_DESC,
+        TXHD_TXN_NR,
+        TSL_DATE_CREATED
+        ) VALUES (
+        #{cssnSessionId},
+        #{txnId}
+        <if test="txnType != null">
+            ,#{txnType.id}
+        </if>
+        <if test="txnType == null">
+            ,null
+        </if>
+        <if test="orguId != null">
+            ,#{orguId}
+        </if>
+        <if test="orguId == null">
+            ,null
+        </if>
+
+        <if test="storeId != null">
+            ,#{storeId}
+        </if>
+        <if test="storeId == null">
+            ,null
+        </if>
+
+        <if test="tillShortDesc != null">
+            ,#{tillShortDesc}
+        </if>
+        <if test="tillShortDesc == null">
+            ,null
+        </if>
+        <if test="txhdTxnNr != null">
+            ,#{txhdTxnNr}
+        </if>
+        <if test="txhdTxnNr == null">
+            ,null
+        </if>
+        <if test="tslDateCreated != null">
+            ,#{tslDateCreated}
+        </if>
+        <if test="tslDateCreated == null">
+            ,null
+        </if>
+        )
+    </insert>
+
+
+    <update id="updateCashSession" parameterType="CashSession">
+        UPDATE CASH_SESSION SET
+            CSSN_STATUS = #{cssnStatus.id}
+        <if test="cssnImbalanceRsn != null">
+            ,CSSN_IMBALANCE_RSN = #{cssnImbalanceRsn}
+        </if>
+        <if test="cssnForced != null">
+            ,CSSN_FORCED = #{cssnForced}
+        </if>
+        <if test="cssnSapCtrlNr != null">
+            ,CSSN_SAP_CTRL_NR = #{cssnSapCtrlNr}
+        </if>
+        <if test="cssnActEndDate != null">
+            ,CSSN_ACT_END_DATE = #{cssnActEndDate}
+        </if>
+        <if test="cssnMethodOpen != null">
+            ,CSSN_METHOD_OPEN = #{cssnMethodOpen.id}
+        </if>
+        <if test="cssnMethodClose != null">
+            ,CSSN_METHOD_CLOSE = #{cssnMethodClose.id}
+        </if>
+        <if test="cssnCurrentCash != null">
+            ,CSSN_CURRENT_CASH = #{cssnCurrentCash}
+        </if>
+        <if test="cssnTotalFloat != null">
+            ,CSSN_TOTAL_FLOAT = #{cssnTotalFloat}
+        </if>
+        <if test="cssnTotalPickup != null">
+            ,CSSN_TOTAL_PICKUP = #{cssnTotalPickup}
+        </if>
+        WHERE CSSN_SESSION_ID = #{id}
+    </update>
+
+    <update id="updateCashSessionStatus" parameterType="CashSession">
+        UPDATE CASH_SESSION SET
+        CSSN_STATUS = #{cssnStatus.id}
+        <if test="cssnReconcileDate != null">
+            ,CSSN_RECOCILE_DATE = #{cssnReconcileDate}
+        </if>
+        <if test="cssnActEndDate != null">
+            ,CSSN_ACT_END_DATE = #{cssnActEndDate}
+        </if>
+        WHERE CSSN_SESSION_ID = #{id}
+    </update>
+
+    <update id="updateCashSessionTotalFloat" parameterType="CashSession">
+        UPDATE CASH_SESSION SET
+            CSSN_TOTAL_FLOAT = #{cssnTotalFloat}
+        WHERE CSSN_SESSION_ID = #{id}
+    </update>
+
+    <update id="updateCashSessionTotalPickup" parameterType="CashSession">
+        UPDATE CASH_SESSION SET
+        CSSN_TOTAL_PICKUP = #{cssnTotalPickup}
+        WHERE CSSN_SESSION_ID = #{id}
+    </update>
+
+
+    <update id="updateSessionTotalPerSessionIdAndPaymentMediaId" parameterType="SessionTotal">
+        UPDATE SESSION_TOTAL SET
+            MEDIA_TOTAL_COUNT= #{mediaTotalCount},
+            MEDIA_TOTAL_VALUE= #{mediaTotalValue}
+        WHERE CSSN_SESSION_ID = #{cssnSessionId} AND PAYM_ID = #{paymentMedia.id}
+    </update>
+
+    <select id="getSessionTotalPerSessionIdAndPaymentMediaId" resultMap="SessionTotalMap">
+        SELECT
+        <include refid="sessionTotalColumns"><property name="alias" value="ctl"/></include>
+        FROM
+        SESSION_TOTAL ctl WHERE CSSN_SESSION_ID = #{param1} AND PAYM_ID = #{param2}
+    </select>
+
+    <select id="getSessionTotalMediasPerSessionId" resultMap="SessionTotalMap">
+        SELECT
+        <include refid="sessionTotalColumns"><property name="alias" value="ctl"/></include>
+        FROM
+        SESSION_TOTAL ctl WHERE CSSN_SESSION_ID = #{value}
+    </select>
+
+    <select id="getSessionTotalMediasPerSessionIdAndPaymId" resultMap="SessionTotalMap">
+        SELECT
+        <include refid="sessionTotalColumns"><property name="alias" value="ctl"/></include>
+        FROM
+        SESSION_TOTAL ctl WHERE CSSN_SESSION_ID = #{param1} and PAYM_ID = #{param2}
+    </select>
+
+    <!-- get only open or closed session. there must be only one open or closed session per user -->
+    <select id="getCurrentCashSessionPerUser" resultMap="CashSessionMap">
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED' ) AND CSSN_OPERATOR = #{value}
+    </select>
+
+    <!-- cash session per company mode: get active cash session. there must be only one active session-->
+    <select id="getStoreActiveCashSession" resultMap="CashSessionMap">
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+          CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID)
+        WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED' )
+        AND cssn.ORGU_ID = #{param1} AND cssn.STORE_ID = #{param2}
+
+    </select>
+
+    <!-- cash session per company mode: get last reconciled or ended cash session.-->
+    <select id="getStoreLastEndedOrReconciledCashSession" resultMap="CashSessionMap">
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID)
+        WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_ENDED' OR cc.CATEGORY_CODE = 'SESSION_STATE_RECONCILED' )
+        AND cssn.ORGU_ID = #{param1} AND cssn.STORE_ID = #{param2}
+        order by CSSN_SESSION_ID desc
+        LIMIT 1
+
+    </select>
+
+    <!-- cash session per company mode: get last reconciled or ended cash session.-->
+    <select id="getUserLastEndedOrReconciledCashSession" resultMap="CashSessionMap">
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID)
+        WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_ENDED' OR cc.CATEGORY_CODE = 'SESSION_STATE_RECONCILED' )
+        AND cssn.ORGU_ID = #{param1} AND cssn.STORE_ID = #{param2} AND cssn.CSSN_OPERATOR = #{param3}
+        ORDER BY CSSN_SESSION_ID desc
+        LIMIT 1
+
+    </select>
+
+    <select id="getCashSessionPerId" resultMap="CashSessionMap">
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn WHERE CSSN_SESSION_ID = #{value}
+    </select>
+
+    <select id="getAllCurrentCashSessions" resultMap="CashSessionMap" >
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_OPEN' OR cc.CATEGORY_CODE = 'SESSION_STATE_CLOSED'  )
+    </select>
+
+    <select id="getAllUnReconciledCashSessions" resultMap="CashSessionMap" >
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE != 'SESSION_STATE_RECONCILED')
+    </select>
+
+    <select id="getAllEndedCashSessions" resultMap="CashSessionMap">
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_METHOD_OPEN = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_ENDED')
+    </select>
+
+    <select id="getSessionEventDetailsPerEventId" resultMap="SessionEventDetailMap">
+        SELECT
+        <include refid="sessionEventDetailColumns"><property name="alias" value="sed"/></include>
+        FROM
+        SESSION_EVENT_DETAIL sed WHERE sed.SEEV_ID = #{value}
+    </select>
+
+    <select id="getSessionEventPerId" resultMap="SessionEventMap">
+        SELECT
+        <include refid="sessionEventColumns"><property name="alias" value="seev"/></include>
+        FROM
+        SESSION_EVENT seev WHERE seev.SEEV_ID = #{value}
+    </select>
+
+    <select id="getReconciledSessionEvents" resultMap="SessionEventLiteMap">
+        SELECT
+        <include refid="sessionEventColumns"><property name="alias" value="seev"/></include>
+        FROM
+        SESSION_EVENT seev INNER JOIN CONFIG_CATEGORY cc on (seev.SEEV_EVENT_TYPE = cc.CATEGORY_ID)
+        WHERE (cc.CATEGORY_CODE = 'SESSION_EVENT_TYPE_RECONCILE')
+    </select>
+
+    <select id="getAllReconciledCashSession" resultMap="CashSessionMap" >
+        SELECT
+        <include refid="cashSessionColumns"><property name="alias" value="cssn"/></include>
+        FROM
+        CASH_SESSION cssn INNER JOIN CONFIG_CATEGORY cc on (cssn.CSSN_STATUS = cc.CATEGORY_ID) WHERE (cc.CATEGORY_CODE = 'SESSION_STATE_RECONCILED')
+    </select>
+
+    <update id="updateCashSessionImportStatus">
+        UPDATE CASH_SESSION SET
+        ACC_EXPORTED = 1
+        WHERE CSSN_SESSION_ID = #{value}
+    </update>
+
+    <select id="runCashupDetailTxnSummary" resultMap="CashupDetailTxnSummaryRptMap">
+    select TXN_HEADER.TXHD_TXN_NR docketNo ,
+           TXN_HEADER.TXHD_TRADING_DATE tradingDate,
+           txnType.DISPLAY_NAME txnType,
+           APP_USER.USR_FIRST_NAME + ' ' + APP_USER.USR_SUR_NAME operator,
+           TXN_HEADER.TXHD_VALUE_NETT saleTotal,
+           --TXN_HEADER.CUSTOMER_ID customer,
+           PAYMENT_MEDIA.PAYM_NAME paymentMedia,
+           TXN_MEDIA.TXMD_AMOUNT_LOCAL paymentMediaAmount,
+           txnDetail.txnCostTotal txnTotalCost,
+           txnDetail.txdePriceLessTaxTotal txnTotalPriceLessTax,
+           txnDetail.txdePriceAfterTaxTotal txnTotalPricePlusTax,
+           txnDetail.txnProfitTotal txnTotalProfit
+        from SESSION_MEDIA
+            inner join TXN_MEDIA on (TXN_MEDIA.TXMD_ID = SESSION_MEDIA.TXMD_ID)
+            inner join CONFIG_CATEGORY txnMediaType on (txnMediaType.CATEGORY_ID = TXN_MEDIA.TXMD_TYPE)
+            inner join PAYMENT_MEDIA on (PAYMENT_MEDIA.PAYM_ID = TXN_MEDIA.PAYM_ID)
+            inner join TXN_HEADER on (TXN_MEDIA.TXHD_ID = TXN_HEADER.TXHD_ID)
+            inner join CONFIG_CATEGORY txnType ON (txnType.CATEGORY_ID = TXN_HEADER.TXHD_TXN_TYPE)
+            inner join APP_USER ON ( APP_USER.USR_ID = TXN_HEADER.TXHD_OPERATOR)
+            inner join
+                (select SUM(txde_value_profit * TXDE_QUANTITY_SOLD) txnProfitTotal,
+                    SUM(txde_value_line * TXDE_QUANTITY_SOLD) txnCostTotal,
+                    SUM(txde_value_gross * TXDE_QUANTITY_SOLD) txdePriceLessTaxTotal,
+                    SUM(txde_value_net * TXDE_QUANTITY_SOLD) txdePriceAfterTaxTotal,
+                    MAX(txhd_id) txhd_id
+                 from TXN_DETAIL group by TXHD_ID)
+                 txnDetail on (txnDetail.txhd_id = TXN_HEADER.TXHD_ID)
+        where SESSION_MEDIA.CSSN_SESSION_ID = #{param1}
+        AND txnMediaType.CATEGORY_CODE IN ('TXN_MEDIA_SALE', 'TXN_MEDIA_DEPOSIT')
+
+        UNION ALL
+
+    select INVOICE.TXIV_TXN_NR docketNo,
+           TXN_HEADER.TXHD_TRADING_DATE tradingDate,
+           txnType.DISPLAY_NAME txnType,
+           APP_USER.USR_FIRST_NAME + ' ' + APP_USER.USR_SUR_NAME operator,
+           TXN_HEADER.TXHD_VALUE_NETT saleTotal,
+           --TXN_HEADER.CUSTOMER_ID,
+           PAYMENT_MEDIA.PAYM_NAME paymentMedia,
+           TXN_MEDIA.TXMD_AMOUNT_LOCAL paymentMediaAmount,
+           txnSummary.txnCostTotal txnTotalCost,
+           txnSummary.txdePriceLessTaxTotal txnTotalPriceLessTax,
+           txnSummary.txdePriceAfterTaxTotal txnTotalPricePlusTax,
+           txnSummary.txnProfitTotal txnTotalProfit
+        from SESSION_MEDIA
+            inner join TXN_MEDIA on (TXN_MEDIA.TXMD_ID = SESSION_MEDIA.TXMD_ID)
+            inner join CONFIG_CATEGORY txnMediaType on (txnMediaType.CATEGORY_ID = TXN_MEDIA.TXMD_TYPE)
+            inner join PAYMENT_MEDIA on (PAYMENT_MEDIA.PAYM_ID = TXN_MEDIA.PAYM_ID)
+            inner join INVOICE_MEDIA ON (INVOICE_MEDIA.TXMD_ID = TXN_MEDIA.TXMD_ID)
+            inner join INVOICE ON (INVOICE.TXIV_ID = INVOICE_MEDIA.TXIV_ID)
+            inner join TXN_HEADER on (INVOICE.TXHD_ID = TXN_HEADER.TXHD_ID)
+            inner join CONFIG_CATEGORY txnType ON (txnType.CATEGORY_ID = INVOICE.TXIV_TXN_TYPE)
+            inner join APP_USER ON ( APP_USER.USR_ID = TXN_HEADER.TXHD_OPERATOR)
+            inner join
+                (
+                    select
+                        SUM(txde_value_profit * txid_qty_invoiced) txnProfitTotal,
+                        SUM(txde_value_line * txid_qty_invoiced) txnCostTotal,
+                        SUM(txde_value_gross * txid_qty_invoiced) txdePriceLessTaxTotal,
+                        SUM(txde_value_net * txid_qty_invoiced) txdePriceAfterTaxTotal,
+                        MAX(invoice_detail.TXIV_ID) TXIV_ID,
+                        MAX(invoice.TXHD_ID) TXHD_ID
+                    FROM INVOICE_detail
+                         inner join INVOICE ON (INVOICE.TXIV_ID = INVOICE_DETAIL.TXIV_ID)
+                         inner join TXN_DETAIL ON (TXN_DETAIL.TXDE_ID = INVOICE_DETAIL.TXDE_ID)
+                         inner join CONFIG_CATEGORY on (CONFIG_CATEGORY.CATEGORY_ID = INVOICE_DETAIL.TXID_LINE_TYPE)
+                    where CONFIG_CATEGORY.CATEGORY_CODE = 'TXN_LINE_SALE'
+                    group by INVOICE.TXIV_ID
+                    --order by INVOICE.TXIV_ID
+                    UNION
+                    select
+                        SUM(txde_value_profit * TXID_QTY_REFUND) txnProfitTotal,
+                        SUM(txde_value_line * TXID_QTY_REFUND) txnCostTotal,
+                        SUM(txde_value_gross * TXID_QTY_REFUND) txdePriceLessTaxTotal,
+                        SUM(txde_value_net * TXID_QTY_REFUND) txdePriceAfterTaxTotal,
+                        MAX(invoice_detail.TXIV_ID) TXIV_ID,
+                        MAX(invoice.TXHD_ID) TXHD_ID
+                    FROM INVOICE_detail
+                         inner join INVOICE ON (INVOICE.TXIV_ID = INVOICE_DETAIL.TXIV_ID)
+                         inner join TXN_DETAIL ON (TXN_DETAIL.TXDE_ID = INVOICE_DETAIL.TXDE_ID)
+                         inner join CONFIG_CATEGORY on (CONFIG_CATEGORY.CATEGORY_ID = INVOICE_DETAIL.TXID_LINE_TYPE)
+                    where CONFIG_CATEGORY.CATEGORY_CODE = 'TXN_LINE_REFUND'
+                    group by INVOICE.TXIV_ID
+                ) txnSummary on (txnSummary.TXIV_ID = INVOICE.TXIV_ID)
+        where SESSION_MEDIA.CSSN_SESSION_ID = #{param1}
+        AND txnMediaType.CATEGORY_CODE IN ('TXN_MEDIA_INVOICE', 'TXN_MEDIA_REFUND')
+        order by docketNo dESC
+  </select>
+
+</mapper>

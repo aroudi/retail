@@ -15,13 +15,13 @@
     </bean-->
     <!-- Use this for dev/test/prod config -->
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="java:comp/env/jdbc/springSqlServerDataSource"/>
+        <property name="jndiName" value="java:comp/env/jdbc/springMysqlDataSource"/>
     </bean>
 
 
     <bean id="sqlSessioinFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
-        <property name="configLocation" value="classpath:mybatis/cimg-config.xml" />
+        <property name="configLocation" value="classpath:mybatis/mySql-retail-config.xml" />
     </bean>
 
 
