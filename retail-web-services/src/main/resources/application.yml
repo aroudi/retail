@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    active:
+  main:
+    allow-bean-definition-overriding: true
+server:
+  servlet:
+    contextPath: /retail-web-services
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS

@@ -13,12 +13,7 @@ subprojects {
 	//sourceCompatibility = JavaVersion.VERSION_11
 	ext {
 	
-		// Verify that the tomCatHome directory exists
-		tomCatHome = System.getenv()['CATALINA_HOME']
-		if (!tomCatHome) {
-			throw new GradleException("Unable to locate tomCatHome : ${tomCatHome}")
-		}
-		
+
 		projectVersion = '2.6.RELEASE'
 		commonsDbcp2Version = '2.7.0'
         commonsDbcpVersion='1.4'
@@ -43,6 +38,8 @@ subprojects {
         jasper_report_ver='6.4.0'
         jax_rs_version='2.0'
         jaxbVersion='2.3.0'
+        springBootVersion = '1.5.18.RELEASE'
+
 
 	}	
     //sourceSets.test.output.resourcesDir = sourceSets.test.output.classesDir
@@ -85,11 +82,6 @@ subprojects {
         ////////////////////////////////////////////////////////////////////////
         // Add Server Provided dependencies
         ////////////////////////////////////////////////////////////////////////
-
-        provided fileTree("${tomCatHome}/lib") {
-            include 'servlet-api.jar'
-            include 'ojdbc6-11.2.0.jar'
-        }
 
     }
 

@@ -3,6 +3,16 @@ apply plugin: 'war'
 dependencies {
     implementation project(':retail-config')
 
+
+    //Spring Boot
+    compile group:'org.springframework.boot', name:'spring-boot-starter-parent', version :springBootVersion
+    compile group:'org.springframework.boot', name:'spring-boot-starter', version :springBootVersion
+    providedRuntime group:'org.springframework.boot', name:'spring-boot-starter-tomcat', version :springBootVersion
+    testCompile group:'org.springframework.boot', name:'spring-boot-starter-test', version :springBootVersion
+    compile group:'org.springframework.boot', name:'spring-boot-starter-web', version :springBootVersion
+    developmentOnly group:'org.springframework.boot', name:'spring-boot-devtools', version :springBootVersion
+    compile group:'org.springframework.boot', name:'spring-boot-starter-security', version :springBootVersion
+
     //Spring
     implementation group:'org.springframework', name:'spring-web', version :springVersion
     implementation group:'org.springframework', name:'spring-aspects', version :springVersion
