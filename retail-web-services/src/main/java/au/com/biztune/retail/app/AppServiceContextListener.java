@@ -5,15 +5,16 @@ package au.com.biztune.retail.app;
 import au.com.biztune.retail.util.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import java.io.File;
 
 /**
  * AppServiceContextListener: intialises the servlet and loads the rtta xml files.
  * @author Huub
  */
+@WebListener
 public class AppServiceContextListener implements ServletContextListener {
 
     private static final Logger log = LoggerFactory.getLogger(AppServiceContextListener.class);

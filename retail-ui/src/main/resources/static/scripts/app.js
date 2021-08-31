@@ -41,6 +41,8 @@ var cimgApp = angular
     'ngIdle'
   ]);
 var config_data = {
+    'SERVER' : 'localhost',
+    'PORT'   : '8282',
     'WEBAPP' :'retail-web-services'
 }
 var service_uri = {
@@ -256,9 +258,10 @@ angular.forEach(type_constant, function(key, value) {
 });
 
 
-cimgApp.service('configService', function ($window,$http, UserService,WEBAPP) {
-    var address = window.location.origin +'/' +WEBAPP + '/rest/';
-
+cimgApp.service('configService', function ($window,$http, UserService,WEBAPP, SERVER, PORT) {
+    //var address = window.location.origin +'/' +WEBAPP + '/rest/';
+    var address = 'http://' + SERVER+':'+ PORT +'/' +WEBAPP + '/'
+    console.log('address =' + address);
 
     return {
         getAddress: function () {

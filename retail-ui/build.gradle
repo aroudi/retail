@@ -2,7 +2,13 @@
 apply plugin: 'war'
 
 dependencies {
-    //compile project(':rtta-app-store-ejb')
+    //Spring Boot
+    implementation group:'org.springframework.boot', name:'spring-boot', version :springBootVersion
+    implementation group:'org.springframework.boot', name:'spring-boot-starter-parent', version :springBootVersion
+    implementation group:'org.springframework.boot', name:'spring-boot-starter', version :springBootVersion
+    //implementation group:'org.springframework.boot', name:'spring-boot-starter-web', version :springBootVersion
+    providedRuntime group:'org.springframework.boot', name:'spring-boot-starter-actuator', version :springBootVersion
+    implementation group:'org.springframework.boot', name:'spring-boot-starter-web', version :springBootVersion
 }
 
 war{

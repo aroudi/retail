@@ -1,17 +1,13 @@
-package au.gov.nsw.railcorp;
+package au.com.biztune.retail.ui;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.context.annotation.ImportResource;
 
 /**
  * Spring boot Application class.
  */
 
-@ServletComponentScan
 @SpringBootApplication
 //import configuration beans from xml file
-@ImportResource("retail-web-services-Context.xml")
 public class Application {
     /**
      * Main method of Spring Boot Application class.

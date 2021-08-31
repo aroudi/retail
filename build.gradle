@@ -38,7 +38,8 @@ subprojects {
         jasper_report_ver='6.4.0'
         jax_rs_version='2.0'
         jaxbVersion='2.3.0'
-        springBootVersion = '1.5.18.RELEASE'
+        springBootVersion = '2.5.4'
+        mysql_jdbc_version='8.0.25'
 
 
 	}	

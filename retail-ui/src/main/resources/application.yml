@@ -1,12 +1,7 @@
-spring:
-  profiles:
-    active:
-  main:
-    allow-bean-definition-overriding: true
 server:
   servlet:
-    contextPath: /retail-web-services
-  port: 8282
+    contextPath: /retail-ui
+  port: 8181
 management:
   endpoints:
     web:

@@ -5,13 +5,16 @@ dependencies {
 
 
     //Spring Boot
-    compile group:'org.springframework.boot', name:'spring-boot-starter-parent', version :springBootVersion
-    compile group:'org.springframework.boot', name:'spring-boot-starter', version :springBootVersion
-    providedRuntime group:'org.springframework.boot', name:'spring-boot-starter-tomcat', version :springBootVersion
-    testCompile group:'org.springframework.boot', name:'spring-boot-starter-test', version :springBootVersion
-    compile group:'org.springframework.boot', name:'spring-boot-starter-web', version :springBootVersion
-    developmentOnly group:'org.springframework.boot', name:'spring-boot-devtools', version :springBootVersion
-    compile group:'org.springframework.boot', name:'spring-boot-starter-security', version :springBootVersion
+    implementation group:'org.springframework.boot', name:'spring-boot', version :springBootVersion
+    implementation group:'org.springframework.boot', name:'spring-boot-starter-parent', version :springBootVersion
+    implementation group:'org.springframework.boot', name:'spring-boot-starter', version :springBootVersion
+    //implementation group:'org.springframework.boot', name:'spring-boot-starter-web', version :springBootVersion
+    providedRuntime group:'org.springframework.boot', name:'spring-boot-starter-actuator', version :springBootVersion
+    providedRuntime group:'org.springframework.boot', name:'spring-boot-starter-jersey', version :springBootVersion
+    testImplementation group:'org.springframework.boot', name:'spring-boot-starter-test', version :springBootVersion
+    implementation group:'org.springframework.boot', name:'spring-boot-starter-web', version :springBootVersion
+    implementation group:'org.springframework.boot', name:'spring-boot-devtools', version :springBootVersion
+    //implementation group:'org.springframework.boot', name:'spring-boot-starter-security', version :springBootVersion
 
     //Spring
     implementation group:'org.springframework', name:'spring-web', version :springVersion
@@ -44,7 +47,7 @@ dependencies {
 
     implementation group:'org.jvnet.mimepull', name:'mimepull', version: jvnet_mimepull_ver
 
-    implementation group:'javax.servlet', name:'javax.servlet-api', version: javax_servlet_ver
+    //implementation group:'javax.servlet', name:'javax.servlet-api', version: javax_servlet_ver
 
     //jaxb
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: jaxbVersion
@@ -84,6 +87,9 @@ dependencies {
     //aspectj
     implementation group:'org.aspectj', name:'aspectjrt', version :'1.8.2'
     implementation group:'org.aspectj', name:'aspectjweaver', version :'1.8.2'
+
+    //mysql connectivity (JDBC)
+    implementation group: 'mysql', name: 'mysql-connector-java', version: mysql_jdbc_version
 
 
 }
