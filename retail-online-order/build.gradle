@@ -1,0 +1,25 @@
+apply plugin: 'war'
+
+dependencies {
+    implementation project(':retail-config')
+
+
+    //Spring Boot
+    implementation group:'org.springframework.boot', name:'spring-boot', version :springBootVersion
+    implementation group:'org.springframework.boot', name:'spring-boot-starter-parent', version :springBootVersion
+    implementation group:'org.springframework.boot', name:'spring-boot-starter', version :springBootVersion
+    implementation group:'org.springframework.boot', name:'spring-boot-starter-web', version :springBootVersion
+    implementation group:'org.mybatis.spring.boot', name:'mybatis-spring-boot-starter', version :mybatis_springboot_version
+    providedRuntime group:'org.springframework.boot', name:'spring-boot-starter-actuator', version :springBootVersion
+    testImplementation group:'org.springframework.boot', name:'spring-boot-starter-test', version :springBootVersion
+
+    //mysql connectivity (JDBC)
+    implementation group: 'mysql', name: 'mysql-connector-java', version: mysql_jdbc_version
+
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'retail-online-ordering', 'Implementation-Version': projectVersion
+    }
+}

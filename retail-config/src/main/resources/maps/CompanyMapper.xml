@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="au.com.biztune.retail.dao.CompanyDao">
+    <!-- result maps -->
+    <resultMap id="companyMap" type="Company" >
+        <id column="COMP_ID" property="id" />
+        <result column="COMP_NAME" property="compName" />
+        <result column="COMP_DESC" property="compDesc" />
+        <result column="COMP_CODE" property="compCode" />
+        <result column="COMP_LOGO" property="compLogo" />
+        <result column="COMP_PIC" property="compPicture" />
+        <association property="contactInfo" column="CONTACT_ID" select="au.com.biztune.retail.dao.ContactDao.getContactById" />
+        <collection property="contactList" javaType="ArrayList" column="comp_id" ofType="Contact" select="getAllCompanyContactsByCompanyId"/>
+    </resultMap>
+
+
+    <sql id="companyColumns">
+        ${alias}.COMP_ID,
+        ${alias}.COMP_NAME,
+        ${alias}.COMP_DESC,
+        ${alias}.COMP_CODE,
+        ${alias}.COMP_LOGO,
+        ${alias}.COMP_PIC
+    </sql>
+
+    <select id="getAllCompanies" resultMap="companyMap" >
+        SELECT
+        <include refid="companyColumns"><property name="alias" value="comp"/></include>
+        FROM COMPANY comp
+    </select>
+
+    <select id="getCompanyById" resultMap="companyMap" >
+        SELECT
+        <include refid="companyColumns"><property name="alias" value="comp"/></include>
+        FROM COMPANY comp
+        WHERE comp.COMP_ID=#{value}
+    </select>
+
+    <select id="getAllCompanyContactsByCompanyId" resultMap="au.com.biztune.retail.dao.ContactDao.contactMap" >
+        SELECT
+        <include refid="au.com.biztune.retail.dao.ContactDao.contactColumns"><property name="alias" value="contact"/></include>
+        FROM
+        COMPANY_CONTACT comp_contact inner join contact contact on (comp_contact.contact_id = contact.contact_id)
+        WHERE comp_contact.COMP_ID = #{value}
+    </select>
+
+</mapper>

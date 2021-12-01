@@ -23,9 +23,9 @@
         <property name="severity" value="ignore" />
     </module>
 
-    <module name="RegexpHeader">
-        <property name="header" value="^// (RailCorp|Sydney Trains) 201\d$"/>
-    </module>
+    <!--module name="RegexpHeader"-->
+        <!--property name="header" value="^// (RailCorp|Sydney Trains) 201\d$"/-->
+    <!--/module-->
 
     <module name="FileLength">
         <property name="max" value="2000"/>

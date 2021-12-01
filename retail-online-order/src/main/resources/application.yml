@@ -1,0 +1,24 @@
+spring:
+  profiles:
+    active:
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/RETAIL
+    username: RETAILUser
+    password: RETAILUser
+server:
+  servlet:
+    contextPath: /retail-online-order
+  port: 8383
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+mybatis:
+  config-location: classpath:mybatis/mySql-retail-config.xml

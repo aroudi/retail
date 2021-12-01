@@ -40,6 +40,7 @@ subprojects {
         jaxbVersion='2.3.0'
         springBootVersion = '2.5.4'
         mysql_jdbc_version='8.0.25'
+        mybatis_springboot_version='2.2.0'
 
 
 	}	

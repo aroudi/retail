@@ -1,7 +1,11 @@
 // rtta-configuration gradle setup:
 dependencies {
+    implementation group:'org.mybatis.spring.boot', name:'mybatis-spring-boot-starter', version :mybatis_springboot_version
     implementation group:'org.springframework', name:'spring-context', version :springVersion
     testImplementation group: 'org.apache.commons', name: 'commons-dbcp2', version: commonsDbcp2Version
+    //jaxb
+    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: jaxbVersion
+    implementation group:'org.glassfish.jersey.media', name:'jersey-media-json-jackson', version: jerseyGlassfishVer
 
 }
 jar {

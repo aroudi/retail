@@ -1,3 +1,4 @@
 include 'retail-ui'
 include 'retail-config'
 include 'retail-web-services'
+include 'retail-online-order'
